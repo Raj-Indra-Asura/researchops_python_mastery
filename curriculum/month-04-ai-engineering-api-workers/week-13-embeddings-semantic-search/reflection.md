@@ -1,35 +1,54 @@
-# Reflection - Week 13 Embeddings and Semantic Search
+# Reflection — Week 13 Embeddings and Semantic Search
 
-## What I built
-- Chunking approach:
-- Embedding strategy:
-- Retrieval behavior:
+> Fill this in **after** validation passes. Write to your future self, honestly —
+> this is for learning, not for showing off. Answer with prompts only filled by
+> you; a blank or dishonest reflection is a failed week.
 
-## What broke
-- Chunking or vector bug:
-- Similarity or ranking issue:
-- Query that exposed it:
+---
 
-## What I misunderstood
-- Embedding concept I clarified:
-- Why chunks matter:
-- Metadata requirement I nearly skipped:
+## Understanding
 
-## What I fixed
-- Retrieval bug:
-- Validation or ranking fix:
-- Evidence semantic search now helps:
+- **What did I build?**
 
-## What I need to review
-- Vector math:
-- Chunking trade-offs:
-- Retrieval evaluation:
+- **What did I learn?**
 
-## Confidence score
-- Week 13 confidence (1-10):
-- Why that score:
+- **What broke?**
 
-## Next-week preparation checklist
-- [ ] I can explain embeddings without hand-waving.
-- [ ] I know how semantic hits map back to source documents.
-- [ ] I am ready to expose project features through FastAPI next week.
+- **What did I misunderstand?**
+
+- **How did I debug it?**
+
+## Testing
+
+- **Which tests caught real problems?**
+
+- **Which tests were missing?**
+
+## Engineering judgement
+
+- **What did I overengineer?**
+
+- **What did I underengineer?**
+
+- **What architecture rule did I protect?**
+
+- **What architecture rule did I almost violate?**
+
+## Mastery checks
+
+- **Can I explain this week's feature aloud, without reading the code?**
+
+- **Can I explain why Week 13 comes after Week 12 (Experiment Tracking)?**
+
+- **What still feels weak?**
+
+- **What should I review before next week?**
+
+## Verdict
+
+- **Confidence score (1–10):**
+
+- **Am I allowed to move forward? Why or why not?**
+  (If you cannot give an honest "yes" with evidence, the answer is no — repeat the
+  weak part before continuing. See this week's `validation.md` do-not-proceed
+  warnings.)

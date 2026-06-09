@@ -1,36 +1,54 @@
-# Week 20 Final Reflection
+# Reflection — Week 20 Final Hardening and v1.0.0 Release
 
-## What I Built (in 20 weeks)
-<!-- List every major feature that works in v1.0.0 -->
+> Fill this in **after** validation passes. Write to your future self, honestly —
+> this is for learning, not for showing off. Answer with prompts only filled by
+> you; a blank or dishonest reflection is a failed week.
 
-## The Hardest Week
-<!-- Which week was hardest and why? -->
+---
 
-## The Most Important Lesson
-<!-- What is the single most important thing you learned? -->
+## Understanding
 
-## What I Would Do Differently
-<!-- With 20/20 hindsight, what would you change? -->
+- **What did I build?**
 
-## Python Mastery Self-Assessment
+- **What did I learn?**
 
-Rate your confidence (1-10) in each area:
+- **What broke?**
 
-| Area | Start | End |
-|------|-------|-----|
-| Python fundamentals | | |
-| Clean architecture | | |
-| Testing discipline | | |
-| SQL and storage | | |
-| ML engineering | | |
-| Async I/O | | |
-| API development | | |
-| Docker | | |
-| AI engineering (embeddings, RAG) | | |
+- **What did I misunderstand?**
 
-## What's Next?
-<!-- What will you build in the next project? -->
+- **How did I debug it?**
 
-## Final Confidence Score: /10
+## Testing
 
-Congratulations. You finished.
+- **Which tests caught real problems?**
+
+- **Which tests were missing?**
+
+## Engineering judgement
+
+- **What did I overengineer?**
+
+- **What did I underengineer?**
+
+- **What architecture rule did I protect?**
+
+- **What architecture rule did I almost violate?**
+
+## Mastery checks
+
+- **Can I explain this week's feature aloud, without reading the code?**
+
+- **Can I explain why Week 20 comes after Week 19 (Documentation and Portfolio Polish)?**
+
+- **What still feels weak?**
+
+- **What should I review before next week?**
+
+## Verdict
+
+- **Confidence score (1–10):**
+
+- **Am I allowed to move forward? Why or why not?**
+  (If you cannot give an honest "yes" with evidence, the answer is no — repeat the
+  weak part before continuing. See this week's `validation.md` do-not-proceed
+  warnings.)

@@ -1,24 +1,54 @@
-# Week 19 Reflection
+# Reflection — Week 19 Documentation and Portfolio Polish
 
-## What I Built
-<!-- Describe the documentation and diagrams you created -->
+> Fill this in **after** validation passes. Write to your future self, honestly —
+> this is for learning, not for showing off. Answer with prompts only filled by
+> you; a blank or dishonest reflection is a failed week.
 
-## What Broke
-<!-- What did the fresh clone test reveal? -->
+---
 
-## What I Misunderstood
-<!-- What did you think was well-documented, but wasn't? -->
+## Understanding
 
-## What I Fixed
-<!-- What documentation gaps did you discover and fix? -->
+- **What did I build?**
 
-## What I Need to Review
-<!-- Any concepts that still feel unclear? -->
+- **What did I learn?**
 
-## Confidence Score: /10
+- **What broke?**
 
-## Next-Week Preparation
-- [ ] All tests pass
-- [ ] Ruff clean
-- [ ] Fresh clone test passes
-- [ ] Week 20 checklist reviewed
+- **What did I misunderstand?**
+
+- **How did I debug it?**
+
+## Testing
+
+- **Which tests caught real problems?**
+
+- **Which tests were missing?**
+
+## Engineering judgement
+
+- **What did I overengineer?**
+
+- **What did I underengineer?**
+
+- **What architecture rule did I protect?**
+
+- **What architecture rule did I almost violate?**
+
+## Mastery checks
+
+- **Can I explain this week's feature aloud, without reading the code?**
+
+- **Can I explain why Week 19 comes after Week 18 (Docker and Environment Configuration)?**
+
+- **What still feels weak?**
+
+- **What should I review before next week?**
+
+## Verdict
+
+- **Confidence score (1–10):**
+
+- **Am I allowed to move forward? Why or why not?**
+  (If you cannot give an honest "yes" with evidence, the answer is no — repeat the
+  weak part before continuing. See this week's `validation.md` do-not-proceed
+  warnings.)

@@ -1,35 +1,54 @@
-# Reflection - Week 16 Local Worker and Job System
+# Reflection — Week 16 Local Worker and Job System
 
-## What I built
-- Job states:
-- Worker behavior:
-- Retry/idempotency design:
+> Fill this in **after** validation passes. Write to your future self, honestly —
+> this is for learning, not for showing off. Answer with prompts only filled by
+> you; a blank or dishonest reflection is a failed week.
 
-## What broke
-- State transition bug:
-- Duplicate-work issue:
-- How I reproduced it:
+---
 
-## What I misunderstood
-- Idempotency idea I clarified:
-- Retry policy trade-off:
-- Worker crash scenario I had overlooked:
+## Understanding
 
-## What I fixed
-- Queue or worker bug:
-- State-machine fix:
-- Evidence the system recovers better now:
+- **What did I build?**
 
-## What I need to review
-- Background workers:
-- State machines:
-- Retry design:
+- **What did I learn?**
 
-## Confidence score
-- Week 16 confidence (1-10):
-- Why that score:
+- **What broke?**
 
-## Next-week preparation checklist
-- [ ] I can explain how background jobs differ from direct requests.
-- [ ] I know how to prevent duplicate effects on retry.
-- [ ] I am ready to build a RAG assistant next week.
+- **What did I misunderstand?**
+
+- **How did I debug it?**
+
+## Testing
+
+- **Which tests caught real problems?**
+
+- **Which tests were missing?**
+
+## Engineering judgement
+
+- **What did I overengineer?**
+
+- **What did I underengineer?**
+
+- **What architecture rule did I protect?**
+
+- **What architecture rule did I almost violate?**
+
+## Mastery checks
+
+- **Can I explain this week's feature aloud, without reading the code?**
+
+- **Can I explain why Week 16 comes after Week 15 (Async I/O and Network Fetching)?**
+
+- **What still feels weak?**
+
+- **What should I review before next week?**
+
+## Verdict
+
+- **Confidence score (1–10):**
+
+- **Am I allowed to move forward? Why or why not?**
+  (If you cannot give an honest "yes" with evidence, the answer is no — repeat the
+  weak part before continuing. See this week's `validation.md` do-not-proceed
+  warnings.)

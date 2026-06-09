@@ -1,39 +1,153 @@
-# Week 08 - Multiprocessing Ingestion
+# Week 08 — Multiprocessing Ingestion
 
-## Learning objectives
-- Understand why PDF parsing can be CPU-bound.
-- Use `ProcessPoolExecutor` for parallel ingestion work.
-- Decide what data is safe to pass between processes.
-- Add a `--workers` flag to the ingest command.
-- Preserve correctness while improving throughput.
-- Handle worker failures and merge results cleanly.
-- Measure before and after performance.
+> **Chapter title: "Doing many things at once, safely."**
+> The week ingestion gets fast — without getting wrong.
 
-## Project milestone
-Parallelize the ingestion pipeline so multiple documents can be parsed concurrently with a configurable worker count.
+---
 
-## Files to modify/create
-- `src/researchops/services/parallel_ingestion.py`
-- `src/researchops/cli/ingest.py`
-- `tests/unit/test_parallel_ingestion.py`
-- `tests/integration/test_ingest_workers.py`
-- `scripts/benchmark_ingest.py`
+## 1. Week title
 
-## Concepts covered
-CPU-bound work, multiprocessing, serialization, futures, worker pools, performance measurement, and deterministic result aggregation.
+Week 8 — Multiprocessing Ingestion (Month 2, Chapter 4 of 4 — month finale).
 
-## Expected deliverables
-- An ingestion path that uses `ProcessPoolExecutor`.
-- CLI support for `--workers`.
-- Tests for single-worker and multi-worker behavior.
-- Benchmark notes comparing runtimes.
+## 2. Story of the week
 
-## Definition of done
-- [ ] `--workers` flag exists.
-- [ ] Worker count of 1 behaves like sequential mode.
-- [ ] Multi-worker mode returns the same logical results.
-- [ ] Parse failures from workers are captured.
-- [ ] No database connection is shared unsafely across processes.
-- [ ] Tests cover concurrency boundaries.
-- [ ] Benchmark output is recorded.
-- [ ] You can explain when multiprocessing helps and when it does not.
+Your ingestion pipeline is correct and tested, but it parses PDFs one at a time.
+Feed it a few hundred papers and you will wait. This week you make it fast the
+*right* way: by understanding why threads will not help (the GIL), and reaching
+for `ProcessPoolExecutor` to parse PDFs across multiple CPU cores. The catch is
+that processes do not share memory — arguments and results must be *picklable*,
+worker functions must live at module level, and one bad PDF in a worker must not
+take down the whole batch. Done well, `--workers 4` is dramatically faster and
+produces **exactly** the same stored result as the single-process path.
+
+## 3. What you already know
+
+- From Weeks 6–7: a correct, tested ingestion pipeline and search.
+- From Month 1: functions, modules, exceptions.
+- The concept of CPU-bound vs I/O-bound (formalised this week).
+
+You have not yet written any concurrent or parallel code.
+
+## 4. What this week adds
+
+- The distinction between **CPU-bound** and **I/O-bound** work.
+- The **GIL** and why `ThreadPoolExecutor` does not speed up CPU-heavy parsing.
+- **`concurrent.futures.ProcessPoolExecutor`** for true multi-core parallelism.
+- **Pickling constraints**: worker functions must be module-level; arguments and
+  returns must be picklable.
+- **Worker failure isolation**: one bad PDF must not crash the batch.
+- **Batch writes** after parallel parsing.
+
+## 5. Why this week matters
+
+This is your first real concurrency, and it cements a principle you will reuse all
+the way to Month 4: **match the tool to the workload.** PDF parsing is CPU-bound,
+so it needs *processes*, not threads or async — the reasoning is captured in
+[ADR-0002](../../../docs/decisions/0002-multiprocessing-vs-asyncio.md). Equally
+important is the discipline of proving that an optimisation did not change
+behavior: correctness first, speed second, always verifiable.
+
+## 6. Learning objectives
+
+By the end of the week you can:
+
+- Explain the GIL and why threads do not parallelise CPU-bound work.
+- Implement CPU-bound parallelism with `ProcessPoolExecutor`.
+- Satisfy pickling constraints (module-level workers, picklable payloads).
+- Isolate worker failures so one bad file does not crash the batch.
+- Prove the parallel path produces the same result as the serial path.
+
+## 7. Project milestone
+
+`researchops ingest ./papers --workers 4` ingests using 4 parallel worker
+processes, with identical results to the single-worker run.
+
+## 8. Files / modules touched
+
+- `src/researchops/workers/process_pool.py` — `ProcessPoolExecutor` wrapper.
+- `src/researchops/services/ingestion_service.py` — gains a `workers` parameter.
+- `src/researchops/cli/commands/ingest.py` — exposes the `--workers` option.
+
+## 9. Commands introduced
+
+```bash
+researchops ingest ./examples/sample_papers --workers 2   # parallel ingestion
+```
+
+## 10. Tests involved
+
+- `tests/unit/test_process_pool.py` — pool behavior and failure isolation.
+- `tests/integration/test_ingestion_service.py` — updated to cover parallel mode
+  and assert parity with serial mode.
+
+```bash
+pytest tests/unit/test_process_pool.py -v
+```
+
+## 11. Study plan for the week
+
+1. **Day 1 — Concepts.** CPU-bound vs I/O-bound; the GIL; why threads fail here.
+   Run a small CPU benchmark with threads vs processes in `/tmp`.
+2. **Day 2 — Pickling.** Move the parse worker to module level; confirm arguments
+   and returns are picklable.
+3. **Day 3 — process_pool wrapper.** Build the `ProcessPoolExecutor` wrapper and
+   collect results.
+4. **Day 4 — Failure isolation + batch writes.** Make one worker raise; ensure the
+   batch survives and writes the rest.
+5. **Day 5 — Parity test + milestone + month report.** Assert serial == parallel.
+
+## 12. Estimated time breakdown
+
+| Activity | Time |
+|---|---|
+| Reading + GIL/benchmark experiments | ~2 hrs |
+| process_pool wrapper + pickling fixes | ~3 hrs |
+| Failure isolation + batch writes | ~2 hrs |
+| Parity + tests | ~2 hrs |
+| Reflection + month report | ~1 hr |
+
+## 13. How to know the learner is stuck
+
+- `PicklingError` / "can't pickle" — your worker is a closure or takes an
+  unpicklable argument (e.g. an open connection).
+- The parallel run is *slower* than serial (overhead on tiny inputs, or you
+  accidentally used threads).
+- One bad PDF crashes the whole pool.
+- Parallel results differ from serial results (ordering or dropped items).
+
+## 14. Definition of done
+
+- [ ] `--workers N` runs ingestion across N processes.
+- [ ] Worker functions are module-level and all payloads are picklable.
+- [ ] A failing worker is isolated; the batch completes.
+- [ ] Parallel output equals serial output (asserted in a test).
+- [ ] You can explain the GIL and why processes (not threads) are used here.
+- [ ] `pytest tests/unit/test_process_pool.py` passes.
+
+## 15. Ruthless mentor checkpoint
+
+- "Explain the GIL to me in two sentences, then justify `ProcessPoolExecutor` over
+  `ThreadPoolExecutor` for this workload."
+- "Ingest the same folder with `--workers 1` and `--workers 4`. Are the stored
+  results byte-for-byte equivalent?"
+- "Make one PDF raise inside a worker. Did the other papers still ingest?"
+
+If parallel and serial disagree, the optimisation is a bug, not a feature.
+
+## 16. What not to do this week
+
+- Do **not** use threads for the CPU-bound parsing and call it parallel.
+- Do **not** pass open file handles or DB connections into workers (not
+  picklable).
+- Do **not** let a worker failure abort the batch.
+- Do **not** ship a faster pipeline that produces *different* results — parity is
+  non-negotiable.
+
+## 17. Bridge to next week
+
+Month 2 is complete: ResearchOps can scan, parse, store, search, and ingest in
+parallel — `scan → parse → store → search → parallelize`. But "works on my
+machine" is not "engineered." **Week 9** opens Month 3 by stepping back to
+*architecture*: protocols, dependency inversion, fakes, and strict layer
+boundaries — the discipline that will let you add ML, experiment tracking, APIs,
+and RAG without the system collapsing under its own weight.

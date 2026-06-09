@@ -1,35 +1,54 @@
-# Reflection - Week 17 RAG Assistant
+# Reflection — Week 17 RAG Assistant
 
-## What I built
-- Retrieval-to-answer flow:
-- Prompt strategy:
-- Citation format:
+> Fill this in **after** validation passes. Write to your future self, honestly —
+> this is for learning, not for showing off. Answer with prompts only filled by
+> you; a blank or dishonest reflection is a failed week.
 
-## What broke
-- Retrieval or prompting issue:
-- Citation mismatch:
-- Question that exposed it:
+---
 
-## What I misunderstood
-- Grounding concept I clarified:
-- Fallback behavior I improved:
-- Prompt design choice I revised:
+## Understanding
 
-## What I fixed
-- RAG bug:
-- Citation or truncation fix:
-- Evidence answers are more trustworthy now:
+- **What did I build?**
 
-## What I need to review
-- Prompt engineering:
-- Retrieval quality:
-- Answer evaluation:
+- **What did I learn?**
 
-## Confidence score
-- Week 17 confidence (1-10):
-- Why that score:
+- **What broke?**
 
-## Next-week preparation checklist
-- [ ] I can explain how citations are produced.
-- [ ] I know the main failure modes of my RAG system.
-- [ ] I am ready to containerize and configure the app next week.
+- **What did I misunderstand?**
+
+- **How did I debug it?**
+
+## Testing
+
+- **Which tests caught real problems?**
+
+- **Which tests were missing?**
+
+## Engineering judgement
+
+- **What did I overengineer?**
+
+- **What did I underengineer?**
+
+- **What architecture rule did I protect?**
+
+- **What architecture rule did I almost violate?**
+
+## Mastery checks
+
+- **Can I explain this week's feature aloud, without reading the code?**
+
+- **Can I explain why Week 17 comes after Week 16 (Local Worker and Job System)?**
+
+- **What still feels weak?**
+
+- **What should I review before next week?**
+
+## Verdict
+
+- **Confidence score (1–10):**
+
+- **Am I allowed to move forward? Why or why not?**
+  (If you cannot give an honest "yes" with evidence, the answer is no — repeat the
+  weak part before continuing. See this week's `validation.md` do-not-proceed
+  warnings.)

@@ -1,35 +1,54 @@
-# Reflection - Week 14 FastAPI Layer
+# Reflection — Week 14 FastAPI Layer
 
-## What I built
-- Endpoints added:
-- Schemas added:
-- Dependency wiring summary:
+> Fill this in **after** validation passes. Write to your future self, honestly —
+> this is for learning, not for showing off. Answer with prompts only filled by
+> you; a blank or dishonest reflection is a failed week.
 
-## What broke
-- Validation or serialization issue:
-- HTTP error-mapping issue:
-- Test that exposed it:
+---
 
-## What I misunderstood
-- FastAPI dependency injection:
-- Pydantic validation:
-- Route versus service responsibility:
+## Understanding
 
-## What I fixed
-- API bug:
-- Schema or response fix:
-- Evidence the app works:
+- **What did I build?**
 
-## What I need to review
-- FastAPI routing:
-- Pydantic models:
-- API testing:
+- **What did I learn?**
 
-## Confidence score
-- Week 14 confidence (1-10):
-- Why that score:
+- **What broke?**
 
-## Next-week preparation checklist
-- [ ] I can explain one route from request to response.
-- [ ] I know how to test APIs locally.
-- [ ] I am ready to add async network fetching next week.
+- **What did I misunderstand?**
+
+- **How did I debug it?**
+
+## Testing
+
+- **Which tests caught real problems?**
+
+- **Which tests were missing?**
+
+## Engineering judgement
+
+- **What did I overengineer?**
+
+- **What did I underengineer?**
+
+- **What architecture rule did I protect?**
+
+- **What architecture rule did I almost violate?**
+
+## Mastery checks
+
+- **Can I explain this week's feature aloud, without reading the code?**
+
+- **Can I explain why Week 14 comes after Week 13 (Embeddings and Semantic Search)?**
+
+- **What still feels weak?**
+
+- **What should I review before next week?**
+
+## Verdict
+
+- **Confidence score (1–10):**
+
+- **Am I allowed to move forward? Why or why not?**
+  (If you cannot give an honest "yes" with evidence, the answer is no — repeat the
+  weak part before continuing. See this week's `validation.md` do-not-proceed
+  warnings.)
