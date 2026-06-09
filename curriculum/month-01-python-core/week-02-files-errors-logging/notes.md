@@ -2257,6 +2257,40 @@ Do not worry yet about complex parser recovery logic.
 Those topics will matter later.
 Right now, you are building clean fundamentals.
 
+## 38b. PowerShell equivalents for Windows learners
+All commands in this chapter are written in macOS/Linux shell syntax.
+On Windows with PowerShell, substitute the following.
+
+Activate the environment:
+```powershell
+.venv\Scripts\Activate.ps1
+```
+
+All other commands in this chapter — `python -m pip install`, `pytest`, `ruff check`, `researchops scan`, and `researchops --verbose scan` — are identical on Windows PowerShell.
+
+For path arguments, both forward slashes and backslashes work:
+```powershell
+researchops scan examples\sample_papers
+researchops scan examples/sample_papers
+```
+
+To check the exit code of the last command:
+```powershell
+echo $LASTEXITCODE
+```
+
+On macOS/Linux the equivalent is:
+```bash
+echo $?
+```
+
+If `Activate.ps1` is blocked by execution policy, run this once in PowerShell as administrator:
+```powershell
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+```
+
+
+
 ## 39. Bridge to next week
 This week gives you safe input handling and visible behavior.
 Next week gives you richer internal models.

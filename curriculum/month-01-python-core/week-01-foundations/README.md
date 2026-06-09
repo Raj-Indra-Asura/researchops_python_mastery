@@ -177,6 +177,11 @@ source .venv/bin/activate
 ```
 Activate the virtual environment on macOS/Linux so project tools come from `.venv`.
 
+```powershell
+# Windows PowerShell equivalent
+.venv\Scripts\Activate.ps1
+```
+
 ```bash
 python -m pip install --upgrade pip
 ```
@@ -226,6 +231,10 @@ Run the whole test suite quietly.
 ruff check src tests
 ```
 Run the linter to catch import, syntax, and style issues Ruff knows how to detect.
+
+### Windows PowerShell notes
+
+All commands except virtual environment activation are identical on Windows. On Windows, replace `source .venv/bin/activate` with `.venv\Scripts\Activate.ps1`. To confirm the environment is active, run `where.exe python` and verify the result points to `.venv\Scripts\python.exe`. To check an exit code after a command fails, use `echo $LASTEXITCODE` instead of `echo $?`.
 
 ---
 
