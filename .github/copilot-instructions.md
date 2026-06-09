@@ -23,6 +23,20 @@ the learner must not need outside resources for the core material.
 | `validation.md` | Strict completion checkpoint | Exact commands + expected outputs |
 | `reflection.md` | Guided self-review | Prompts only, no answers |
 
+### Curriculum depth rules
+
+1. **No outline-level content.** "Explain what sqlite3 is" is outline-level. A 1500-line notes.md that walks through every concept from first principles, with code examples, line-by-line explanations, common beginner mistakes, debugging guidance, and tradeoff discussions is the correct depth.
+
+2. **Teach from beginner level.** Never assume the learner has seen the concept before. Define every term. Show why before how. Use concrete examples from the ResearchOps domain, not abstract toy examples.
+
+3. **Explain code line by line when educational.** Any code block in `notes.md` that a beginner would not immediately understand must have a line-by-line explanation directly below it. Do not skip lines and say "this is straightforward."
+
+4. **Avoid generic filler.** "SQLite is a popular embedded database" is filler. "SQLite stores your entire database in a single `.db` file on disk. When you run `sqlite3.connect('papers.db')`, Python either opens that file if it exists or creates it. This means you can inspect your database with any SQLite browser, copy the file to back it up, and delete it to start fresh." is teaching.
+
+5. **Preserve month and week continuity.** Every `notes.md` must reference what was built in previous weeks and explicitly show how this week's concepts build on that work. The learner must always know where they are in the journey.
+
+6. **Do not implement future weeks early.** If the current week is Week 5 (SQLite storage), do not introduce `typing.Protocol` (Week 9) or `ProcessPoolExecutor` (Week 8). Write only what the learner knows up to the current week.
+
 ### Required sections for every notes.md
 
 1. Chapter overview
@@ -101,7 +115,7 @@ Prompts only — no answers, no examples. Must include prompts for:
 2. **`services/`** depends on `core/` protocols (interfaces), not concrete implementations.
    Services must never import `sqlite_repository`, `pdf_parser`, or `fastapi` directly.
 
-3. **`cli/`** and `api/`** wire concrete implementations to service protocols.
+3. **`cli/`** and **`api/`** wire concrete implementations to service protocols.
    CLI/API must not contain business logic — delegate everything to services.
 
 4. **`storage/`**, **`parsing/`**, **`ml/`**, **`search/`** are infrastructure layers.
@@ -115,9 +129,19 @@ Prompts only — no answers, no examples. Must include prompts for:
    No FastAPI before the CLI/service layer works.
    No RAG before keyword and semantic search work.
 
+### Preserved architecture paths — do not move these
+
+- `src/researchops/core/interfaces.py` — all Protocol definitions live here, always
+- `src/researchops/search/` — all embedding, chunking, and vector search code lives here
+- `src/researchops/ai/prompts.py` — all RAG prompt templates live here
+- `tests/fakes/` — all fake implementations of core protocols live here
+
+---
+
 ## Code quality rules
 
 - **Add tests for every new feature.** No feature without at least one unit test.
+- **Tests must accompany features.** Do not implement a feature and leave tests as a follow-up. They must exist in the same commit.
 - **Prefer small, incremental changes.** One concern per commit.
 - **Update weekly curriculum files** when code behaviour changes.
   - If you change a CLI command, update the relevant `validation.md`.
@@ -126,6 +150,7 @@ Prompts only — no answers, no examples. Must include prompts for:
 - **Never introduce unrequested heavy dependencies.** Ask first.
   - Do not add `torch`, `transformers`, `sentence-transformers` before Week 13.
   - Do not add `openai`, `langchain`, `llama-index` before Week 17.
+  - Do not add any dependency not already in `pyproject.toml` without an explicit request from the user.
 - **Keep code beginner-readable but production-respectful.**
   - Use type hints everywhere.
   - Prefer descriptive variable names over clever one-liners.
@@ -133,6 +158,8 @@ Prompts only — no answers, no examples. Must include prompts for:
 - **Explain tradeoffs in comments only when useful.**
   - "Why ProcessPoolExecutor and not ThreadPoolExecutor?" — useful comment.
   - "This increments i" — useless comment.
+
+---
 
 ## Testing conventions
 
@@ -142,6 +169,8 @@ Prompts only — no answers, no examples. Must include prompts for:
 - Unit tests must not touch the filesystem, network, or real database.
 - Integration tests may use `tmp_path` for a real SQLite DB.
 - E2E tests use `typer.testing.CliRunner` or `httpx.AsyncClient` for the API.
+
+---
 
 ## Dependency direction (import graph)
 
@@ -155,6 +184,8 @@ Core Models + Protocols
 Infrastructure (storage, parsing, ml, search)
 ```
 
+---
+
 ## Current project status (update this as weeks complete)
 
 - [x] Week 1: repo scaffold, core models, CLI scaffold, scan command
@@ -163,10 +194,13 @@ Infrastructure (storage, parsing, ml, search)
 - [ ] Week 4: CLI packaging, entry points
 - [ ] Week 5–20: see ROADMAP.md
 
+---
+
 ## Key files to read before making changes
 
-- `ARCHITECTURE.md` — dependency rules, modular monolith rationale
-- `PROJECT_SPEC.md` — full feature specification
+- `ARCHITECTURE.md` — dependency rules, modular monolith rationale, forbidden imports
+- `PROJECT_SPEC.md` — full feature specification and CLI/API command reference
 - `src/researchops/core/interfaces.py` — all protocol definitions
 - `src/researchops/core/models.py` — all domain models
 - `pyproject.toml` — dependency groups, entry points
+- `SYLLABUS.md` — per-week concepts, milestones, and validation commands
