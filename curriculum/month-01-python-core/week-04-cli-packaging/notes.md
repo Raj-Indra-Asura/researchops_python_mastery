@@ -2,66 +2,120 @@
 
 A command-line interface turns your code from a library into a tool people can actually use. Typer is a good fit for beginner-friendly Python CLIs because it builds on function signatures and type hints. If you can write a normal Python function, you can usually turn it into a command.
 
+## CLI structure in ResearchOps
+
+The CLI uses a two-level layout. The root app lives in `cli/main.py`. Future command groups (added from Week 5 onwards) are registered as sub-apps via `app.add_typer()`:
+
 ```python
+# src/researchops/cli/main.py
 import typer
-from pathlib import Path
+from rich.console import Console
 
-app = typer.Typer()
+from researchops.config.logging import configure_logging
+from researchops.config.settings import settings
 
+app = typer.Typer(
+    name="researchops",
+    help="ResearchOps — research paper processing platform.",
+    add_completion=False,
+    rich_markup_mode="rich",
+)
 
-@app.command()
-def scan(path: Path) -> None:
-    typer.echo(f"Scanning {path}")
+console = Console()
+
+# Sub-command groups registered here (Week 5+):
+# from researchops.cli.commands import ingest, papers, search
+# app.add_typer(ingest.app, name="ingest", ...)
 ```
 
-Typer reads the parameter type and converts command-line input into a `Path` object automatically. That means your command logic can stay focused on the project domain instead of manually parsing strings.
+The `@app.callback()` is where global flags like `--verbose` are declared:
 
-As CLIs grow, keep command handlers thin. A command should gather inputs, call application logic, and format output. The heavy work should live in services such as `scanner.py` or `ingestion.py`. That separation makes testing easier.
+```python
+@app.callback()
+def main(
+    verbose: bool = typer.Option(False, "--verbose", "-v", help="Enable debug logging."),
+) -> None:
+    configure_logging(level="DEBUG" if verbose else settings.log_level)
+```
+
+## The scan command
+
+The top-level `scan` command is the Week 1/4 deliverable. It calls `find_pdfs()` from `utils/paths.py` and formats results using Rich:
 
 ```python
 @app.command()
-def scan(path: Path, verbose: bool = False) -> None:
-    result = scan_directory(path, verbose=verbose)
-    typer.echo(f"accepted={result.accepted_count} failed={result.failed_count}")
+def scan(
+    directory: str = typer.Argument(..., help="Path to a directory containing PDF files."),
+    recursive: bool = typer.Option(False, "--recursive", "-r", help="Search subdirectories."),
+) -> None:
+    """Scan a directory and list discovered PDF files."""
+    from pathlib import Path
+    from researchops.utils.paths import find_pdfs
+
+    path = Path(directory)
+
+    try:
+        pdfs = find_pdfs(path, recursive=recursive)
+    except NotADirectoryError as exc:
+        console.print(f"[red]Error:[/red] {exc}")
+        raise typer.Exit(1) from exc
+
+    if not pdfs:
+        console.print(f"[yellow]No PDF files found in {path}[/yellow]")
+        raise typer.Exit(0)
+
+    for pdf in pdfs:
+        size_kb = pdf.stat().st_size / 1024
+        console.print(f"  {pdf.name}  ({size_kb:.1f} KB)")
+
+    console.print(f"\n[bold]{len(pdfs)} PDF(s) found[/bold]")
 ```
 
-Packaging connects your Python code to the shell. In `pyproject.toml`, this line matters:
+The command handler stays thin: gather input, call application logic (`find_pdfs`), format output. The heavy work lives in `utils/paths.py`.
+
+## Entry point in pyproject.toml
 
 ```toml
 [project.scripts]
 researchops = "researchops.cli.main:app"
 ```
 
-When the package is installed, a `researchops` command becomes available. If the path is wrong, the CLI will not launch. That is why packaging errors often feel mysterious: the Python code may be fine, but the entry point is misconfigured.
+When the package is installed, this line creates a `researchops` shell command. If the module path or object name is wrong, the CLI will fail at launch with an `ImportError` or `AttributeError`. Always re-run `pip install -e .` after changing the entry point.
 
-Good CLI design means good help text. Users should be able to run `researchops --help` and immediately see what the tool does. Use descriptive command names and option help strings.
+## Testing the CLI
+
+Typer's built-in `CliRunner` (from `typer.testing`) lets you call the app in-process, capture output, and assert on both exit code and text:
 
 ```python
-@app.command()
-def scan(
-    path: Path = typer.Argument(..., help="Directory containing research papers"),
-    verbose: bool = typer.Option(False, "--verbose", help="Show debug logging"),
-) -> None:
-    ...
+from typer.testing import CliRunner
+from researchops.cli.main import app
+
+runner = CliRunner()
+
+
+def test_scan_help() -> None:
+    result = runner.invoke(app, ["scan", "--help"])
+    assert result.exit_code == 0
+    assert "Directory containing PDF files" in result.output
+
+
+def test_scan_nonexistent_directory() -> None:
+    result = runner.invoke(app, ["scan", "/tmp/does_not_exist_researchops"])
+    assert result.exit_code != 0
 ```
 
-Exit behavior matters too. A CLI should not show a Python traceback for ordinary user errors like a missing directory. Instead, catch the domain exception and convert it into a clean message plus a non-zero exit code.
+Existing CLI tests live in `tests/e2e/test_cli.py`.
+
+## Exit codes
+
+A CLI should not show Python tracebacks for ordinary user errors. Catch domain exceptions and convert them into a clean message plus a non-zero exit code:
 
 ```python
 raise typer.Exit(code=1)
 ```
 
-That way scripts and CI systems can detect failure reliably.
+Scripts and CI systems use exit codes to detect failure. Exit 0 means success; any other value means failure.
 
-Testing CLIs often uses Typer's or Click's runner utilities. The important idea is that you can call the app in-process, capture output, and assert on both exit code and text.
+## Packaging also affects imports
 
-```python
-def test_scan_help(runner):
-    result = runner.invoke(app, ["scan", "--help"])
-    assert result.exit_code == 0
-    assert "Directory containing research papers" in result.output
-```
-
-Packaging also affects imports. When code is installed in editable mode, `researchops` resolves as an installed package, not as a random folder on disk. That consistency is why packaging work happens early in a serious project.
-
-By the end of this week, you should think of the CLI as the outside boundary of the system. It is the layer users touch first, but it should stay simple because the real logic belongs deeper in the application. That design choice will matter when you later add storage, APIs, and background workers.
+When code is installed in editable mode (`pip install -e .`), `researchops` resolves as an installed package, not a random directory on disk. That consistency is why packaging work happens early in a serious project. If you move files, update imports everywhere before reinstalling.

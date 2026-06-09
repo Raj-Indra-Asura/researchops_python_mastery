@@ -1,22 +1,22 @@
 # Break It - Week 02 Files, Errors, and Logging
 
 ## Intentional failure experiments
-1. Pass a file path where your scanner expects a directory. Confirm the custom exception message is specific.
-2. Point the scanner at a missing directory and decide whether it should return an empty result or fail loudly.
-3. Drop a `.txt` file, a hidden file, and a zero-byte file into the sample directory and inspect behavior.
-4. Force a logging format typo or invalid config and see how early startup failures appear.
-5. Read a file with the wrong encoding and capture the exception details.
+1. Call `find_pdfs()` with a file path (not a directory) and confirm the `NotADirectoryError` message contains the actual path.
+2. Call `find_pdfs()` on a missing directory and decide: is `NotADirectoryError` the right signal? Read the code in `utils/paths.py` and explain why it was chosen.
+3. Drop a `.txt` file, a hidden file (`.hidden.pdf`), and a zero-byte `.pdf` into a temp directory and observe which ones `find_pdfs()` returns.
+4. Force a logging format typo in `configure_logging()` call and see how early startup failures appear.
+5. Read a file using the wrong encoding (`latin-1` instead of `utf-8`) and capture the `UnicodeDecodeError`.
 
 ## Debugging tasks
-- Run only the scanner tests with `pytest -k scanner -v`.
-- Add temporary DEBUG logs that print each visited path.
-- Compare `Path.iterdir()` and `Path.rglob()` on the same directory.
+- Run only the path tests with `pytest tests/unit/test_paths.py -v`.
+- Add a temporary `log.debug("visiting %s", path)` line inside `find_pdfs` and run `researchops --verbose scan examples/sample_papers` to see it.
+- Compare `Path.glob("*.pdf")` and `Path.rglob("*.pdf")` results on the same directory to understand `recursive=True`.
 
 ## Edge cases to explore
 - Empty directory.
-- Deeply nested folder tree.
-- Duplicate file names in different folders.
-- Files with uppercase extensions like `.PDF`.
+- Deeply nested folder tree (3+ levels).
+- Duplicate PDF names in different sub-folders.
+- Files with uppercase extensions like `.PDF` — does `glob("*.pdf")` catch them?
 
 ## What did you learn?
 - Which failure should be a warning instead of an error?

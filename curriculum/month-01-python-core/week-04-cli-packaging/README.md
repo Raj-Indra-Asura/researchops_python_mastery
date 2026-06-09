@@ -14,28 +14,28 @@ Turn the package skeleton into a usable command-line application with a real `re
 
 ## Files to modify/create
 - `src/researchops/cli/main.py`
-- `src/researchops/cli/scan.py`
-- `src/researchops/scanner.py`
+- `src/researchops/cli/commands/__init__.py`
+- `src/researchops/utils/paths.py`
 - `pyproject.toml`
-- `tests/unit/test_cli_scan.py`
-- `tests/e2e/test_scan_command.py`
+- `tests/e2e/test_cli.py`
 
 ## Concepts covered
 Typer commands, options and arguments, entry points, package installation, exit codes, user-facing errors, and command structure.
 
 ## Expected deliverables
-- `researchops --help` shows organized commands.
-- `researchops scan <path>` scans a directory and prints a summary.
-- CLI tests cover help, success, and failure flows.
-- Packaging metadata still installs cleanly.
+- `researchops --help` shows the app description and sub-commands.
+- `researchops scan <path>` lists PDFs and prints a count.
+- `researchops scan <path> --recursive` descends into sub-directories.
+- CLI tests cover help, success, missing-path failure, and recursive flag.
+- Packaging metadata still installs cleanly after any `pyproject.toml` edits.
 
 ## Definition of done
-- [ ] `scan` command exists.
-- [ ] Help text is readable.
-- [ ] CLI arguments are typed.
-- [ ] Missing-path failures produce a helpful message.
-- [ ] Exit codes are meaningful.
-- [ ] End-to-end command test exists.
-- [ ] Editable install still works.
-- [ ] Manual run against sample data succeeds.
-- [ ] README or command help explains usage.
+- [ ] `scan` command exists in `cli/main.py`.
+- [ ] Help text is readable and describes the argument.
+- [ ] CLI argument is typed as `str` (converted to `Path` inside the handler).
+- [ ] Missing-path failure produces a human-friendly message and exit code 1.
+- [ ] Exit codes are meaningful (0 for success, 1 for user error).
+- [ ] `tests/e2e/test_cli.py` covers help, success, and failure flows.
+- [ ] Editable install still works after any `pyproject.toml` changes.
+- [ ] Manual run against `examples/sample_papers` succeeds.
+- [ ] `pytest -q` passes.

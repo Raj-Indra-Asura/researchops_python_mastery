@@ -16,10 +16,10 @@ Create the initial ResearchOps skeleton: package layout, a tiny CLI placeholder,
 - `pyproject.toml`
 - `src/researchops/__init__.py`
 - `src/researchops/cli/main.py`
-- `src/researchops/config.py`
-- `src/researchops/utils.py`
-- `tests/unit/test_cli.py`
-- `tests/unit/test_utils.py`
+- `src/researchops/config/settings.py`
+- `src/researchops/utils/paths.py`
+- `tests/unit/test_paths.py`
+- `tests/e2e/test_cli.py`
 
 ## Concepts covered
 Functions, variables, collections, modules, imports, `__init__.py`, editable installs, virtual environments, command entry points, and repository layout.
