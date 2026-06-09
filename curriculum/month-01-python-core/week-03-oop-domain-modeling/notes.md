@@ -126,6 +126,8 @@ class PaperId:
         return cls(value=digest)
 
     def __str__(self) -> str:
+        # Returns the raw hex string so str(paper_id) and f"{paper_id}" give
+        # "abc123" rather than the dataclass repr "PaperId(value='abc123')".
         return self.value
 ```
 

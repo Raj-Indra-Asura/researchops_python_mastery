@@ -16,7 +16,7 @@
 - Empty directory.
 - Deeply nested folder tree (3+ levels).
 - Duplicate PDF names in different sub-folders.
-- Files with uppercase extensions like `.PDF` — does `glob("*.pdf")` catch them?
+- Files with uppercase extensions like `.PDF` — does `glob("*.pdf")` catch them? (Hint: test it on your OS. On case-sensitive Linux filesystems it will not match `.PDF`. On macOS with HFS+ it may. This is why production code normalises extensions before filtering.)
 
 ## What did you learn?
 - Which failure should be a warning instead of an error?

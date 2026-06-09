@@ -37,6 +37,8 @@ def find_pdfs(directory: Path, recursive: bool = False) -> list[Path]:
     return pdfs
 ```
 
+`Path.glob("**/*.pdf")` traverses sub-directories recursively — `**` is a built-in glob wildcard in `pathlib`. It is equivalent to `Path.rglob("*.pdf")`. The codebase uses `glob(pattern)` with a conditional pattern so both the recursive and non-recursive cases go through a single call.
+
 When reading text files, be explicit about encoding. UTF-8 is the modern default:
 
 ```python
