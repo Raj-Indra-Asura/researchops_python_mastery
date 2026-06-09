@@ -1,3 +1,376 @@
+
+
+<!-- LEARNING_FORMAT_START -->
+# Complete Learning Format — Week 05: SQLite Storage Layer
+
+This guide is the clean learning path for the chapter.
+It uses short sentences.
+It breaks ideas into small pieces.
+It tells you what to focus on and what to ignore for now.
+Read it before the older detailed notes that follow.
+
+## Chapter overview
+
+The chapter title is **Data that survives a restart**.
+The practical milestone is: `researchops papers list` shows papers stored in SQLite. `PaperRepository` protocol implemented by `SqlitePaperRepository`.
+The expected capability is: Can design a SQL schema, implement a repository, write integration tests, and explain the difference between a protocol and its implementation. ---
+This chapter is one step in the ResearchOps system, not a random lesson.
+The visible feature matters because it proves the idea works.
+The hidden skill matters because it lets you build the next chapter without confusion.
+A complete pass through this chapter means you can read the code, run it, test it, break it, and explain it aloud.
+
+Use this study order:
+- Read the story first without typing.
+- Trace the smallest code example.
+- Find the project file that owns the behavior.
+- Run the validation command.
+- Explain one happy path and one failure path.
+
+## What you already know from previous weeks
+
+- Week 1 taught Python Foundations and Repository Setup; keep its responsibility in mind, but do not rebuild it here.
+- Week 2 taught Files, Paths, Exceptions, and Logging; keep its responsibility in mind, but do not rebuild it here.
+- Week 3 taught OOP, Dataclasses, and Domain Modeling; keep its responsibility in mind, but do not rebuild it here.
+- Week 4 taught CLI and Packaging; keep its responsibility in mind, but do not rebuild it here.
+- You should be able to run the previous validation command before trusting new work.
+- You should be able to point at the main file from the previous week and say what job it owns.
+- If a previous idea feels weak, reread the example and trace one concrete value through it.
+- The safest learning rhythm is: understand one thing, change one thing, test one thing, explain one thing.
+
+## What problem this week solves
+
+Week 5 solves the project problem behind **SQLite Storage Layer**.
+Before this chapter, ResearchOps has a gap.
+The gap may be a missing feature, a missing boundary, a missing safety check, or a missing way to communicate with users.
+This chapter closes that gap with a focused milestone.
+Do not treat the milestone as a checklist only.
+Treat it as proof that the idea belongs in the system.
+- The concept `SQL DDL: `CREATE TABLE`, primary keys, nullable columns` helps solve part of this gap.
+- The concept ``sqlite3` Python standard library: `connect`, `cursor`, `execute`, `fetchall`` helps solve part of this gap.
+- The concept `Context manager connections and transaction control` helps solve part of this gap.
+- The concept `Repository pattern: interface → concrete implementation` helps solve part of this gap.
+- The concept `WAL journal mode for safe writes` helps solve part of this gap.
+- The concept `Integration tests with `tmp_path`` helps solve part of this gap.
+
+## Beginner mental model
+
+Use a simple four-part model: input, owner, transformation, proof.
+Input means the concrete thing entering the system.
+Owner means the file, object, or function responsible for the decision.
+Transformation means the useful change from raw data to meaningful result.
+Proof means the test or command that confirms the result.
+- Ask: what is the input for **SQLite Storage Layer**?
+- Ask: what is the owner for **SQLite Storage Layer**?
+- Ask: what is the transformation for **SQLite Storage Layer**?
+- Ask: what is the proof for **SQLite Storage Layer**?
+If you cannot answer those four questions, do not add more code yet.
+
+## Core vocabulary
+
+| Term | Simple meaning | Why it matters here |
+|------|----------------|---------------------|
+| SQL DDL | SQL DDL: `CREATE TABLE`, primary keys, nullable columns | This term names one job in the Week 5 milestone. |
+| sqlite3` Python standard library | `sqlite3` Python standard library: `connect`, `cursor`, `execute`, `fetchall` | This term names one job in the Week 5 milestone. |
+| Context manager connections and transaction control | Context manager connections and transaction control | This term names one job in the Week 5 milestone. |
+| Repository pattern | Repository pattern: interface → concrete implementation | This term names one job in the Week 5 milestone. |
+| WAL journal mode for safe writes | WAL journal mode for safe writes | This term names one job in the Week 5 milestone. |
+| Integration tests with `tmp_path | Integration tests with `tmp_path` | This term names one job in the Week 5 milestone. |
+| Boundary | A line between responsibilities | It keeps the chapter understandable for a beginner. |
+| Failure path | What happens when the happy path is not available | It keeps the chapter understandable for a beginner. |
+| Validation | Evidence that the system still works | It keeps the chapter understandable for a beginner. |
+| Responsibility | The one job a file or function owns | It keeps the chapter understandable for a beginner. |
+
+## Concept explanations from first principles
+
+Read each concept as if you have never heard the term before.
+Do not skip the plain meaning.
+### Concept 1: SQL DDL: `CREATE TABLE`, primary keys, nullable columns
+- **Plain meaning:** This is a named tool for solving one part of the chapter problem.
+- **Why it exists:** Real projects become confusing when this concern is unnamed.
+- **ResearchOps use:** In Week 5, it supports the milestone: `researchops papers list` shows papers stored in SQLite. `PaperRepository` protocol implemented by `SqlitePaperRepository`.
+- **Input question:** What data, command, file, request, or state reaches this concept?
+- **Output question:** What value, saved record, response, log, or state change should come out?
+- **Failure question:** What can be missing, malformed, slow, duplicated, stale, or invalid?
+- **Test question:** Which test would catch the mistake before a user sees it?
+- **Beginner trap:** Memorizing the word without tracing it in the project.
+- **Recovery move:** Use one concrete example and follow it through the files.
+- **Mastery signal:** You can explain the concept without saying "magic" or "it just works".
+
+### Concept 2: `sqlite3` Python standard library: `connect`, `cursor`, `execute`, `fetchall`
+- **Plain meaning:** This is a named tool for solving one part of the chapter problem.
+- **Why it exists:** Real projects become confusing when this concern is unnamed.
+- **ResearchOps use:** In Week 5, it supports the milestone: `researchops papers list` shows papers stored in SQLite. `PaperRepository` protocol implemented by `SqlitePaperRepository`.
+- **Input question:** What data, command, file, request, or state reaches this concept?
+- **Output question:** What value, saved record, response, log, or state change should come out?
+- **Failure question:** What can be missing, malformed, slow, duplicated, stale, or invalid?
+- **Test question:** Which test would catch the mistake before a user sees it?
+- **Beginner trap:** Memorizing the word without tracing it in the project.
+- **Recovery move:** Use one concrete example and follow it through the files.
+- **Mastery signal:** You can explain the concept without saying "magic" or "it just works".
+
+### Concept 3: Context manager connections and transaction control
+- **Plain meaning:** This is a named tool for solving one part of the chapter problem.
+- **Why it exists:** Real projects become confusing when this concern is unnamed.
+- **ResearchOps use:** In Week 5, it supports the milestone: `researchops papers list` shows papers stored in SQLite. `PaperRepository` protocol implemented by `SqlitePaperRepository`.
+- **Input question:** What data, command, file, request, or state reaches this concept?
+- **Output question:** What value, saved record, response, log, or state change should come out?
+- **Failure question:** What can be missing, malformed, slow, duplicated, stale, or invalid?
+- **Test question:** Which test would catch the mistake before a user sees it?
+- **Beginner trap:** Memorizing the word without tracing it in the project.
+- **Recovery move:** Use one concrete example and follow it through the files.
+- **Mastery signal:** You can explain the concept without saying "magic" or "it just works".
+
+### Concept 4: Repository pattern: interface → concrete implementation
+- **Plain meaning:** This is a named tool for solving one part of the chapter problem.
+- **Why it exists:** Real projects become confusing when this concern is unnamed.
+- **ResearchOps use:** In Week 5, it supports the milestone: `researchops papers list` shows papers stored in SQLite. `PaperRepository` protocol implemented by `SqlitePaperRepository`.
+- **Input question:** What data, command, file, request, or state reaches this concept?
+- **Output question:** What value, saved record, response, log, or state change should come out?
+- **Failure question:** What can be missing, malformed, slow, duplicated, stale, or invalid?
+- **Test question:** Which test would catch the mistake before a user sees it?
+- **Beginner trap:** Memorizing the word without tracing it in the project.
+- **Recovery move:** Use one concrete example and follow it through the files.
+- **Mastery signal:** You can explain the concept without saying "magic" or "it just works".
+
+### Concept 5: WAL journal mode for safe writes
+- **Plain meaning:** This is a named tool for solving one part of the chapter problem.
+- **Why it exists:** Real projects become confusing when this concern is unnamed.
+- **ResearchOps use:** In Week 5, it supports the milestone: `researchops papers list` shows papers stored in SQLite. `PaperRepository` protocol implemented by `SqlitePaperRepository`.
+- **Input question:** What data, command, file, request, or state reaches this concept?
+- **Output question:** What value, saved record, response, log, or state change should come out?
+- **Failure question:** What can be missing, malformed, slow, duplicated, stale, or invalid?
+- **Test question:** Which test would catch the mistake before a user sees it?
+- **Beginner trap:** Memorizing the word without tracing it in the project.
+- **Recovery move:** Use one concrete example and follow it through the files.
+- **Mastery signal:** You can explain the concept without saying "magic" or "it just works".
+
+### Concept 6: Integration tests with `tmp_path`
+- **Plain meaning:** This is a named tool for solving one part of the chapter problem.
+- **Why it exists:** Real projects become confusing when this concern is unnamed.
+- **ResearchOps use:** In Week 5, it supports the milestone: `researchops papers list` shows papers stored in SQLite. `PaperRepository` protocol implemented by `SqlitePaperRepository`.
+- **Input question:** What data, command, file, request, or state reaches this concept?
+- **Output question:** What value, saved record, response, log, or state change should come out?
+- **Failure question:** What can be missing, malformed, slow, duplicated, stale, or invalid?
+- **Test question:** Which test would catch the mistake before a user sees it?
+- **Beginner trap:** Memorizing the word without tracing it in the project.
+- **Recovery move:** Use one concrete example and follow it through the files.
+- **Mastery signal:** You can explain the concept without saying "magic" or "it just works".
+
+## ResearchOps-specific application
+
+The chapter belongs to these project locations:
+- `src/researchops/storage/schema.sql` — DDL for all tables
+- `src/researchops/storage/sqlite_repository.py` — `SqlitePaperRepository`
+- `src/researchops/core/interfaces.py` — `PaperRepository` protocol
+Study those files in this order:
+1. Find the user-facing entry point.
+2. Find the service or core concept that owns the meaning.
+3. Find the infrastructure only when outside resources are needed.
+4. Find the tests that prove the behavior.
+5. Find the validation command that a learner runs manually.
+The goal is to know why each file exists.
+If two files seem to own the same decision, stop and clarify the boundary.
+
+## Code examples with line-by-line explanation
+
+```python
+import sqlite3
+
+with sqlite3.connect(database_path) as connection:
+    connection.execute("CREATE TABLE IF NOT EXISTS papers (id TEXT PRIMARY KEY, title TEXT)")
+    connection.execute("INSERT INTO papers VALUES (?, ?)", (paper_id, title))
+```
+
+Line-by-line explanation:
+- Line 1: `import sqlite3` — This imports a tool before the example can use it.
+- Line 2: `(blank line)` — This blank line separates ideas so the example is easier to read.
+- Line 3: `with sqlite3.connect(database_path) as connection:` — This performs one small visible step in the workflow.
+- Line 4: `connection.execute("CREATE TABLE IF NOT EXISTS papers (id TEXT PRIMARY KEY, title TEXT)")` — This performs one small visible step in the workflow.
+- Line 5: `connection.execute("INSERT INTO papers VALUES (?, ?)", (paper_id, title))` — This performs one small visible step in the workflow.
+
+How to use this example:
+- Name the input.
+- Name the output.
+- Predict the result before running anything.
+- Connect the shape to the real ResearchOps file.
+- Write one sentence about why each line belongs.
+
+## Common beginner mistakes
+
+- **Mistake:** Pasting code before knowing the owner of the behavior.
+  **Why it hurts:** it hides the mental model and makes debugging harder.
+  **Better move:** make one small behavior clear, then prove it.
+- **Mistake:** Changing many files at once.
+  **Why it hurts:** it hides the mental model and makes debugging harder.
+  **Better move:** make one small behavior clear, then prove it.
+- **Mistake:** Skipping the failure path.
+  **Why it hurts:** it hides the mental model and makes debugging harder.
+  **Better move:** make one small behavior clear, then prove it.
+- **Mistake:** Reading only the happy path test.
+  **Why it hurts:** it hides the mental model and makes debugging harder.
+  **Better move:** make one small behavior clear, then prove it.
+- **Mistake:** Ignoring the validation command.
+  **Why it hurts:** it hides the mental model and makes debugging harder.
+  **Better move:** make one small behavior clear, then prove it.
+- **Mistake:** Using vague names.
+  **Why it hurts:** it hides the mental model and makes debugging harder.
+  **Better move:** make one small behavior clear, then prove it.
+- **Mistake:** Putting business rules in the user interface layer.
+  **Why it hurts:** it hides the mental model and makes debugging harder.
+  **Better move:** make one small behavior clear, then prove it.
+- **Mistake:** Treating logs, errors, and tests as decoration.
+  **Why it hurts:** it hides the mental model and makes debugging harder.
+  **Better move:** make one small behavior clear, then prove it.
+- **Mistake:** Optimizing before correctness is visible.
+  **Why it hurts:** it hides the mental model and makes debugging harder.
+  **Better move:** make one small behavior clear, then prove it.
+- **Mistake:** Building future-week features early.
+  **Why it hurts:** it hides the mental model and makes debugging harder.
+  **Better move:** make one small behavior clear, then prove it.
+
+## Debugging guidance
+
+- Copy the exact failing command.
+- Read the first useful error line.
+- Read the final error line.
+- Classify the failure as import, input, state, file, database, network, model, or expectation.
+- Reproduce it with the smallest command.
+- Inspect the value closest to the failure.
+- Fix the cause, not only the symptom.
+- Run the narrowest test.
+- Run the chapter validation command.
+- Write down what the error was teaching.
+Debugging questions:
+- What did I expect?
+- What happened?
+- Which value first became wrong?
+- Which layer created that value?
+- Which test should catch this next time?
+
+## Design tradeoffs
+
+- **Simple first version:** Easy to understand, but not the final production shape.
+- **Clear layers:** More files, but less confusion as features grow.
+- **Explicit errors:** More code, but failures become teachable.
+- **Small unit tests:** Fast feedback, but less end-to-end confidence.
+- **Integration tests:** Real wiring, but slower and more setup.
+- **Configuration:** Flexible behavior, but defaults must be clear.
+The right question is not "What is the fanciest design?"
+The right question is "What design teaches the responsibility clearly and can grow next week?"
+
+## Testing implications
+
+Tests for this chapter:
+- `tests/integration/test_sqlite_repository.py` — save, retrieve, list with real (tmp) DB
+Validation commands:
+```bash
+researchops papers list
+pytest tests/integration/test_sqlite_repository.py -v
+```
+- Arrange the data.
+- Act on the system.
+- Assert the visible promise.
+- Check one failure path.
+- Keep unit tests fast.
+- Use integration tests only when real wiring matters.
+
+## Architecture implications
+
+ResearchOps stays understandable when dependencies point inward.
+```text
+CLI / API / Worker -> Services -> Core
+Infrastructure implements core-facing contracts and is wired at the outside.
+```
+- Does the UI layer avoid business logic?
+- Does the service layer own workflow decisions?
+- Does core avoid infrastructure imports?
+- Does infrastructure do outside-world work?
+- Do tests use fakes when possible?
+Architecture is not ceremony.
+Architecture is named responsibility.
+
+## How this connects to AI engineering / ML research
+
+AI engineering needs more than models.
+It needs reliable data flow, clear interfaces, repeatable experiments, visible failures, and honest evaluation.
+Week 5 contributes by making **sqlite storage layer** clear enough to trust.
+- Bad data creates bad model behavior.
+- Unclear boundaries make experiments hard to reproduce.
+- Missing tests let regressions change research results silently.
+- Good logs and errors shorten investigation time.
+- Clear documentation lets future users understand the system.
+
+## Mini quizzes
+
+- What problem does Week 5 solve?
+- What is the main input?
+- What is the main output?
+- Which file owns the main responsibility?
+- Which layer should not contain business logic?
+- What is one happy path?
+- What is one failure path?
+- What command proves the chapter works?
+- What should you not build early?
+- How does this prepare the next week?
+
+## Explain-it-aloud prompts
+
+- Explain SQLite Storage Layer in simple words.
+- Explain the data flow from input to result.
+- Explain the first file you would open.
+- Explain the test that gives confidence.
+- Explain what can break.
+- Explain the tradeoff made in this chapter.
+- Explain what you still find weak.
+
+## What to memorize
+
+- The topic: SQLite Storage Layer.
+- The milestone: `researchops papers list` shows papers stored in SQLite. `PaperRepository` protocol implemented by `SqlitePaperRepository`.
+- The main project files.
+- The validation command.
+- The boundary rule for the layer you are touching.
+- The habit of testing before moving forward.
+
+## What to understand deeply
+
+- Why this feature belongs now.
+- How data moves through the chapter.
+- Which file owns which decision.
+- How the failure path is handled.
+- Why the tests prove behavior.
+- How this week makes future work safer.
+
+## What not to worry about yet
+
+- Perfect scale.
+- Fancy abstractions.
+- Future-week features.
+- Every option in every library.
+- Premature optimization.
+- Comparing your speed to someone else.
+Focus on the milestone.
+A clear small milestone beats a confusing large one.
+
+## Bridge to next week
+
+Next week is Week 6: **PDF Parsing Pipeline**.
+This week prepares you by giving ResearchOps a clearer piece of behavior before the next milestone: `researchops ingest ./papers` extracts text and metadata from PDFs and stores them. Failed documents are recorded, not silently dropped.
+- Run validation.
+- Explain the main files.
+- Explain one failure.
+- Explain one test.
+- Write down what still feels weak before moving on.
+
+## Guided deepening drills
+
+Use these drills if the chapter still feels abstract.
+
+<!-- LEARNING_FORMAT_END -->
+
+---
+
+# Existing detailed notes
 <!-- NAV_START -->
 ---
 [🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 2: Storage, Search, Multiprocessing](../README.md)

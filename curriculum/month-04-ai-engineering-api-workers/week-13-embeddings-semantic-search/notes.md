@@ -11,6 +11,499 @@
 
 # Notes - Week 13 Embeddings and Semantic Search
 
+<!-- LEARNING_FORMAT_START -->
+# Complete Learning Format — Week 13: Embeddings and Semantic Search
+
+This guide is the clean learning path for the chapter.
+It uses short sentences.
+It breaks ideas into small pieces.
+It tells you what to focus on and what to ignore for now.
+Read it before the older detailed notes that follow.
+
+## Chapter overview
+
+The chapter title is **Meaning as a vector**.
+The practical milestone is: `researchops semantic-search "efficient transformers"` returns papers ranked by vector similarity to the query.
+The expected capability is: Can explain what an embedding is, implement cosine similarity search, chunk text for a retrieval pipeline, and explain why caching matters. ---
+This chapter is one step in the ResearchOps system, not a random lesson.
+The visible feature matters because it proves the idea works.
+The hidden skill matters because it lets you build the next chapter without confusion.
+A complete pass through this chapter means you can read the code, run it, test it, break it, and explain it aloud.
+
+Use this study order:
+- Read the story first without typing.
+- Trace the smallest code example.
+- Find the project file that owns the behavior.
+- Run the validation command.
+- Explain one happy path and one failure path.
+
+## What you already know from previous weeks
+
+- Week 9 taught Protocols, Interfaces, and Clean Architecture; keep its responsibility in mind, but do not rebuild it here.
+- Week 10 taught Testing Discipline and Quality Gates; keep its responsibility in mind, but do not rebuild it here.
+- Week 11 taught Classical ML — Topic Classification; keep its responsibility in mind, but do not rebuild it here.
+- Week 12 taught Experiment Tracking; keep its responsibility in mind, but do not rebuild it here.
+- You should be able to run the previous validation command before trusting new work.
+- You should be able to point at the main file from the previous week and say what job it owns.
+- If a previous idea feels weak, reread the example and trace one concrete value through it.
+- The safest learning rhythm is: understand one thing, change one thing, test one thing, explain one thing.
+
+## What problem this week solves
+
+Week 13 solves the project problem behind **Embeddings and Semantic Search**.
+Before this chapter, ResearchOps has a gap.
+The gap may be a missing feature, a missing boundary, a missing safety check, or a missing way to communicate with users.
+This chapter closes that gap with a focused milestone.
+Do not treat the milestone as a checklist only.
+Treat it as proof that the idea belongs in the system.
+- The concept `What embeddings are: a dense numeric representation of meaning` helps solve part of this gap.
+- The concept `Chunking text for embedding: why long documents need to be split` helps solve part of this gap.
+- The concept ``sentence-transformers` local models: no API key, no network call needed` helps solve part of this gap.
+- The concept `Cosine similarity: angle between vectors as a measure of semantic closeness` helps solve part of this gap.
+- The concept `Embedding cache: don't recompute what you already have` helps solve part of this gap.
+- The concept `Retrieval evaluation: does the top result make sense?` helps solve part of this gap.
+
+## Beginner mental model
+
+Use a simple four-part model: input, owner, transformation, proof.
+Input means the concrete thing entering the system.
+Owner means the file, object, or function responsible for the decision.
+Transformation means the useful change from raw data to meaningful result.
+Proof means the test or command that confirms the result.
+- Ask: what is the input for **Embeddings and Semantic Search**?
+- Ask: what is the owner for **Embeddings and Semantic Search**?
+- Ask: what is the transformation for **Embeddings and Semantic Search**?
+- Ask: what is the proof for **Embeddings and Semantic Search**?
+If you cannot answer those four questions, do not add more code yet.
+
+## Core vocabulary
+
+| Term | Simple meaning | Why it matters here |
+|------|----------------|---------------------|
+| What embeddings are | What embeddings are: a dense numeric representation of meaning | This term names one job in the Week 13 milestone. |
+| Chunking text for embedding | Chunking text for embedding: why long documents need to be split | This term names one job in the Week 13 milestone. |
+| sentence-transformers` local models | `sentence-transformers` local models: no API key, no network call needed | This term names one job in the Week 13 milestone. |
+| Cosine similarity | Cosine similarity: angle between vectors as a measure of semantic closeness | This term names one job in the Week 13 milestone. |
+| Embedding cache | Embedding cache: don't recompute what you already have | This term names one job in the Week 13 milestone. |
+| Retrieval evaluation | Retrieval evaluation: does the top result make sense? | This term names one job in the Week 13 milestone. |
+| Boundary | A line between responsibilities | It keeps the chapter understandable for a beginner. |
+| Failure path | What happens when the happy path is not available | It keeps the chapter understandable for a beginner. |
+| Validation | Evidence that the system still works | It keeps the chapter understandable for a beginner. |
+| Responsibility | The one job a file or function owns | It keeps the chapter understandable for a beginner. |
+
+## Concept explanations from first principles
+
+Read each concept as if you have never heard the term before.
+Do not skip the plain meaning.
+### Concept 1: What embeddings are: a dense numeric representation of meaning
+- **Plain meaning:** This is a named tool for solving one part of the chapter problem.
+- **Why it exists:** Real projects become confusing when this concern is unnamed.
+- **ResearchOps use:** In Week 13, it supports the milestone: `researchops semantic-search "efficient transformers"` returns papers ranked by vector similarity to the query.
+- **Input question:** What data, command, file, request, or state reaches this concept?
+- **Output question:** What value, saved record, response, log, or state change should come out?
+- **Failure question:** What can be missing, malformed, slow, duplicated, stale, or invalid?
+- **Test question:** Which test would catch the mistake before a user sees it?
+- **Beginner trap:** Memorizing the word without tracing it in the project.
+- **Recovery move:** Use one concrete example and follow it through the files.
+- **Mastery signal:** You can explain the concept without saying "magic" or "it just works".
+
+### Concept 2: Chunking text for embedding: why long documents need to be split
+- **Plain meaning:** This is a named tool for solving one part of the chapter problem.
+- **Why it exists:** Real projects become confusing when this concern is unnamed.
+- **ResearchOps use:** In Week 13, it supports the milestone: `researchops semantic-search "efficient transformers"` returns papers ranked by vector similarity to the query.
+- **Input question:** What data, command, file, request, or state reaches this concept?
+- **Output question:** What value, saved record, response, log, or state change should come out?
+- **Failure question:** What can be missing, malformed, slow, duplicated, stale, or invalid?
+- **Test question:** Which test would catch the mistake before a user sees it?
+- **Beginner trap:** Memorizing the word without tracing it in the project.
+- **Recovery move:** Use one concrete example and follow it through the files.
+- **Mastery signal:** You can explain the concept without saying "magic" or "it just works".
+
+### Concept 3: `sentence-transformers` local models: no API key, no network call needed
+- **Plain meaning:** This is a named tool for solving one part of the chapter problem.
+- **Why it exists:** Real projects become confusing when this concern is unnamed.
+- **ResearchOps use:** In Week 13, it supports the milestone: `researchops semantic-search "efficient transformers"` returns papers ranked by vector similarity to the query.
+- **Input question:** What data, command, file, request, or state reaches this concept?
+- **Output question:** What value, saved record, response, log, or state change should come out?
+- **Failure question:** What can be missing, malformed, slow, duplicated, stale, or invalid?
+- **Test question:** Which test would catch the mistake before a user sees it?
+- **Beginner trap:** Memorizing the word without tracing it in the project.
+- **Recovery move:** Use one concrete example and follow it through the files.
+- **Mastery signal:** You can explain the concept without saying "magic" or "it just works".
+
+### Concept 4: Cosine similarity: angle between vectors as a measure of semantic closeness
+- **Plain meaning:** This is a named tool for solving one part of the chapter problem.
+- **Why it exists:** Real projects become confusing when this concern is unnamed.
+- **ResearchOps use:** In Week 13, it supports the milestone: `researchops semantic-search "efficient transformers"` returns papers ranked by vector similarity to the query.
+- **Input question:** What data, command, file, request, or state reaches this concept?
+- **Output question:** What value, saved record, response, log, or state change should come out?
+- **Failure question:** What can be missing, malformed, slow, duplicated, stale, or invalid?
+- **Test question:** Which test would catch the mistake before a user sees it?
+- **Beginner trap:** Memorizing the word without tracing it in the project.
+- **Recovery move:** Use one concrete example and follow it through the files.
+- **Mastery signal:** You can explain the concept without saying "magic" or "it just works".
+
+### Concept 5: Embedding cache: don't recompute what you already have
+- **Plain meaning:** This is a named tool for solving one part of the chapter problem.
+- **Why it exists:** Real projects become confusing when this concern is unnamed.
+- **ResearchOps use:** In Week 13, it supports the milestone: `researchops semantic-search "efficient transformers"` returns papers ranked by vector similarity to the query.
+- **Input question:** What data, command, file, request, or state reaches this concept?
+- **Output question:** What value, saved record, response, log, or state change should come out?
+- **Failure question:** What can be missing, malformed, slow, duplicated, stale, or invalid?
+- **Test question:** Which test would catch the mistake before a user sees it?
+- **Beginner trap:** Memorizing the word without tracing it in the project.
+- **Recovery move:** Use one concrete example and follow it through the files.
+- **Mastery signal:** You can explain the concept without saying "magic" or "it just works".
+
+### Concept 6: Retrieval evaluation: does the top result make sense?
+- **Plain meaning:** This is a named tool for solving one part of the chapter problem.
+- **Why it exists:** Real projects become confusing when this concern is unnamed.
+- **ResearchOps use:** In Week 13, it supports the milestone: `researchops semantic-search "efficient transformers"` returns papers ranked by vector similarity to the query.
+- **Input question:** What data, command, file, request, or state reaches this concept?
+- **Output question:** What value, saved record, response, log, or state change should come out?
+- **Failure question:** What can be missing, malformed, slow, duplicated, stale, or invalid?
+- **Test question:** Which test would catch the mistake before a user sees it?
+- **Beginner trap:** Memorizing the word without tracing it in the project.
+- **Recovery move:** Use one concrete example and follow it through the files.
+- **Mastery signal:** You can explain the concept without saying "magic" or "it just works".
+
+## ResearchOps-specific application
+
+The chapter belongs to these project locations:
+- `src/researchops/search/chunking.py` — text chunker
+- `src/researchops/search/embeddings.py` — embedding generation and cache
+- `src/researchops/search/vector_search.py` — cosine similarity ranking
+- `src/researchops/core/interfaces.py` — `SearchEngine` protocol updated
+Study those files in this order:
+1. Find the user-facing entry point.
+2. Find the service or core concept that owns the meaning.
+3. Find the infrastructure only when outside resources are needed.
+4. Find the tests that prove the behavior.
+5. Find the validation command that a learner runs manually.
+The goal is to know why each file exists.
+If two files seem to own the same decision, stop and clarify the boundary.
+
+## Code examples with line-by-line explanation
+
+```python
+def cosine_similarity(left: list[float], right: list[float]) -> float:
+    dot = sum(a * b for a, b in zip(left, right))
+    left_length = sum(a * a for a in left) ** 0.5
+    right_length = sum(b * b for b in right) ** 0.5
+    return dot / (left_length * right_length)
+```
+
+Line-by-line explanation:
+- Line 1: `def cosine_similarity(left: list[float], right: list[float]) -> float:` — This names a reusable action and shows what information it receives.
+- Line 2: `dot = sum(a * b for a, b in zip(left, right))` — This stores a clear intermediate value for the next step.
+- Line 3: `left_length = sum(a * a for a in left) ** 0.5` — This stores a clear intermediate value for the next step.
+- Line 4: `right_length = sum(b * b for b in right) ** 0.5` — This stores a clear intermediate value for the next step.
+- Line 5: `return dot / (left_length * right_length)` — This produces the result or performs the declared setup step.
+
+How to use this example:
+- Name the input.
+- Name the output.
+- Predict the result before running anything.
+- Connect the shape to the real ResearchOps file.
+- Write one sentence about why each line belongs.
+
+## Common beginner mistakes
+
+- **Mistake:** Pasting code before knowing the owner of the behavior.
+  **Why it hurts:** it hides the mental model and makes debugging harder.
+  **Better move:** make one small behavior clear, then prove it.
+- **Mistake:** Changing many files at once.
+  **Why it hurts:** it hides the mental model and makes debugging harder.
+  **Better move:** make one small behavior clear, then prove it.
+- **Mistake:** Skipping the failure path.
+  **Why it hurts:** it hides the mental model and makes debugging harder.
+  **Better move:** make one small behavior clear, then prove it.
+- **Mistake:** Reading only the happy path test.
+  **Why it hurts:** it hides the mental model and makes debugging harder.
+  **Better move:** make one small behavior clear, then prove it.
+- **Mistake:** Ignoring the validation command.
+  **Why it hurts:** it hides the mental model and makes debugging harder.
+  **Better move:** make one small behavior clear, then prove it.
+- **Mistake:** Using vague names.
+  **Why it hurts:** it hides the mental model and makes debugging harder.
+  **Better move:** make one small behavior clear, then prove it.
+- **Mistake:** Putting business rules in the user interface layer.
+  **Why it hurts:** it hides the mental model and makes debugging harder.
+  **Better move:** make one small behavior clear, then prove it.
+- **Mistake:** Treating logs, errors, and tests as decoration.
+  **Why it hurts:** it hides the mental model and makes debugging harder.
+  **Better move:** make one small behavior clear, then prove it.
+- **Mistake:** Optimizing before correctness is visible.
+  **Why it hurts:** it hides the mental model and makes debugging harder.
+  **Better move:** make one small behavior clear, then prove it.
+- **Mistake:** Building future-week features early.
+  **Why it hurts:** it hides the mental model and makes debugging harder.
+  **Better move:** make one small behavior clear, then prove it.
+
+## Debugging guidance
+
+- Copy the exact failing command.
+- Read the first useful error line.
+- Read the final error line.
+- Classify the failure as import, input, state, file, database, network, model, or expectation.
+- Reproduce it with the smallest command.
+- Inspect the value closest to the failure.
+- Fix the cause, not only the symptom.
+- Run the narrowest test.
+- Run the chapter validation command.
+- Write down what the error was teaching.
+Debugging questions:
+- What did I expect?
+- What happened?
+- Which value first became wrong?
+- Which layer created that value?
+- Which test should catch this next time?
+
+## Design tradeoffs
+
+- **Simple first version:** Easy to understand, but not the final production shape.
+- **Clear layers:** More files, but less confusion as features grow.
+- **Explicit errors:** More code, but failures become teachable.
+- **Small unit tests:** Fast feedback, but less end-to-end confidence.
+- **Integration tests:** Real wiring, but slower and more setup.
+- **Configuration:** Flexible behavior, but defaults must be clear.
+The right question is not "What is the fanciest design?"
+The right question is "What design teaches the responsibility clearly and can grow next week?"
+
+## Testing implications
+
+Tests for this chapter:
+- `tests/unit/test_chunking.py`
+- `tests/unit/test_vector_search.py` — cosine similarity with known vectors
+Validation commands:
+```bash
+researchops semantic-search "machine learning"
+pytest tests/unit/test_chunking.py tests/unit/test_vector_search.py -v
+```
+- Arrange the data.
+- Act on the system.
+- Assert the visible promise.
+- Check one failure path.
+- Keep unit tests fast.
+- Use integration tests only when real wiring matters.
+
+## Architecture implications
+
+ResearchOps stays understandable when dependencies point inward.
+```text
+CLI / API / Worker -> Services -> Core
+Infrastructure implements core-facing contracts and is wired at the outside.
+```
+- Does the UI layer avoid business logic?
+- Does the service layer own workflow decisions?
+- Does core avoid infrastructure imports?
+- Does infrastructure do outside-world work?
+- Do tests use fakes when possible?
+Architecture is not ceremony.
+Architecture is named responsibility.
+
+## How this connects to AI engineering / ML research
+
+AI engineering needs more than models.
+It needs reliable data flow, clear interfaces, repeatable experiments, visible failures, and honest evaluation.
+Week 13 contributes by making **embeddings and semantic search** clear enough to trust.
+- Bad data creates bad model behavior.
+- Unclear boundaries make experiments hard to reproduce.
+- Missing tests let regressions change research results silently.
+- Good logs and errors shorten investigation time.
+- Clear documentation lets future users understand the system.
+
+## Mini quizzes
+
+- What problem does Week 13 solve?
+- What is the main input?
+- What is the main output?
+- Which file owns the main responsibility?
+- Which layer should not contain business logic?
+- What is one happy path?
+- What is one failure path?
+- What command proves the chapter works?
+- What should you not build early?
+- How does this prepare the next week?
+
+## Explain-it-aloud prompts
+
+- Explain Embeddings and Semantic Search in simple words.
+- Explain the data flow from input to result.
+- Explain the first file you would open.
+- Explain the test that gives confidence.
+- Explain what can break.
+- Explain the tradeoff made in this chapter.
+- Explain what you still find weak.
+
+## What to memorize
+
+- The topic: Embeddings and Semantic Search.
+- The milestone: `researchops semantic-search "efficient transformers"` returns papers ranked by vector similarity to the query.
+- The main project files.
+- The validation command.
+- The boundary rule for the layer you are touching.
+- The habit of testing before moving forward.
+
+## What to understand deeply
+
+- Why this feature belongs now.
+- How data moves through the chapter.
+- Which file owns which decision.
+- How the failure path is handled.
+- Why the tests prove behavior.
+- How this week makes future work safer.
+
+## What not to worry about yet
+
+- Perfect scale.
+- Fancy abstractions.
+- Future-week features.
+- Every option in every library.
+- Premature optimization.
+- Comparing your speed to someone else.
+Focus on the milestone.
+A clear small milestone beats a confusing large one.
+
+## Bridge to next week
+
+Next week is Week 14: **FastAPI Layer**.
+This week prepares you by giving ResearchOps a clearer piece of behavior before the next milestone: `GET /papers`, `GET /papers/{id}`, `GET /papers/search?q=QUERY`, `GET /health` work and return correct JSON.
+- Run validation.
+- Explain the main files.
+- Explain one failure.
+- Explain one test.
+- Write down what still feels weak before moving on.
+
+## Guided deepening drills
+
+Use these drills if the chapter still feels abstract.
+- Drill 1: Trace `What embeddings are: a dense numeric representation of meaning` from user input to project result.
+- Drill 2: Write one sentence defining `What embeddings are: a dense numeric representation of meaning` without copying the notes.
+- Drill 3: Find the file where `What embeddings are: a dense numeric representation of meaning` appears or should appear.
+- Drill 4: Name one wrong implementation of `What embeddings are: a dense numeric representation of meaning` and why it would hurt.
+- Drill 5: Name one test that would protect `What embeddings are: a dense numeric representation of meaning`.
+- Drill 6: Trace `Chunking text for embedding: why long documents need to be split` from user input to project result.
+- Drill 7: Write one sentence defining `Chunking text for embedding: why long documents need to be split` without copying the notes.
+- Drill 8: Find the file where `Chunking text for embedding: why long documents need to be split` appears or should appear.
+- Drill 9: Name one wrong implementation of `Chunking text for embedding: why long documents need to be split` and why it would hurt.
+- Drill 10: Name one test that would protect `Chunking text for embedding: why long documents need to be split`.
+- Drill 11: Trace ``sentence-transformers` local models: no API key, no network call needed` from user input to project result.
+- Drill 12: Write one sentence defining ``sentence-transformers` local models: no API key, no network call needed` without copying the notes.
+- Drill 13: Find the file where ``sentence-transformers` local models: no API key, no network call needed` appears or should appear.
+- Drill 14: Name one wrong implementation of ``sentence-transformers` local models: no API key, no network call needed` and why it would hurt.
+- Drill 15: Name one test that would protect ``sentence-transformers` local models: no API key, no network call needed`.
+- Drill 16: Trace `Cosine similarity: angle between vectors as a measure of semantic closeness` from user input to project result.
+- Drill 17: Write one sentence defining `Cosine similarity: angle between vectors as a measure of semantic closeness` without copying the notes.
+- Drill 18: Find the file where `Cosine similarity: angle between vectors as a measure of semantic closeness` appears or should appear.
+- Drill 19: Name one wrong implementation of `Cosine similarity: angle between vectors as a measure of semantic closeness` and why it would hurt.
+- Drill 20: Name one test that would protect `Cosine similarity: angle between vectors as a measure of semantic closeness`.
+- Drill 21: Trace `Embedding cache: don't recompute what you already have` from user input to project result.
+- Drill 22: Write one sentence defining `Embedding cache: don't recompute what you already have` without copying the notes.
+- Drill 23: Find the file where `Embedding cache: don't recompute what you already have` appears or should appear.
+- Drill 24: Name one wrong implementation of `Embedding cache: don't recompute what you already have` and why it would hurt.
+- Drill 25: Name one test that would protect `Embedding cache: don't recompute what you already have`.
+- Drill 26: Trace `Retrieval evaluation: does the top result make sense?` from user input to project result.
+- Drill 27: Write one sentence defining `Retrieval evaluation: does the top result make sense?` without copying the notes.
+- Drill 28: Find the file where `Retrieval evaluation: does the top result make sense?` appears or should appear.
+- Drill 29: Name one wrong implementation of `Retrieval evaluation: does the top result make sense?` and why it would hurt.
+- Drill 30: Name one test that would protect `Retrieval evaluation: does the top result make sense?`.
+- Drill 31: Draw the Week 13 data flow in four boxes.
+- Drill 32: Say why `Embeddings and Semantic Search` belongs in this month of the curriculum.
+- Drill 33: Rewrite one error message in beginner-friendly language.
+- Drill 34: List the exact assumptions made by the example code.
+- Drill 35: List the exact assumptions checked by the tests.
+- Drill 36: Point to the line where raw input becomes project meaning.
+- Drill 37: Point to the line where the result becomes visible to a user.
+- Drill 38: Explain what would happen if the main file were deleted.
+- Drill 39: Explain what would happen if the main test were deleted.
+- Drill 40: Describe the smallest manual check you can run.
+- Drill 41: Describe the smallest automated check you can run.
+- Drill 42: Name the most likely beginner mistake for this week.
+- Drill 43: Name the safest recovery move for that mistake.
+- Drill 44: Explain what knowledge should be carried into the next chapter.
+- Drill 45: Trace `What embeddings are: a dense numeric representation of meaning` from user input to project result.
+- Drill 46: Write one sentence defining `What embeddings are: a dense numeric representation of meaning` without copying the notes.
+- Drill 47: Find the file where `What embeddings are: a dense numeric representation of meaning` appears or should appear.
+- Drill 48: Name one wrong implementation of `What embeddings are: a dense numeric representation of meaning` and why it would hurt.
+- Drill 49: Name one test that would protect `What embeddings are: a dense numeric representation of meaning`.
+- Drill 50: Trace `Chunking text for embedding: why long documents need to be split` from user input to project result.
+- Drill 51: Write one sentence defining `Chunking text for embedding: why long documents need to be split` without copying the notes.
+- Drill 52: Find the file where `Chunking text for embedding: why long documents need to be split` appears or should appear.
+- Drill 53: Name one wrong implementation of `Chunking text for embedding: why long documents need to be split` and why it would hurt.
+- Drill 54: Name one test that would protect `Chunking text for embedding: why long documents need to be split`.
+- Drill 55: Trace ``sentence-transformers` local models: no API key, no network call needed` from user input to project result.
+- Drill 56: Write one sentence defining ``sentence-transformers` local models: no API key, no network call needed` without copying the notes.
+- Drill 57: Find the file where ``sentence-transformers` local models: no API key, no network call needed` appears or should appear.
+- Drill 58: Name one wrong implementation of ``sentence-transformers` local models: no API key, no network call needed` and why it would hurt.
+- Drill 59: Name one test that would protect ``sentence-transformers` local models: no API key, no network call needed`.
+- Drill 60: Trace `Cosine similarity: angle between vectors as a measure of semantic closeness` from user input to project result.
+- Drill 61: Write one sentence defining `Cosine similarity: angle between vectors as a measure of semantic closeness` without copying the notes.
+- Drill 62: Find the file where `Cosine similarity: angle between vectors as a measure of semantic closeness` appears or should appear.
+- Drill 63: Name one wrong implementation of `Cosine similarity: angle between vectors as a measure of semantic closeness` and why it would hurt.
+- Drill 64: Name one test that would protect `Cosine similarity: angle between vectors as a measure of semantic closeness`.
+- Drill 65: Trace `Embedding cache: don't recompute what you already have` from user input to project result.
+- Drill 66: Write one sentence defining `Embedding cache: don't recompute what you already have` without copying the notes.
+- Drill 67: Find the file where `Embedding cache: don't recompute what you already have` appears or should appear.
+- Drill 68: Name one wrong implementation of `Embedding cache: don't recompute what you already have` and why it would hurt.
+- Drill 69: Name one test that would protect `Embedding cache: don't recompute what you already have`.
+- Drill 70: Trace `Retrieval evaluation: does the top result make sense?` from user input to project result.
+- Drill 71: Write one sentence defining `Retrieval evaluation: does the top result make sense?` without copying the notes.
+- Drill 72: Find the file where `Retrieval evaluation: does the top result make sense?` appears or should appear.
+- Drill 73: Name one wrong implementation of `Retrieval evaluation: does the top result make sense?` and why it would hurt.
+- Drill 74: Name one test that would protect `Retrieval evaluation: does the top result make sense?`.
+- Drill 75: Draw the Week 13 data flow in four boxes.
+- Drill 76: Say why `Embeddings and Semantic Search` belongs in this month of the curriculum.
+- Drill 77: Rewrite one error message in beginner-friendly language.
+- Drill 78: List the exact assumptions made by the example code.
+- Drill 79: List the exact assumptions checked by the tests.
+- Drill 80: Point to the line where raw input becomes project meaning.
+- Drill 81: Point to the line where the result becomes visible to a user.
+- Drill 82: Explain what would happen if the main file were deleted.
+- Drill 83: Explain what would happen if the main test were deleted.
+- Drill 84: Describe the smallest manual check you can run.
+- Drill 85: Describe the smallest automated check you can run.
+- Drill 86: Name the most likely beginner mistake for this week.
+- Drill 87: Name the safest recovery move for that mistake.
+- Drill 88: Explain what knowledge should be carried into the next chapter.
+- Drill 89: Trace `What embeddings are: a dense numeric representation of meaning` from user input to project result.
+- Drill 90: Write one sentence defining `What embeddings are: a dense numeric representation of meaning` without copying the notes.
+- Drill 91: Find the file where `What embeddings are: a dense numeric representation of meaning` appears or should appear.
+- Drill 92: Name one wrong implementation of `What embeddings are: a dense numeric representation of meaning` and why it would hurt.
+- Drill 93: Name one test that would protect `What embeddings are: a dense numeric representation of meaning`.
+- Drill 94: Trace `Chunking text for embedding: why long documents need to be split` from user input to project result.
+- Drill 95: Write one sentence defining `Chunking text for embedding: why long documents need to be split` without copying the notes.
+- Drill 96: Find the file where `Chunking text for embedding: why long documents need to be split` appears or should appear.
+- Drill 97: Name one wrong implementation of `Chunking text for embedding: why long documents need to be split` and why it would hurt.
+- Drill 98: Name one test that would protect `Chunking text for embedding: why long documents need to be split`.
+- Drill 99: Trace ``sentence-transformers` local models: no API key, no network call needed` from user input to project result.
+- Drill 100: Write one sentence defining ``sentence-transformers` local models: no API key, no network call needed` without copying the notes.
+- Drill 101: Find the file where ``sentence-transformers` local models: no API key, no network call needed` appears or should appear.
+- Drill 102: Name one wrong implementation of ``sentence-transformers` local models: no API key, no network call needed` and why it would hurt.
+- Drill 103: Name one test that would protect ``sentence-transformers` local models: no API key, no network call needed`.
+- Drill 104: Trace `Cosine similarity: angle between vectors as a measure of semantic closeness` from user input to project result.
+- Drill 105: Write one sentence defining `Cosine similarity: angle between vectors as a measure of semantic closeness` without copying the notes.
+- Drill 106: Find the file where `Cosine similarity: angle between vectors as a measure of semantic closeness` appears or should appear.
+- Drill 107: Name one wrong implementation of `Cosine similarity: angle between vectors as a measure of semantic closeness` and why it would hurt.
+- Drill 108: Name one test that would protect `Cosine similarity: angle between vectors as a measure of semantic closeness`.
+- Drill 109: Trace `Embedding cache: don't recompute what you already have` from user input to project result.
+- Drill 110: Write one sentence defining `Embedding cache: don't recompute what you already have` without copying the notes.
+- Drill 111: Find the file where `Embedding cache: don't recompute what you already have` appears or should appear.
+- Drill 112: Name one wrong implementation of `Embedding cache: don't recompute what you already have` and why it would hurt.
+- Drill 113: Name one test that would protect `Embedding cache: don't recompute what you already have`.
+- Drill 114: Trace `Retrieval evaluation: does the top result make sense?` from user input to project result.
+- Drill 115: Write one sentence defining `Retrieval evaluation: does the top result make sense?` without copying the notes.
+- Drill 116: Find the file where `Retrieval evaluation: does the top result make sense?` appears or should appear.
+- Drill 117: Name one wrong implementation of `Retrieval evaluation: does the top result make sense?` and why it would hurt.
+- Drill 118: Name one test that would protect `Retrieval evaluation: does the top result make sense?`.
+- Drill 119: Draw the Week 13 data flow in four boxes.
+
+<!-- LEARNING_FORMAT_END -->
+
+---
+
+# Existing detailed notes
+
 ## Why keyword search is not enough
 
 Keyword search finds documents that contain the words you typed. That sounds useful, and it often is. But it has a hard limit: it matches letters, not ideas.

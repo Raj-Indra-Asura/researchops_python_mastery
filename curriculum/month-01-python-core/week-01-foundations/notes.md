@@ -11,6 +11,390 @@
 
 # Notes - Week 01 Foundations
 
+<!-- LEARNING_FORMAT_START -->
+# Complete Learning Format — Week 01: Python Foundations and Repository Setup
+
+This guide is the clean learning path for the chapter.
+It uses short sentences.
+It breaks ideas into small pieces.
+It tells you what to focus on and what to ignore for now.
+Read it before the older detailed notes that follow.
+
+## Chapter overview
+
+The chapter title is **The project comes alive**.
+The practical milestone is: `researchops scan ./papers` prints discovered PDF paths. Tests pass. Lint is clean.
+The expected capability is: Can set up a Python project from scratch, explain the src layout, run tests with pytest, and run lint with ruff. ---
+This chapter is one step in the ResearchOps system, not a random lesson.
+The visible feature matters because it proves the idea works.
+The hidden skill matters because it lets you build the next chapter without confusion.
+A complete pass through this chapter means you can read the code, run it, test it, break it, and explain it aloud.
+
+Use this study order:
+- Read the story first without typing.
+- Trace the smallest code example.
+- Find the project file that owns the behavior.
+- Run the validation command.
+- Explain one happy path and one failure path.
+
+## What you already know from previous weeks
+
+- This is the first ResearchOps chapter.
+- You need only basic Python: variables, strings, lists, dictionaries, loops, functions, imports, and return values.
+- You do not need to know packaging, databases, APIs, ML, workers, or Docker yet.
+- Your main job is to learn how a small Python script becomes a real project.
+- The safest learning rhythm is: understand one thing, change one thing, test one thing, explain one thing.
+
+## What problem this week solves
+
+Week 1 solves the project problem behind **Python Foundations and Repository Setup**.
+Before this chapter, ResearchOps has a gap.
+The gap may be a missing feature, a missing boundary, a missing safety check, or a missing way to communicate with users.
+This chapter closes that gap with a focused milestone.
+Do not treat the milestone as a checklist only.
+Treat it as proof that the idea belongs in the system.
+- The concept `Python src-layout and `pyproject.toml`` helps solve part of this gap.
+- The concept `Virtual environments and `pip install -e`` helps solve part of this gap.
+- The concept `Functions, collections, comprehensions, modules` helps solve part of this gap.
+- The concept ``pathlib.Path` for file discovery` helps solve part of this gap.
+- The concept `Typer CLI basics: app, command, arguments` helps solve part of this gap.
+- The concept ``pytest` test discovery and first assertions` helps solve part of this gap.
+- The concept ``ruff` lint checks` helps solve part of this gap.
+
+## Beginner mental model
+
+Use a simple four-part model: input, owner, transformation, proof.
+Input means the concrete thing entering the system.
+Owner means the file, object, or function responsible for the decision.
+Transformation means the useful change from raw data to meaningful result.
+Proof means the test or command that confirms the result.
+- Ask: what is the input for **Python Foundations and Repository Setup**?
+- Ask: what is the owner for **Python Foundations and Repository Setup**?
+- Ask: what is the transformation for **Python Foundations and Repository Setup**?
+- Ask: what is the proof for **Python Foundations and Repository Setup**?
+If you cannot answer those four questions, do not add more code yet.
+
+## Core vocabulary
+
+| Term | Simple meaning | Why it matters here |
+|------|----------------|---------------------|
+| Python src-layout and `pyproject.toml | Python src-layout and `pyproject.toml` | This term names one job in the Week 1 milestone. |
+| Virtual environments and `pip install -e | Virtual environments and `pip install -e` | This term names one job in the Week 1 milestone. |
+| Functions, collections, comprehensions, modules | Functions, collections, comprehensions, modules | This term names one job in the Week 1 milestone. |
+| pathlib.Path` for file discovery | `pathlib.Path` for file discovery | This term names one job in the Week 1 milestone. |
+| Typer CLI basics | Typer CLI basics: app, command, arguments | This term names one job in the Week 1 milestone. |
+| pytest` test discovery and first assertions | `pytest` test discovery and first assertions | This term names one job in the Week 1 milestone. |
+| ruff` lint checks | `ruff` lint checks | This term names one job in the Week 1 milestone. |
+| Boundary | A line between responsibilities | It keeps the chapter understandable for a beginner. |
+| Failure path | What happens when the happy path is not available | It keeps the chapter understandable for a beginner. |
+| Validation | Evidence that the system still works | It keeps the chapter understandable for a beginner. |
+| Responsibility | The one job a file or function owns | It keeps the chapter understandable for a beginner. |
+
+## Concept explanations from first principles
+
+Read each concept as if you have never heard the term before.
+Do not skip the plain meaning.
+### Concept 1: Python src-layout and `pyproject.toml`
+- **Plain meaning:** This is a named tool for solving one part of the chapter problem.
+- **Why it exists:** Real projects become confusing when this concern is unnamed.
+- **ResearchOps use:** In Week 1, it supports the milestone: `researchops scan ./papers` prints discovered PDF paths. Tests pass. Lint is clean.
+- **Input question:** What data, command, file, request, or state reaches this concept?
+- **Output question:** What value, saved record, response, log, or state change should come out?
+- **Failure question:** What can be missing, malformed, slow, duplicated, stale, or invalid?
+- **Test question:** Which test would catch the mistake before a user sees it?
+- **Beginner trap:** Memorizing the word without tracing it in the project.
+- **Recovery move:** Use one concrete example and follow it through the files.
+- **Mastery signal:** You can explain the concept without saying "magic" or "it just works".
+
+### Concept 2: Virtual environments and `pip install -e`
+- **Plain meaning:** This is a named tool for solving one part of the chapter problem.
+- **Why it exists:** Real projects become confusing when this concern is unnamed.
+- **ResearchOps use:** In Week 1, it supports the milestone: `researchops scan ./papers` prints discovered PDF paths. Tests pass. Lint is clean.
+- **Input question:** What data, command, file, request, or state reaches this concept?
+- **Output question:** What value, saved record, response, log, or state change should come out?
+- **Failure question:** What can be missing, malformed, slow, duplicated, stale, or invalid?
+- **Test question:** Which test would catch the mistake before a user sees it?
+- **Beginner trap:** Memorizing the word without tracing it in the project.
+- **Recovery move:** Use one concrete example and follow it through the files.
+- **Mastery signal:** You can explain the concept without saying "magic" or "it just works".
+
+### Concept 3: Functions, collections, comprehensions, modules
+- **Plain meaning:** This is a named tool for solving one part of the chapter problem.
+- **Why it exists:** Real projects become confusing when this concern is unnamed.
+- **ResearchOps use:** In Week 1, it supports the milestone: `researchops scan ./papers` prints discovered PDF paths. Tests pass. Lint is clean.
+- **Input question:** What data, command, file, request, or state reaches this concept?
+- **Output question:** What value, saved record, response, log, or state change should come out?
+- **Failure question:** What can be missing, malformed, slow, duplicated, stale, or invalid?
+- **Test question:** Which test would catch the mistake before a user sees it?
+- **Beginner trap:** Memorizing the word without tracing it in the project.
+- **Recovery move:** Use one concrete example and follow it through the files.
+- **Mastery signal:** You can explain the concept without saying "magic" or "it just works".
+
+### Concept 4: `pathlib.Path` for file discovery
+- **Plain meaning:** This is a named tool for solving one part of the chapter problem.
+- **Why it exists:** Real projects become confusing when this concern is unnamed.
+- **ResearchOps use:** In Week 1, it supports the milestone: `researchops scan ./papers` prints discovered PDF paths. Tests pass. Lint is clean.
+- **Input question:** What data, command, file, request, or state reaches this concept?
+- **Output question:** What value, saved record, response, log, or state change should come out?
+- **Failure question:** What can be missing, malformed, slow, duplicated, stale, or invalid?
+- **Test question:** Which test would catch the mistake before a user sees it?
+- **Beginner trap:** Memorizing the word without tracing it in the project.
+- **Recovery move:** Use one concrete example and follow it through the files.
+- **Mastery signal:** You can explain the concept without saying "magic" or "it just works".
+
+### Concept 5: Typer CLI basics: app, command, arguments
+- **Plain meaning:** This is a named tool for solving one part of the chapter problem.
+- **Why it exists:** Real projects become confusing when this concern is unnamed.
+- **ResearchOps use:** In Week 1, it supports the milestone: `researchops scan ./papers` prints discovered PDF paths. Tests pass. Lint is clean.
+- **Input question:** What data, command, file, request, or state reaches this concept?
+- **Output question:** What value, saved record, response, log, or state change should come out?
+- **Failure question:** What can be missing, malformed, slow, duplicated, stale, or invalid?
+- **Test question:** Which test would catch the mistake before a user sees it?
+- **Beginner trap:** Memorizing the word without tracing it in the project.
+- **Recovery move:** Use one concrete example and follow it through the files.
+- **Mastery signal:** You can explain the concept without saying "magic" or "it just works".
+
+### Concept 6: `pytest` test discovery and first assertions
+- **Plain meaning:** This is a named tool for solving one part of the chapter problem.
+- **Why it exists:** Real projects become confusing when this concern is unnamed.
+- **ResearchOps use:** In Week 1, it supports the milestone: `researchops scan ./papers` prints discovered PDF paths. Tests pass. Lint is clean.
+- **Input question:** What data, command, file, request, or state reaches this concept?
+- **Output question:** What value, saved record, response, log, or state change should come out?
+- **Failure question:** What can be missing, malformed, slow, duplicated, stale, or invalid?
+- **Test question:** Which test would catch the mistake before a user sees it?
+- **Beginner trap:** Memorizing the word without tracing it in the project.
+- **Recovery move:** Use one concrete example and follow it through the files.
+- **Mastery signal:** You can explain the concept without saying "magic" or "it just works".
+
+### Concept 7: `ruff` lint checks
+- **Plain meaning:** This is a named tool for solving one part of the chapter problem.
+- **Why it exists:** Real projects become confusing when this concern is unnamed.
+- **ResearchOps use:** In Week 1, it supports the milestone: `researchops scan ./papers` prints discovered PDF paths. Tests pass. Lint is clean.
+- **Input question:** What data, command, file, request, or state reaches this concept?
+- **Output question:** What value, saved record, response, log, or state change should come out?
+- **Failure question:** What can be missing, malformed, slow, duplicated, stale, or invalid?
+- **Test question:** Which test would catch the mistake before a user sees it?
+- **Beginner trap:** Memorizing the word without tracing it in the project.
+- **Recovery move:** Use one concrete example and follow it through the files.
+- **Mastery signal:** You can explain the concept without saying "magic" or "it just works".
+
+## ResearchOps-specific application
+
+The chapter belongs to these project locations:
+- `src/researchops/utils/paths.py` — `find_pdfs()`
+- `src/researchops/cli/main.py` — `scan` command
+- `pyproject.toml` — entry point, dev deps
+- `src/researchops/__init__.py`
+Study those files in this order:
+1. Find the user-facing entry point.
+2. Find the service or core concept that owns the meaning.
+3. Find the infrastructure only when outside resources are needed.
+4. Find the tests that prove the behavior.
+5. Find the validation command that a learner runs manually.
+The goal is to know why each file exists.
+If two files seem to own the same decision, stop and clarify the boundary.
+
+## Code examples with line-by-line explanation
+
+```python
+from pathlib import Path
+
+def find_pdfs(folder: Path) -> list[Path]:
+    return sorted(folder.glob("*.pdf"))
+```
+
+Line-by-line explanation:
+- Line 1: `from pathlib import Path` — This imports a tool before the example can use it.
+- Line 2: `(blank line)` — This blank line separates ideas so the example is easier to read.
+- Line 3: `def find_pdfs(folder: Path) -> list[Path]:` — This names a reusable action and shows what information it receives.
+- Line 4: `return sorted(folder.glob("*.pdf"))` — This produces the result or performs the declared setup step.
+
+How to use this example:
+- Name the input.
+- Name the output.
+- Predict the result before running anything.
+- Connect the shape to the real ResearchOps file.
+- Write one sentence about why each line belongs.
+
+## Common beginner mistakes
+
+- **Mistake:** Pasting code before knowing the owner of the behavior.
+  **Why it hurts:** it hides the mental model and makes debugging harder.
+  **Better move:** make one small behavior clear, then prove it.
+- **Mistake:** Changing many files at once.
+  **Why it hurts:** it hides the mental model and makes debugging harder.
+  **Better move:** make one small behavior clear, then prove it.
+- **Mistake:** Skipping the failure path.
+  **Why it hurts:** it hides the mental model and makes debugging harder.
+  **Better move:** make one small behavior clear, then prove it.
+- **Mistake:** Reading only the happy path test.
+  **Why it hurts:** it hides the mental model and makes debugging harder.
+  **Better move:** make one small behavior clear, then prove it.
+- **Mistake:** Ignoring the validation command.
+  **Why it hurts:** it hides the mental model and makes debugging harder.
+  **Better move:** make one small behavior clear, then prove it.
+- **Mistake:** Using vague names.
+  **Why it hurts:** it hides the mental model and makes debugging harder.
+  **Better move:** make one small behavior clear, then prove it.
+- **Mistake:** Putting business rules in the user interface layer.
+  **Why it hurts:** it hides the mental model and makes debugging harder.
+  **Better move:** make one small behavior clear, then prove it.
+- **Mistake:** Treating logs, errors, and tests as decoration.
+  **Why it hurts:** it hides the mental model and makes debugging harder.
+  **Better move:** make one small behavior clear, then prove it.
+- **Mistake:** Optimizing before correctness is visible.
+  **Why it hurts:** it hides the mental model and makes debugging harder.
+  **Better move:** make one small behavior clear, then prove it.
+- **Mistake:** Building future-week features early.
+  **Why it hurts:** it hides the mental model and makes debugging harder.
+  **Better move:** make one small behavior clear, then prove it.
+
+## Debugging guidance
+
+- Copy the exact failing command.
+- Read the first useful error line.
+- Read the final error line.
+- Classify the failure as import, input, state, file, database, network, model, or expectation.
+- Reproduce it with the smallest command.
+- Inspect the value closest to the failure.
+- Fix the cause, not only the symptom.
+- Run the narrowest test.
+- Run the chapter validation command.
+- Write down what the error was teaching.
+Debugging questions:
+- What did I expect?
+- What happened?
+- Which value first became wrong?
+- Which layer created that value?
+- Which test should catch this next time?
+
+## Design tradeoffs
+
+- **Simple first version:** Easy to understand, but not the final production shape.
+- **Clear layers:** More files, but less confusion as features grow.
+- **Explicit errors:** More code, but failures become teachable.
+- **Small unit tests:** Fast feedback, but less end-to-end confidence.
+- **Integration tests:** Real wiring, but slower and more setup.
+- **Configuration:** Flexible behavior, but defaults must be clear.
+The right question is not "What is the fanciest design?"
+The right question is "What design teaches the responsibility clearly and can grow next week?"
+
+## Testing implications
+
+Tests for this chapter:
+- `tests/unit/test_paths.py` — `find_pdfs()` returns expected list
+- `tests/e2e/test_cli.py` — `researchops scan` exits 0
+Validation commands:
+```bash
+researchops scan ./examples/sample_papers
+pytest tests/unit/test_paths.py tests/e2e/test_cli.py -v
+ruff check src tests
+```
+- Arrange the data.
+- Act on the system.
+- Assert the visible promise.
+- Check one failure path.
+- Keep unit tests fast.
+- Use integration tests only when real wiring matters.
+
+## Architecture implications
+
+ResearchOps stays understandable when dependencies point inward.
+```text
+CLI / API / Worker -> Services -> Core
+Infrastructure implements core-facing contracts and is wired at the outside.
+```
+- Does the UI layer avoid business logic?
+- Does the service layer own workflow decisions?
+- Does core avoid infrastructure imports?
+- Does infrastructure do outside-world work?
+- Do tests use fakes when possible?
+Architecture is not ceremony.
+Architecture is named responsibility.
+
+## How this connects to AI engineering / ML research
+
+AI engineering needs more than models.
+It needs reliable data flow, clear interfaces, repeatable experiments, visible failures, and honest evaluation.
+Week 1 contributes by making **python foundations and repository setup** clear enough to trust.
+- Bad data creates bad model behavior.
+- Unclear boundaries make experiments hard to reproduce.
+- Missing tests let regressions change research results silently.
+- Good logs and errors shorten investigation time.
+- Clear documentation lets future users understand the system.
+
+## Mini quizzes
+
+- What problem does Week 1 solve?
+- What is the main input?
+- What is the main output?
+- Which file owns the main responsibility?
+- Which layer should not contain business logic?
+- What is one happy path?
+- What is one failure path?
+- What command proves the chapter works?
+- What should you not build early?
+- How does this prepare the next week?
+
+## Explain-it-aloud prompts
+
+- Explain Python Foundations and Repository Setup in simple words.
+- Explain the data flow from input to result.
+- Explain the first file you would open.
+- Explain the test that gives confidence.
+- Explain what can break.
+- Explain the tradeoff made in this chapter.
+- Explain what you still find weak.
+
+## What to memorize
+
+- The topic: Python Foundations and Repository Setup.
+- The milestone: `researchops scan ./papers` prints discovered PDF paths. Tests pass. Lint is clean.
+- The main project files.
+- The validation command.
+- The boundary rule for the layer you are touching.
+- The habit of testing before moving forward.
+
+## What to understand deeply
+
+- Why this feature belongs now.
+- How data moves through the chapter.
+- Which file owns which decision.
+- How the failure path is handled.
+- Why the tests prove behavior.
+- How this week makes future work safer.
+
+## What not to worry about yet
+
+- Perfect scale.
+- Fancy abstractions.
+- Future-week features.
+- Every option in every library.
+- Premature optimization.
+- Comparing your speed to someone else.
+Focus on the milestone.
+A clear small milestone beats a confusing large one.
+
+## Bridge to next week
+
+Next week is Week 2: **Files, Paths, Exceptions, and Logging**.
+This week prepares you by giving ResearchOps a clearer piece of behavior before the next milestone: PDF discovery uses `pathlib` throughout. Custom exceptions wrap file errors. Log messages include level, name, and message.
+- Run validation.
+- Explain the main files.
+- Explain one failure.
+- Explain one test.
+- Write down what still feels weak before moving on.
+
+## Guided deepening drills
+
+Use these drills if the chapter still feels abstract.
+
+<!-- LEARNING_FORMAT_END -->
+
+---
+
+# Existing detailed notes
+
 # Chapter 1: Python Foundations and Repository Setup
 
 ## 1. Chapter overview
