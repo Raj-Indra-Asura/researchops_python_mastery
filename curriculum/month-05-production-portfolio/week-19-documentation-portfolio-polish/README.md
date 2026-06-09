@@ -1,3 +1,14 @@
+<!-- NAV_START -->
+---
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 5: Production and Portfolio](../README.md)
+
+**Week 19 — Documentation and Portfolio Polish:** **README** · [Notes](notes.md) · [Exercises](exercises.md) · [Break It](break_it.md) · [Validation](validation.md) · [Reflection](reflection.md)
+
+⬅️ [← Week 18 Reflection](../week-18-docker-environment-config/reflection.md) · ➡️ [Notes →](notes.md)
+
+---
+<!-- NAV_END -->
+
 # Week 19: Documentation and Portfolio Polish
 
 ## Overview
@@ -38,3 +49,12 @@ Your project works. Now make it legible to anyone who lands on the repository �
 - [ ] `docs/demo.md` results in a working demo from start to finish
 - [ ] README answers: what is this? who is it for? how do I run it?
 - [ ] All diagrams render correctly on GitHub
+<!-- NAV_BOTTOM_START -->
+---
+⬅️ [← Week 18 Reflection](../week-18-docker-environment-config/reflection.md) · ➡️ [Notes →](notes.md)
+
+**Week 19 — Documentation and Portfolio Polish:** **README** · [Notes](notes.md) · [Exercises](exercises.md) · [Break It](break_it.md) · [Validation](validation.md) · [Reflection](reflection.md)
+
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 5: Production and Portfolio](../README.md)
+---
+<!-- NAV_BOTTOM_END -->

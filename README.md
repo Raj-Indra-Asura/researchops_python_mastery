@@ -1,3 +1,10 @@
+<!-- NAV_START -->
+---
+**🏠 Home** · [🗺 Roadmap](ROADMAP.md) · [📋 Syllabus](SYLLABUS.md) · [📐 Project Spec](PROJECT_SPEC.md) · [🏛 Architecture](ARCHITECTURE.md) · [🤝 Contributing](CONTRIBUTING.md) · [✅ Release Checklist](RELEASE_CHECKLIST.md) · [🗂 Curriculum Map](curriculum/NAVIGATION.md)
+
+---
+<!-- NAV_END -->
+
 # ResearchOps — Python Mastery Through a Real Project
 
 > **Build a research paper processing platform. Master Python. Build a portfolio.**
@@ -359,3 +366,8 @@ ruff check src tests                               # lint check
 ## License
 
 MIT
+<!-- NAV_BOTTOM_START -->
+---
+**🏠 Home** · [🗺 Roadmap](ROADMAP.md) · [📋 Syllabus](SYLLABUS.md) · [📐 Project Spec](PROJECT_SPEC.md) · [🏛 Architecture](ARCHITECTURE.md) · [🤝 Contributing](CONTRIBUTING.md) · [✅ Release Checklist](RELEASE_CHECKLIST.md) · [🗂 Curriculum Map](curriculum/NAVIGATION.md)
+---
+<!-- NAV_BOTTOM_END -->

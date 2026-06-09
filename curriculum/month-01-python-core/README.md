@@ -1,3 +1,16 @@
+<!-- NAV_START -->
+---
+[🏠 Home](../../README.md) · [🗺 Roadmap](../../ROADMAP.md) · [📋 Syllabus](../../SYLLABUS.md) · [🗂 Curriculum Map](../NAVIGATION.md)
+
+**Month 1 — Python Core and Project Foundation**
+
+[Week 01: Python Foundations](./week-01-foundations/README.md) · [Week 02: Files, Errors, Logging](./week-02-files-errors-logging/README.md) · [Week 03: OOP and Domain Modeling](./week-03-oop-domain-modeling/README.md) · [Week 04: CLI and Packaging](./week-04-cli-packaging/README.md)
+
+⬅️ *(start)* · ➡️ [Month 2: Storage, Search, Multiprocessing →](../month-02-data-storage-concurrency/README.md)
+
+---
+<!-- NAV_END -->
+
 # Month 1 — Python Core and Project Foundation
 
 > **Book section 1 of 5.** This is where ResearchOps comes alive. By the end of
@@ -167,3 +180,12 @@ git tag month-1-complete
 
 Your repository should now: install cleanly, pass `ruff` and `pytest`, and run
 `researchops scan ./examples/sample_papers` successfully.
+<!-- NAV_BOTTOM_START -->
+---
+⬅️ *(start)* · ➡️ [Month 2: Storage, Search, Multiprocessing →](../month-02-data-storage-concurrency/README.md)
+
+[Week 01: Python Foundations](./week-01-foundations/README.md) · [Week 02: Files, Errors, Logging](./week-02-files-errors-logging/README.md) · [Week 03: OOP and Domain Modeling](./week-03-oop-domain-modeling/README.md) · [Week 04: CLI and Packaging](./week-04-cli-packaging/README.md)
+
+[🏠 Home](../../README.md) · [🗺 Roadmap](../../ROADMAP.md) · [📋 Syllabus](../../SYLLABUS.md) · [🗂 Curriculum Map](../NAVIGATION.md)
+---
+<!-- NAV_BOTTOM_END -->

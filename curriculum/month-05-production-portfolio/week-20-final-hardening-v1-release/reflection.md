@@ -1,3 +1,14 @@
+<!-- NAV_START -->
+---
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 5: Production and Portfolio](../README.md)
+
+**Week 20 — Final Hardening and v1 Release:** [README](README.md) · [Notes](notes.md) · [Exercises](exercises.md) · [Break It](break_it.md) · [Validation](validation.md) · **Reflection**
+
+⬅️ [← Validation](validation.md) · ➡️ [📝 Week 20 Report](../../../docs/weekly-reports/README.md) · [✅ RELEASE_CHECKLIST](../../../RELEASE_CHECKLIST.md)
+
+---
+<!-- NAV_END -->
+
 # Reflection — Week 20 Final Hardening and v1.0.0 Release
 
 > Fill this in **after** validation passes. Write to your future self, honestly —
@@ -52,3 +63,25 @@
   (If you cannot give an honest "yes" with evidence, the answer is no — repeat the
   weak part before continuing. See this week's `validation.md` do-not-proceed
   warnings.)
+
+<!-- WEEKLY_REPORT -->
+---
+
+## Weekly Report
+
+When you have completed this reflection, write your [Week 20 report](../../../docs/weekly-reports/README.md).
+
+Store it at `docs/weekly-reports/week-20-report.md` (see the [weekly reports guide](../../../docs/weekly-reports/README.md) for the template).
+
+Once your report is committed, advance to [RELEASE_CHECKLIST](../../../RELEASE_CHECKLIST.md).
+<!-- WEEKLY_REPORT_END -->
+
+<!-- NAV_BOTTOM_START -->
+---
+⬅️ [← Validation](validation.md) · ➡️ [📝 Week 20 Report](../../../docs/weekly-reports/README.md) · [✅ RELEASE_CHECKLIST](../../../RELEASE_CHECKLIST.md)
+
+**Week 20 — Final Hardening and v1 Release:** [README](README.md) · [Notes](notes.md) · [Exercises](exercises.md) · [Break It](break_it.md) · [Validation](validation.md) · **Reflection**
+
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 5: Production and Portfolio](../README.md)
+---
+<!-- NAV_BOTTOM_END -->

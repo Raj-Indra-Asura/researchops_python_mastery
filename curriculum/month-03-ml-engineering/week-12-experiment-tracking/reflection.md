@@ -1,3 +1,14 @@
+<!-- NAV_START -->
+---
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 3: Advanced Python and ML Engineering](../README.md)
+
+**Week 12 — Experiment Tracking:** [README](README.md) · [Notes](notes.md) · [Exercises](exercises.md) · [Break It](break_it.md) · [Validation](validation.md) · **Reflection**
+
+⬅️ [← Validation](validation.md) · ➡️ [📝 Week 12 Report](../../../docs/weekly-reports/README.md) · [Week 13 →](../../month-04-ai-engineering-api-workers/week-13-embeddings-semantic-search/README.md)
+
+---
+<!-- NAV_END -->
+
 # Reflection - Week 12 Experiment Tracking
 
 This is your personal record for Week 12 and the completion of Month 3. Fill it in carefully — this is the capstone of your ML engineering learning.
@@ -112,3 +123,25 @@ Month 4 adds LLM integration, async APIs, and background workers. The architectu
 - [ ] I can explain the dependency graph from CLI to service to repository.
 - [ ] I know how to run a training experiment and compare results.
 - [ ] I am ready to build on this foundation.
+
+<!-- WEEKLY_REPORT -->
+---
+
+## Weekly Report
+
+When you have completed this reflection, write your [Week 12 report](../../../docs/weekly-reports/README.md).
+
+Store it at `docs/weekly-reports/week-12-report.md` (see the [weekly reports guide](../../../docs/weekly-reports/README.md) for the template).
+
+Once your report is committed, advance to [Week 13 →](../../month-04-ai-engineering-api-workers/week-13-embeddings-semantic-search/README.md).
+<!-- WEEKLY_REPORT_END -->
+
+<!-- NAV_BOTTOM_START -->
+---
+⬅️ [← Validation](validation.md) · ➡️ [📝 Week 12 Report](../../../docs/weekly-reports/README.md) · [Week 13 →](../../month-04-ai-engineering-api-workers/week-13-embeddings-semantic-search/README.md)
+
+**Week 12 — Experiment Tracking:** [README](README.md) · [Notes](notes.md) · [Exercises](exercises.md) · [Break It](break_it.md) · [Validation](validation.md) · **Reflection**
+
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 3: Advanced Python and ML Engineering](../README.md)
+---
+<!-- NAV_BOTTOM_END -->

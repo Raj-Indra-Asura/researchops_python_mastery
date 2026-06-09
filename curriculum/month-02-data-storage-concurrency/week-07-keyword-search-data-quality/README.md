@@ -1,3 +1,14 @@
+<!-- NAV_START -->
+---
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 2: Storage, Search, Multiprocessing](../README.md)
+
+**Week 07 — Keyword Search and Data Quality:** **README** · [Notes](notes.md) · [Exercises](exercises.md) · [Break It](break_it.md) · [Validation](validation.md) · [Reflection](reflection.md)
+
+⬅️ [← Week 6 Reflection](../week-06-pdf-parsing-pipeline/reflection.md) · ➡️ [Notes →](notes.md)
+
+---
+<!-- NAV_END -->
+
 # Week 07 — Keyword Search and Data Quality
 
 > **Chapter title: "Finding signal in stored text."**
@@ -150,3 +161,12 @@ identical while making it **fast**: parallel parsing with `ProcessPoolExecutor`.
 Because this week's logic is correct and covered by tests, you can change *how*
 ingestion runs next week and prove the result is unchanged — performance added
 only after correctness.
+<!-- NAV_BOTTOM_START -->
+---
+⬅️ [← Week 6 Reflection](../week-06-pdf-parsing-pipeline/reflection.md) · ➡️ [Notes →](notes.md)
+
+**Week 07 — Keyword Search and Data Quality:** **README** · [Notes](notes.md) · [Exercises](exercises.md) · [Break It](break_it.md) · [Validation](validation.md) · [Reflection](reflection.md)
+
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 2: Storage, Search, Multiprocessing](../README.md)
+---
+<!-- NAV_BOTTOM_END -->

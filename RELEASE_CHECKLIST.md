@@ -1,3 +1,10 @@
+<!-- NAV_START -->
+---
+[🏠 Home](README.md) · [🗺 Roadmap](ROADMAP.md) · [📋 Syllabus](SYLLABUS.md) · [📐 Project Spec](PROJECT_SPEC.md) · [🏛 Architecture](ARCHITECTURE.md) · [🤝 Contributing](CONTRIBUTING.md) · **✅ Release Checklist** · [🗂 Curriculum Map](curriculum/NAVIGATION.md)
+
+---
+<!-- NAV_END -->
+
 # ResearchOps — Release Checklist
 
 This document tracks the checklist for each versioned release. Complete every item before tagging.
@@ -288,3 +295,8 @@ git push origin vX.Y.Z
 - [ ] Tag pushed: `git push origin v1.0.0`
 - [ ] GitHub release created with release notes
 - [ ] Demo video or demo script exists and works end-to-end
+<!-- NAV_BOTTOM_START -->
+---
+[🏠 Home](README.md) · [🗺 Roadmap](ROADMAP.md) · [📋 Syllabus](SYLLABUS.md) · [📐 Project Spec](PROJECT_SPEC.md) · [🏛 Architecture](ARCHITECTURE.md) · [🤝 Contributing](CONTRIBUTING.md) · **✅ Release Checklist** · [🗂 Curriculum Map](curriculum/NAVIGATION.md)
+---
+<!-- NAV_BOTTOM_END -->

@@ -1,3 +1,14 @@
+<!-- NAV_START -->
+---
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 1: Python Core and Project Foundation](../README.md)
+
+**Week 02 — Files, Errors, Logging:** [README](README.md) · [Notes](notes.md) · [Exercises](exercises.md) · [Break It](break_it.md) · [Validation](validation.md) · **Reflection**
+
+⬅️ [← Validation](validation.md) · ➡️ [📝 Week 02 Report](../../../docs/weekly-reports/README.md) · [Week 3 →](../week-03-oop-domain-modeling/README.md)
+
+---
+<!-- NAV_END -->
+
 # Reflection — Chapter 2
 
 ## Looking back at the week
@@ -67,3 +78,25 @@
 - What feels easier about entering Week 3 because of the work you did here?
 - How do paths, exceptions, and logging prepare you for richer domain models?
 - What one sentence would you tell your Week 1 self before they start this chapter?
+
+<!-- WEEKLY_REPORT -->
+---
+
+## Weekly Report
+
+When you have completed this reflection, write your [Week 02 report](../../../docs/weekly-reports/README.md).
+
+Store it at `docs/weekly-reports/week-02-report.md` (see the [weekly reports guide](../../../docs/weekly-reports/README.md) for the template).
+
+Once your report is committed, advance to [Week 3 →](../week-03-oop-domain-modeling/README.md).
+<!-- WEEKLY_REPORT_END -->
+
+<!-- NAV_BOTTOM_START -->
+---
+⬅️ [← Validation](validation.md) · ➡️ [📝 Week 02 Report](../../../docs/weekly-reports/README.md) · [Week 3 →](../week-03-oop-domain-modeling/README.md)
+
+**Week 02 — Files, Errors, Logging:** [README](README.md) · [Notes](notes.md) · [Exercises](exercises.md) · [Break It](break_it.md) · [Validation](validation.md) · **Reflection**
+
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 1: Python Core and Project Foundation](../README.md)
+---
+<!-- NAV_BOTTOM_END -->

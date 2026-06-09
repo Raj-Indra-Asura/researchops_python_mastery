@@ -1,3 +1,16 @@
+<!-- NAV_START -->
+---
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 3: Advanced Python and ML Engineering](../README.md)
+
+**Week 09 — Protocols and Clean Architecture:** **README** · [Notes](notes.md) · [Exercises](exercises.md) · [Break It](break_it.md) · [Validation](validation.md) · [Reflection](reflection.md)
+
+⬅️ [← Week 8 Reflection](../../month-02-data-storage-concurrency/week-08-multiprocessing-ingestion/reflection.md) · ➡️ [Notes →](notes.md)
+
+**📐 Relevant Decisions:** [ADR-0001: Modular Monolith](../../../docs/decisions/0001-modular-monolith.md)
+
+---
+<!-- NAV_END -->
+
 # Week 09 — Protocols, Interfaces, and Clean Architecture
 
 ## Theme
@@ -56,3 +69,14 @@ Coupling, dependency, concrete class, abstraction, interface, Python Protocol, s
 - [ ] You can explain what the CLI does that the services cannot.
 - [ ] You can explain one scenario where these abstractions save work in Month 4 or 5.
 - [ ] `pytest tests/unit/ -q` passes.
+<!-- NAV_BOTTOM_START -->
+---
+⬅️ [← Week 8 Reflection](../../month-02-data-storage-concurrency/week-08-multiprocessing-ingestion/reflection.md) · ➡️ [Notes →](notes.md)
+
+**📐 Relevant Decisions:** [ADR-0001: Modular Monolith](../../../docs/decisions/0001-modular-monolith.md)
+
+**Week 09 — Protocols and Clean Architecture:** **README** · [Notes](notes.md) · [Exercises](exercises.md) · [Break It](break_it.md) · [Validation](validation.md) · [Reflection](reflection.md)
+
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 3: Advanced Python and ML Engineering](../README.md)
+---
+<!-- NAV_BOTTOM_END -->

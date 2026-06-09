@@ -1,3 +1,16 @@
+<!-- NAV_START -->
+---
+[🏠 Home](../../README.md) · [🗺 Roadmap](../../ROADMAP.md) · [📋 Syllabus](../../SYLLABUS.md) · [🗂 Curriculum Map](../NAVIGATION.md)
+
+**Month 3 — Advanced Python and ML Engineering**
+
+[Week 09: Protocols and Clean Architecture](./week-09-protocols-clean-architecture/README.md) · [Week 10: Testing and Quality Gates](./week-10-testing-quality-gates/README.md) · [Week 11: Classical ML: Topic Classification](./week-11-classical-ml-topic-classification/README.md) · [Week 12: Experiment Tracking](./week-12-experiment-tracking/README.md)
+
+⬅️ [← Month 2: Storage, Search, Multiprocessing](../month-02-data-storage-concurrency/README.md) · ➡️ [Month 4: AI Engineering, API, Workers →](../month-04-ai-engineering-api-workers/README.md)
+
+---
+<!-- NAV_END -->
+
 # Month 3 — ML Engineering
 
 > **Book section 3 of 5.** This month the working library becomes an *engineered*
@@ -175,3 +188,12 @@ git tag month-3-complete
 
 Your repo should now train and compare reproducible ML runs behind a clean,
 tested, CI-gated architecture.
+<!-- NAV_BOTTOM_START -->
+---
+⬅️ [← Month 2: Storage, Search, Multiprocessing](../month-02-data-storage-concurrency/README.md) · ➡️ [Month 4: AI Engineering, API, Workers →](../month-04-ai-engineering-api-workers/README.md)
+
+[Week 09: Protocols and Clean Architecture](./week-09-protocols-clean-architecture/README.md) · [Week 10: Testing and Quality Gates](./week-10-testing-quality-gates/README.md) · [Week 11: Classical ML: Topic Classification](./week-11-classical-ml-topic-classification/README.md) · [Week 12: Experiment Tracking](./week-12-experiment-tracking/README.md)
+
+[🏠 Home](../../README.md) · [🗺 Roadmap](../../ROADMAP.md) · [📋 Syllabus](../../SYLLABUS.md) · [🗂 Curriculum Map](../NAVIGATION.md)
+---
+<!-- NAV_BOTTOM_END -->

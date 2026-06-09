@@ -1,3 +1,14 @@
+<!-- NAV_START -->
+---
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 4: AI Engineering, API, Workers](../README.md)
+
+**Week 14 — FastAPI Layer:** [README](README.md) · [Notes](notes.md) · **Exercises** · [Break It](break_it.md) · [Validation](validation.md) · [Reflection](reflection.md)
+
+⬅️ [← Notes](notes.md) · ➡️ [Break It →](break_it.md)
+
+---
+<!-- NAV_END -->
+
 # Exercises - Week 14 FastAPI Layer
 
 ## Beginner
@@ -53,3 +64,12 @@
 4. **Auth stub.** Add an API key header requirement to all non-health routes: the client must send `X-API-Key: test-key` or the server returns `401 Unauthorized`. Implement this as a FastAPI dependency that reads the header and validates it against a configured key. In tests, pass the correct header. Also write a test that sends a wrong key and asserts `401`.
 
 5. **Load testing baseline.** Use Python's `concurrent.futures.ThreadPoolExecutor` to send 100 requests to the health endpoint from a test. Measure how long they take. Document the result. This is not about optimisation — it is about knowing what baseline performance looks like before you add async workers and caching in later weeks.
+<!-- NAV_BOTTOM_START -->
+---
+⬅️ [← Notes](notes.md) · ➡️ [Break It →](break_it.md)
+
+**Week 14 — FastAPI Layer:** [README](README.md) · [Notes](notes.md) · **Exercises** · [Break It](break_it.md) · [Validation](validation.md) · [Reflection](reflection.md)
+
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 4: AI Engineering, API, Workers](../README.md)
+---
+<!-- NAV_BOTTOM_END -->

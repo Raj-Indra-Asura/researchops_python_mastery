@@ -1,3 +1,14 @@
+<!-- NAV_START -->
+---
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 4: AI Engineering, API, Workers](../README.md)
+
+**Week 15 — Async IO and Network Fetching:** [README](README.md) · [Notes](notes.md) · **Exercises** · [Break It](break_it.md) · [Validation](validation.md) · [Reflection](reflection.md)
+
+⬅️ [← Notes](notes.md) · ➡️ [Break It →](break_it.md)
+
+---
+<!-- NAV_END -->
+
 # Exercises - Week 15 Async I/O and Network Fetching
 
 ## Beginner
@@ -65,3 +76,12 @@
 4. **Benchmark concurrency levels.** Write a benchmarking script that runs `fetch_batch` with 20 fake URLs (each with 100ms simulated delay) at semaphore limits of 1, 2, 5, 10, and 20. Measure elapsed time for each. Print a table. Identify where increasing the limit stops helping. This is the point where the simulated I/O cost per request matches the total concurrency capacity.
 
 5. **Async dependency in FastAPI.** Modify the Week 14 `POST /search` route to call an async search service instead of a synchronous one. Use FastAPI's async route syntax (`async def search(...)`). Write a test that confirms the route still works. Then write a test that deliberately puts a `time.sleep(2)` inside an async route handler and observes that it blocks all other requests (hint: use concurrent `TestClient` calls). This is the "blocking event loop" bug in an API context.
+<!-- NAV_BOTTOM_START -->
+---
+⬅️ [← Notes](notes.md) · ➡️ [Break It →](break_it.md)
+
+**Week 15 — Async IO and Network Fetching:** [README](README.md) · [Notes](notes.md) · **Exercises** · [Break It](break_it.md) · [Validation](validation.md) · [Reflection](reflection.md)
+
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 4: AI Engineering, API, Workers](../README.md)
+---
+<!-- NAV_BOTTOM_END -->

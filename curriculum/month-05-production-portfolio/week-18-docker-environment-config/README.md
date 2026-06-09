@@ -1,3 +1,16 @@
+<!-- NAV_START -->
+---
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 5: Production and Portfolio](../README.md)
+
+**Week 18 — Docker and Environment Config:** **README** · [Notes](notes.md) · [Exercises](exercises.md) · [Break It](break_it.md) · [Validation](validation.md) · [Reflection](reflection.md)
+
+⬅️ [← Week 17 Reflection](../week-17-rag-assistant/reflection.md) · ➡️ [Notes →](notes.md)
+
+**📐 Relevant Decisions:** [ADR-0001: Modular Monolith](../../../docs/decisions/0001-modular-monolith.md)
+
+---
+<!-- NAV_END -->
+
 # Week 18 - Docker and Environment Configuration
 
 ## Learning objectives
@@ -36,3 +49,14 @@ Containers, images, environment variables, configuration management, `.env` conv
 - [ ] Secrets are not committed.
 - [ ] Settings tests pass.
 - [ ] You can explain your runtime configuration strategy.
+<!-- NAV_BOTTOM_START -->
+---
+⬅️ [← Week 17 Reflection](../week-17-rag-assistant/reflection.md) · ➡️ [Notes →](notes.md)
+
+**📐 Relevant Decisions:** [ADR-0001: Modular Monolith](../../../docs/decisions/0001-modular-monolith.md)
+
+**Week 18 — Docker and Environment Config:** **README** · [Notes](notes.md) · [Exercises](exercises.md) · [Break It](break_it.md) · [Validation](validation.md) · [Reflection](reflection.md)
+
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 5: Production and Portfolio](../README.md)
+---
+<!-- NAV_BOTTOM_END -->

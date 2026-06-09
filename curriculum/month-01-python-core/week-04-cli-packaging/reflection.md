@@ -1,3 +1,14 @@
+<!-- NAV_START -->
+---
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 1: Python Core and Project Foundation](../README.md)
+
+**Week 04 — CLI and Packaging:** [README](README.md) · [Notes](notes.md) · [Exercises](exercises.md) · [Break It](break_it.md) · [Validation](validation.md) · **Reflection**
+
+⬅️ [← Validation](validation.md) · ➡️ [📝 Week 04 Report](../../../docs/weekly-reports/README.md) · [Week 5 →](../../month-02-data-storage-concurrency/week-05-sqlite-storage/README.md)
+
+---
+<!-- NAV_END -->
+
 # Reflection - Week 04 CLI and Packaging
 
 ## End-of-Month-1 reflection prompts
@@ -73,3 +84,25 @@
 - In 5-8 sentences, explain why CLI design, packaging, and testing belong in the same chapter.
 - In 5-8 sentences, explain what you can now build that you could not build at the start of the month.
 - In 5-8 sentences, explain what you feel most ready to tackle next.
+
+<!-- WEEKLY_REPORT -->
+---
+
+## Weekly Report
+
+When you have completed this reflection, write your [Week 04 report](../../../docs/weekly-reports/README.md).
+
+Store it at `docs/weekly-reports/week-04-report.md` (see the [weekly reports guide](../../../docs/weekly-reports/README.md) for the template).
+
+Once your report is committed, advance to [Week 5 →](../../month-02-data-storage-concurrency/week-05-sqlite-storage/README.md).
+<!-- WEEKLY_REPORT_END -->
+
+<!-- NAV_BOTTOM_START -->
+---
+⬅️ [← Validation](validation.md) · ➡️ [📝 Week 04 Report](../../../docs/weekly-reports/README.md) · [Week 5 →](../../month-02-data-storage-concurrency/week-05-sqlite-storage/README.md)
+
+**Week 04 — CLI and Packaging:** [README](README.md) · [Notes](notes.md) · [Exercises](exercises.md) · [Break It](break_it.md) · [Validation](validation.md) · **Reflection**
+
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 1: Python Core and Project Foundation](../README.md)
+---
+<!-- NAV_BOTTOM_END -->

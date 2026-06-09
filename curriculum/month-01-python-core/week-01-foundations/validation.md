@@ -1,3 +1,28 @@
+
+<!-- QUICKREF -->
+## ⚡ Quick Commands
+
+| Command | Purpose |
+|---------|--------|
+| `python -m pip install -e ".[dev]"` | Install / update dependencies |
+| `researchops --help` | CLI smoke test |
+| `pytest -q` | Run full test suite |
+| `ruff check src tests` | Lint check |
+
+*Full commands for Week 1 are in the [Commands to run](#commands-to-run) section below.*
+
+<!-- QUICKREF_END -->
+<!-- NAV_START -->
+---
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 1: Python Core and Project Foundation](../README.md)
+
+**Week 01 — Python Foundations:** [README](README.md) · [Notes](notes.md) · [Exercises](exercises.md) · [Break It](break_it.md) · **Validation** · [Reflection](reflection.md)
+
+⬅️ [← Break It](break_it.md) · ➡️ [Reflection →](reflection.md)
+
+---
+<!-- NAV_END -->
+
 # Validation - Week 01 Foundations
 
 ## Pre-validation checklist
@@ -273,3 +298,12 @@ If you cannot answer at least 8 of 10 cleanly, review before advancing.
 - [ ] I can explain the repository/package/module distinction.
 - [ ] I can explain the Week 1 execution flow from command line to output.
 - [ ] I completed reflection and know whether I am genuinely ready for Week 2.
+<!-- NAV_BOTTOM_START -->
+---
+⬅️ [← Break It](break_it.md) · ➡️ [Reflection →](reflection.md)
+
+**Week 01 — Python Foundations:** [README](README.md) · [Notes](notes.md) · [Exercises](exercises.md) · [Break It](break_it.md) · **Validation** · [Reflection](reflection.md)
+
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 1: Python Core and Project Foundation](../README.md)
+---
+<!-- NAV_BOTTOM_END -->

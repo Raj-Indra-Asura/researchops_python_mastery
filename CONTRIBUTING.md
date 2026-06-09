@@ -1,3 +1,10 @@
+<!-- NAV_START -->
+---
+[🏠 Home](README.md) · [🗺 Roadmap](ROADMAP.md) · [📋 Syllabus](SYLLABUS.md) · [📐 Project Spec](PROJECT_SPEC.md) · [🏛 Architecture](ARCHITECTURE.md) · **🤝 Contributing** · [✅ Release Checklist](RELEASE_CHECKLIST.md) · [🗂 Curriculum Map](curriculum/NAVIGATION.md)
+
+---
+<!-- NAV_END -->
+
 # Contributing to ResearchOps
 
 This is a personal learning repository. "Contributing" means following your own weekly discipline. This document is your workflow manual.
@@ -251,3 +258,8 @@ pip install -e ".[ml]"           # adds scikit-learn
 pip install -e ".[api]"          # adds fastapi + httpx
 pip install -e ".[all]"          # adds everything
 ```
+<!-- NAV_BOTTOM_START -->
+---
+[🏠 Home](README.md) · [🗺 Roadmap](ROADMAP.md) · [📋 Syllabus](SYLLABUS.md) · [📐 Project Spec](PROJECT_SPEC.md) · [🏛 Architecture](ARCHITECTURE.md) · **🤝 Contributing** · [✅ Release Checklist](RELEASE_CHECKLIST.md) · [🗂 Curriculum Map](curriculum/NAVIGATION.md)
+---
+<!-- NAV_BOTTOM_END -->

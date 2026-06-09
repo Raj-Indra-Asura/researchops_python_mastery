@@ -1,3 +1,28 @@
+
+<!-- QUICKREF -->
+## ⚡ Quick Commands
+
+| Command | Purpose |
+|---------|--------|
+| `python -m pip install -e ".[dev]"` | Install / update dependencies |
+| `researchops --help` | CLI smoke test |
+| `pytest -q` | Run full test suite |
+| `ruff check src tests` | Lint check |
+
+*Full commands for Week 4 are in the [Commands to run](#commands-to-run) section below.*
+
+<!-- QUICKREF_END -->
+<!-- NAV_START -->
+---
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 1: Python Core and Project Foundation](../README.md)
+
+**Week 04 — CLI and Packaging:** [README](README.md) · [Notes](notes.md) · [Exercises](exercises.md) · [Break It](break_it.md) · **Validation** · [Reflection](reflection.md)
+
+⬅️ [← Break It](break_it.md) · ➡️ [Reflection →](reflection.md)
+
+---
+<!-- NAV_END -->
+
 # Validation - Week 04 CLI and Packaging
 
 ## Purpose of this checkpoint
@@ -179,3 +204,12 @@ Before leaving Week 4, say these answers out loud without looking:
 4. Why does an invalid directory return exit code `1`?
 5. Why is the CLI handler supposed to stay thin?
 6. How does `CliRunner` help you test behavior without typing commands manually?
+<!-- NAV_BOTTOM_START -->
+---
+⬅️ [← Break It](break_it.md) · ➡️ [Reflection →](reflection.md)
+
+**Week 04 — CLI and Packaging:** [README](README.md) · [Notes](notes.md) · [Exercises](exercises.md) · [Break It](break_it.md) · **Validation** · [Reflection](reflection.md)
+
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 1: Python Core and Project Foundation](../README.md)
+---
+<!-- NAV_BOTTOM_END -->

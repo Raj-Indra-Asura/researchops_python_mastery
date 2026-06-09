@@ -1,3 +1,14 @@
+<!-- NAV_START -->
+---
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 4: AI Engineering, API, Workers](../README.md)
+
+**Week 13 — Embeddings and Semantic Search:** **README** · [Notes](notes.md) · [Exercises](exercises.md) · [Break It](break_it.md) · [Validation](validation.md) · [Reflection](reflection.md)
+
+⬅️ [← Week 12 Reflection](../../month-03-ml-engineering/week-12-experiment-tracking/reflection.md) · ➡️ [Notes →](notes.md)
+
+---
+<!-- NAV_END -->
+
 # Week 13 - Embeddings and Semantic Search
 
 ## Learning objectives
@@ -48,3 +59,12 @@ Embeddings, vector dimensions, cosine similarity, chunking, chunk overlap, chunk
 - [ ] `pytest -q` passes.
 - [ ] `ruff check src tests` passes.
 - [ ] You can explain the cosine similarity formula without looking it up.
+<!-- NAV_BOTTOM_START -->
+---
+⬅️ [← Week 12 Reflection](../../month-03-ml-engineering/week-12-experiment-tracking/reflection.md) · ➡️ [Notes →](notes.md)
+
+**Week 13 — Embeddings and Semantic Search:** **README** · [Notes](notes.md) · [Exercises](exercises.md) · [Break It](break_it.md) · [Validation](validation.md) · [Reflection](reflection.md)
+
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 4: AI Engineering, API, Workers](../README.md)
+---
+<!-- NAV_BOTTOM_END -->

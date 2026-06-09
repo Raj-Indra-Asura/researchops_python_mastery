@@ -1,3 +1,16 @@
+<!-- NAV_START -->
+---
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 2: Storage, Search, Multiprocessing](../README.md)
+
+**Week 08 — Multiprocessing Ingestion:** **README** · [Notes](notes.md) · [Exercises](exercises.md) · [Break It](break_it.md) · [Validation](validation.md) · [Reflection](reflection.md)
+
+⬅️ [← Week 7 Reflection](../week-07-keyword-search-data-quality/reflection.md) · ➡️ [Notes →](notes.md)
+
+**📐 Relevant Decisions:** [ADR-0002: Multiprocessing vs Asyncio](../../../docs/decisions/0002-multiprocessing-vs-asyncio.md)
+
+---
+<!-- NAV_END -->
+
 # Week 08 — Multiprocessing Ingestion
 
 > **Chapter title: "Doing many things at once, safely."**
@@ -151,3 +164,14 @@ machine" is not "engineered." **Week 9** opens Month 3 by stepping back to
 *architecture*: protocols, dependency inversion, fakes, and strict layer
 boundaries — the discipline that will let you add ML, experiment tracking, APIs,
 and RAG without the system collapsing under its own weight.
+<!-- NAV_BOTTOM_START -->
+---
+⬅️ [← Week 7 Reflection](../week-07-keyword-search-data-quality/reflection.md) · ➡️ [Notes →](notes.md)
+
+**📐 Relevant Decisions:** [ADR-0002: Multiprocessing vs Asyncio](../../../docs/decisions/0002-multiprocessing-vs-asyncio.md)
+
+**Week 08 — Multiprocessing Ingestion:** **README** · [Notes](notes.md) · [Exercises](exercises.md) · [Break It](break_it.md) · [Validation](validation.md) · [Reflection](reflection.md)
+
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 2: Storage, Search, Multiprocessing](../README.md)
+---
+<!-- NAV_BOTTOM_END -->

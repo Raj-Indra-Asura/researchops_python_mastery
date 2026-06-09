@@ -1,3 +1,16 @@
+<!-- NAV_START -->
+---
+[🏠 Home](../../README.md) · [🗺 Roadmap](../../ROADMAP.md) · [📋 Syllabus](../../SYLLABUS.md) · [🗂 Curriculum Map](../NAVIGATION.md)
+
+**Month 5 — Production and Portfolio**
+
+[Week 17: RAG Assistant](./week-17-rag-assistant/README.md) · [Week 18: Docker and Environment Config](./week-18-docker-environment-config/README.md) · [Week 19: Documentation and Portfolio Polish](./week-19-documentation-portfolio-polish/README.md) · [Week 20: Final Hardening and v1 Release](./week-20-final-hardening-v1-release/README.md)
+
+⬅️ [← Month 4: AI Engineering, API, Workers](../month-04-ai-engineering-api-workers/README.md) · ➡️ *(end)*
+
+---
+<!-- NAV_END -->
+
 # Month 5 — Production and Portfolio
 
 > **Book section 5 of 5.** The final month. You turn a working AI platform into a
@@ -185,3 +198,12 @@ git tag -a v1.0.0 -m "ResearchOps v1.0.0"
 Your repository should now present as a complete, runnable, documented,
 portfolio-grade AI engineering project — and you should be able to tell its story
 with confidence.
+<!-- NAV_BOTTOM_START -->
+---
+⬅️ [← Month 4: AI Engineering, API, Workers](../month-04-ai-engineering-api-workers/README.md) · ➡️ *(end)*
+
+[Week 17: RAG Assistant](./week-17-rag-assistant/README.md) · [Week 18: Docker and Environment Config](./week-18-docker-environment-config/README.md) · [Week 19: Documentation and Portfolio Polish](./week-19-documentation-portfolio-polish/README.md) · [Week 20: Final Hardening and v1 Release](./week-20-final-hardening-v1-release/README.md)
+
+[🏠 Home](../../README.md) · [🗺 Roadmap](../../ROADMAP.md) · [📋 Syllabus](../../SYLLABUS.md) · [🗂 Curriculum Map](../NAVIGATION.md)
+---
+<!-- NAV_BOTTOM_END -->

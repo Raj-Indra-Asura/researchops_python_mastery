@@ -1,3 +1,14 @@
+<!-- NAV_START -->
+---
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 1: Python Core and Project Foundation](../README.md)
+
+**Week 01 — Python Foundations:** [README](README.md) · **Notes** · [Exercises](exercises.md) · [Break It](break_it.md) · [Validation](validation.md) · [Reflection](reflection.md)
+
+⬅️ [← README](README.md) · ➡️ [Exercises →](exercises.md)
+
+---
+<!-- NAV_END -->
+
 # Notes - Week 01 Foundations
 
 # Chapter 1: Python Foundations and Repository Setup
@@ -1635,3 +1646,12 @@ Both forms work in PowerShell.
 Week 1 teaches where the code lives, how the package is installed, how the CLI starts, and how tests describe behavior. Week 2 builds directly on that by going deeper into files, `pathlib`, exceptions, and logging.
 
 That means the small Week 1 utilities are not throwaway exercises. They are the beginning of the project’s real filesystem behavior. If you can clearly explain the repository/package/module distinction, the CLI entry point, and the execution flow from `researchops scan` to `find_pdfs()`, you are ready to move forward.
+<!-- NAV_BOTTOM_START -->
+---
+⬅️ [← README](README.md) · ➡️ [Exercises →](exercises.md)
+
+**Week 01 — Python Foundations:** [README](README.md) · **Notes** · [Exercises](exercises.md) · [Break It](break_it.md) · [Validation](validation.md) · [Reflection](reflection.md)
+
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 1: Python Core and Project Foundation](../README.md)
+---
+<!-- NAV_BOTTOM_END -->

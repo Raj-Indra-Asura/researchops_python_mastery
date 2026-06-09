@@ -1,3 +1,14 @@
+<!-- NAV_START -->
+---
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 1: Python Core and Project Foundation](../README.md)
+
+**Week 03 — OOP and Domain Modeling:** [README](README.md) · [Notes](notes.md) · [Exercises](exercises.md) · [Break It](break_it.md) · [Validation](validation.md) · **Reflection**
+
+⬅️ [← Validation](validation.md) · ➡️ [📝 Week 03 Report](../../../docs/weekly-reports/README.md) · [Week 4 →](../week-04-cli-packaging/README.md)
+
+---
+<!-- NAV_END -->
+
 # Week 03 Reflection Prompts
 ## Looking back at the chapter
 - What changed in your understanding of object-oriented programming this week?
@@ -83,3 +94,25 @@
 - What do you want to carry forward from this chapter?
 - What do you want to review once more before starting the next week?
 - Write one sentence that captures the main lesson of Week 3 in your own words.
+
+<!-- WEEKLY_REPORT -->
+---
+
+## Weekly Report
+
+When you have completed this reflection, write your [Week 03 report](../../../docs/weekly-reports/README.md).
+
+Store it at `docs/weekly-reports/week-03-report.md` (see the [weekly reports guide](../../../docs/weekly-reports/README.md) for the template).
+
+Once your report is committed, advance to [Week 4 →](../week-04-cli-packaging/README.md).
+<!-- WEEKLY_REPORT_END -->
+
+<!-- NAV_BOTTOM_START -->
+---
+⬅️ [← Validation](validation.md) · ➡️ [📝 Week 03 Report](../../../docs/weekly-reports/README.md) · [Week 4 →](../week-04-cli-packaging/README.md)
+
+**Week 03 — OOP and Domain Modeling:** [README](README.md) · [Notes](notes.md) · [Exercises](exercises.md) · [Break It](break_it.md) · [Validation](validation.md) · **Reflection**
+
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 1: Python Core and Project Foundation](../README.md)
+---
+<!-- NAV_BOTTOM_END -->

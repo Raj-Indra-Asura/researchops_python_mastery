@@ -1,3 +1,14 @@
+<!-- NAV_START -->
+---
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 5: Production and Portfolio](../README.md)
+
+**Week 20 — Final Hardening and v1 Release:** **README** · [Notes](notes.md) · [Exercises](exercises.md) · [Break It](break_it.md) · [Validation](validation.md) · [Reflection](reflection.md)
+
+⬅️ [← Week 19 Reflection](../week-19-documentation-portfolio-polish/reflection.md) · ➡️ [Notes →](notes.md)
+
+---
+<!-- NAV_END -->
+
 # Week 20: Final Hardening and v1.0 Release
 
 ## Overview
@@ -41,3 +52,12 @@ This is the last week. The goal is not to add features — it's to finish. Scope
 - [ ] Full demo from `docs/demo.md` runs without errors
 - [ ] `git tag v1.0.0` exists
 - [ ] You would show this to an interviewer without embarrassment
+<!-- NAV_BOTTOM_START -->
+---
+⬅️ [← Week 19 Reflection](../week-19-documentation-portfolio-polish/reflection.md) · ➡️ [Notes →](notes.md)
+
+**Week 20 — Final Hardening and v1 Release:** **README** · [Notes](notes.md) · [Exercises](exercises.md) · [Break It](break_it.md) · [Validation](validation.md) · [Reflection](reflection.md)
+
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 5: Production and Portfolio](../README.md)
+---
+<!-- NAV_BOTTOM_END -->

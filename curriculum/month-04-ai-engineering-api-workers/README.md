@@ -1,3 +1,16 @@
+<!-- NAV_START -->
+---
+[🏠 Home](../../README.md) · [🗺 Roadmap](../../ROADMAP.md) · [📋 Syllabus](../../SYLLABUS.md) · [🗂 Curriculum Map](../NAVIGATION.md)
+
+**Month 4 — AI Engineering, API, Workers**
+
+[Week 13: Embeddings and Semantic Search](./week-13-embeddings-semantic-search/README.md) · [Week 14: FastAPI Layer](./week-14-fastapi-layer/README.md) · [Week 15: Async IO and Network Fetching](./week-15-async-io-network-fetching/README.md) · [Week 16: Local Worker Job System](./week-16-local-worker-job-system/README.md)
+
+⬅️ [← Month 3: Advanced Python and ML Engineering](../month-03-ml-engineering/README.md) · ➡️ [Month 5: Production and Portfolio →](../month-05-production-portfolio/README.md)
+
+---
+<!-- NAV_END -->
+
 # Month 4 — AI Engineering: APIs, Async, and Workers
 
 > **Book section 4 of 5.** This month the engineered ML system becomes an **AI
@@ -173,3 +186,12 @@ git tag month-4-complete
 
 Your repo should now retrieve semantically, serve over HTTP, fetch
 concurrently, and run background jobs — all tested and lint-clean.
+<!-- NAV_BOTTOM_START -->
+---
+⬅️ [← Month 3: Advanced Python and ML Engineering](../month-03-ml-engineering/README.md) · ➡️ [Month 5: Production and Portfolio →](../month-05-production-portfolio/README.md)
+
+[Week 13: Embeddings and Semantic Search](./week-13-embeddings-semantic-search/README.md) · [Week 14: FastAPI Layer](./week-14-fastapi-layer/README.md) · [Week 15: Async IO and Network Fetching](./week-15-async-io-network-fetching/README.md) · [Week 16: Local Worker Job System](./week-16-local-worker-job-system/README.md)
+
+[🏠 Home](../../README.md) · [🗺 Roadmap](../../ROADMAP.md) · [📋 Syllabus](../../SYLLABUS.md) · [🗂 Curriculum Map](../NAVIGATION.md)
+---
+<!-- NAV_BOTTOM_END -->

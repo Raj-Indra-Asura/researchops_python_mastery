@@ -1,3 +1,14 @@
+<!-- NAV_START -->
+---
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 2: Storage, Search, Multiprocessing](../README.md)
+
+**Week 06 — PDF Parsing Pipeline:** **README** · [Notes](notes.md) · [Exercises](exercises.md) · [Break It](break_it.md) · [Validation](validation.md) · [Reflection](reflection.md)
+
+⬅️ [← Week 5 Reflection](../week-05-sqlite-storage/reflection.md) · ➡️ [Notes →](notes.md)
+
+---
+<!-- NAV_END -->
+
 # Week 06 — PDF Parsing Pipeline
 
 > **Chapter title: "Raw bytes become structured knowledge."**
@@ -155,3 +166,12 @@ hidden. But a pile of stored text is only useful if you can *find* things in it.
 **Week 7** turns stored parsed text into **keyword search** with ranking, and adds
 **data-quality** gates and paper statistics. The clean, stored text you produce
 this week is exactly what next week's search indexes.
+<!-- NAV_BOTTOM_START -->
+---
+⬅️ [← Week 5 Reflection](../week-05-sqlite-storage/reflection.md) · ➡️ [Notes →](notes.md)
+
+**Week 06 — PDF Parsing Pipeline:** **README** · [Notes](notes.md) · [Exercises](exercises.md) · [Break It](break_it.md) · [Validation](validation.md) · [Reflection](reflection.md)
+
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 2: Storage, Search, Multiprocessing](../README.md)
+---
+<!-- NAV_BOTTOM_END -->

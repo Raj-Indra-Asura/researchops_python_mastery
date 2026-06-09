@@ -1,3 +1,14 @@
+<!-- NAV_START -->
+---
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 1: Python Core and Project Foundation](../README.md)
+
+**Week 04 — CLI and Packaging:** **README** · [Notes](notes.md) · [Exercises](exercises.md) · [Break It](break_it.md) · [Validation](validation.md) · [Reflection](reflection.md)
+
+⬅️ [← Week 3 Reflection](../week-03-oop-domain-modeling/reflection.md) · ➡️ [Notes →](notes.md)
+
+---
+<!-- NAV_END -->
+
 # Week 04 - CLI and Packaging
 
 ## Chapter role in Month 1
@@ -178,3 +189,12 @@ You are no longer only practicing Python syntax.
 You are learning how Python becomes product behavior.
 
 Week 4 is the bridge from "I wrote some code" to "I shipped a usable tool."
+<!-- NAV_BOTTOM_START -->
+---
+⬅️ [← Week 3 Reflection](../week-03-oop-domain-modeling/reflection.md) · ➡️ [Notes →](notes.md)
+
+**Week 04 — CLI and Packaging:** **README** · [Notes](notes.md) · [Exercises](exercises.md) · [Break It](break_it.md) · [Validation](validation.md) · [Reflection](reflection.md)
+
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 1: Python Core and Project Foundation](../README.md)
+---
+<!-- NAV_BOTTOM_END -->

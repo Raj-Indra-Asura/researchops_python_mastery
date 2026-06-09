@@ -1,3 +1,14 @@
+<!-- NAV_START -->
+---
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 3: Advanced Python and ML Engineering](../README.md)
+
+**Week 11 — Classical ML: Topic Classification:** [README](README.md) · [Notes](notes.md) · [Exercises](exercises.md) · [Break It](break_it.md) · [Validation](validation.md) · **Reflection**
+
+⬅️ [← Validation](validation.md) · ➡️ [📝 Week 11 Report](../../../docs/weekly-reports/README.md) · [Week 12 →](../week-12-experiment-tracking/README.md)
+
+---
+<!-- NAV_END -->
+
 # Reflection - Week 11 Classical ML Topic Classification
 
 This is your personal record for Week 11. The quality of this reflection is a signal of how deeply you understood the material.
@@ -99,3 +110,25 @@ What do the off-diagonal entries reveal? Which class pair is most confused and w
 - [ ] I know where the model artifact is saved.
 - [ ] I know what metrics were achieved, from memory.
 - [ ] I am ready to track these details automatically in Week 12.
+
+<!-- WEEKLY_REPORT -->
+---
+
+## Weekly Report
+
+When you have completed this reflection, write your [Week 11 report](../../../docs/weekly-reports/README.md).
+
+Store it at `docs/weekly-reports/week-11-report.md` (see the [weekly reports guide](../../../docs/weekly-reports/README.md) for the template).
+
+Once your report is committed, advance to [Week 12 →](../week-12-experiment-tracking/README.md).
+<!-- WEEKLY_REPORT_END -->
+
+<!-- NAV_BOTTOM_START -->
+---
+⬅️ [← Validation](validation.md) · ➡️ [📝 Week 11 Report](../../../docs/weekly-reports/README.md) · [Week 12 →](../week-12-experiment-tracking/README.md)
+
+**Week 11 — Classical ML: Topic Classification:** [README](README.md) · [Notes](notes.md) · [Exercises](exercises.md) · [Break It](break_it.md) · [Validation](validation.md) · **Reflection**
+
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 3: Advanced Python and ML Engineering](../README.md)
+---
+<!-- NAV_BOTTOM_END -->

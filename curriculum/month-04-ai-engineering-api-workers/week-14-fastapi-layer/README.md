@@ -1,3 +1,16 @@
+<!-- NAV_START -->
+---
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 4: AI Engineering, API, Workers](../README.md)
+
+**Week 14 — FastAPI Layer:** **README** · [Notes](notes.md) · [Exercises](exercises.md) · [Break It](break_it.md) · [Validation](validation.md) · [Reflection](reflection.md)
+
+⬅️ [← Week 13 Reflection](../week-13-embeddings-semantic-search/reflection.md) · ➡️ [Notes →](notes.md)
+
+**📐 Relevant Decisions:** [ADR-0003: CLI Before API](../../../docs/decisions/0003-cli-before-api.md)
+
+---
+<!-- NAV_END -->
+
 # Week 14 — FastAPI Layer
 
 > **Chapter title: "Your work, available over HTTP."**
@@ -148,3 +161,14 @@ papers that are already on disk. **Week 15** adds the ability to *go get* new on
 asynchronous network fetching with `asyncio` and `httpx`, with timeouts and
 retries. The reflex to keep transport thin carries over — and you will learn a new
 rule: async is for *waiting*, never for CPU work.
+<!-- NAV_BOTTOM_START -->
+---
+⬅️ [← Week 13 Reflection](../week-13-embeddings-semantic-search/reflection.md) · ➡️ [Notes →](notes.md)
+
+**📐 Relevant Decisions:** [ADR-0003: CLI Before API](../../../docs/decisions/0003-cli-before-api.md)
+
+**Week 14 — FastAPI Layer:** **README** · [Notes](notes.md) · [Exercises](exercises.md) · [Break It](break_it.md) · [Validation](validation.md) · [Reflection](reflection.md)
+
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 4: AI Engineering, API, Workers](../README.md)
+---
+<!-- NAV_BOTTOM_END -->

@@ -1,3 +1,10 @@
+<!-- NAV_START -->
+---
+[🏠 Home](README.md) · [🗺 Roadmap](ROADMAP.md) · [📋 Syllabus](SYLLABUS.md) · [📐 Project Spec](PROJECT_SPEC.md) · **🏛 Architecture** · [🤝 Contributing](CONTRIBUTING.md) · [✅ Release Checklist](RELEASE_CHECKLIST.md) · [🗂 Curriculum Map](curriculum/NAVIGATION.md)
+
+---
+<!-- NAV_END -->
+
 # ResearchOps — Architecture
 
 This document explains how the codebase is organised, why it is organised that way, and what rules you must follow when adding code. Read this before modifying any source file.
@@ -345,3 +352,8 @@ The `ai/` module provides prompts. `QAService` uses `search/` to retrieve and `a
 3. **Readable by strangers** — a new engineer can open the repo and immediately see where to find any concept
 4. **Evolvable** — infrastructure can be swapped (e.g. SQLite → Postgres) without changing service logic
 5. **Portfolio-worthy** — interviewers ask "how did you structure this?" — this architecture has a clear, defensible answer
+<!-- NAV_BOTTOM_START -->
+---
+[🏠 Home](README.md) · [🗺 Roadmap](ROADMAP.md) · [📋 Syllabus](SYLLABUS.md) · [📐 Project Spec](PROJECT_SPEC.md) · **🏛 Architecture** · [🤝 Contributing](CONTRIBUTING.md) · [✅ Release Checklist](RELEASE_CHECKLIST.md) · [🗂 Curriculum Map](curriculum/NAVIGATION.md)
+---
+<!-- NAV_BOTTOM_END -->

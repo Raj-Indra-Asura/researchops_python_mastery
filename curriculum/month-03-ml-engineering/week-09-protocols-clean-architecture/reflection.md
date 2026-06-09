@@ -1,3 +1,14 @@
+<!-- NAV_START -->
+---
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 3: Advanced Python and ML Engineering](../README.md)
+
+**Week 09 — Protocols and Clean Architecture:** [README](README.md) · [Notes](notes.md) · [Exercises](exercises.md) · [Break It](break_it.md) · [Validation](validation.md) · **Reflection**
+
+⬅️ [← Validation](validation.md) · ➡️ [📝 Week 09 Report](../../../docs/weekly-reports/README.md) · [Week 10 →](../week-10-testing-quality-gates/README.md)
+
+---
+<!-- NAV_END -->
+
 # Reflection - Week 09 Protocols and Clean Architecture
 
 This document is your personal learning record for Week 9. Fill it in honestly. The goal is not to show a perfect result but to capture what you actually experienced.
@@ -89,3 +100,25 @@ Show which direction the arrows point. Mark which modules are in Core, Service, 
 - [ ] I understand why fast unit tests matter and what makes integration tests slower.
 - [ ] I know what `ruff`, `mypy`, and `pytest` are each checking.
 - [ ] I am ready to formalize quality gates and testing discipline next week.
+
+<!-- WEEKLY_REPORT -->
+---
+
+## Weekly Report
+
+When you have completed this reflection, write your [Week 09 report](../../../docs/weekly-reports/README.md).
+
+Store it at `docs/weekly-reports/week-09-report.md` (see the [weekly reports guide](../../../docs/weekly-reports/README.md) for the template).
+
+Once your report is committed, advance to [Week 10 →](../week-10-testing-quality-gates/README.md).
+<!-- WEEKLY_REPORT_END -->
+
+<!-- NAV_BOTTOM_START -->
+---
+⬅️ [← Validation](validation.md) · ➡️ [📝 Week 09 Report](../../../docs/weekly-reports/README.md) · [Week 10 →](../week-10-testing-quality-gates/README.md)
+
+**Week 09 — Protocols and Clean Architecture:** [README](README.md) · [Notes](notes.md) · [Exercises](exercises.md) · [Break It](break_it.md) · [Validation](validation.md) · **Reflection**
+
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 3: Advanced Python and ML Engineering](../README.md)
+---
+<!-- NAV_BOTTOM_END -->
