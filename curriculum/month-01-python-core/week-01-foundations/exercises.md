@@ -7,14 +7,14 @@
 4. Import a helper function from another module and print its return value.
 
 ## Project exercises
-1. Create `src/researchops/cli/main.py` with a Typer app that has an `info` command.
-2. Add a utility module with two pure functions and unit tests.
-3. Add package metadata in `pyproject.toml` and confirm the `researchops` script resolves.
-4. Create an empty `tests/unit` package structure and add your first passing tests.
+1. Create `src/researchops/cli/main.py` with a Typer app that has a `scan` command.
+2. Add `src/researchops/utils/paths.py` with a `find_pdfs(directory, recursive)` helper and unit tests in `tests/unit/test_paths.py`.
+3. Confirm `pyproject.toml` has the `researchops = "researchops.cli.main:app"` entry point and that `researchops --help` resolves.
+4. Create `tests/e2e/test_cli.py` and add a test that invokes `scan` on a temporary directory using Typer's `CliRunner`.
 
 ## Stretch exercises
-1. Add a `version` command that reads the package version without hard-coding it twice.
-2. Create a module that returns standard project paths such as `data/`, `logs/`, and `artifacts/`.
+1. Add a `version` command to `cli/main.py` that reads the package version from `importlib.metadata` without hard-coding it.
+2. Add `src/researchops/utils/paths.py` helpers: `ensure_dir(path)` that creates a directory and its parents, and `safe_resolve(path)` that returns an absolute path without raising on symlink loops.
 3. Refactor any function longer than 10 lines into smaller helpers.
 
 ## Writing questions

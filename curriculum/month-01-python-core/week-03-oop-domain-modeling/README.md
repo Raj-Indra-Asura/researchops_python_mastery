@@ -13,28 +13,31 @@
 Introduce core ResearchOps models: `Paper`, `ParsedDocument`, `IngestionResult`, and `FailedDocument`, and use them as the shared language of the codebase.
 
 ## Files to modify/create
-- `src/researchops/models.py`
-- `src/researchops/ingestion/types.py`
+- `src/researchops/core/models.py`
+- `src/researchops/core/exceptions.py`
+- `src/researchops/core/value_objects.py`
 - `tests/unit/test_models.py`
-- `tests/unit/test_ingestion_result.py`
-- `tests/fakes/factory.py`
+- `tests/unit/test_value_objects.py`
+- `tests/fakes/fake_repository.py`
 
 ## Concepts covered
-Classes, dataclasses, immutability trade-offs, composition, validation, representation methods, and domain vocabulary.
+Classes, dataclasses, immutability trade-offs, composition, validation, representation methods, domain vocabulary, and value objects.
 
 ## Expected deliverables
-- Domain models with clear field names.
-- Constructors or factory helpers that enforce basic validity.
-- Tests covering normal, partial, and failed document cases.
-- Refactored code that passes models instead of loose dictionaries where possible.
+- Domain models in `core/models.py` with clear field names and behaviour methods.
+- Value objects in `core/value_objects.py` that enforce invariants at construction time.
+- Exception hierarchy in `core/exceptions.py` with sub-classes for each failure domain.
+- Fake repository implementation in `tests/fakes/fake_repository.py` for use in service tests.
+- Tests covering normal construction, property methods, failure summaries, and invalid state.
 
 ## Definition of done
-- [ ] `Paper` captures source metadata.
-- [ ] `ParsedDocument` captures extracted content.
-- [ ] `FailedDocument` captures why parsing failed.
-- [ ] `IngestionResult` aggregates outcomes cleanly.
-- [ ] Dataclasses are used where helpful.
-- [ ] Tests cover equality or representation behavior.
-- [ ] Invalid state is blocked early.
-- [ ] Names match the research domain.
-- [ ] Existing code reads more clearly than last week.
+- [ ] `Paper` captures id, title, source path, text, page count, and file size.
+- [ ] `ParsedDocument` captures raw parser output before persistence.
+- [ ] `FailedDocument` captures why a document could not be ingested.
+- [ ] `IngestionResult` aggregates successes, failures, and skipped paths.
+- [ ] `PaperId.from_path()` produces a stable 16-character hex ID.
+- [ ] `Query` value object rejects empty queries.
+- [ ] `Tag` value object normalises to lowercase-with-hyphens.
+- [ ] Dataclasses are used for all models.
+- [ ] Tests cover `word_count()`, `is_empty()`, `success_rate`, `summary()`.
+- [ ] `pytest -q` passes.

@@ -13,29 +13,28 @@
 Implement a file-system scanner that walks a papers directory, discovers candidate documents, and logs what was accepted, skipped, or failed.
 
 ## Files to modify/create
-- `src/researchops/files.py`
-- `src/researchops/logging_config.py`
-- `src/researchops/scanner.py`
-- `tests/unit/test_files.py`
-- `tests/unit/test_scanner.py`
-- `tests/unit/test_logging_config.py`
+- `src/researchops/utils/paths.py`
+- `src/researchops/config/logging.py`
+- `src/researchops/core/exceptions.py`
+- `tests/unit/test_paths.py`
+- `tests/unit/test_exceptions.py`
 
 ## Concepts covered
 `pathlib`, file encodings, recursion, `try/except/else/finally`, custom exceptions, log levels, and defensive programming.
 
 ## Expected deliverables
-- A scanner that accepts a root directory and finds files.
-- Logging configuration that prints useful messages.
-- Exceptions that include context such as path and failure reason.
-- Tests for empty directories, missing directories, and unsupported files.
+- `utils/paths.py` with `find_pdfs()`, `ensure_dir()`, and `safe_resolve()` fully tested.
+- `config/logging.py` with `configure_logging()` and `get_logger()`.
+- `core/exceptions.py` with a `ResearchOpsError` base and specific sub-classes for parsing and file-system errors.
+- Tests for empty directories, missing directories, non-directory paths, and unsupported file types.
 
 ## Definition of done
 - [ ] All path operations use `Path`.
-- [ ] Scanner handles missing paths gracefully.
-- [ ] Unsupported extensions are skipped deliberately.
-- [ ] Logging has at least INFO and ERROR paths.
-- [ ] Custom exceptions are meaningful.
+- [ ] `find_pdfs()` handles missing paths, non-directories, and empty directories gracefully.
+- [ ] Unsupported extensions are not returned by the scanner.
+- [ ] Logging has at least INFO and ERROR code paths.
+- [ ] Custom exceptions are sub-classes of `ResearchOpsError`.
 - [ ] Unit tests cover success and failure cases.
-- [ ] Manual run against `examples/` produces readable output.
-- [ ] No broad `except Exception` without a reason.
+- [ ] Manual run of `researchops scan examples/sample_papers` produces readable output.
+- [ ] No broad `except Exception` without a re-raise or explicit reason.
 - [ ] Debug notes capture one real failure you traced.

@@ -6,32 +6,35 @@ source .venv/bin/activate
 python -m pip install -e ".[dev]"
 researchops --help
 researchops scan examples/sample_papers
-pytest tests/unit/test_cli_scan.py -v
-pytest tests/e2e/test_scan_command.py -v
-```
-
-## Expected outputs
-- Root help shows the app description and commands.
-- `researchops scan examples/sample_papers` prints a scan summary.
-- CLI tests and e2e tests pass.
-
-## Pytest commands and expected results
-```bash
-pytest -k "cli_scan or scan_command" -v
+researchops scan examples/sample_papers --recursive
+researchops scan /tmp/does_not_exist
+pytest tests/e2e/test_cli.py -v
 pytest -q
 ```
 
-Expected result: the package installs, the shell entry point resolves, the scan command works on sample input, and command failures return useful exit codes.
+## Expected outputs
+- Root help shows the app description and sub-commands including `scan`.
+- `researchops scan examples/sample_papers` prints a list of found PDFs (or "No PDF files found" if the directory is empty).
+- `researchops scan /tmp/does_not_exist` exits with a non-zero code and a human-readable error.
+- All CLI tests in `tests/e2e/test_cli.py` pass.
+
+## Pytest commands and expected results
+```bash
+pytest tests/e2e/test_cli.py -v
+pytest -q
+```
+
+Expected result: package installs cleanly, shell entry point resolves, `scan` handles success and failure flows, and all tests pass.
 
 ## Completion checklist
-- [ ] `scan` command is registered.
-- [ ] Entry point in `pyproject.toml` is correct.
-- [ ] Help text is readable.
-- [ ] Missing-path case returns a non-zero exit code.
-- [ ] Success case prints counts.
-- [ ] CLI tests assert on output.
-- [ ] E2E test invokes the installed command path.
-- [ ] Editable install still succeeds.
-- [ ] Manual command run works from repo root.
+- [ ] `scan` command is in `cli/main.py`.
+- [ ] Entry point in `pyproject.toml` is `"researchops.cli.main:app"`.
+- [ ] `scan` calls `find_pdfs()` from `utils/paths.py` — no scanning logic embedded in the handler.
+- [ ] Help text for the `directory` argument is descriptive.
+- [ ] Missing-path case returns exit code 1 with a human-readable message.
+- [ ] Success case prints PDF names and count.
+- [ ] `--recursive` flag is wired through to `find_pdfs(recursive=True)`.
+- [ ] `tests/e2e/test_cli.py` tests help, success, and failure.
+- [ ] Editable install succeeds after any `pyproject.toml` changes.
 - [ ] `pytest -q` passes.
 - [ ] You can explain how the entry point maps to Python code.

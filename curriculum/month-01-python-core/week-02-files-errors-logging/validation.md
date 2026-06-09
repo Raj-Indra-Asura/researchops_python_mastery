@@ -4,35 +4,37 @@
 ```bash
 source .venv/bin/activate
 python -m pip install -e ".[dev]"
-pytest tests/unit/test_files.py -v
-pytest tests/unit/test_scanner.py -v
-pytest tests/unit/test_logging_config.py -v
-python -m researchops.cli.main info
+pytest tests/unit/test_paths.py -v
+pytest tests/unit/test_exceptions.py -v
+researchops scan examples/sample_papers
+researchops --verbose scan examples/sample_papers
 ```
 
 ## Expected outputs
-- File and scanner tests pass.
-- Logging tests confirm the expected level or message behavior.
-- Manual scanner run prints counts or status lines without crashing.
+- Path tests pass, including missing-path and non-directory cases.
+- Exception tests confirm sub-class hierarchy and message content.
+- Manual scan command prints found PDFs (or "No PDF files found") without crashing.
+- `--verbose` causes DEBUG log lines to appear.
 
 ## Pytest commands and expected results
 ```bash
-pytest -k "files or scanner or logging" -v
+pytest -k "paths or exceptions" -v
 pytest -q
 ```
 
-Expected result: missing paths are handled intentionally, unsupported files are skipped predictably, and logs appear at the configured level.
+Expected result: missing paths raise `NotADirectoryError`, exceptions carry path context, and logs appear at the configured level.
 
 ## Completion checklist
-- [ ] `Path` replaces string path joins.
-- [ ] Missing directory behavior is tested.
-- [ ] Non-directory input behavior is tested.
-- [ ] Nested directory scanning works.
-- [ ] Unsupported extensions are skipped.
-- [ ] Uppercase extension behavior is defined.
-- [ ] Logging setup is centralized.
+- [ ] `Path` replaces string path joins throughout.
+- [ ] `find_pdfs()` handles missing directory: raises `NotADirectoryError`.
+- [ ] `find_pdfs()` handles file-instead-of-directory: raises `NotADirectoryError`.
+- [ ] `find_pdfs()` handles empty directory: returns `[]`.
+- [ ] `find_pdfs(recursive=True)` finds nested PDFs.
+- [ ] Uppercase extension handling is understood (`.PDF` vs `.pdf` — test it).
+- [ ] Logging is configured via `configure_logging()` from `config/logging.py`.
+- [ ] `get_logger(__name__)` is used in every module that emits log lines.
 - [ ] INFO and ERROR messages are visible when appropriate.
-- [ ] Exceptions contain path context.
+- [ ] Custom exceptions in `core/exceptions.py` carry path context.
 - [ ] Unit tests pass.
 - [ ] You can explain why broad exception handling is risky.
-- [ ] You can manually scan a sample folder.
+- [ ] You can manually scan `examples/sample_papers` and read the output.
