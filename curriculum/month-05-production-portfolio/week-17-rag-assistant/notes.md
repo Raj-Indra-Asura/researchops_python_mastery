@@ -282,7 +282,7 @@ For this project, Ollama is the recommended local option. The fake generator is 
 
 ## OpenAI-compatible option
 
-Many language model providers offer an API that follows the OpenAI format. You can use the `openai` Python package to talk to them.
+The OpenAI Python package provides two main API surfaces. The example below uses the **Responses API** (`client.responses.create`), introduced in the `openai` package v1.66+. If you are using an older package version or a third-party OpenAI-compatible provider (e.g., Ollama's OpenAI endpoint, Groq, or Together AI), use the **Chat Completions API** instead — see the note at the end of this section.
 
 ```python
 import os                                              # line 1
@@ -305,13 +305,28 @@ Line 2: import `OpenAI` from the `openai` package. This is the client class.
 
 Line 3: create a client instance. `os.environ.get("OPENAI_API_KEY")` reads the API key from the environment. If the variable is not set, this returns `None`, and the first API call will fail with a clear authentication error. **Never hard-code the API key in source code.**
 
-Line 4: call `client.responses.create(...)`. This sends an HTTP request to the OpenAI API.
+Line 4: call `client.responses.create(...)`. This is the **Responses API** endpoint, available in `openai` package v1.66 and later. It combines the system instruction and the user input into a simpler interface than the chat completions API.
 
 Line 5: `model` specifies which model to use.
 
-Line 6: `instructions` provides the system-level behaviour instruction (answer only from context).
+Line 6: `instructions` provides the system-level behaviour instruction (answer only from context). In the Responses API, this replaces the `{"role": "system", "content": "..."}` message.
 
 Line 7: `input` is the actual content — the context block and the user question combined into one string.
+
+**Alternative: Chat Completions API** (works with older `openai` versions and most third-party providers):
+
+```python
+response = client.chat.completions.create(
+    model="gpt-4o",
+    messages=[
+        {"role": "system", "content": "Answer using only the provided context."},
+        {"role": "user", "content": "Context: ...\n\nQuestion: What is efficient attention?"},
+    ],
+)
+print(response.choices[0].message.content)
+```
+
+Use `client.responses.create` when targeting OpenAI's own API with a recent package. Use `client.chat.completions.create` when targeting any OpenAI-compatible provider or an older package version.
 
 Line 8: `response.output_text` is the model's answer as a plain string.
 
