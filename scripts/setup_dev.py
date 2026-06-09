@@ -34,7 +34,7 @@ def main() -> None:
         example = root / ".env.example"
         if example.exists():
             env_file.write_text(example.read_text())
-            print(f"✓ Copied .env.example → .env\n")
+            print("✓ Copied .env.example → .env\n")
 
     # Install dev dependencies
     run([sys.executable, "-m", "pip", "install", "-e", ".[dev]"])
