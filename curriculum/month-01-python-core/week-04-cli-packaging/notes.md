@@ -1714,6 +1714,89 @@ You do not need to know every possible POSIX exit code convention.
 You do not need to overengineer a service layer for tiny placeholder commands.
 You do need the core mental model.
 
+## PowerShell equivalents for Windows learners
+
+All validation commands in this chapter are shown in macOS/Linux shell syntax.
+The following table covers the differences for Windows PowerShell.
+
+### Activate the virtual environment
+
+```powershell
+.venv\Scripts\Activate.ps1
+```
+
+### Run all standard commands
+
+These work identically on all platforms.
+
+```powershell
+python -m pip install -e ".[dev]"
+researchops --help
+researchops scan --help
+researchops scan .scratch\week-04-cli\papers
+researchops scan .scratch\week-04-cli\papers --recursive
+researchops scan .scratch\week-04-cli\missing
+pytest tests/e2e/test_cli.py -v
+pytest -q
+ruff check src tests
+```
+
+### Check exit code
+
+After running a command that should fail:
+
+```powershell
+researchops scan .scratch\week-04-cli\missing ; echo $LASTEXITCODE
+```
+
+Expected output:
+```text
+1
+```
+
+On macOS/Linux, use `echo $?` instead.
+
+### Create the scratch validation dataset on Windows
+
+On macOS/Linux, the validation dataset can be created with a heredoc:
+```bash
+python - <<'PY'
+from pathlib import Path
+root = Path('.scratch/week-04-cli/papers')
+(root / 'nested').mkdir(parents=True, exist_ok=True)
+(root / 'paper_a.pdf').touch()
+(root / 'nested' / 'paper_b.pdf').touch()
+(root / 'notes.txt').write_text('not a pdf\n')
+print(root)
+PY
+```
+
+PowerShell does not support the `<<'PY'` heredoc syntax. Instead, save the Python snippet to a temporary file and run it:
+
+```powershell
+Set-Content -Path "$env:TEMP\setup.py" -Value @'
+from pathlib import Path
+root = Path(".scratch/week-04-cli/papers")
+(root / "nested").mkdir(parents=True, exist_ok=True)
+(root / "paper_a.pdf").touch()
+(root / "nested" / "paper_b.pdf").touch()
+(root / "notes.txt").write_text("not a pdf\n")
+print(root)
+'@
+python "$env:TEMP\setup.py"
+```
+
+### Summary difference table
+
+| macOS / Linux shell | Windows PowerShell |
+|---|---|
+| `source .venv/bin/activate` | `.venv\Scripts\Activate.ps1` |
+| `echo $?` | `echo $LASTEXITCODE` |
+| `<<'PY' ... PY` heredoc | save to temp file and `python file.py` |
+| Everything else | identical |
+
+
+
 ## A compact chapter recap
 Week 4 teaches how a real command gets shipped.
 Typer turns typed Python functions into CLI commands.

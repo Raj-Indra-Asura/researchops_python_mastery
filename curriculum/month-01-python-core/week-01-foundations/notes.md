@@ -806,7 +806,243 @@ class TestEnsureDir:
 
 The important lesson is that tests are not vague. Each one encodes a single behavioral promise.
 
-### 8.5 Execution flow diagram: terminal → CLI entry → scan → find_pdfs → output
+### 8.5 Full annotated `src/researchops/core/exceptions.py` walkthrough
+
+Here is the file.
+
+```python
+"""Custom exception hierarchy for ResearchOps.
+
+Rule: every exception the application raises should be a subclass of
+ResearchOpsError so callers can catch the whole family with one clause.
+
+These exceptions live in core/ and must not import from storage,
+parsing, CLI, API, or any infrastructure layer.
+"""
+
+
+class ResearchOpsError(Exception):
+    """Base class for all ResearchOps application errors."""
+
+
+class ParsingError(ResearchOpsError):
+    """Raised when a document cannot be parsed."""
+
+
+class EmptyDocumentError(ParsingError):
+    """Raised when a parsed document contains no extractable text."""
+
+    def __init__(self, path: str) -> None:
+        super().__init__(f"No text could be extracted from: {path}")
+        self.path = path
+
+
+class UnsupportedFileTypeError(ParsingError):
+    """Raised when a file type is not supported (e.g. .docx instead of .pdf)."""
+
+    def __init__(self, path: str) -> None:
+        super().__init__(f"Unsupported file type: {path}")
+        self.path = path
+
+
+class StorageError(ResearchOpsError):
+    """Raised for database / persistence failures."""
+
+
+class PaperNotFoundError(StorageError):
+    """Raised when a paper ID does not exist in storage."""
+
+    def __init__(self, paper_id: str) -> None:
+        super().__init__(f"Paper not found: {paper_id}")
+        self.paper_id = paper_id
+
+
+class DuplicatePaperError(StorageError):
+    """Raised when trying to insert a paper that already exists."""
+
+    def __init__(self, paper_id: str) -> None:
+        super().__init__(f"Paper already exists: {paper_id}")
+        self.paper_id = paper_id
+
+
+class SearchError(ResearchOpsError):
+    """Raised for search-related failures."""
+
+
+class EmptyQueryError(SearchError):
+    """Raised when a search query is blank or whitespace-only."""
+
+    def __init__(self) -> None:
+        super().__init__("Search query must not be empty.")
+
+
+class ConfigurationError(ResearchOpsError):
+    """Raised when the application configuration is invalid or missing."""
+```
+
+#### Annotated walkthrough by line group
+
+- **Lines 1-8** are the module docstring. The docstring explains not just what this file does, but also states a design rule: every application-level exception must extend `ResearchOpsError`. It also says that this module must not import anything from the outer layers. Reading a module docstring first is a good habit.
+- **Line 11** defines `ResearchOpsError`. This is the root of the exception tree. It inherits from Python's built-in `Exception`. Its body contains only a docstring because no new behavior or attributes are needed at this base level. It exists purely to create a named group.
+- **Line 14** defines `ParsingError`. This is a narrower specialization. Anything that goes wrong during document parsing should raise `ParsingError` or one of its subclasses. Notice that `ParsingError` inherits from `ResearchOpsError`, not from `Exception` directly. That keeps the hierarchy connected.
+- **Lines 17-21** define `EmptyDocumentError`. The `__init__` method accepts a `path` string. It calls `super().__init__(...)` with a formatted message. This is the standard way to pass a message upward to `Exception`. It also stores `self.path = path`. Storing the path attribute lets callers inspect which file caused the error programmatically, not just by reading the string.
+- **Lines 24-28** define `UnsupportedFileTypeError`. Same pattern as `EmptyDocumentError`. Different meaning: this error is for file type mismatches, such as accidentally sending a `.docx` through a PDF-only pipeline.
+- **Line 31** defines `StorageError`. The base class for database and persistence failures. Callers who want to catch any storage problem can catch `StorageError` in one `except` clause.
+- **Lines 34-38** define `PaperNotFoundError`. When a paper ID cannot be found in the database, this is the right exception to raise. The `paper_id` attribute lets the caller log or display which paper was missing without parsing the message text.
+- **Lines 41-45** define `DuplicatePaperError`. Used when inserting a paper that already exists. Storing `paper_id` again lets callers respond programmatically.
+- **Lines 48-49** define `SearchError` with no custom `__init__`.
+- **Lines 52-55** define `EmptyQueryError`. No custom attributes needed here because an empty query carries no useful metadata beyond the message.
+- **Lines 58-59** define `ConfigurationError`. Used when the application detects a missing or invalid configuration at startup.
+
+#### The exception hierarchy as a tree
+
+```text
+Exception (built-in)
+  └── ResearchOpsError
+        ├── ParsingError
+        │     ├── EmptyDocumentError
+        │     └── UnsupportedFileTypeError
+        ├── StorageError
+        │     ├── PaperNotFoundError
+        │     └── DuplicatePaperError
+        ├── SearchError
+        │     └── EmptyQueryError
+        ├── ConfigurationError
+        ├── MLError
+        │     ├── ModelNotTrainedError
+        │     └── InsufficientDataError
+        └── JobError
+              └── JobNotFoundError
+```
+
+This tree structure matters. A caller can catch `ResearchOpsError` to handle any application failure. A caller can catch `StorageError` to handle only storage failures. A caller can catch `PaperNotFoundError` to respond to a very specific situation. Each level of the tree gives callers different degrees of precision.
+
+#### Why this file lives in `core/` and nowhere else
+
+The module docstring says these exceptions must not import from storage, CLI, API, or any other outer layer. That rule exists because `core/` is the stable center of the architecture. Services, repositories, the CLI, the API, and future workers can all import from `core/`. If `core/` imported from those layers in return, you would have circular imports and fragile architecture. The exception hierarchy is shared language. Shared language belongs in the center.
+
+#### What Week 1 does with this file
+
+Week 1 does not directly raise `ParsingError` or `StorageError`. Those features come later. But `NotADirectoryError` is used in `find_pdfs()`, and the CLI catches it there. The exceptions file is presented in Week 1 because understanding the structure of the hierarchy makes later chapters easier to follow.
+
+---
+
+### 8.6 Full annotated `tests/e2e/test_cli.py` walkthrough
+
+Here is the file.
+
+```python
+"""E2E CLI tests using Typer's test runner."""
+
+from __future__ import annotations
+
+from pathlib import Path
+
+from typer.testing import CliRunner
+
+from researchops.cli.main import app
+
+runner = CliRunner()
+
+
+class TestCLIHelp:
+    def test_help_exits_zero(self) -> None:
+        result = runner.invoke(app, ["--help"])
+        assert result.exit_code == 0
+
+    def test_help_contains_scan(self) -> None:
+        result = runner.invoke(app, ["--help"])
+        assert "scan" in result.output.lower()
+
+
+class TestScanCommand:
+    def test_scan_empty_directory(self, tmp_path: Path) -> None:
+        result = runner.invoke(app, ["scan", str(tmp_path)])
+        assert result.exit_code == 0
+        assert "No PDF" in result.output or "0" in result.output
+
+    def test_scan_lists_pdf_files(self, tmp_path: Path) -> None:
+        (tmp_path / "paper_a.pdf").touch()
+        (tmp_path / "paper_b.pdf").touch()
+        result = runner.invoke(app, ["scan", str(tmp_path)])
+        assert result.exit_code == 0
+        assert "paper_a.pdf" in result.output
+        assert "paper_b.pdf" in result.output
+
+    def test_scan_ignores_non_pdf_files(self, tmp_path: Path) -> None:
+        (tmp_path / "paper.pdf").touch()
+        (tmp_path / "readme.txt").touch()
+        result = runner.invoke(app, ["scan", str(tmp_path)])
+        assert result.exit_code == 0
+        assert "readme.txt" not in result.output
+
+    def test_scan_nonexistent_directory(self) -> None:
+        result = runner.invoke(app, ["scan", "/tmp/this_does_not_exist_researchops"])
+        assert result.exit_code != 0
+
+    def test_scan_recursive_flag(self, tmp_path: Path) -> None:
+        sub = tmp_path / "subdir"
+        sub.mkdir()
+        (tmp_path / "top.pdf").touch()
+        (sub / "nested.pdf").touch()
+
+        non_recursive = runner.invoke(app, ["scan", str(tmp_path)])
+        recursive = runner.invoke(app, ["scan", str(tmp_path), "--recursive"])
+
+        assert "top.pdf" in non_recursive.output
+        assert "nested.pdf" not in non_recursive.output
+        assert "nested.pdf" in recursive.output
+```
+
+#### Annotated walkthrough by line group
+
+- **Line 1** is the module docstring. It says these are end-to-end tests using Typer's test runner. "E2E" means the test exercises the whole chain from the CLI interface down to file discovery, rather than testing a single function in isolation.
+- **Lines 3-9** contain imports. `from __future__ import annotations` keeps type hint processing consistent. `Path` is needed for `tmp_path` parameter types. `CliRunner` is Typer's built-in test helper. `app` is the Typer application object imported from the main CLI module.
+- **Line 11** creates a single shared `runner` at module level. `CliRunner` is lightweight, stateless, and safe to reuse. Creating it once here avoids repeating `CliRunner()` in every test method.
+- **Lines 14-21** define `TestCLIHelp`. These two tests verify the application's help behavior.
+  - `test_help_exits_zero` calls `runner.invoke(app, ["--help"])`. The `invoke` method runs the Typer app in-process with the given arguments. `result.exit_code` contains the integer exit status. `assert result.exit_code == 0` proves that asking for help succeeds cleanly.
+  - `test_help_contains_scan` invokes the same help, then checks that the word `scan` appears somewhere in `result.output`. `.lower()` avoids case sensitivity. This test ensures the `scan` command remains discoverable through help text.
+- **Lines 24-60** define `TestScanCommand`. These tests verify the `scan` command's behavior across different scenarios.
+  - `test_scan_empty_directory` uses `tmp_path`, a pytest built-in fixture that provides a real temporary directory guaranteed to be empty and isolated. The test scans an empty directory and asserts that the exit code is zero. Empty directories are not errors. The assertion on `result.output` uses `or` because the exact message wording may vary.
+  - `test_scan_lists_pdf_files` creates two fake PDF files using `.touch()`. Then it invokes the scan command and asserts both filenames appear in the output. Note that `.touch()` creates zero-byte files. The `scan` command does not read their content; it only checks that they exist and match `*.pdf`.
+  - `test_scan_ignores_non_pdf_files` verifies the exclusion contract. A `readme.txt` is created alongside a `.pdf` file. After scanning, the test asserts that `readme.txt` does not appear in the output.
+  - `test_scan_nonexistent_directory` passes a path that is almost certainly missing. The assertion is that the exit code is not zero. It does not check the exact error message, which makes the test slightly more robust against message wording changes.
+  - `test_scan_recursive_flag` sets up a nested directory structure with a top-level and a nested PDF. Two invocations are run: one without `--recursive` and one with. The assertions verify that non-recursive mode misses the nested file and recursive mode includes it. This test protects the `recursive` parameter's behavior contract.
+
+#### Why these are called end-to-end tests
+
+Unit tests in `tests/unit/` call `find_pdfs()` directly, bypassing the CLI. E2E tests in `tests/e2e/` go through the full command path: Typer parses arguments, the callback runs, the `scan` function runs, `find_pdfs()` is called, and the result is formatted and printed. The `CliRunner` captures the output and exit code. This is "end-to-end" because it exercises the full chain without a real terminal.
+
+#### What `result` contains
+
+After `runner.invoke(app, [...])`:
+
+- `result.exit_code` is an integer, usually `0` for success or a non-zero value for failure.
+- `result.output` is a string containing everything the command printed to standard output.
+- `result.exception` holds any unhandled exception that leaked out. If your tests fail unexpectedly, `result.exception` is often the clue.
+
+#### The difference between unit tests and E2E tests in this project
+
+```text
+Unit test (tests/unit/test_paths.py)
+  - calls find_pdfs() directly
+  - does not involve Typer, CLI argument parsing, or console output
+  - fast and precise
+  - best for testing function contracts
+
+E2E test (tests/e2e/test_cli.py)
+  - invokes the full Typer app with a simulated argument list
+  - exercises argument parsing, callback, command logic, and output formatting
+  - tests the "public contract" of the CLI
+  - slightly more realistic
+  - still fast because CliRunner runs in-process (no subprocess)
+```
+
+Both kinds are necessary. Unit tests tell you whether `find_pdfs()` works correctly. E2E tests tell you whether the wiring between arguments, the command function, the utility, and the output is correct.
+
+---
+
+### 8.7 Execution flow diagram: terminal → CLI entry → scan → find_pdfs → output
 
 ```text
 Terminal
@@ -1255,7 +1491,146 @@ The goal is a stable mental model for the current project, not encyclopedic know
 
 ---
 
-## 20. Bridge to next week
+## 20. PowerShell equivalents for Windows learners
+
+All commands in this chapter use macOS/Linux shell syntax. If you are using Windows with PowerShell, the following equivalents apply.
+
+### Creating a virtual environment
+
+```bash
+# macOS / Linux
+python -m venv .venv
+```
+
+```powershell
+# Windows PowerShell
+python -m venv .venv
+```
+
+The `python -m venv .venv` command is identical on all platforms. The difference appears in the next step.
+
+### Activating the virtual environment
+
+```bash
+# macOS / Linux
+source .venv/bin/activate
+```
+
+```powershell
+# Windows PowerShell
+.venv\Scripts\Activate.ps1
+```
+
+On Windows, the activation script lives in `.venv\Scripts\` and is called `Activate.ps1`. If PowerShell execution policy blocks scripts, first run:
+
+```powershell
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+```
+
+Then retry the activation command.
+
+To confirm which Python is active after activation:
+
+```powershell
+# Windows PowerShell
+where.exe python
+```
+
+```bash
+# macOS / Linux
+which python
+```
+
+### Upgrading pip
+
+```bash
+# macOS / Linux and Windows PowerShell (identical)
+python -m pip install --upgrade pip
+```
+
+### Installing the project in editable mode
+
+```bash
+# macOS / Linux and Windows PowerShell (identical)
+python -m pip install -e ".[dev]"
+```
+
+The quotes are important on Windows too.
+
+### Import smoke test
+
+```bash
+# macOS / Linux and Windows PowerShell (identical)
+python -c "import researchops; print('import ok')"
+```
+
+### Running the CLI
+
+```bash
+# macOS / Linux and Windows PowerShell (identical)
+researchops --help
+researchops scan PATH
+researchops scan PATH --recursive
+```
+
+The shell command `researchops` works the same way on Windows once editable install succeeds, because pip creates a wrapper script in `.venv\Scripts\researchops.exe`.
+
+### Running pytest
+
+```bash
+# macOS / Linux and Windows PowerShell (identical)
+pytest
+pytest tests/unit/test_paths.py -v
+pytest tests/e2e/test_cli.py -v
+pytest -q
+```
+
+### Running Ruff
+
+```bash
+# macOS / Linux and Windows PowerShell (identical)
+ruff check src tests
+```
+
+### Checking exit codes
+
+```bash
+# macOS / Linux: $? holds the last exit code
+researchops scan missing_path ; echo $?
+```
+
+```powershell
+# Windows PowerShell: $LASTEXITCODE holds the last exit code
+researchops scan missing_path ; echo $LASTEXITCODE
+```
+
+### Path separators
+
+On Windows, filesystem paths use backslashes. However, most Python code that uses `pathlib.Path` handles this automatically. When passing paths as command arguments from PowerShell, you can use either `/` or `\` and the project will handle them correctly.
+
+```powershell
+researchops scan .\examples\sample_papers
+researchops scan ./examples/sample_papers
+```
+
+Both forms work in PowerShell.
+
+### Summary table
+
+| macOS / Linux | Windows PowerShell |
+|---|---|
+| `source .venv/bin/activate` | `.venv\Scripts\Activate.ps1` |
+| `which python` | `where.exe python` |
+| `echo $?` | `echo $LASTEXITCODE` |
+| `python -m venv .venv` | same |
+| `python -m pip install -e ".[dev]"` | same |
+| `pytest -q` | same |
+| `ruff check src tests` | same |
+| `researchops --help` | same |
+
+---
+
+## 21. Bridge to next week
 
 Week 1 teaches where the code lives, how the package is installed, how the CLI starts, and how tests describe behavior. Week 2 builds directly on that by going deeper into files, `pathlib`, exceptions, and logging.
 
