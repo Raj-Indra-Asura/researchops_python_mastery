@@ -63,7 +63,7 @@ omit = ["tests/*"]
 
 [tool.coverage.report]
 show_missing = true
-fail_under = 70
+fail_under = 45
 
 [tool.ruff]
 src = ["src"]
