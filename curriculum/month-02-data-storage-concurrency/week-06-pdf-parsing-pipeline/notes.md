@@ -11,6 +11,410 @@
 
 # Week 06 Notes — PDF Parsing Pipeline
 
+<!-- LEARNING_FORMAT_START -->
+# Complete Learning Format — Week 06: PDF Parsing Pipeline
+
+This guide is the clean learning path for the chapter.
+It uses short sentences.
+It breaks ideas into small pieces.
+It tells you what to focus on and what to ignore for now.
+Read it before the older detailed notes that follow.
+
+## Chapter overview
+
+The chapter title is **Raw bytes become structured knowledge**.
+The practical milestone is: `researchops ingest ./papers` extracts text and metadata from PDFs and stores them. Failed documents are recorded, not silently dropped.
+The expected capability is: Can integrate a third-party library, wire a multi-step pipeline through a service, and handle partial failures without crashing the program.
+This chapter is one step in the ResearchOps system, not a random lesson.
+The visible feature matters because it proves the idea works.
+The hidden skill matters because it lets you build the next chapter without confusion.
+A complete pass through this chapter means you can read the code, run it, test it, break it, and explain it aloud.
+
+Use this study order:
+- Read the story first without typing.
+- Trace the smallest code example.
+- Find the project file that owns the behavior.
+- Run the validation command.
+- Explain one happy path and one failure path.
+
+## What you already know from previous weeks
+
+- Week 2 taught Files, Paths, Exceptions, and Logging; keep its responsibility in mind, but do not rebuild it here.
+- Week 3 taught OOP, Dataclasses, and Domain Modeling; keep its responsibility in mind, but do not rebuild it here.
+- Week 4 taught CLI and Packaging; keep its responsibility in mind, but do not rebuild it here.
+- Week 5 taught SQLite Storage Layer; keep its responsibility in mind, but do not rebuild it here.
+- You should be able to run the previous validation command before trusting new work.
+- You should be able to point at the main file from the previous week and say what job it owns.
+- If a previous idea feels weak, reread the example and trace one concrete value through it.
+- The safest learning rhythm is: understand one thing, change one thing, test one thing, explain one thing.
+
+## What problem this week solves
+
+Week 6 solves the project problem behind **PDF Parsing Pipeline**.
+Before this chapter, ResearchOps has a gap.
+The gap may be a missing feature, a missing boundary, a missing safety check, or a missing way to communicate with users.
+This chapter closes that gap with a focused milestone.
+Do not treat the milestone as a checklist only.
+Treat it as proof that the idea belongs in the system.
+- The concept `Third-party library integration (`pypdf`)` helps solve part of this gap.
+- The concept `Optional dependencies and graceful import errors` helps solve part of this gap.
+- The concept `Designing parsers that return domain objects, not strings` helps solve part of this gap.
+- The concept ``IngestionService` orchestration: discover → parse → save` helps solve part of this gap.
+- The concept `Real parsing failures and how to record them` helps solve part of this gap.
+- The concept `Integration tests with real PDF fixtures` helps solve part of this gap.
+
+## Beginner mental model
+
+Use a simple four-part model: input, owner, transformation, proof.
+Input means the concrete thing entering the system.
+Owner means the file, object, or function responsible for the decision.
+Transformation means the useful change from raw data to meaningful result.
+Proof means the test or command that confirms the result.
+- Ask: what is the input for **PDF Parsing Pipeline**?
+- Ask: what is the owner for **PDF Parsing Pipeline**?
+- Ask: what is the transformation for **PDF Parsing Pipeline**?
+- Ask: what is the proof for **PDF Parsing Pipeline**?
+If you cannot answer those four questions, do not add more code yet.
+
+## Core vocabulary
+
+| Term | Simple meaning | Why it matters here |
+|------|----------------|---------------------|
+| Third-party library integration (`pypdf`) | Third-party library integration (`pypdf`) | This term names one job in the Week 6 milestone. |
+| Optional dependencies and graceful import errors | Optional dependencies and graceful import errors | This term names one job in the Week 6 milestone. |
+| Designing parsers that return domain objects, not strings | Designing parsers that return domain objects, not strings | This term names one job in the Week 6 milestone. |
+| IngestionService` orchestration | `IngestionService` orchestration: discover → parse → save | This term names one job in the Week 6 milestone. |
+| Real parsing failures and how to record them | Real parsing failures and how to record them | This term names one job in the Week 6 milestone. |
+| Integration tests with real PDF fixtures | Integration tests with real PDF fixtures | This term names one job in the Week 6 milestone. |
+| Boundary | A line between responsibilities | It keeps the chapter understandable for a beginner. |
+| Failure path | What happens when the happy path is not available | It keeps the chapter understandable for a beginner. |
+| Validation | Evidence that the system still works | It keeps the chapter understandable for a beginner. |
+| Responsibility | The one job a file or function owns | It keeps the chapter understandable for a beginner. |
+
+## Concept explanations from first principles
+
+Read each concept as if you have never heard the term before.
+Do not skip the plain meaning.
+### Concept 1: Third-party library integration (`pypdf`)
+- **Plain meaning:** This is a named tool for solving one part of the chapter problem.
+- **Why it exists:** Real projects become confusing when this concern is unnamed.
+- **ResearchOps use:** In Week 6, it supports the milestone: `researchops ingest ./papers` extracts text and metadata from PDFs and stores them. Failed documents are recorded, not silently dropped.
+- **Input question:** What data, command, file, request, or state reaches this concept?
+- **Output question:** What value, saved record, response, log, or state change should come out?
+- **Failure question:** What can be missing, malformed, slow, duplicated, stale, or invalid?
+- **Test question:** Which test would catch the mistake before a user sees it?
+- **Beginner trap:** Memorizing the word without tracing it in the project.
+- **Recovery move:** Use one concrete example and follow it through the files.
+- **Mastery signal:** You can explain the concept without saying "magic" or "it just works".
+
+### Concept 2: Optional dependencies and graceful import errors
+- **Plain meaning:** This is a named tool for solving one part of the chapter problem.
+- **Why it exists:** Real projects become confusing when this concern is unnamed.
+- **ResearchOps use:** In Week 6, it supports the milestone: `researchops ingest ./papers` extracts text and metadata from PDFs and stores them. Failed documents are recorded, not silently dropped.
+- **Input question:** What data, command, file, request, or state reaches this concept?
+- **Output question:** What value, saved record, response, log, or state change should come out?
+- **Failure question:** What can be missing, malformed, slow, duplicated, stale, or invalid?
+- **Test question:** Which test would catch the mistake before a user sees it?
+- **Beginner trap:** Memorizing the word without tracing it in the project.
+- **Recovery move:** Use one concrete example and follow it through the files.
+- **Mastery signal:** You can explain the concept without saying "magic" or "it just works".
+
+### Concept 3: Designing parsers that return domain objects, not strings
+- **Plain meaning:** This is a named tool for solving one part of the chapter problem.
+- **Why it exists:** Real projects become confusing when this concern is unnamed.
+- **ResearchOps use:** In Week 6, it supports the milestone: `researchops ingest ./papers` extracts text and metadata from PDFs and stores them. Failed documents are recorded, not silently dropped.
+- **Input question:** What data, command, file, request, or state reaches this concept?
+- **Output question:** What value, saved record, response, log, or state change should come out?
+- **Failure question:** What can be missing, malformed, slow, duplicated, stale, or invalid?
+- **Test question:** Which test would catch the mistake before a user sees it?
+- **Beginner trap:** Memorizing the word without tracing it in the project.
+- **Recovery move:** Use one concrete example and follow it through the files.
+- **Mastery signal:** You can explain the concept without saying "magic" or "it just works".
+
+### Concept 4: `IngestionService` orchestration: discover → parse → save
+- **Plain meaning:** This is a named tool for solving one part of the chapter problem.
+- **Why it exists:** Real projects become confusing when this concern is unnamed.
+- **ResearchOps use:** In Week 6, it supports the milestone: `researchops ingest ./papers` extracts text and metadata from PDFs and stores them. Failed documents are recorded, not silently dropped.
+- **Input question:** What data, command, file, request, or state reaches this concept?
+- **Output question:** What value, saved record, response, log, or state change should come out?
+- **Failure question:** What can be missing, malformed, slow, duplicated, stale, or invalid?
+- **Test question:** Which test would catch the mistake before a user sees it?
+- **Beginner trap:** Memorizing the word without tracing it in the project.
+- **Recovery move:** Use one concrete example and follow it through the files.
+- **Mastery signal:** You can explain the concept without saying "magic" or "it just works".
+
+### Concept 5: Real parsing failures and how to record them
+- **Plain meaning:** This is a named tool for solving one part of the chapter problem.
+- **Why it exists:** Real projects become confusing when this concern is unnamed.
+- **ResearchOps use:** In Week 6, it supports the milestone: `researchops ingest ./papers` extracts text and metadata from PDFs and stores them. Failed documents are recorded, not silently dropped.
+- **Input question:** What data, command, file, request, or state reaches this concept?
+- **Output question:** What value, saved record, response, log, or state change should come out?
+- **Failure question:** What can be missing, malformed, slow, duplicated, stale, or invalid?
+- **Test question:** Which test would catch the mistake before a user sees it?
+- **Beginner trap:** Memorizing the word without tracing it in the project.
+- **Recovery move:** Use one concrete example and follow it through the files.
+- **Mastery signal:** You can explain the concept without saying "magic" or "it just works".
+
+### Concept 6: Integration tests with real PDF fixtures
+- **Plain meaning:** This is a named tool for solving one part of the chapter problem.
+- **Why it exists:** Real projects become confusing when this concern is unnamed.
+- **ResearchOps use:** In Week 6, it supports the milestone: `researchops ingest ./papers` extracts text and metadata from PDFs and stores them. Failed documents are recorded, not silently dropped.
+- **Input question:** What data, command, file, request, or state reaches this concept?
+- **Output question:** What value, saved record, response, log, or state change should come out?
+- **Failure question:** What can be missing, malformed, slow, duplicated, stale, or invalid?
+- **Test question:** Which test would catch the mistake before a user sees it?
+- **Beginner trap:** Memorizing the word without tracing it in the project.
+- **Recovery move:** Use one concrete example and follow it through the files.
+- **Mastery signal:** You can explain the concept without saying "magic" or "it just works".
+
+## ResearchOps-specific application
+
+The chapter belongs to these project locations:
+- `src/researchops/parsing/pdf_parser.py` — implements `DocumentParser`
+- `src/researchops/parsing/text_cleaner.py`
+- `src/researchops/parsing/metadata_extractor.py`
+- `src/researchops/services/ingestion_service.py`
+Study those files in this order:
+1. Find the user-facing entry point.
+2. Find the service or core concept that owns the meaning.
+3. Find the infrastructure only when outside resources are needed.
+4. Find the tests that prove the behavior.
+5. Find the validation command that a learner runs manually.
+The goal is to know why each file exists.
+If two files seem to own the same decision, stop and clarify the boundary.
+
+## Code examples with line-by-line explanation
+
+```python
+class PdfParser:
+    def parse(self, path: Path) -> ParsedDocument:
+        raw_text = read_pdf_text(path)
+        cleaned_text = clean_text(raw_text)
+        return ParsedDocument(source_path=path, text=cleaned_text)
+```
+
+Line-by-line explanation:
+- Line 1: `class PdfParser:` — This names a project concept so the code can talk in domain language.
+- Line 2: `def parse(self, path: Path) -> ParsedDocument:` — This names a reusable action and shows what information it receives.
+- Line 3: `raw_text = read_pdf_text(path)` — This stores a clear intermediate value for the next step.
+- Line 4: `cleaned_text = clean_text(raw_text)` — This stores a clear intermediate value for the next step.
+- Line 5: `return ParsedDocument(source_path=path, text=cleaned_text)` — This produces the result or performs the declared setup step.
+
+How to use this example:
+- Name the input.
+- Name the output.
+- Predict the result before running anything.
+- Connect the shape to the real ResearchOps file.
+- Write one sentence about why each line belongs.
+
+## Common beginner mistakes
+
+- **Mistake:** Pasting code before knowing the owner of the behavior.
+  **Why it hurts:** it hides the mental model and makes debugging harder.
+  **Better move:** make one small behavior clear, then prove it.
+- **Mistake:** Changing many files at once.
+  **Why it hurts:** it hides the mental model and makes debugging harder.
+  **Better move:** make one small behavior clear, then prove it.
+- **Mistake:** Skipping the failure path.
+  **Why it hurts:** it hides the mental model and makes debugging harder.
+  **Better move:** make one small behavior clear, then prove it.
+- **Mistake:** Reading only the happy path test.
+  **Why it hurts:** it hides the mental model and makes debugging harder.
+  **Better move:** make one small behavior clear, then prove it.
+- **Mistake:** Ignoring the validation command.
+  **Why it hurts:** it hides the mental model and makes debugging harder.
+  **Better move:** make one small behavior clear, then prove it.
+- **Mistake:** Using vague names.
+  **Why it hurts:** it hides the mental model and makes debugging harder.
+  **Better move:** make one small behavior clear, then prove it.
+- **Mistake:** Putting business rules in the user interface layer.
+  **Why it hurts:** it hides the mental model and makes debugging harder.
+  **Better move:** make one small behavior clear, then prove it.
+- **Mistake:** Treating logs, errors, and tests as decoration.
+  **Why it hurts:** it hides the mental model and makes debugging harder.
+  **Better move:** make one small behavior clear, then prove it.
+- **Mistake:** Optimizing before correctness is visible.
+  **Why it hurts:** it hides the mental model and makes debugging harder.
+  **Better move:** make one small behavior clear, then prove it.
+- **Mistake:** Building future-week features early.
+  **Why it hurts:** it hides the mental model and makes debugging harder.
+  **Better move:** make one small behavior clear, then prove it.
+
+## Debugging guidance
+
+- Copy the exact failing command.
+- Read the first useful error line.
+- Read the final error line.
+- Classify the failure as import, input, state, file, database, network, model, or expectation.
+- Reproduce it with the smallest command.
+- Inspect the value closest to the failure.
+- Fix the cause, not only the symptom.
+- Run the narrowest test.
+- Run the chapter validation command.
+- Write down what the error was teaching.
+Debugging questions:
+- What did I expect?
+- What happened?
+- Which value first became wrong?
+- Which layer created that value?
+- Which test should catch this next time?
+
+## Design tradeoffs
+
+- **Simple first version:** Easy to understand, but not the final production shape.
+- **Clear layers:** More files, but less confusion as features grow.
+- **Explicit errors:** More code, but failures become teachable.
+- **Small unit tests:** Fast feedback, but less end-to-end confidence.
+- **Integration tests:** Real wiring, but slower and more setup.
+- **Configuration:** Flexible behavior, but defaults must be clear.
+The right question is not "What is the fanciest design?"
+The right question is "What design teaches the responsibility clearly and can grow next week?"
+
+## Testing implications
+
+Tests for this chapter:
+- `tests/integration/test_ingestion_service.py` — full pipeline with sample PDFs
+Validation commands:
+```bash
+researchops ingest ./examples/sample_papers
+researchops papers list
+researchops papers failed
+pytest tests/integration/test_ingestion_service.py -v
+```
+- Arrange the data.
+- Act on the system.
+- Assert the visible promise.
+- Check one failure path.
+- Keep unit tests fast.
+- Use integration tests only when real wiring matters.
+
+## Architecture implications
+
+ResearchOps stays understandable when dependencies point inward.
+```text
+CLI / API / Worker -> Services -> Core
+Infrastructure implements core-facing contracts and is wired at the outside.
+```
+- Does the UI layer avoid business logic?
+- Does the service layer own workflow decisions?
+- Does core avoid infrastructure imports?
+- Does infrastructure do outside-world work?
+- Do tests use fakes when possible?
+Architecture is not ceremony.
+Architecture is named responsibility.
+
+## How this connects to AI engineering / ML research
+
+AI engineering needs more than models.
+It needs reliable data flow, clear interfaces, repeatable experiments, visible failures, and honest evaluation.
+Week 6 contributes by making **pdf parsing pipeline** clear enough to trust.
+- Bad data creates bad model behavior.
+- Unclear boundaries make experiments hard to reproduce.
+- Missing tests let regressions change research results silently.
+- Good logs and errors shorten investigation time.
+- Clear documentation lets future users understand the system.
+
+## Mini quizzes
+
+- What problem does Week 6 solve?
+- What is the main input?
+- What is the main output?
+- Which file owns the main responsibility?
+- Which layer should not contain business logic?
+- What is one happy path?
+- What is one failure path?
+- What command proves the chapter works?
+- What should you not build early?
+- How does this prepare the next week?
+
+## Explain-it-aloud prompts
+
+- Explain PDF Parsing Pipeline in simple words.
+- Explain the data flow from input to result.
+- Explain the first file you would open.
+- Explain the test that gives confidence.
+- Explain what can break.
+- Explain the tradeoff made in this chapter.
+- Explain what you still find weak.
+
+## What to memorize
+
+- The topic: PDF Parsing Pipeline.
+- The milestone: `researchops ingest ./papers` extracts text and metadata from PDFs and stores them. Failed documents are recorded, not silently dropped.
+- The main project files.
+- The validation command.
+- The boundary rule for the layer you are touching.
+- The habit of testing before moving forward.
+
+## What to understand deeply
+
+- Why this feature belongs now.
+- How data moves through the chapter.
+- Which file owns which decision.
+- How the failure path is handled.
+- Why the tests prove behavior.
+- How this week makes future work safer.
+
+## What not to worry about yet
+
+- Perfect scale.
+- Fancy abstractions.
+- Future-week features.
+- Every option in every library.
+- Premature optimization.
+- Comparing your speed to someone else.
+Focus on the milestone.
+A clear small milestone beats a confusing large one.
+
+## Bridge to next week
+
+Next week is Week 7: **Keyword Search and Data Quality**.
+This week prepares you by giving ResearchOps a clearer piece of behavior before the next milestone: `researchops search "transformer attention"` returns ranked results from stored papers.
+- Run validation.
+- Explain the main files.
+- Explain one failure.
+- Explain one test.
+- Write down what still feels weak before moving on.
+
+## Guided deepening drills
+
+Use these drills if the chapter still feels abstract.
+- Drill 1: Trace `Third-party library integration (`pypdf`)` from user input to project result.
+- Drill 2: Write one sentence defining `Third-party library integration (`pypdf`)` without copying the notes.
+- Drill 3: Find the file where `Third-party library integration (`pypdf`)` appears or should appear.
+- Drill 4: Name one wrong implementation of `Third-party library integration (`pypdf`)` and why it would hurt.
+- Drill 5: Name one test that would protect `Third-party library integration (`pypdf`)`.
+- Drill 6: Trace `Optional dependencies and graceful import errors` from user input to project result.
+- Drill 7: Write one sentence defining `Optional dependencies and graceful import errors` without copying the notes.
+- Drill 8: Find the file where `Optional dependencies and graceful import errors` appears or should appear.
+- Drill 9: Name one wrong implementation of `Optional dependencies and graceful import errors` and why it would hurt.
+- Drill 10: Name one test that would protect `Optional dependencies and graceful import errors`.
+- Drill 11: Trace `Designing parsers that return domain objects, not strings` from user input to project result.
+- Drill 12: Write one sentence defining `Designing parsers that return domain objects, not strings` without copying the notes.
+- Drill 13: Find the file where `Designing parsers that return domain objects, not strings` appears or should appear.
+- Drill 14: Name one wrong implementation of `Designing parsers that return domain objects, not strings` and why it would hurt.
+- Drill 15: Name one test that would protect `Designing parsers that return domain objects, not strings`.
+- Drill 16: Trace ``IngestionService` orchestration: discover → parse → save` from user input to project result.
+- Drill 17: Write one sentence defining ``IngestionService` orchestration: discover → parse → save` without copying the notes.
+- Drill 18: Find the file where ``IngestionService` orchestration: discover → parse → save` appears or should appear.
+- Drill 19: Name one wrong implementation of ``IngestionService` orchestration: discover → parse → save` and why it would hurt.
+- Drill 20: Name one test that would protect ``IngestionService` orchestration: discover → parse → save`.
+- Drill 21: Trace `Real parsing failures and how to record them` from user input to project result.
+- Drill 22: Write one sentence defining `Real parsing failures and how to record them` without copying the notes.
+- Drill 23: Find the file where `Real parsing failures and how to record them` appears or should appear.
+- Drill 24: Name one wrong implementation of `Real parsing failures and how to record them` and why it would hurt.
+- Drill 25: Name one test that would protect `Real parsing failures and how to record them`.
+- Drill 26: Trace `Integration tests with real PDF fixtures` from user input to project result.
+- Drill 27: Write one sentence defining `Integration tests with real PDF fixtures` without copying the notes.
+- Drill 28: Find the file where `Integration tests with real PDF fixtures` appears or should appear.
+- Drill 29: Name one wrong implementation of `Integration tests with real PDF fixtures` and why it would hurt.
+- Drill 30: Name one test that would protect `Integration tests with real PDF fixtures`.
+
+<!-- LEARNING_FORMAT_END -->
+
+---
+
+# Existing detailed notes
 ## 1. Chapter overview
 
 In Week 5 you built the storage layer.

@@ -11,6 +11,455 @@
 
 # Notes - Week 12 Experiment Tracking
 
+<!-- LEARNING_FORMAT_START -->
+# Complete Learning Format — Week 12: Experiment Tracking
+
+This guide is the clean learning path for the chapter.
+It uses short sentences.
+It breaks ideas into small pieces.
+It tells you what to focus on and what to ignore for now.
+Read it before the older detailed notes that follow.
+
+## Chapter overview
+
+The chapter title is **Remembering what you tried**.
+The practical milestone is: `researchops experiment list` shows all training runs with params and metrics. `researchops experiment compare` shows which run had the best F1.
+The expected capability is: Can implement a tracking system that persists experiment metadata, retrieve and compare runs, and explain why reproducibility matters in ML.
+This chapter is one step in the ResearchOps system, not a random lesson.
+The visible feature matters because it proves the idea works.
+The hidden skill matters because it lets you build the next chapter without confusion.
+A complete pass through this chapter means you can read the code, run it, test it, break it, and explain it aloud.
+
+Use this study order:
+- Read the story first without typing.
+- Trace the smallest code example.
+- Find the project file that owns the behavior.
+- Run the validation command.
+- Explain one happy path and one failure path.
+
+## What you already know from previous weeks
+
+- Week 8 taught Multiprocessing Ingestion; keep its responsibility in mind, but do not rebuild it here.
+- Week 9 taught Protocols, Interfaces, and Clean Architecture; keep its responsibility in mind, but do not rebuild it here.
+- Week 10 taught Testing Discipline and Quality Gates; keep its responsibility in mind, but do not rebuild it here.
+- Week 11 taught Classical ML — Topic Classification; keep its responsibility in mind, but do not rebuild it here.
+- You should be able to run the previous validation command before trusting new work.
+- You should be able to point at the main file from the previous week and say what job it owns.
+- If a previous idea feels weak, reread the example and trace one concrete value through it.
+- The safest learning rhythm is: understand one thing, change one thing, test one thing, explain one thing.
+
+## What problem this week solves
+
+Week 12 solves the project problem behind **Experiment Tracking**.
+Before this chapter, ResearchOps has a gap.
+The gap may be a missing feature, a missing boundary, a missing safety check, or a missing way to communicate with users.
+This chapter closes that gap with a focused milestone.
+Do not treat the milestone as a checklist only.
+Treat it as proof that the idea belongs in the system.
+- The concept `Experiment tracking concepts: params, metrics, artifacts, runs` helps solve part of this gap.
+- The concept ``ExperimentRepository` protocol and SQLite implementation` helps solve part of this gap.
+- The concept `Model versioning: linking a saved model artifact to a run` helps solve part of this gap.
+- The concept `Reproducibility requirements: recording random seeds, data splits` helps solve part of this gap.
+- The concept ``ExperimentService` orchestration` helps solve part of this gap.
+
+## Beginner mental model
+
+Use a simple four-part model: input, owner, transformation, proof.
+Input means the concrete thing entering the system.
+Owner means the file, object, or function responsible for the decision.
+Transformation means the useful change from raw data to meaningful result.
+Proof means the test or command that confirms the result.
+- Ask: what is the input for **Experiment Tracking**?
+- Ask: what is the owner for **Experiment Tracking**?
+- Ask: what is the transformation for **Experiment Tracking**?
+- Ask: what is the proof for **Experiment Tracking**?
+If you cannot answer those four questions, do not add more code yet.
+
+## Core vocabulary
+
+| Term | Simple meaning | Why it matters here |
+|------|----------------|---------------------|
+| Experiment tracking concepts | Experiment tracking concepts: params, metrics, artifacts, runs | This term names one job in the Week 12 milestone. |
+| ExperimentRepository` protocol and SQLite implementation | `ExperimentRepository` protocol and SQLite implementation | This term names one job in the Week 12 milestone. |
+| Model versioning | Model versioning: linking a saved model artifact to a run | This term names one job in the Week 12 milestone. |
+| Reproducibility requirements | Reproducibility requirements: recording random seeds, data splits | This term names one job in the Week 12 milestone. |
+| ExperimentService` orchestration | `ExperimentService` orchestration | This term names one job in the Week 12 milestone. |
+| Boundary | A line between responsibilities | It keeps the chapter understandable for a beginner. |
+| Failure path | What happens when the happy path is not available | It keeps the chapter understandable for a beginner. |
+| Validation | Evidence that the system still works | It keeps the chapter understandable for a beginner. |
+| Responsibility | The one job a file or function owns | It keeps the chapter understandable for a beginner. |
+
+## Concept explanations from first principles
+
+Read each concept as if you have never heard the term before.
+Do not skip the plain meaning.
+### Concept 1: Experiment tracking concepts: params, metrics, artifacts, runs
+- **Plain meaning:** This is a named tool for solving one part of the chapter problem.
+- **Why it exists:** Real projects become confusing when this concern is unnamed.
+- **ResearchOps use:** In Week 12, it supports the milestone: `researchops experiment list` shows all training runs with params and metrics. `researchops experiment compare` shows which run had the best F1.
+- **Input question:** What data, command, file, request, or state reaches this concept?
+- **Output question:** What value, saved record, response, log, or state change should come out?
+- **Failure question:** What can be missing, malformed, slow, duplicated, stale, or invalid?
+- **Test question:** Which test would catch the mistake before a user sees it?
+- **Beginner trap:** Memorizing the word without tracing it in the project.
+- **Recovery move:** Use one concrete example and follow it through the files.
+- **Mastery signal:** You can explain the concept without saying "magic" or "it just works".
+
+### Concept 2: `ExperimentRepository` protocol and SQLite implementation
+- **Plain meaning:** This is a named tool for solving one part of the chapter problem.
+- **Why it exists:** Real projects become confusing when this concern is unnamed.
+- **ResearchOps use:** In Week 12, it supports the milestone: `researchops experiment list` shows all training runs with params and metrics. `researchops experiment compare` shows which run had the best F1.
+- **Input question:** What data, command, file, request, or state reaches this concept?
+- **Output question:** What value, saved record, response, log, or state change should come out?
+- **Failure question:** What can be missing, malformed, slow, duplicated, stale, or invalid?
+- **Test question:** Which test would catch the mistake before a user sees it?
+- **Beginner trap:** Memorizing the word without tracing it in the project.
+- **Recovery move:** Use one concrete example and follow it through the files.
+- **Mastery signal:** You can explain the concept without saying "magic" or "it just works".
+
+### Concept 3: Model versioning: linking a saved model artifact to a run
+- **Plain meaning:** This is a named tool for solving one part of the chapter problem.
+- **Why it exists:** Real projects become confusing when this concern is unnamed.
+- **ResearchOps use:** In Week 12, it supports the milestone: `researchops experiment list` shows all training runs with params and metrics. `researchops experiment compare` shows which run had the best F1.
+- **Input question:** What data, command, file, request, or state reaches this concept?
+- **Output question:** What value, saved record, response, log, or state change should come out?
+- **Failure question:** What can be missing, malformed, slow, duplicated, stale, or invalid?
+- **Test question:** Which test would catch the mistake before a user sees it?
+- **Beginner trap:** Memorizing the word without tracing it in the project.
+- **Recovery move:** Use one concrete example and follow it through the files.
+- **Mastery signal:** You can explain the concept without saying "magic" or "it just works".
+
+### Concept 4: Reproducibility requirements: recording random seeds, data splits
+- **Plain meaning:** This is a named tool for solving one part of the chapter problem.
+- **Why it exists:** Real projects become confusing when this concern is unnamed.
+- **ResearchOps use:** In Week 12, it supports the milestone: `researchops experiment list` shows all training runs with params and metrics. `researchops experiment compare` shows which run had the best F1.
+- **Input question:** What data, command, file, request, or state reaches this concept?
+- **Output question:** What value, saved record, response, log, or state change should come out?
+- **Failure question:** What can be missing, malformed, slow, duplicated, stale, or invalid?
+- **Test question:** Which test would catch the mistake before a user sees it?
+- **Beginner trap:** Memorizing the word without tracing it in the project.
+- **Recovery move:** Use one concrete example and follow it through the files.
+- **Mastery signal:** You can explain the concept without saying "magic" or "it just works".
+
+### Concept 5: `ExperimentService` orchestration
+- **Plain meaning:** This is a named tool for solving one part of the chapter problem.
+- **Why it exists:** Real projects become confusing when this concern is unnamed.
+- **ResearchOps use:** In Week 12, it supports the milestone: `researchops experiment list` shows all training runs with params and metrics. `researchops experiment compare` shows which run had the best F1.
+- **Input question:** What data, command, file, request, or state reaches this concept?
+- **Output question:** What value, saved record, response, log, or state change should come out?
+- **Failure question:** What can be missing, malformed, slow, duplicated, stale, or invalid?
+- **Test question:** Which test would catch the mistake before a user sees it?
+- **Beginner trap:** Memorizing the word without tracing it in the project.
+- **Recovery move:** Use one concrete example and follow it through the files.
+- **Mastery signal:** You can explain the concept without saying "magic" or "it just works".
+
+## ResearchOps-specific application
+
+The chapter belongs to these project locations:
+- `src/researchops/storage/experiment_repository.py`
+- `src/researchops/services/experiment_service.py`
+- `src/researchops/cli/commands/experiments.py`
+- `src/researchops/storage/schema.sql` — experiment tables
+Study those files in this order:
+1. Find the user-facing entry point.
+2. Find the service or core concept that owns the meaning.
+3. Find the infrastructure only when outside resources are needed.
+4. Find the tests that prove the behavior.
+5. Find the validation command that a learner runs manually.
+The goal is to know why each file exists.
+If two files seem to own the same decision, stop and clarify the boundary.
+
+## Code examples with line-by-line explanation
+
+```python
+run = ExperimentRun(
+    params={"model": "tfidf-logistic-regression"},
+    metrics={"f1": 0.82},
+    artifact_path=Path("models/topic.joblib"),
+)
+repository.save(run)
+```
+
+Line-by-line explanation:
+- Line 1: `run = ExperimentRun(` — This stores a clear intermediate value for the next step.
+- Line 2: `params={"model": "tfidf-logistic-regression"},` — This stores a clear intermediate value for the next step.
+- Line 3: `metrics={"f1": 0.82},` — This stores a clear intermediate value for the next step.
+- Line 4: `artifact_path=Path("models/topic.joblib"),` — This stores a clear intermediate value for the next step.
+- Line 5: `)` — This performs one small visible step in the workflow.
+- Line 6: `repository.save(run)` — This performs one small visible step in the workflow.
+
+How to use this example:
+- Name the input.
+- Name the output.
+- Predict the result before running anything.
+- Connect the shape to the real ResearchOps file.
+- Write one sentence about why each line belongs.
+
+## Common beginner mistakes
+
+- **Mistake:** Pasting code before knowing the owner of the behavior.
+  **Why it hurts:** it hides the mental model and makes debugging harder.
+  **Better move:** make one small behavior clear, then prove it.
+- **Mistake:** Changing many files at once.
+  **Why it hurts:** it hides the mental model and makes debugging harder.
+  **Better move:** make one small behavior clear, then prove it.
+- **Mistake:** Skipping the failure path.
+  **Why it hurts:** it hides the mental model and makes debugging harder.
+  **Better move:** make one small behavior clear, then prove it.
+- **Mistake:** Reading only the happy path test.
+  **Why it hurts:** it hides the mental model and makes debugging harder.
+  **Better move:** make one small behavior clear, then prove it.
+- **Mistake:** Ignoring the validation command.
+  **Why it hurts:** it hides the mental model and makes debugging harder.
+  **Better move:** make one small behavior clear, then prove it.
+- **Mistake:** Using vague names.
+  **Why it hurts:** it hides the mental model and makes debugging harder.
+  **Better move:** make one small behavior clear, then prove it.
+- **Mistake:** Putting business rules in the user interface layer.
+  **Why it hurts:** it hides the mental model and makes debugging harder.
+  **Better move:** make one small behavior clear, then prove it.
+- **Mistake:** Treating logs, errors, and tests as decoration.
+  **Why it hurts:** it hides the mental model and makes debugging harder.
+  **Better move:** make one small behavior clear, then prove it.
+- **Mistake:** Optimizing before correctness is visible.
+  **Why it hurts:** it hides the mental model and makes debugging harder.
+  **Better move:** make one small behavior clear, then prove it.
+- **Mistake:** Building future-week features early.
+  **Why it hurts:** it hides the mental model and makes debugging harder.
+  **Better move:** make one small behavior clear, then prove it.
+
+## Debugging guidance
+
+- Copy the exact failing command.
+- Read the first useful error line.
+- Read the final error line.
+- Classify the failure as import, input, state, file, database, network, model, or expectation.
+- Reproduce it with the smallest command.
+- Inspect the value closest to the failure.
+- Fix the cause, not only the symptom.
+- Run the narrowest test.
+- Run the chapter validation command.
+- Write down what the error was teaching.
+Debugging questions:
+- What did I expect?
+- What happened?
+- Which value first became wrong?
+- Which layer created that value?
+- Which test should catch this next time?
+
+## Design tradeoffs
+
+- **Simple first version:** Easy to understand, but not the final production shape.
+- **Clear layers:** More files, but less confusion as features grow.
+- **Explicit errors:** More code, but failures become teachable.
+- **Small unit tests:** Fast feedback, but less end-to-end confidence.
+- **Integration tests:** Real wiring, but slower and more setup.
+- **Configuration:** Flexible behavior, but defaults must be clear.
+The right question is not "What is the fanciest design?"
+The right question is "What design teaches the responsibility clearly and can grow next week?"
+
+## Testing implications
+
+Tests for this chapter:
+- `tests/unit/test_experiment_service.py` — log, list, compare with fake repo
+- `tests/integration/test_experiment_repository.py`
+Validation commands:
+```bash
+researchops experiment list
+researchops experiment compare
+pytest tests/unit/test_experiment_service.py -v
+```
+- Arrange the data.
+- Act on the system.
+- Assert the visible promise.
+- Check one failure path.
+- Keep unit tests fast.
+- Use integration tests only when real wiring matters.
+
+## Architecture implications
+
+ResearchOps stays understandable when dependencies point inward.
+```text
+CLI / API / Worker -> Services -> Core
+Infrastructure implements core-facing contracts and is wired at the outside.
+```
+- Does the UI layer avoid business logic?
+- Does the service layer own workflow decisions?
+- Does core avoid infrastructure imports?
+- Does infrastructure do outside-world work?
+- Do tests use fakes when possible?
+Architecture is not ceremony.
+Architecture is named responsibility.
+
+## How this connects to AI engineering / ML research
+
+AI engineering needs more than models.
+It needs reliable data flow, clear interfaces, repeatable experiments, visible failures, and honest evaluation.
+Week 12 contributes by making **experiment tracking** clear enough to trust.
+- Bad data creates bad model behavior.
+- Unclear boundaries make experiments hard to reproduce.
+- Missing tests let regressions change research results silently.
+- Good logs and errors shorten investigation time.
+- Clear documentation lets future users understand the system.
+
+## Mini quizzes
+
+- What problem does Week 12 solve?
+- What is the main input?
+- What is the main output?
+- Which file owns the main responsibility?
+- Which layer should not contain business logic?
+- What is one happy path?
+- What is one failure path?
+- What command proves the chapter works?
+- What should you not build early?
+- How does this prepare the next week?
+
+## Explain-it-aloud prompts
+
+- Explain Experiment Tracking in simple words.
+- Explain the data flow from input to result.
+- Explain the first file you would open.
+- Explain the test that gives confidence.
+- Explain what can break.
+- Explain the tradeoff made in this chapter.
+- Explain what you still find weak.
+
+## What to memorize
+
+- The topic: Experiment Tracking.
+- The milestone: `researchops experiment list` shows all training runs with params and metrics. `researchops experiment compare` shows which run had the best F1.
+- The main project files.
+- The validation command.
+- The boundary rule for the layer you are touching.
+- The habit of testing before moving forward.
+
+## What to understand deeply
+
+- Why this feature belongs now.
+- How data moves through the chapter.
+- Which file owns which decision.
+- How the failure path is handled.
+- Why the tests prove behavior.
+- How this week makes future work safer.
+
+## What not to worry about yet
+
+- Perfect scale.
+- Fancy abstractions.
+- Future-week features.
+- Every option in every library.
+- Premature optimization.
+- Comparing your speed to someone else.
+Focus on the milestone.
+A clear small milestone beats a confusing large one.
+
+## Bridge to next week
+
+Next week is Week 13: **Embeddings and Semantic Search**.
+This week prepares you by giving ResearchOps a clearer piece of behavior before the next milestone: `researchops semantic-search "efficient transformers"` returns papers ranked by vector similarity to the query.
+- Run validation.
+- Explain the main files.
+- Explain one failure.
+- Explain one test.
+- Write down what still feels weak before moving on.
+
+## Guided deepening drills
+
+Use these drills if the chapter still feels abstract.
+- Drill 1: Trace `Experiment tracking concepts: params, metrics, artifacts, runs` from user input to project result.
+- Drill 2: Write one sentence defining `Experiment tracking concepts: params, metrics, artifacts, runs` without copying the notes.
+- Drill 3: Find the file where `Experiment tracking concepts: params, metrics, artifacts, runs` appears or should appear.
+- Drill 4: Name one wrong implementation of `Experiment tracking concepts: params, metrics, artifacts, runs` and why it would hurt.
+- Drill 5: Name one test that would protect `Experiment tracking concepts: params, metrics, artifacts, runs`.
+- Drill 6: Trace ``ExperimentRepository` protocol and SQLite implementation` from user input to project result.
+- Drill 7: Write one sentence defining ``ExperimentRepository` protocol and SQLite implementation` without copying the notes.
+- Drill 8: Find the file where ``ExperimentRepository` protocol and SQLite implementation` appears or should appear.
+- Drill 9: Name one wrong implementation of ``ExperimentRepository` protocol and SQLite implementation` and why it would hurt.
+- Drill 10: Name one test that would protect ``ExperimentRepository` protocol and SQLite implementation`.
+- Drill 11: Trace `Model versioning: linking a saved model artifact to a run` from user input to project result.
+- Drill 12: Write one sentence defining `Model versioning: linking a saved model artifact to a run` without copying the notes.
+- Drill 13: Find the file where `Model versioning: linking a saved model artifact to a run` appears or should appear.
+- Drill 14: Name one wrong implementation of `Model versioning: linking a saved model artifact to a run` and why it would hurt.
+- Drill 15: Name one test that would protect `Model versioning: linking a saved model artifact to a run`.
+- Drill 16: Trace `Reproducibility requirements: recording random seeds, data splits` from user input to project result.
+- Drill 17: Write one sentence defining `Reproducibility requirements: recording random seeds, data splits` without copying the notes.
+- Drill 18: Find the file where `Reproducibility requirements: recording random seeds, data splits` appears or should appear.
+- Drill 19: Name one wrong implementation of `Reproducibility requirements: recording random seeds, data splits` and why it would hurt.
+- Drill 20: Name one test that would protect `Reproducibility requirements: recording random seeds, data splits`.
+- Drill 21: Trace ``ExperimentService` orchestration` from user input to project result.
+- Drill 22: Write one sentence defining ``ExperimentService` orchestration` without copying the notes.
+- Drill 23: Find the file where ``ExperimentService` orchestration` appears or should appear.
+- Drill 24: Name one wrong implementation of ``ExperimentService` orchestration` and why it would hurt.
+- Drill 25: Name one test that would protect ``ExperimentService` orchestration`.
+- Drill 26: Draw the Week 12 data flow in four boxes.
+- Drill 27: Say why `Experiment Tracking` belongs in this month of the curriculum.
+- Drill 28: Rewrite one error message in beginner-friendly language.
+- Drill 29: List the exact assumptions made by the example code.
+- Drill 30: List the exact assumptions checked by the tests.
+- Drill 31: Point to the line where raw input becomes project meaning.
+- Drill 32: Point to the line where the result becomes visible to a user.
+- Drill 33: Explain what would happen if the main file were deleted.
+- Drill 34: Explain what would happen if the main test were deleted.
+- Drill 35: Describe the smallest manual check you can run.
+- Drill 36: Describe the smallest automated check you can run.
+- Drill 37: Name the most likely beginner mistake for this week.
+- Drill 38: Name the safest recovery move for that mistake.
+- Drill 39: Explain what knowledge should be carried into the next chapter.
+- Drill 40: Trace `Experiment tracking concepts: params, metrics, artifacts, runs` from user input to project result.
+- Drill 41: Write one sentence defining `Experiment tracking concepts: params, metrics, artifacts, runs` without copying the notes.
+- Drill 42: Find the file where `Experiment tracking concepts: params, metrics, artifacts, runs` appears or should appear.
+- Drill 43: Name one wrong implementation of `Experiment tracking concepts: params, metrics, artifacts, runs` and why it would hurt.
+- Drill 44: Name one test that would protect `Experiment tracking concepts: params, metrics, artifacts, runs`.
+- Drill 45: Trace ``ExperimentRepository` protocol and SQLite implementation` from user input to project result.
+- Drill 46: Write one sentence defining ``ExperimentRepository` protocol and SQLite implementation` without copying the notes.
+- Drill 47: Find the file where ``ExperimentRepository` protocol and SQLite implementation` appears or should appear.
+- Drill 48: Name one wrong implementation of ``ExperimentRepository` protocol and SQLite implementation` and why it would hurt.
+- Drill 49: Name one test that would protect ``ExperimentRepository` protocol and SQLite implementation`.
+- Drill 50: Trace `Model versioning: linking a saved model artifact to a run` from user input to project result.
+- Drill 51: Write one sentence defining `Model versioning: linking a saved model artifact to a run` without copying the notes.
+- Drill 52: Find the file where `Model versioning: linking a saved model artifact to a run` appears or should appear.
+- Drill 53: Name one wrong implementation of `Model versioning: linking a saved model artifact to a run` and why it would hurt.
+- Drill 54: Name one test that would protect `Model versioning: linking a saved model artifact to a run`.
+- Drill 55: Trace `Reproducibility requirements: recording random seeds, data splits` from user input to project result.
+- Drill 56: Write one sentence defining `Reproducibility requirements: recording random seeds, data splits` without copying the notes.
+- Drill 57: Find the file where `Reproducibility requirements: recording random seeds, data splits` appears or should appear.
+- Drill 58: Name one wrong implementation of `Reproducibility requirements: recording random seeds, data splits` and why it would hurt.
+- Drill 59: Name one test that would protect `Reproducibility requirements: recording random seeds, data splits`.
+- Drill 60: Trace ``ExperimentService` orchestration` from user input to project result.
+- Drill 61: Write one sentence defining ``ExperimentService` orchestration` without copying the notes.
+- Drill 62: Find the file where ``ExperimentService` orchestration` appears or should appear.
+- Drill 63: Name one wrong implementation of ``ExperimentService` orchestration` and why it would hurt.
+- Drill 64: Name one test that would protect ``ExperimentService` orchestration`.
+- Drill 65: Draw the Week 12 data flow in four boxes.
+- Drill 66: Say why `Experiment Tracking` belongs in this month of the curriculum.
+- Drill 67: Rewrite one error message in beginner-friendly language.
+- Drill 68: List the exact assumptions made by the example code.
+- Drill 69: List the exact assumptions checked by the tests.
+- Drill 70: Point to the line where raw input becomes project meaning.
+- Drill 71: Point to the line where the result becomes visible to a user.
+- Drill 72: Explain what would happen if the main file were deleted.
+- Drill 73: Explain what would happen if the main test were deleted.
+- Drill 74: Describe the smallest manual check you can run.
+- Drill 75: Describe the smallest automated check you can run.
+- Drill 76: Name the most likely beginner mistake for this week.
+- Drill 77: Name the safest recovery move for that mistake.
+- Drill 78: Explain what knowledge should be carried into the next chapter.
+- Drill 79: Trace `Experiment tracking concepts: params, metrics, artifacts, runs` from user input to project result.
+- Drill 80: Write one sentence defining `Experiment tracking concepts: params, metrics, artifacts, runs` without copying the notes.
+- Drill 81: Find the file where `Experiment tracking concepts: params, metrics, artifacts, runs` appears or should appear.
+- Drill 82: Name one wrong implementation of `Experiment tracking concepts: params, metrics, artifacts, runs` and why it would hurt.
+- Drill 83: Name one test that would protect `Experiment tracking concepts: params, metrics, artifacts, runs`.
+- Drill 84: Trace ``ExperimentRepository` protocol and SQLite implementation` from user input to project result.
+- Drill 85: Write one sentence defining ``ExperimentRepository` protocol and SQLite implementation` without copying the notes.
+- Drill 86: Find the file where ``ExperimentRepository` protocol and SQLite implementation` appears or should appear.
+- Drill 87: Name one wrong implementation of ``ExperimentRepository` protocol and SQLite implementation` and why it would hurt.
+
+<!-- LEARNING_FORMAT_END -->
+
+---
+
+# Existing detailed notes
 ## Why training once is not research
 
 After Week 11, you have a trained model. But a single training run immediately raises questions:

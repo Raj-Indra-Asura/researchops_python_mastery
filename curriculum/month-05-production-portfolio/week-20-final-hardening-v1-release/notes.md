@@ -11,6 +11,466 @@
 
 # Week 20 Notes: Final Hardening and v1.0 Release
 
+<!-- LEARNING_FORMAT_START -->
+# Complete Learning Format — Week 20: Final Hardening and v1.0 Release
+
+This guide is the clean learning path for the chapter.
+It uses short sentences.
+It breaks ideas into small pieces.
+It tells you what to focus on and what to ignore for now.
+Read it before the older detailed notes that follow.
+
+## Chapter overview
+
+The chapter title is **Finishing is a skill**.
+The practical milestone is: `v1.0.0` is tagged. CI is green. Every ROADMAP.md row is ✅. A demo exists. The project is portfolio-ready.
+The expected capability is: Can apply semantic versioning, write a changelog, create a git tag, and explain what v1.0 means for a software project.
+This chapter is one step in the ResearchOps system, not a random lesson.
+The visible feature matters because it proves the idea works.
+The hidden skill matters because it lets you build the next chapter without confusion.
+A complete pass through this chapter means you can read the code, run it, test it, break it, and explain it aloud.
+
+Use this study order:
+- Read the story first without typing.
+- Trace the smallest code example.
+- Find the project file that owns the behavior.
+- Run the validation command.
+- Explain one happy path and one failure path.
+
+## What you already know from previous weeks
+
+- Week 16 taught Local Worker and Job System; keep its responsibility in mind, but do not rebuild it here.
+- Week 17 taught RAG Assistant; keep its responsibility in mind, but do not rebuild it here.
+- Week 18 taught Docker and Environment Configuration; keep its responsibility in mind, but do not rebuild it here.
+- Week 19 taught Documentation and Portfolio Polish; keep its responsibility in mind, but do not rebuild it here.
+- You should be able to run the previous validation command before trusting new work.
+- You should be able to point at the main file from the previous week and say what job it owns.
+- If a previous idea feels weak, reread the example and trace one concrete value through it.
+- The safest learning rhythm is: understand one thing, change one thing, test one thing, explain one thing.
+
+## What problem this week solves
+
+Week 20 solves the project problem behind **Final Hardening and v1.0 Release**.
+Before this chapter, ResearchOps has a gap.
+The gap may be a missing feature, a missing boundary, a missing safety check, or a missing way to communicate with users.
+This chapter closes that gap with a focused milestone.
+Do not treat the milestone as a checklist only.
+Treat it as proof that the idea belongs in the system.
+- The concept `Semantic versioning: MAJOR.MINOR.PATCH and what each number means` helps solve part of this gap.
+- The concept `Release checklist discipline: scope control, no new features before release` helps solve part of this gap.
+- The concept `Changelog writing: what changed, for whom, and why` helps solve part of this gap.
+- The concept `Git tagging: `git tag -a v1.0.0 -m "..."`` helps solve part of this gap.
+- The concept `Final retrospective: 20 weeks in review` helps solve part of this gap.
+
+## Beginner mental model
+
+Use a simple four-part model: input, owner, transformation, proof.
+Input means the concrete thing entering the system.
+Owner means the file, object, or function responsible for the decision.
+Transformation means the useful change from raw data to meaningful result.
+Proof means the test or command that confirms the result.
+- Ask: what is the input for **Final Hardening and v1.0 Release**?
+- Ask: what is the owner for **Final Hardening and v1.0 Release**?
+- Ask: what is the transformation for **Final Hardening and v1.0 Release**?
+- Ask: what is the proof for **Final Hardening and v1.0 Release**?
+If you cannot answer those four questions, do not add more code yet.
+
+## Core vocabulary
+
+| Term | Simple meaning | Why it matters here |
+|------|----------------|---------------------|
+| Semantic versioning | Semantic versioning: MAJOR.MINOR.PATCH and what each number means | This term names one job in the Week 20 milestone. |
+| Release checklist discipline | Release checklist discipline: scope control, no new features before release | This term names one job in the Week 20 milestone. |
+| Changelog writing | Changelog writing: what changed, for whom, and why | This term names one job in the Week 20 milestone. |
+| Git tagging | Git tagging: `git tag -a v1.0.0 -m "..."` | This term names one job in the Week 20 milestone. |
+| Final retrospective | Final retrospective: 20 weeks in review | This term names one job in the Week 20 milestone. |
+| Boundary | A line between responsibilities | It keeps the chapter understandable for a beginner. |
+| Failure path | What happens when the happy path is not available | It keeps the chapter understandable for a beginner. |
+| Validation | Evidence that the system still works | It keeps the chapter understandable for a beginner. |
+| Responsibility | The one job a file or function owns | It keeps the chapter understandable for a beginner. |
+
+## Concept explanations from first principles
+
+Read each concept as if you have never heard the term before.
+Do not skip the plain meaning.
+### Concept 1: Semantic versioning: MAJOR.MINOR.PATCH and what each number means
+- **Plain meaning:** This is a named tool for solving one part of the chapter problem.
+- **Why it exists:** Real projects become confusing when this concern is unnamed.
+- **ResearchOps use:** In Week 20, it supports the milestone: `v1.0.0` is tagged. CI is green. Every ROADMAP.md row is ✅. A demo exists. The project is portfolio-ready.
+- **Input question:** What data, command, file, request, or state reaches this concept?
+- **Output question:** What value, saved record, response, log, or state change should come out?
+- **Failure question:** What can be missing, malformed, slow, duplicated, stale, or invalid?
+- **Test question:** Which test would catch the mistake before a user sees it?
+- **Beginner trap:** Memorizing the word without tracing it in the project.
+- **Recovery move:** Use one concrete example and follow it through the files.
+- **Mastery signal:** You can explain the concept without saying "magic" or "it just works".
+
+### Concept 2: Release checklist discipline: scope control, no new features before release
+- **Plain meaning:** This is a named tool for solving one part of the chapter problem.
+- **Why it exists:** Real projects become confusing when this concern is unnamed.
+- **ResearchOps use:** In Week 20, it supports the milestone: `v1.0.0` is tagged. CI is green. Every ROADMAP.md row is ✅. A demo exists. The project is portfolio-ready.
+- **Input question:** What data, command, file, request, or state reaches this concept?
+- **Output question:** What value, saved record, response, log, or state change should come out?
+- **Failure question:** What can be missing, malformed, slow, duplicated, stale, or invalid?
+- **Test question:** Which test would catch the mistake before a user sees it?
+- **Beginner trap:** Memorizing the word without tracing it in the project.
+- **Recovery move:** Use one concrete example and follow it through the files.
+- **Mastery signal:** You can explain the concept without saying "magic" or "it just works".
+
+### Concept 3: Changelog writing: what changed, for whom, and why
+- **Plain meaning:** This is a named tool for solving one part of the chapter problem.
+- **Why it exists:** Real projects become confusing when this concern is unnamed.
+- **ResearchOps use:** In Week 20, it supports the milestone: `v1.0.0` is tagged. CI is green. Every ROADMAP.md row is ✅. A demo exists. The project is portfolio-ready.
+- **Input question:** What data, command, file, request, or state reaches this concept?
+- **Output question:** What value, saved record, response, log, or state change should come out?
+- **Failure question:** What can be missing, malformed, slow, duplicated, stale, or invalid?
+- **Test question:** Which test would catch the mistake before a user sees it?
+- **Beginner trap:** Memorizing the word without tracing it in the project.
+- **Recovery move:** Use one concrete example and follow it through the files.
+- **Mastery signal:** You can explain the concept without saying "magic" or "it just works".
+
+### Concept 4: Git tagging: `git tag -a v1.0.0 -m "..."`
+- **Plain meaning:** This is a named tool for solving one part of the chapter problem.
+- **Why it exists:** Real projects become confusing when this concern is unnamed.
+- **ResearchOps use:** In Week 20, it supports the milestone: `v1.0.0` is tagged. CI is green. Every ROADMAP.md row is ✅. A demo exists. The project is portfolio-ready.
+- **Input question:** What data, command, file, request, or state reaches this concept?
+- **Output question:** What value, saved record, response, log, or state change should come out?
+- **Failure question:** What can be missing, malformed, slow, duplicated, stale, or invalid?
+- **Test question:** Which test would catch the mistake before a user sees it?
+- **Beginner trap:** Memorizing the word without tracing it in the project.
+- **Recovery move:** Use one concrete example and follow it through the files.
+- **Mastery signal:** You can explain the concept without saying "magic" or "it just works".
+
+### Concept 5: Final retrospective: 20 weeks in review
+- **Plain meaning:** This is a named tool for solving one part of the chapter problem.
+- **Why it exists:** Real projects become confusing when this concern is unnamed.
+- **ResearchOps use:** In Week 20, it supports the milestone: `v1.0.0` is tagged. CI is green. Every ROADMAP.md row is ✅. A demo exists. The project is portfolio-ready.
+- **Input question:** What data, command, file, request, or state reaches this concept?
+- **Output question:** What value, saved record, response, log, or state change should come out?
+- **Failure question:** What can be missing, malformed, slow, duplicated, stale, or invalid?
+- **Test question:** Which test would catch the mistake before a user sees it?
+- **Beginner trap:** Memorizing the word without tracing it in the project.
+- **Recovery move:** Use one concrete example and follow it through the files.
+- **Mastery signal:** You can explain the concept without saying "magic" or "it just works".
+
+## ResearchOps-specific application
+
+The chapter belongs to these project locations:
+- `CHANGELOG.md` — complete version history
+- `ROADMAP.md` — all weeks marked ✅
+- `pyproject.toml` — version bumped to `1.0.0`
+- `src/researchops/__init__.py` — `__version__ = "1.0.0"`
+Study those files in this order:
+1. Find the user-facing entry point.
+2. Find the service or core concept that owns the meaning.
+3. Find the infrastructure only when outside resources are needed.
+4. Find the tests that prove the behavior.
+5. Find the validation command that a learner runs manually.
+The goal is to know why each file exists.
+If two files seem to own the same decision, stop and clarify the boundary.
+
+## Code examples with line-by-line explanation
+
+```python
+def is_major_release(version: str) -> bool:
+    major, minor, patch = version.split(".")
+    return int(major) >= 1 and int(minor) == 0 and int(patch) == 0
+```
+
+Line-by-line explanation:
+- Line 1: `def is_major_release(version: str) -> bool:` — This names a reusable action and shows what information it receives.
+- Line 2: `major, minor, patch = version.split(".")` — This stores a clear intermediate value for the next step.
+- Line 3: `return int(major) >= 1 and int(minor) == 0 and int(patch) == 0` — This produces the result or performs the declared setup step.
+
+How to use this example:
+- Name the input.
+- Name the output.
+- Predict the result before running anything.
+- Connect the shape to the real ResearchOps file.
+- Write one sentence about why each line belongs.
+
+## Common beginner mistakes
+
+- **Mistake:** Pasting code before knowing the owner of the behavior.
+  **Why it hurts:** it hides the mental model and makes debugging harder.
+  **Better move:** make one small behavior clear, then prove it.
+- **Mistake:** Changing many files at once.
+  **Why it hurts:** it hides the mental model and makes debugging harder.
+  **Better move:** make one small behavior clear, then prove it.
+- **Mistake:** Skipping the failure path.
+  **Why it hurts:** it hides the mental model and makes debugging harder.
+  **Better move:** make one small behavior clear, then prove it.
+- **Mistake:** Reading only the happy path test.
+  **Why it hurts:** it hides the mental model and makes debugging harder.
+  **Better move:** make one small behavior clear, then prove it.
+- **Mistake:** Ignoring the validation command.
+  **Why it hurts:** it hides the mental model and makes debugging harder.
+  **Better move:** make one small behavior clear, then prove it.
+- **Mistake:** Using vague names.
+  **Why it hurts:** it hides the mental model and makes debugging harder.
+  **Better move:** make one small behavior clear, then prove it.
+- **Mistake:** Putting business rules in the user interface layer.
+  **Why it hurts:** it hides the mental model and makes debugging harder.
+  **Better move:** make one small behavior clear, then prove it.
+- **Mistake:** Treating logs, errors, and tests as decoration.
+  **Why it hurts:** it hides the mental model and makes debugging harder.
+  **Better move:** make one small behavior clear, then prove it.
+- **Mistake:** Optimizing before correctness is visible.
+  **Why it hurts:** it hides the mental model and makes debugging harder.
+  **Better move:** make one small behavior clear, then prove it.
+- **Mistake:** Building future-week features early.
+  **Why it hurts:** it hides the mental model and makes debugging harder.
+  **Better move:** make one small behavior clear, then prove it.
+
+## Debugging guidance
+
+- Copy the exact failing command.
+- Read the first useful error line.
+- Read the final error line.
+- Classify the failure as import, input, state, file, database, network, model, or expectation.
+- Reproduce it with the smallest command.
+- Inspect the value closest to the failure.
+- Fix the cause, not only the symptom.
+- Run the narrowest test.
+- Run the chapter validation command.
+- Write down what the error was teaching.
+Debugging questions:
+- What did I expect?
+- What happened?
+- Which value first became wrong?
+- Which layer created that value?
+- Which test should catch this next time?
+
+## Design tradeoffs
+
+- **Simple first version:** Easy to understand, but not the final production shape.
+- **Clear layers:** More files, but less confusion as features grow.
+- **Explicit errors:** More code, but failures become teachable.
+- **Small unit tests:** Fast feedback, but less end-to-end confidence.
+- **Integration tests:** Real wiring, but slower and more setup.
+- **Configuration:** Flexible behavior, but defaults must be clear.
+The right question is not "What is the fanciest design?"
+The right question is "What design teaches the responsibility clearly and can grow next week?"
+
+## Testing implications
+
+Tests for this chapter:
+- All existing tests pass (no regressions introduced)
+- End-to-end: `researchops --help`, full pipeline commands
+Validation commands:
+```bash
+pytest --cov=researchops --cov-report=term-missing -q
+ruff check src tests
+researchops --help
+git tag v1.0.0
+```
+- Arrange the data.
+- Act on the system.
+- Assert the visible promise.
+- Check one failure path.
+- Keep unit tests fast.
+- Use integration tests only when real wiring matters.
+
+## Architecture implications
+
+ResearchOps stays understandable when dependencies point inward.
+```text
+CLI / API / Worker -> Services -> Core
+Infrastructure implements core-facing contracts and is wired at the outside.
+```
+- Does the UI layer avoid business logic?
+- Does the service layer own workflow decisions?
+- Does core avoid infrastructure imports?
+- Does infrastructure do outside-world work?
+- Do tests use fakes when possible?
+Architecture is not ceremony.
+Architecture is named responsibility.
+
+## How this connects to AI engineering / ML research
+
+AI engineering needs more than models.
+It needs reliable data flow, clear interfaces, repeatable experiments, visible failures, and honest evaluation.
+Week 20 contributes by making **final hardening and v1.0 release** clear enough to trust.
+- Bad data creates bad model behavior.
+- Unclear boundaries make experiments hard to reproduce.
+- Missing tests let regressions change research results silently.
+- Good logs and errors shorten investigation time.
+- Clear documentation lets future users understand the system.
+
+## Mini quizzes
+
+- What problem does Week 20 solve?
+- What is the main input?
+- What is the main output?
+- Which file owns the main responsibility?
+- Which layer should not contain business logic?
+- What is one happy path?
+- What is one failure path?
+- What command proves the chapter works?
+- What should you not build early?
+- How does this prepare the next week?
+
+## Explain-it-aloud prompts
+
+- Explain Final Hardening and v1.0 Release in simple words.
+- Explain the data flow from input to result.
+- Explain the first file you would open.
+- Explain the test that gives confidence.
+- Explain what can break.
+- Explain the tradeoff made in this chapter.
+- Explain what you still find weak.
+
+## What to memorize
+
+- The topic: Final Hardening and v1.0 Release.
+- The milestone: `v1.0.0` is tagged. CI is green. Every ROADMAP.md row is ✅. A demo exists. The project is portfolio-ready.
+- The main project files.
+- The validation command.
+- The boundary rule for the layer you are touching.
+- The habit of testing before moving forward.
+
+## What to understand deeply
+
+- Why this feature belongs now.
+- How data moves through the chapter.
+- Which file owns which decision.
+- How the failure path is handled.
+- Why the tests prove behavior.
+- How this week makes future work safer.
+
+## What not to worry about yet
+
+- Perfect scale.
+- Fancy abstractions.
+- Future-week features.
+- Every option in every library.
+- Premature optimization.
+- Comparing your speed to someone else.
+Focus on the milestone.
+A clear small milestone beats a confusing large one.
+
+## Bridge to next week
+
+This is the final week, so the bridge is into maintenance, presentation, and responsible extension after v1.0.
+- Run validation.
+- Explain the main files.
+- Explain one failure.
+- Explain one test.
+- Write down what still feels weak before moving on.
+
+## Guided deepening drills
+
+Use these drills if the chapter still feels abstract.
+- Drill 1: Trace `Semantic versioning: MAJOR.MINOR.PATCH and what each number means` from user input to project result.
+- Drill 2: Write one sentence defining `Semantic versioning: MAJOR.MINOR.PATCH and what each number means` without copying the notes.
+- Drill 3: Find the file where `Semantic versioning: MAJOR.MINOR.PATCH and what each number means` appears or should appear.
+- Drill 4: Name one wrong implementation of `Semantic versioning: MAJOR.MINOR.PATCH and what each number means` and why it would hurt.
+- Drill 5: Name one test that would protect `Semantic versioning: MAJOR.MINOR.PATCH and what each number means`.
+- Drill 6: Trace `Release checklist discipline: scope control, no new features before release` from user input to project result.
+- Drill 7: Write one sentence defining `Release checklist discipline: scope control, no new features before release` without copying the notes.
+- Drill 8: Find the file where `Release checklist discipline: scope control, no new features before release` appears or should appear.
+- Drill 9: Name one wrong implementation of `Release checklist discipline: scope control, no new features before release` and why it would hurt.
+- Drill 10: Name one test that would protect `Release checklist discipline: scope control, no new features before release`.
+- Drill 11: Trace `Changelog writing: what changed, for whom, and why` from user input to project result.
+- Drill 12: Write one sentence defining `Changelog writing: what changed, for whom, and why` without copying the notes.
+- Drill 13: Find the file where `Changelog writing: what changed, for whom, and why` appears or should appear.
+- Drill 14: Name one wrong implementation of `Changelog writing: what changed, for whom, and why` and why it would hurt.
+- Drill 15: Name one test that would protect `Changelog writing: what changed, for whom, and why`.
+- Drill 16: Trace `Git tagging: `git tag -a v1.0.0 -m "..."`` from user input to project result.
+- Drill 17: Write one sentence defining `Git tagging: `git tag -a v1.0.0 -m "..."`` without copying the notes.
+- Drill 18: Find the file where `Git tagging: `git tag -a v1.0.0 -m "..."`` appears or should appear.
+- Drill 19: Name one wrong implementation of `Git tagging: `git tag -a v1.0.0 -m "..."`` and why it would hurt.
+- Drill 20: Name one test that would protect `Git tagging: `git tag -a v1.0.0 -m "..."``.
+- Drill 21: Trace `Final retrospective: 20 weeks in review` from user input to project result.
+- Drill 22: Write one sentence defining `Final retrospective: 20 weeks in review` without copying the notes.
+- Drill 23: Find the file where `Final retrospective: 20 weeks in review` appears or should appear.
+- Drill 24: Name one wrong implementation of `Final retrospective: 20 weeks in review` and why it would hurt.
+- Drill 25: Name one test that would protect `Final retrospective: 20 weeks in review`.
+- Drill 26: Draw the Week 20 data flow in four boxes.
+- Drill 27: Say why `Final Hardening and v1.0 Release` belongs in this month of the curriculum.
+- Drill 28: Rewrite one error message in beginner-friendly language.
+- Drill 29: List the exact assumptions made by the example code.
+- Drill 30: List the exact assumptions checked by the tests.
+- Drill 31: Point to the line where raw input becomes project meaning.
+- Drill 32: Point to the line where the result becomes visible to a user.
+- Drill 33: Explain what would happen if the main file were deleted.
+- Drill 34: Explain what would happen if the main test were deleted.
+- Drill 35: Describe the smallest manual check you can run.
+- Drill 36: Describe the smallest automated check you can run.
+- Drill 37: Name the most likely beginner mistake for this week.
+- Drill 38: Name the safest recovery move for that mistake.
+- Drill 39: Explain what knowledge should be carried into the next chapter.
+- Drill 40: Trace `Semantic versioning: MAJOR.MINOR.PATCH and what each number means` from user input to project result.
+- Drill 41: Write one sentence defining `Semantic versioning: MAJOR.MINOR.PATCH and what each number means` without copying the notes.
+- Drill 42: Find the file where `Semantic versioning: MAJOR.MINOR.PATCH and what each number means` appears or should appear.
+- Drill 43: Name one wrong implementation of `Semantic versioning: MAJOR.MINOR.PATCH and what each number means` and why it would hurt.
+- Drill 44: Name one test that would protect `Semantic versioning: MAJOR.MINOR.PATCH and what each number means`.
+- Drill 45: Trace `Release checklist discipline: scope control, no new features before release` from user input to project result.
+- Drill 46: Write one sentence defining `Release checklist discipline: scope control, no new features before release` without copying the notes.
+- Drill 47: Find the file where `Release checklist discipline: scope control, no new features before release` appears or should appear.
+- Drill 48: Name one wrong implementation of `Release checklist discipline: scope control, no new features before release` and why it would hurt.
+- Drill 49: Name one test that would protect `Release checklist discipline: scope control, no new features before release`.
+- Drill 50: Trace `Changelog writing: what changed, for whom, and why` from user input to project result.
+- Drill 51: Write one sentence defining `Changelog writing: what changed, for whom, and why` without copying the notes.
+- Drill 52: Find the file where `Changelog writing: what changed, for whom, and why` appears or should appear.
+- Drill 53: Name one wrong implementation of `Changelog writing: what changed, for whom, and why` and why it would hurt.
+- Drill 54: Name one test that would protect `Changelog writing: what changed, for whom, and why`.
+- Drill 55: Trace `Git tagging: `git tag -a v1.0.0 -m "..."`` from user input to project result.
+- Drill 56: Write one sentence defining `Git tagging: `git tag -a v1.0.0 -m "..."`` without copying the notes.
+- Drill 57: Find the file where `Git tagging: `git tag -a v1.0.0 -m "..."`` appears or should appear.
+- Drill 58: Name one wrong implementation of `Git tagging: `git tag -a v1.0.0 -m "..."`` and why it would hurt.
+- Drill 59: Name one test that would protect `Git tagging: `git tag -a v1.0.0 -m "..."``.
+- Drill 60: Trace `Final retrospective: 20 weeks in review` from user input to project result.
+- Drill 61: Write one sentence defining `Final retrospective: 20 weeks in review` without copying the notes.
+- Drill 62: Find the file where `Final retrospective: 20 weeks in review` appears or should appear.
+- Drill 63: Name one wrong implementation of `Final retrospective: 20 weeks in review` and why it would hurt.
+- Drill 64: Name one test that would protect `Final retrospective: 20 weeks in review`.
+- Drill 65: Draw the Week 20 data flow in four boxes.
+- Drill 66: Say why `Final Hardening and v1.0 Release` belongs in this month of the curriculum.
+- Drill 67: Rewrite one error message in beginner-friendly language.
+- Drill 68: List the exact assumptions made by the example code.
+- Drill 69: List the exact assumptions checked by the tests.
+- Drill 70: Point to the line where raw input becomes project meaning.
+- Drill 71: Point to the line where the result becomes visible to a user.
+- Drill 72: Explain what would happen if the main file were deleted.
+- Drill 73: Explain what would happen if the main test were deleted.
+- Drill 74: Describe the smallest manual check you can run.
+- Drill 75: Describe the smallest automated check you can run.
+- Drill 76: Name the most likely beginner mistake for this week.
+- Drill 77: Name the safest recovery move for that mistake.
+- Drill 78: Explain what knowledge should be carried into the next chapter.
+- Drill 79: Trace `Semantic versioning: MAJOR.MINOR.PATCH and what each number means` from user input to project result.
+- Drill 80: Write one sentence defining `Semantic versioning: MAJOR.MINOR.PATCH and what each number means` without copying the notes.
+- Drill 81: Find the file where `Semantic versioning: MAJOR.MINOR.PATCH and what each number means` appears or should appear.
+- Drill 82: Name one wrong implementation of `Semantic versioning: MAJOR.MINOR.PATCH and what each number means` and why it would hurt.
+- Drill 83: Name one test that would protect `Semantic versioning: MAJOR.MINOR.PATCH and what each number means`.
+- Drill 84: Trace `Release checklist discipline: scope control, no new features before release` from user input to project result.
+- Drill 85: Write one sentence defining `Release checklist discipline: scope control, no new features before release` without copying the notes.
+- Drill 86: Find the file where `Release checklist discipline: scope control, no new features before release` appears or should appear.
+- Drill 87: Name one wrong implementation of `Release checklist discipline: scope control, no new features before release` and why it would hurt.
+- Drill 88: Name one test that would protect `Release checklist discipline: scope control, no new features before release`.
+- Drill 89: Trace `Changelog writing: what changed, for whom, and why` from user input to project result.
+- Drill 90: Write one sentence defining `Changelog writing: what changed, for whom, and why` without copying the notes.
+- Drill 91: Find the file where `Changelog writing: what changed, for whom, and why` appears or should appear.
+- Drill 92: Name one wrong implementation of `Changelog writing: what changed, for whom, and why` and why it would hurt.
+- Drill 93: Name one test that would protect `Changelog writing: what changed, for whom, and why`.
+- Drill 94: Trace `Git tagging: `git tag -a v1.0.0 -m "..."`` from user input to project result.
+- Drill 95: Write one sentence defining `Git tagging: `git tag -a v1.0.0 -m "..."`` without copying the notes.
+- Drill 96: Find the file where `Git tagging: `git tag -a v1.0.0 -m "..."`` appears or should appear.
+- Drill 97: Name one wrong implementation of `Git tagging: `git tag -a v1.0.0 -m "..."`` and why it would hurt.
+- Drill 98: Name one test that would protect `Git tagging: `git tag -a v1.0.0 -m "..."``.
+- Drill 99: Trace `Final retrospective: 20 weeks in review` from user input to project result.
+- Drill 100: Write one sentence defining `Final retrospective: 20 weeks in review` without copying the notes.
+- Drill 101: Find the file where `Final retrospective: 20 weeks in review` appears or should appear.
+- Drill 102: Name one wrong implementation of `Final retrospective: 20 weeks in review` and why it would hurt.
+- Drill 103: Name one test that would protect `Final retrospective: 20 weeks in review`.
+- Drill 104: Draw the Week 20 data flow in four boxes.
+
+<!-- LEARNING_FORMAT_END -->
+
+---
+
+# Existing detailed notes
 ## What "done" actually means
 
 There is no perfect software. "Done" for a v1.0 release means:
