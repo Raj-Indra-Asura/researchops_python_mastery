@@ -1,37 +1,117 @@
 # Validation - Week 12 Experiment Tracking
 
 ## Exact shell commands to run
+
 ```bash
+# Activate your environment
 source .venv/bin/activate
 python -m pip install -e ".[dev,ml]"
-python -m researchops.ml.train --data examples/training_data --output artifacts/topic_classifier.joblib
-ls -1 artifacts/experiments
-pytest tests/unit/test_experiment_tracker.py -v
-pytest tests/integration/test_training_records_run.py -v
-```
 
-## Expected outputs
-- Training command prints metrics and writes a model artifact.
-- `artifacts/experiments/` contains a new run file.
-- Tracker tests and integration tests pass.
+# Step 1: Lint
+ruff check src tests
 
-## Pytest commands and expected results
-```bash
-pytest -k "experiment_tracker or training_records_run" -v
+# Step 2: Train run 1 (baseline)
+python -m researchops.ml.train \
+  --data examples/training_data \
+  --output artifacts/models/topic_classifier.joblib \
+  --experiment tfidf-baseline \
+  --max-features 5000
+
+# Step 3: Train run 2 (different params)
+python -m researchops.ml.train \
+  --data examples/training_data \
+  --output artifacts/models/topic_classifier.joblib \
+  --experiment tfidf-baseline \
+  --max-features 10000
+
+# Step 4: List all runs
+researchops experiment list
+
+# Step 5: Show the first run (replace with actual run ID from list output)
+researchops experiment show RUN_ID_1
+
+# Step 6: Compare both runs
+researchops experiment compare RUN_ID_1 RUN_ID_2
+
+# Step 7: Verify experiment files
+ls -la artifacts/experiments/
+
+# Step 8: Verify model files (one per run)
+ls -la artifacts/models/
+
+# Step 9: Run all tests
 pytest -q
 ```
 
-Expected result: each training run leaves behind a usable record containing params, metrics, and artifact references, making the ML workflow reproducible.
+## Expected outputs
+
+After two training runs:
+
+```bash
+$ ls artifacts/experiments/
+run-20240915-1030-a3f8b2.json
+run-20240915-1145-c9d2e1.json
+
+$ ls artifacts/models/
+topic-classifier-run-20240915-1030-a3f8b2.joblib
+topic-classifier-run-20240915-1145-c9d2e1.joblib
+```
+
+Two model files, not one — no overwriting.
+
+`experiment list` output:
+
+```
+Run ID                       Experiment       Timestamp              F1 Macro
+run-20240915-1030-a3f8b2     tfidf-baseline   2024-09-15 10:30:42   0.85
+run-20240915-1145-c9d2e1     tfidf-baseline   2024-09-15 11:45:03   0.87
+```
+
+`experiment compare RUN_ID_1 RUN_ID_2` output:
+
+```
+Metric               run-20240915-1030-a3f8b2      run-20240915-1145-c9d2e1
+---------------------------------------------------------------------------
+accuracy             0.87                          0.89
+f1_macro             0.85                          0.87
+train_size           80                            80
+test_size            20                            20
+```
+
+## Integrity check
+
+Run this to verify every run record points to an existing artifact:
+
+```bash
+python -c "
+from pathlib import Path
+import json
+
+experiments_dir = Path('artifacts/experiments')
+for f in sorted(experiments_dir.glob('*.json')):
+    data = json.loads(f.read_text())
+    artifact = Path(data['artifact_path'])
+    status = 'OK' if artifact.exists() else 'MISSING'
+    print(f\"{data['run_id']}: {status}\")
+"
+```
+
+Expected: all runs report `OK`.
 
 ## Completion checklist
-- [ ] Experiment model exists.
-- [ ] Tracker writes run files.
-- [ ] Run IDs are unique.
-- [ ] Params are recorded.
-- [ ] Metrics are recorded.
-- [ ] Artifact path is recorded.
-- [ ] Training integrates with the tracker.
-- [ ] Unit and integration tests pass.
-- [ ] Run records are human-readable.
+
+- [ ] `ExperimentRun` dataclass implemented with all fields.
+- [ ] `save_run`, `load_run`, `list_runs`, `compare_runs` implemented.
+- [ ] Training pipeline logs every run automatically.
+- [ ] Artifact filenames include the run ID.
+- [ ] Two runs with different params are logged.
+- [ ] `experiment list` displays a summary table.
+- [ ] `experiment show RUN_ID` displays all fields.
+- [ ] `experiment compare RUN_ID_1 RUN_ID_2` shows side-by-side metrics.
+- [ ] Unit tests for `ExperimentRun` pass.
+- [ ] Unit tests for `save_run`/`load_run` pass.
+- [ ] Integration test verifying artifact existence pass.
+- [ ] Every run record links to an existing artifact.
 - [ ] `pytest -q` passes.
-- [ ] You can compare at least two stored runs.
+- [ ] `ruff check src tests` exits clean.
+- [ ] You can answer: "What changed between these two runs?" using only the CLI.
