@@ -1,3 +1,14 @@
+<!-- NAV_START -->
+---
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 3: Advanced Python and ML Engineering](../README.md)
+
+**Week 12 — Experiment Tracking:** [README](README.md) · [Notes](notes.md) · [Exercises](exercises.md) · **Break It** · [Validation](validation.md) · [Reflection](reflection.md)
+
+⬅️ [← Exercises](exercises.md) · ➡️ [Validation →](validation.md)
+
+---
+<!-- NAV_END -->
+
 # Break It — Week 12 Experiment Tracking
 
 These experiments expose what happens when experiment tracking is done incorrectly or not at all.
@@ -157,3 +168,12 @@ Create a run with 50 parameters. Save and load it. Does the comparison table for
 3. What comparison would you automate next if you ran 100 experiments?
 4. At what point would you switch from file-based tracking to a dedicated tool like MLflow?
 5. How does experiment tracking change the way you think about training a model?
+<!-- NAV_BOTTOM_START -->
+---
+⬅️ [← Exercises](exercises.md) · ➡️ [Validation →](validation.md)
+
+**Week 12 — Experiment Tracking:** [README](README.md) · [Notes](notes.md) · [Exercises](exercises.md) · **Break It** · [Validation](validation.md) · [Reflection](reflection.md)
+
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 3: Advanced Python and ML Engineering](../README.md)
+---
+<!-- NAV_BOTTOM_END -->

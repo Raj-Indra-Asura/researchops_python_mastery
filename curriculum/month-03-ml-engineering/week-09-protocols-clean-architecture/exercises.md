@@ -1,3 +1,14 @@
+<!-- NAV_START -->
+---
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 3: Advanced Python and ML Engineering](../README.md)
+
+**Week 09 — Protocols and Clean Architecture:** [README](README.md) · [Notes](notes.md) · **Exercises** · [Break It](break_it.md) · [Validation](validation.md) · [Reflection](reflection.md)
+
+⬅️ [← Notes](notes.md) · ➡️ [Break It →](break_it.md)
+
+---
+<!-- NAV_END -->
+
 # Exercises — Week 09: Protocols, Interfaces, and Clean Architecture
 
 > This is the hardest *conceptual* week of the entire program. Protocols,
@@ -483,3 +494,12 @@ Do not advance to Week 10 until every box is honestly true.
 - [ ] `ruff check src tests` exits clean.
 - [ ] I can explain one scenario in Month 4 or 5 where these abstractions save me
       real work.
+<!-- NAV_BOTTOM_START -->
+---
+⬅️ [← Notes](notes.md) · ➡️ [Break It →](break_it.md)
+
+**Week 09 — Protocols and Clean Architecture:** [README](README.md) · [Notes](notes.md) · **Exercises** · [Break It](break_it.md) · [Validation](validation.md) · [Reflection](reflection.md)
+
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 3: Advanced Python and ML Engineering](../README.md)
+---
+<!-- NAV_BOTTOM_END -->

@@ -1,3 +1,14 @@
+<!-- NAV_START -->
+---
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 3: Advanced Python and ML Engineering](../README.md)
+
+**Week 11 — Classical ML: Topic Classification:** **README** · [Notes](notes.md) · [Exercises](exercises.md) · [Break It](break_it.md) · [Validation](validation.md) · [Reflection](reflection.md)
+
+⬅️ [← Week 10 Reflection](../week-10-testing-quality-gates/reflection.md) · ➡️ [Notes →](notes.md)
+
+---
+<!-- NAV_END -->
+
 # Week 11 — Classical ML Topic Classification
 
 ## Theme
@@ -59,3 +70,12 @@ Dataset, example, label, feature, text vectorization, bag of words, TF-IDF (term
 - [ ] `pytest -q` still passes after adding ML code.
 - [ ] `ruff check src tests` still exits clean.
 - [ ] You can explain the confusion matrix output to someone without ML background.
+<!-- NAV_BOTTOM_START -->
+---
+⬅️ [← Week 10 Reflection](../week-10-testing-quality-gates/reflection.md) · ➡️ [Notes →](notes.md)
+
+**Week 11 — Classical ML: Topic Classification:** **README** · [Notes](notes.md) · [Exercises](exercises.md) · [Break It](break_it.md) · [Validation](validation.md) · [Reflection](reflection.md)
+
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 3: Advanced Python and ML Engineering](../README.md)
+---
+<!-- NAV_BOTTOM_END -->

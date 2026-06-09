@@ -1,3 +1,14 @@
+<!-- NAV_START -->
+---
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 4: AI Engineering, API, Workers](../README.md)
+
+**Week 16 — Local Worker Job System:** [README](README.md) · [Notes](notes.md) · **Exercises** · [Break It](break_it.md) · [Validation](validation.md) · [Reflection](reflection.md)
+
+⬅️ [← Notes](notes.md) · ➡️ [Break It →](break_it.md)
+
+---
+<!-- NAV_END -->
+
 # Exercises - Week 16 Local Worker and Job System
 
 ## Beginner
@@ -62,3 +73,12 @@
 4. **Job payload validation.** Add Pydantic model validation to each handler's payload. If `json.loads(payload_json)` succeeds but the data does not match the expected schema, mark the job FAILED immediately with a validation error and do not retry (it is a configuration bug, not a transient failure). Write tests for both valid and invalid payloads.
 
 5. **Benchmark and capacity planning.** Write a benchmark that enqueues 1 000 jobs and runs the worker. Measure total time and jobs per second. Try three storage backends: in-memory dict, SQLite without WAL, SQLite with WAL. Document the results in a table. Estimate how long it would take to process 100 000 jobs at each throughput level. This is basic capacity planning — a skill every backend engineer needs.
+<!-- NAV_BOTTOM_START -->
+---
+⬅️ [← Notes](notes.md) · ➡️ [Break It →](break_it.md)
+
+**Week 16 — Local Worker Job System:** [README](README.md) · [Notes](notes.md) · **Exercises** · [Break It](break_it.md) · [Validation](validation.md) · [Reflection](reflection.md)
+
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 4: AI Engineering, API, Workers](../README.md)
+---
+<!-- NAV_BOTTOM_END -->

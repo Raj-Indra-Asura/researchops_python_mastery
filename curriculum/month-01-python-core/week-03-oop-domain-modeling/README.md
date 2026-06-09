@@ -1,3 +1,14 @@
+<!-- NAV_START -->
+---
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 1: Python Core and Project Foundation](../README.md)
+
+**Week 03 — OOP and Domain Modeling:** **README** · [Notes](notes.md) · [Exercises](exercises.md) · [Break It](break_it.md) · [Validation](validation.md) · [Reflection](reflection.md)
+
+⬅️ [← Week 2 Reflection](../week-02-files-errors-logging/reflection.md) · ➡️ [Notes →](notes.md)
+
+---
+<!-- NAV_END -->
+
 # Week 03 README - OOP and Domain Modeling
 ## Chapter story
 The scanner works.
@@ -136,3 +147,12 @@ Next week, you will care more about entry points, packaging, and command structu
 This week, you are making sure the nouns and concepts underneath that interface are solid.
 Learn the language now.
 You will reuse it for the rest of the course.
+<!-- NAV_BOTTOM_START -->
+---
+⬅️ [← Week 2 Reflection](../week-02-files-errors-logging/reflection.md) · ➡️ [Notes →](notes.md)
+
+**Week 03 — OOP and Domain Modeling:** **README** · [Notes](notes.md) · [Exercises](exercises.md) · [Break It](break_it.md) · [Validation](validation.md) · [Reflection](reflection.md)
+
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 1: Python Core and Project Foundation](../README.md)
+---
+<!-- NAV_BOTTOM_END -->

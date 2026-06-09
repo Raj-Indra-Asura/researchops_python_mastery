@@ -1,3 +1,14 @@
+<!-- NAV_START -->
+---
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 2: Storage, Search, Multiprocessing](../README.md)
+
+**Week 08 — Multiprocessing Ingestion:** [README](README.md) · [Notes](notes.md) · [Exercises](exercises.md) · **Break It** · [Validation](validation.md) · [Reflection](reflection.md)
+
+⬅️ [← Exercises](exercises.md) · ➡️ [Validation →](validation.md)
+
+---
+<!-- NAV_END -->
+
 # Break It — Week 08 Multiprocessing Ingestion
 
 ---
@@ -328,3 +339,12 @@ for future in as_completed(futures):
 3. Why should performance optimization always come after correctness?
 4. What is the most important design rule you will apply to future parallel code?
 5. How did the GIL explanation change your understanding of Python threading?
+<!-- NAV_BOTTOM_START -->
+---
+⬅️ [← Exercises](exercises.md) · ➡️ [Validation →](validation.md)
+
+**Week 08 — Multiprocessing Ingestion:** [README](README.md) · [Notes](notes.md) · [Exercises](exercises.md) · **Break It** · [Validation](validation.md) · [Reflection](reflection.md)
+
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 2: Storage, Search, Multiprocessing](../README.md)
+---
+<!-- NAV_BOTTOM_END -->

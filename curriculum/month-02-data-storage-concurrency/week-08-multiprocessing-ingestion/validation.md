@@ -1,3 +1,28 @@
+
+<!-- QUICKREF -->
+## ⚡ Quick Commands
+
+| Command | Purpose |
+|---------|--------|
+| `python -m pip install -e ".[dev]"` | Install / update dependencies |
+| `researchops --help` | CLI smoke test |
+| `pytest -q` | Run full test suite |
+| `ruff check src tests` | Lint check |
+
+*Full commands for Week 8 are in the [Commands to run](#commands-to-run) section below.*
+
+<!-- QUICKREF_END -->
+<!-- NAV_START -->
+---
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 2: Storage, Search, Multiprocessing](../README.md)
+
+**Week 08 — Multiprocessing Ingestion:** [README](README.md) · [Notes](notes.md) · [Exercises](exercises.md) · [Break It](break_it.md) · **Validation** · [Reflection](reflection.md)
+
+⬅️ [← Break It](break_it.md) · ➡️ [Reflection →](reflection.md)
+
+---
+<!-- NAV_END -->
+
 # Validation - Week 08 Multiprocessing Ingestion
 
 ## Exact shell commands to run
@@ -34,3 +59,12 @@ Expected result: worker-based parsing is stable, failures are captured, and the 
 - [ ] No hidden ordering assumption breaks tests.
 - [ ] `pytest -q` passes.
 - [ ] You can explain why this workload is CPU-bound.
+<!-- NAV_BOTTOM_START -->
+---
+⬅️ [← Break It](break_it.md) · ➡️ [Reflection →](reflection.md)
+
+**Week 08 — Multiprocessing Ingestion:** [README](README.md) · [Notes](notes.md) · [Exercises](exercises.md) · [Break It](break_it.md) · **Validation** · [Reflection](reflection.md)
+
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 2: Storage, Search, Multiprocessing](../README.md)
+---
+<!-- NAV_BOTTOM_END -->

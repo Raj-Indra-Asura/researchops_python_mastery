@@ -1,3 +1,14 @@
+<!-- NAV_START -->
+---
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 5: Production and Portfolio](../README.md)
+
+**Week 17 — RAG Assistant:** **README** · [Notes](notes.md) · [Exercises](exercises.md) · [Break It](break_it.md) · [Validation](validation.md) · [Reflection](reflection.md)
+
+⬅️ [← Week 16 Reflection](../../month-04-ai-engineering-api-workers/week-16-local-worker-job-system/reflection.md) · ➡️ [Notes →](notes.md)
+
+---
+<!-- NAV_END -->
+
 # Week 17 - RAG Assistant
 
 ## Learning objectives
@@ -36,3 +47,12 @@ RAG pipelines, prompting, context windows, grounding, citations, answer evaluati
 - [ ] Tests cover prompt and answer shape.
 - [ ] You can explain how grounding reduces hallucination.
 - [ ] The assistant refuses unsupported claims when evidence is weak.
+<!-- NAV_BOTTOM_START -->
+---
+⬅️ [← Week 16 Reflection](../../month-04-ai-engineering-api-workers/week-16-local-worker-job-system/reflection.md) · ➡️ [Notes →](notes.md)
+
+**Week 17 — RAG Assistant:** **README** · [Notes](notes.md) · [Exercises](exercises.md) · [Break It](break_it.md) · [Validation](validation.md) · [Reflection](reflection.md)
+
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 5: Production and Portfolio](../README.md)
+---
+<!-- NAV_BOTTOM_END -->

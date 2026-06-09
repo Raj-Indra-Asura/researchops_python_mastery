@@ -1,3 +1,14 @@
+<!-- NAV_START -->
+---
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 5: Production and Portfolio](../README.md)
+
+**Week 19 — Documentation and Portfolio Polish:** [README](README.md) · **Notes** · [Exercises](exercises.md) · [Break It](break_it.md) · [Validation](validation.md) · [Reflection](reflection.md)
+
+⬅️ [← README](README.md) · ➡️ [Exercises →](exercises.md)
+
+---
+<!-- NAV_END -->
+
 # Week 19 Notes: Documentation and Portfolio Polish
 
 ## Why documentation matters
@@ -477,3 +488,12 @@ Walk through the seven-step pipeline from notes.md. Use the diagram. Mention wha
 - A limitations section shows engineering judgment.
 - Tradeoffs explained with a structured format impress interviewers.
 - A portfolio story answers: problem, solution, and what you learned.
+<!-- NAV_BOTTOM_START -->
+---
+⬅️ [← README](README.md) · ➡️ [Exercises →](exercises.md)
+
+**Week 19 — Documentation and Portfolio Polish:** [README](README.md) · **Notes** · [Exercises](exercises.md) · [Break It](break_it.md) · [Validation](validation.md) · [Reflection](reflection.md)
+
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 5: Production and Portfolio](../README.md)
+---
+<!-- NAV_BOTTOM_END -->

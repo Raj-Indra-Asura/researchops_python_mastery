@@ -1,3 +1,14 @@
+<!-- NAV_START -->
+---
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 1: Python Core and Project Foundation](../README.md)
+
+**Week 02 — Files, Errors, Logging:** [README](README.md) · [Notes](notes.md) · **Exercises** · [Break It](break_it.md) · [Validation](validation.md) · [Reflection](reflection.md)
+
+⬅️ [← Notes](notes.md) · ➡️ [Break It →](break_it.md)
+
+---
+<!-- NAV_END -->
+
 # Exercises — Chapter 2 Workbook
 
 ## How to use this workbook
@@ -448,3 +459,12 @@ Your walkthrough must include:
 - and exit behavior.
 
 If you can produce that walkthrough accurately, you are ready for Week 3.
+<!-- NAV_BOTTOM_START -->
+---
+⬅️ [← Notes](notes.md) · ➡️ [Break It →](break_it.md)
+
+**Week 02 — Files, Errors, Logging:** [README](README.md) · [Notes](notes.md) · **Exercises** · [Break It](break_it.md) · [Validation](validation.md) · [Reflection](reflection.md)
+
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 1: Python Core and Project Foundation](../README.md)
+---
+<!-- NAV_BOTTOM_END -->

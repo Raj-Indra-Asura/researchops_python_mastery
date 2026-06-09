@@ -1,3 +1,14 @@
+<!-- NAV_START -->
+---
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 1: Python Core and Project Foundation](../README.md)
+
+**Week 04 — CLI and Packaging:** [README](README.md) · [Notes](notes.md) · **Exercises** · [Break It](break_it.md) · [Validation](validation.md) · [Reflection](reflection.md)
+
+⬅️ [← Notes](notes.md) · ➡️ [Break It →](break_it.md)
+
+---
+<!-- NAV_END -->
+
 # Exercises - Week 04 CLI and Packaging
 
 ## How to use this workbook
@@ -473,3 +484,12 @@ Write 8-12 sentences answering this question:
 > How did Week 4 turn ResearchOps from a Python project into a usable tool?
 
 Your answer should connect interface design, packaging, testing, and architecture.
+<!-- NAV_BOTTOM_START -->
+---
+⬅️ [← Notes](notes.md) · ➡️ [Break It →](break_it.md)
+
+**Week 04 — CLI and Packaging:** [README](README.md) · [Notes](notes.md) · **Exercises** · [Break It](break_it.md) · [Validation](validation.md) · [Reflection](reflection.md)
+
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 1: Python Core and Project Foundation](../README.md)
+---
+<!-- NAV_BOTTOM_END -->

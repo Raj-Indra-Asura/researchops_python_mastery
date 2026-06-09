@@ -1,3 +1,16 @@
+<!-- NAV_START -->
+---
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 4: AI Engineering, API, Workers](../README.md)
+
+**Week 15 — Async IO and Network Fetching:** **README** · [Notes](notes.md) · [Exercises](exercises.md) · [Break It](break_it.md) · [Validation](validation.md) · [Reflection](reflection.md)
+
+⬅️ [← Week 14 Reflection](../week-14-fastapi-layer/reflection.md) · ➡️ [Notes →](notes.md)
+
+**📐 Relevant Decisions:** [ADR-0002: Multiprocessing vs Asyncio](../../../docs/decisions/0002-multiprocessing-vs-asyncio.md)
+
+---
+<!-- NAV_END -->
+
 # Week 15 — Async I/O and Network Fetching
 
 > **Chapter title: "Waiting without blocking."**
@@ -155,3 +168,14 @@ command. **Week 16** introduces a **local worker and job system**: a persistent
 job queue with an explicit state machine, a polling worker loop, retries, and
 idempotency. The async and offloading lessons from this week feed directly into
 running long work safely in the background.
+<!-- NAV_BOTTOM_START -->
+---
+⬅️ [← Week 14 Reflection](../week-14-fastapi-layer/reflection.md) · ➡️ [Notes →](notes.md)
+
+**📐 Relevant Decisions:** [ADR-0002: Multiprocessing vs Asyncio](../../../docs/decisions/0002-multiprocessing-vs-asyncio.md)
+
+**Week 15 — Async IO and Network Fetching:** **README** · [Notes](notes.md) · [Exercises](exercises.md) · [Break It](break_it.md) · [Validation](validation.md) · [Reflection](reflection.md)
+
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 4: AI Engineering, API, Workers](../README.md)
+---
+<!-- NAV_BOTTOM_END -->

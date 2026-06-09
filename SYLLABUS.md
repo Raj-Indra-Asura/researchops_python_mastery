@@ -1,3 +1,10 @@
+<!-- NAV_START -->
+---
+[🏠 Home](README.md) · [🗺 Roadmap](ROADMAP.md) · **📋 Syllabus** · [📐 Project Spec](PROJECT_SPEC.md) · [🏛 Architecture](ARCHITECTURE.md) · [🤝 Contributing](CONTRIBUTING.md) · [✅ Release Checklist](RELEASE_CHECKLIST.md) · [🗂 Curriculum Map](curriculum/NAVIGATION.md)
+
+---
+<!-- NAV_END -->
+
 # ResearchOps — Syllabus
 
 A 20-week Python mastery curriculum. Each entry is one chapter of the book.
@@ -743,3 +750,8 @@ git tag v1.0.0
 
 **Expected learner capability:**
 Can apply semantic versioning, write a changelog, create a git tag, and explain what v1.0 means for a software project.
+<!-- NAV_BOTTOM_START -->
+---
+[🏠 Home](README.md) · [🗺 Roadmap](ROADMAP.md) · **📋 Syllabus** · [📐 Project Spec](PROJECT_SPEC.md) · [🏛 Architecture](ARCHITECTURE.md) · [🤝 Contributing](CONTRIBUTING.md) · [✅ Release Checklist](RELEASE_CHECKLIST.md) · [🗂 Curriculum Map](curriculum/NAVIGATION.md)
+---
+<!-- NAV_BOTTOM_END -->

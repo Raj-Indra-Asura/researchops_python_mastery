@@ -1,3 +1,14 @@
+<!-- NAV_START -->
+---
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 2: Storage, Search, Multiprocessing](../README.md)
+
+**Week 07 — Keyword Search and Data Quality:** [README](README.md) · [Notes](notes.md) · **Exercises** · [Break It](break_it.md) · [Validation](validation.md) · [Reflection](reflection.md)
+
+⬅️ [← Notes](notes.md) · ➡️ [Break It →](break_it.md)
+
+---
+<!-- NAV_END -->
+
 # Exercises — Week 07 Keyword Search and Data Quality
 
 ---
@@ -367,3 +378,12 @@ Complete the keyword search feature for ResearchOps:
 9. Write one improvement to normalization or scoring based on what you observed.
 
 Deliverable: a working search command with quality reporting.
+<!-- NAV_BOTTOM_START -->
+---
+⬅️ [← Notes](notes.md) · ➡️ [Break It →](break_it.md)
+
+**Week 07 — Keyword Search and Data Quality:** [README](README.md) · [Notes](notes.md) · **Exercises** · [Break It](break_it.md) · [Validation](validation.md) · [Reflection](reflection.md)
+
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 2: Storage, Search, Multiprocessing](../README.md)
+---
+<!-- NAV_BOTTOM_END -->

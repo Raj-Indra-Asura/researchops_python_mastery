@@ -1,3 +1,14 @@
+<!-- NAV_START -->
+---
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 3: Advanced Python and ML Engineering](../README.md)
+
+**Week 10 — Testing and Quality Gates:** **README** · [Notes](notes.md) · [Exercises](exercises.md) · [Break It](break_it.md) · [Validation](validation.md) · [Reflection](reflection.md)
+
+⬅️ [← Week 9 Reflection](../week-09-protocols-clean-architecture/reflection.md) · ➡️ [Notes →](notes.md)
+
+---
+<!-- NAV_END -->
+
 # Week 10 — Testing Discipline and Quality Gates
 
 ## Theme
@@ -58,3 +69,12 @@ Unit test, integration test, E2E test, test pyramid, fixture, scope, parametrize
 - [ ] You can read the CI workflow file and explain each step.
 - [ ] You have written at least one regression test for a real bug or edge case.
 - [ ] You can explain what a flaky test is and give one example of a cause.
+<!-- NAV_BOTTOM_START -->
+---
+⬅️ [← Week 9 Reflection](../week-09-protocols-clean-architecture/reflection.md) · ➡️ [Notes →](notes.md)
+
+**Week 10 — Testing and Quality Gates:** **README** · [Notes](notes.md) · [Exercises](exercises.md) · [Break It](break_it.md) · [Validation](validation.md) · [Reflection](reflection.md)
+
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 3: Advanced Python and ML Engineering](../README.md)
+---
+<!-- NAV_BOTTOM_END -->

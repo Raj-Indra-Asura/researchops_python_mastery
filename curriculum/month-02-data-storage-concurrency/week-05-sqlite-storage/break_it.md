@@ -1,3 +1,14 @@
+<!-- NAV_START -->
+---
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 2: Storage, Search, Multiprocessing](../README.md)
+
+**Week 05 — SQLite Storage:** [README](README.md) · [Notes](notes.md) · [Exercises](exercises.md) · **Break It** · [Validation](validation.md) · [Reflection](reflection.md)
+
+⬅️ [← Exercises](exercises.md) · ➡️ [Validation →](validation.md)
+
+---
+<!-- NAV_END -->
+
 # Break It — Week 05 SQLite Storage Layer
 
 Breaking things deliberately is the fastest way to understand constraints, error messages, and edge cases.
@@ -290,3 +301,12 @@ After completing these scenarios, answer:
 3. How will you remember to always enable foreign keys?
 4. What aspect of transaction semantics was not obvious until you broke it?
 5. How will you structure future tests to avoid shared database state?
+<!-- NAV_BOTTOM_START -->
+---
+⬅️ [← Exercises](exercises.md) · ➡️ [Validation →](validation.md)
+
+**Week 05 — SQLite Storage:** [README](README.md) · [Notes](notes.md) · [Exercises](exercises.md) · **Break It** · [Validation](validation.md) · [Reflection](reflection.md)
+
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 2: Storage, Search, Multiprocessing](../README.md)
+---
+<!-- NAV_BOTTOM_END -->

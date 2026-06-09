@@ -1,3 +1,14 @@
+<!-- NAV_START -->
+---
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 4: AI Engineering, API, Workers](../README.md)
+
+**Week 16 — Local Worker Job System:** [README](README.md) · **Notes** · [Exercises](exercises.md) · [Break It](break_it.md) · [Validation](validation.md) · [Reflection](reflection.md)
+
+⬅️ [← README](README.md) · ➡️ [Exercises →](exercises.md)
+
+---
+<!-- NAV_END -->
+
 # Notes - Week 16 Local Worker and Job System
 
 ## Why long-running tasks need a job system
@@ -298,3 +309,12 @@ Use an in-memory queue implementation for unit tests. This avoids the database a
 - Workers call services, not raw storage — the same rule as route handlers.
 - The API + worker pattern is the standard production model for async work.
 - Test with an in-memory queue for fast, isolated state-transition tests.
+<!-- NAV_BOTTOM_START -->
+---
+⬅️ [← README](README.md) · ➡️ [Exercises →](exercises.md)
+
+**Week 16 — Local Worker Job System:** [README](README.md) · **Notes** · [Exercises](exercises.md) · [Break It](break_it.md) · [Validation](validation.md) · [Reflection](reflection.md)
+
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 4: AI Engineering, API, Workers](../README.md)
+---
+<!-- NAV_BOTTOM_END -->

@@ -1,3 +1,14 @@
+<!-- NAV_START -->
+---
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 1: Python Core and Project Foundation](../README.md)
+
+**Week 03 — OOP and Domain Modeling:** [README](README.md) · [Notes](notes.md) · [Exercises](exercises.md) · **Break It** · [Validation](validation.md) · [Reflection](reflection.md)
+
+⬅️ [← Exercises](exercises.md) · ➡️ [Validation →](validation.md)
+
+---
+<!-- NAV_END -->
+
 # Week 03 Break It - Failure Lab
 ## How to use this lab
 This lab is for controlled failure.
@@ -241,3 +252,12 @@ After any break, ask these questions:
 - Which failure felt most unfair until you understood it?
 - Which design rule now feels earned rather than arbitrary?
 - Which bug would be hardest to diagnose in a large codebase?
+<!-- NAV_BOTTOM_START -->
+---
+⬅️ [← Exercises](exercises.md) · ➡️ [Validation →](validation.md)
+
+**Week 03 — OOP and Domain Modeling:** [README](README.md) · [Notes](notes.md) · [Exercises](exercises.md) · **Break It** · [Validation](validation.md) · [Reflection](reflection.md)
+
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 1: Python Core and Project Foundation](../README.md)
+---
+<!-- NAV_BOTTOM_END -->

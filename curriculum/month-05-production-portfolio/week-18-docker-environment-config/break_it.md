@@ -1,3 +1,14 @@
+<!-- NAV_START -->
+---
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 5: Production and Portfolio](../README.md)
+
+**Week 18 — Docker and Environment Config:** [README](README.md) · [Notes](notes.md) · [Exercises](exercises.md) · **Break It** · [Validation](validation.md) · [Reflection](reflection.md)
+
+⬅️ [← Exercises](exercises.md) · ➡️ [Validation →](validation.md)
+
+---
+<!-- NAV_END -->
+
 # Break It - Week 18 Docker and Environment Configuration
 
 ## Why break it?
@@ -199,3 +210,12 @@ Answer these in your `reflection.md` after completing the experiments:
 2. What would be the consequences of accidentally committing a real secret?
 3. What should never be set using `ENV` in a Dockerfile?
 4. How will you document the required runtime environment for a new developer joining the project?
+<!-- NAV_BOTTOM_START -->
+---
+⬅️ [← Exercises](exercises.md) · ➡️ [Validation →](validation.md)
+
+**Week 18 — Docker and Environment Config:** [README](README.md) · [Notes](notes.md) · [Exercises](exercises.md) · **Break It** · [Validation](validation.md) · [Reflection](reflection.md)
+
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 5: Production and Portfolio](../README.md)
+---
+<!-- NAV_BOTTOM_END -->

@@ -1,3 +1,14 @@
+<!-- NAV_START -->
+---
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 1: Python Core and Project Foundation](../README.md)
+
+**Week 01 — Python Foundations:** **README** · [Notes](notes.md) · [Exercises](exercises.md) · [Break It](break_it.md) · [Validation](validation.md) · [Reflection](reflection.md)
+
+⬅️ *(start of curriculum)* · ➡️ [Notes →](notes.md)
+
+---
+<!-- NAV_END -->
+
 # Chapter 1: Python Foundations and Repository Setup
 
 ## Story of the week
@@ -386,3 +397,12 @@ They are the basis for real file-handling behavior across the whole ResearchOps 
 
 If Week 1 teaches you how the project starts,
 Week 2 teaches you how the project touches the filesystem safely and predictably.
+<!-- NAV_BOTTOM_START -->
+---
+⬅️ *(start of curriculum)* · ➡️ [Notes →](notes.md)
+
+**Week 01 — Python Foundations:** **README** · [Notes](notes.md) · [Exercises](exercises.md) · [Break It](break_it.md) · [Validation](validation.md) · [Reflection](reflection.md)
+
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 1: Python Core and Project Foundation](../README.md)
+---
+<!-- NAV_BOTTOM_END -->

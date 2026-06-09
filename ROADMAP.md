@@ -1,3 +1,10 @@
+<!-- NAV_START -->
+---
+[🏠 Home](README.md) · **🗺 Roadmap** · [📋 Syllabus](SYLLABUS.md) · [📐 Project Spec](PROJECT_SPEC.md) · [🏛 Architecture](ARCHITECTURE.md) · [🤝 Contributing](CONTRIBUTING.md) · [✅ Release Checklist](RELEASE_CHECKLIST.md) · [🗂 Curriculum Map](curriculum/NAVIGATION.md)
+
+---
+<!-- NAV_END -->
+
 # ResearchOps — 20-Week Roadmap
 
 This document tracks the project milestone for each week. Update the status column as you complete each week.
@@ -70,3 +77,8 @@ researchops ask "What are the main approaches to efficient attention?"
 uvicorn researchops.api.main:app --reload
 docker-compose up
 ```
+<!-- NAV_BOTTOM_START -->
+---
+[🏠 Home](README.md) · **🗺 Roadmap** · [📋 Syllabus](SYLLABUS.md) · [📐 Project Spec](PROJECT_SPEC.md) · [🏛 Architecture](ARCHITECTURE.md) · [🤝 Contributing](CONTRIBUTING.md) · [✅ Release Checklist](RELEASE_CHECKLIST.md) · [🗂 Curriculum Map](curriculum/NAVIGATION.md)
+---
+<!-- NAV_BOTTOM_END -->

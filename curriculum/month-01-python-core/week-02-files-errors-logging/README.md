@@ -1,3 +1,14 @@
+<!-- NAV_START -->
+---
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 1: Python Core and Project Foundation](../README.md)
+
+**Week 02 — Files, Errors, Logging:** **README** · [Notes](notes.md) · [Exercises](exercises.md) · [Break It](break_it.md) · [Validation](validation.md) · [Reflection](reflection.md)
+
+⬅️ [← Week 1 Reflection](../week-01-foundations/reflection.md) · ➡️ [Notes →](notes.md)
+
+---
+<!-- NAV_END -->
+
 # Chapter 2: Files, Errors, and Logging
 
 ## The story of the week
@@ -180,3 +191,12 @@ Next week teaches you how to model papers cleanly.
 You will move from paths and exceptions into dataclasses, domain models, and richer object design.
 A dependable scanner is the foundation.
 A dependable model layer is what you build on top of it.
+<!-- NAV_BOTTOM_START -->
+---
+⬅️ [← Week 1 Reflection](../week-01-foundations/reflection.md) · ➡️ [Notes →](notes.md)
+
+**Week 02 — Files, Errors, Logging:** **README** · [Notes](notes.md) · [Exercises](exercises.md) · [Break It](break_it.md) · [Validation](validation.md) · [Reflection](reflection.md)
+
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 1: Python Core and Project Foundation](../README.md)
+---
+<!-- NAV_BOTTOM_END -->

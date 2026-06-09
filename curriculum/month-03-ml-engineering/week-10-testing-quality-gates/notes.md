@@ -1,3 +1,14 @@
+<!-- NAV_START -->
+---
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 3: Advanced Python and ML Engineering](../README.md)
+
+**Week 10 — Testing and Quality Gates:** [README](README.md) · **Notes** · [Exercises](exercises.md) · [Break It](break_it.md) · [Validation](validation.md) · [Reflection](reflection.md)
+
+⬅️ [← README](README.md) · ➡️ [Exercises →](exercises.md)
+
+---
+<!-- NAV_END -->
+
 # Notes - Week 10 Testing Discipline and Quality Gates
 
 ## Why tests exist
@@ -467,3 +478,12 @@ Testing discipline is a professional habit. It is not optional for a portfolio-g
 8. Run `ruff check src tests` and `pytest -q` before every commit.
 9. Treat CI failures as blockers — never merge a red pipeline.
 10. Let coverage reports guide you toward under-tested code.
+<!-- NAV_BOTTOM_START -->
+---
+⬅️ [← README](README.md) · ➡️ [Exercises →](exercises.md)
+
+**Week 10 — Testing and Quality Gates:** [README](README.md) · **Notes** · [Exercises](exercises.md) · [Break It](break_it.md) · [Validation](validation.md) · [Reflection](reflection.md)
+
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 3: Advanced Python and ML Engineering](../README.md)
+---
+<!-- NAV_BOTTOM_END -->

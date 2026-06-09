@@ -1,3 +1,14 @@
+<!-- NAV_START -->
+---
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 4: AI Engineering, API, Workers](../README.md)
+
+**Week 13 — Embeddings and Semantic Search:** [README](README.md) · [Notes](notes.md) · **Exercises** · [Break It](break_it.md) · [Validation](validation.md) · [Reflection](reflection.md)
+
+⬅️ [← Notes](notes.md) · ➡️ [Break It →](break_it.md)
+
+---
+<!-- NAV_END -->
+
 # Exercises - Week 13 Embeddings and Semantic Search
 
 ## Beginner
@@ -57,3 +68,12 @@
 4. **Protocol-safe embedder factory.** Write an `EmbedderFactory` that reads a string configuration value ("fake", "sentence-transformers", "noop") and returns the appropriate embedder, each satisfying the `EmbeddingModel` protocol. Add a configuration setting to `researchops` settings that controls which embedder is constructed. Write tests for all three modes — do not require `sentence-transformers` installed for the "fake" and "noop" tests (use a conditional import guard).
 
 5. **RAG readiness audit.** Read the Month 5 preview in the syllabus or roadmap. Identify five design decisions you made this week (chunk size, overlap, metadata fields, storage schema, scoring strategy) that will affect Month 5's RAG assistant. For each decision, write: what you chose, why, and what you would need to change if the RAG system required higher precision. Commit this as a short markdown document in `docs/`.
+<!-- NAV_BOTTOM_START -->
+---
+⬅️ [← Notes](notes.md) · ➡️ [Break It →](break_it.md)
+
+**Week 13 — Embeddings and Semantic Search:** [README](README.md) · [Notes](notes.md) · **Exercises** · [Break It](break_it.md) · [Validation](validation.md) · [Reflection](reflection.md)
+
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 4: AI Engineering, API, Workers](../README.md)
+---
+<!-- NAV_BOTTOM_END -->

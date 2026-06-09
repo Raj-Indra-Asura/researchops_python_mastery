@@ -1,3 +1,28 @@
+
+<!-- QUICKREF -->
+## ⚡ Quick Commands
+
+| Command | Purpose |
+|---------|--------|
+| `python -m pip install -e ".[dev]"` | Install / update dependencies |
+| `researchops --help` | CLI smoke test |
+| `pytest -q` | Run full test suite |
+| `ruff check src tests` | Lint check |
+
+*Full commands for Week 3 are in the [Commands to run](#commands-to-run) section below.*
+
+<!-- QUICKREF_END -->
+<!-- NAV_START -->
+---
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 1: Python Core and Project Foundation](../README.md)
+
+**Week 03 — OOP and Domain Modeling:** [README](README.md) · [Notes](notes.md) · [Exercises](exercises.md) · [Break It](break_it.md) · **Validation** · [Reflection](reflection.md)
+
+⬅️ [← Break It](break_it.md) · ➡️ [Reflection →](reflection.md)
+
+---
+<!-- NAV_END -->
+
 # Week 03 Validation - Exact Checkpoint
 
 ## Purpose
@@ -268,4 +293,12 @@ Do **not** move to Week 4 if any of these are true.
 You pass Week 3 validation when both statements are true:
 1. The commands succeed.
 2. You can explain the design decisions behind the code without reading from the file.
+<!-- NAV_BOTTOM_START -->
+---
+⬅️ [← Break It](break_it.md) · ➡️ [Reflection →](reflection.md)
 
+**Week 03 — OOP and Domain Modeling:** [README](README.md) · [Notes](notes.md) · [Exercises](exercises.md) · [Break It](break_it.md) · **Validation** · [Reflection](reflection.md)
+
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 1: Python Core and Project Foundation](../README.md)
+---
+<!-- NAV_BOTTOM_END -->

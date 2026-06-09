@@ -1,3 +1,14 @@
+<!-- NAV_START -->
+---
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 4: AI Engineering, API, Workers](../README.md)
+
+**Week 15 — Async IO and Network Fetching:** [README](README.md) · **Notes** · [Exercises](exercises.md) · [Break It](break_it.md) · [Validation](validation.md) · [Reflection](reflection.md)
+
+⬅️ [← README](README.md) · ➡️ [Exercises →](exercises.md)
+
+---
+<!-- NAV_END -->
+
 # Notes - Week 15 Async I/O and Network Fetching
 
 ## Synchronous vs asynchronous code: the core idea
@@ -353,3 +364,12 @@ This returns one `FetchResult` per URL. Successes have `content`. Failures have 
 - Use semaphores to cap concurrent requests and protect remote services.
 - Use `FakeHttpClient` in tests — never real network access.
 - Return structured batch results that capture partial failures.
+<!-- NAV_BOTTOM_START -->
+---
+⬅️ [← README](README.md) · ➡️ [Exercises →](exercises.md)
+
+**Week 15 — Async IO and Network Fetching:** [README](README.md) · **Notes** · [Exercises](exercises.md) · [Break It](break_it.md) · [Validation](validation.md) · [Reflection](reflection.md)
+
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 4: AI Engineering, API, Workers](../README.md)
+---
+<!-- NAV_BOTTOM_END -->

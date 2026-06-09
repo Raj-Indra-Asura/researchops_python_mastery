@@ -1,3 +1,14 @@
+<!-- NAV_START -->
+---
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 4: AI Engineering, API, Workers](../README.md)
+
+**Week 16 — Local Worker Job System:** **README** · [Notes](notes.md) · [Exercises](exercises.md) · [Break It](break_it.md) · [Validation](validation.md) · [Reflection](reflection.md)
+
+⬅️ [← Week 15 Reflection](../week-15-async-io-network-fetching/reflection.md) · ➡️ [Notes →](notes.md)
+
+---
+<!-- NAV_END -->
+
 # Week 16 — Local Worker and Job System
 
 > **Chapter title: "Work that happens in the background."**
@@ -153,3 +164,12 @@ RAG assistant needs — retrieval, services, and async/background execution.
 **Week 17** opens Month 5 by combining retrieval with generation into a **RAG
 assistant** that answers questions **with citations**, controls hallucination, and
 stays fully testable with a fake generator (no real LLM required).
+<!-- NAV_BOTTOM_START -->
+---
+⬅️ [← Week 15 Reflection](../week-15-async-io-network-fetching/reflection.md) · ➡️ [Notes →](notes.md)
+
+**Week 16 — Local Worker Job System:** **README** · [Notes](notes.md) · [Exercises](exercises.md) · [Break It](break_it.md) · [Validation](validation.md) · [Reflection](reflection.md)
+
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 4: AI Engineering, API, Workers](../README.md)
+---
+<!-- NAV_BOTTOM_END -->

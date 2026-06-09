@@ -1,3 +1,14 @@
+<!-- NAV_START -->
+---
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 1: Python Core and Project Foundation](../README.md)
+
+**Week 02 — Files, Errors, Logging:** [README](README.md) · **Notes** · [Exercises](exercises.md) · [Break It](break_it.md) · [Validation](validation.md) · [Reflection](reflection.md)
+
+⬅️ [← README](README.md) · ➡️ [Exercises →](exercises.md)
+
+---
+<!-- NAV_END -->
+
 # Chapter 2 Notes — Files, Errors, and Logging
 
 ## 1. Chapter overview
@@ -2309,3 +2320,12 @@ Tests turn these promises into something enforceable.
 That is what Week 2 is really teaching.
 It is not only about files, errors, and logging.
 It is about learning to design software that can be trusted.
+<!-- NAV_BOTTOM_START -->
+---
+⬅️ [← README](README.md) · ➡️ [Exercises →](exercises.md)
+
+**Week 02 — Files, Errors, Logging:** [README](README.md) · **Notes** · [Exercises](exercises.md) · [Break It](break_it.md) · [Validation](validation.md) · [Reflection](reflection.md)
+
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 1: Python Core and Project Foundation](../README.md)
+---
+<!-- NAV_BOTTOM_END -->

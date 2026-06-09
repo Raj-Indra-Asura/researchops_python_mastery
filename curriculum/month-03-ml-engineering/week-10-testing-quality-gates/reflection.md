@@ -1,3 +1,14 @@
+<!-- NAV_START -->
+---
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 3: Advanced Python and ML Engineering](../README.md)
+
+**Week 10 — Testing and Quality Gates:** [README](README.md) · [Notes](notes.md) · [Exercises](exercises.md) · [Break It](break_it.md) · [Validation](validation.md) · **Reflection**
+
+⬅️ [← Validation](validation.md) · ➡️ [📝 Week 10 Report](../../../docs/weekly-reports/README.md) · [Week 11 →](../week-11-classical-ml-topic-classification/README.md)
+
+---
+<!-- NAV_END -->
+
 # Reflection - Week 10 Testing Discipline and Quality Gates
 
 This is your personal record for Week 10. Fill it in honestly. The goal is not to claim you completed everything, but to understand what you know and what you still need to solidify.
@@ -103,3 +114,25 @@ Is the pyramid shaped correctly (more unit than integration than E2E)?
 - [ ] I know how to write a test before I write the feature.
 - [ ] I understand what coverage tells me and what it does not.
 - [ ] I am ready to learn TF-IDF and scikit-learn next week.
+
+<!-- WEEKLY_REPORT -->
+---
+
+## Weekly Report
+
+When you have completed this reflection, write your [Week 10 report](../../../docs/weekly-reports/README.md).
+
+Store it at `docs/weekly-reports/week-10-report.md` (see the [weekly reports guide](../../../docs/weekly-reports/README.md) for the template).
+
+Once your report is committed, advance to [Week 11 →](../week-11-classical-ml-topic-classification/README.md).
+<!-- WEEKLY_REPORT_END -->
+
+<!-- NAV_BOTTOM_START -->
+---
+⬅️ [← Validation](validation.md) · ➡️ [📝 Week 10 Report](../../../docs/weekly-reports/README.md) · [Week 11 →](../week-11-classical-ml-topic-classification/README.md)
+
+**Week 10 — Testing and Quality Gates:** [README](README.md) · [Notes](notes.md) · [Exercises](exercises.md) · [Break It](break_it.md) · [Validation](validation.md) · **Reflection**
+
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 3: Advanced Python and ML Engineering](../README.md)
+---
+<!-- NAV_BOTTOM_END -->

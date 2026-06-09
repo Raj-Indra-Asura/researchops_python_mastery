@@ -1,3 +1,14 @@
+<!-- NAV_START -->
+---
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 3: Advanced Python and ML Engineering](../README.md)
+
+**Week 12 — Experiment Tracking:** **README** · [Notes](notes.md) · [Exercises](exercises.md) · [Break It](break_it.md) · [Validation](validation.md) · [Reflection](reflection.md)
+
+⬅️ [← Week 11 Reflection](../week-11-classical-ml-topic-classification/reflection.md) · ➡️ [Notes →](notes.md)
+
+---
+<!-- NAV_END -->
+
 # Week 12 — Experiment Tracking
 
 ## Theme
@@ -58,3 +69,12 @@ Experiment, run, parameter, hyperparameter, metric, artifact, dataset version, m
 - [ ] Tests verify artifact path in record exists on disk.
 - [ ] `pytest -q` passes.
 - [ ] `ruff check src tests` exits clean.
+<!-- NAV_BOTTOM_START -->
+---
+⬅️ [← Week 11 Reflection](../week-11-classical-ml-topic-classification/reflection.md) · ➡️ [Notes →](notes.md)
+
+**Week 12 — Experiment Tracking:** **README** · [Notes](notes.md) · [Exercises](exercises.md) · [Break It](break_it.md) · [Validation](validation.md) · [Reflection](reflection.md)
+
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 3: Advanced Python and ML Engineering](../README.md)
+---
+<!-- NAV_BOTTOM_END -->

@@ -1,3 +1,14 @@
+<!-- NAV_START -->
+---
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 2: Storage, Search, Multiprocessing](../README.md)
+
+**Week 05 — SQLite Storage:** **README** · [Notes](notes.md) · [Exercises](exercises.md) · [Break It](break_it.md) · [Validation](validation.md) · [Reflection](reflection.md)
+
+⬅️ [← Week 4 Reflection](../../month-01-python-core/week-04-cli-packaging/reflection.md) · ➡️ [Notes →](notes.md)
+
+---
+<!-- NAV_END -->
+
 # Week 05 — SQLite Storage Layer
 
 > **Chapter title: "Data that survives a restart."**
@@ -166,3 +177,12 @@ the scanner discovers files, a parser turns PDF bytes into structured text, and
 the `IngestionService` orchestrates `discover → parse → store`, recording
 failures instead of dropping them. The schema you designed this week is the
 destination that pipeline fills.
+<!-- NAV_BOTTOM_START -->
+---
+⬅️ [← Week 4 Reflection](../../month-01-python-core/week-04-cli-packaging/reflection.md) · ➡️ [Notes →](notes.md)
+
+**Week 05 — SQLite Storage:** **README** · [Notes](notes.md) · [Exercises](exercises.md) · [Break It](break_it.md) · [Validation](validation.md) · [Reflection](reflection.md)
+
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 2: Storage, Search, Multiprocessing](../README.md)
+---
+<!-- NAV_BOTTOM_END -->

@@ -1,3 +1,10 @@
+<!-- NAV_START -->
+---
+[🏠 Home](README.md) · [🗺 Roadmap](ROADMAP.md) · [📋 Syllabus](SYLLABUS.md) · **📐 Project Spec** · [🏛 Architecture](ARCHITECTURE.md) · [🤝 Contributing](CONTRIBUTING.md) · [✅ Release Checklist](RELEASE_CHECKLIST.md) · [🗂 Curriculum Map](curriculum/NAVIGATION.md)
+
+---
+<!-- NAV_END -->
+
 # ResearchOps — Project Specification
 
 ## Goal
@@ -83,3 +90,8 @@ POST /search/semantic
 - Cloud storage (SQLite + local filesystem only in v1.0)
 - Real-time collaborative features
 - Mobile/web UI (CLI + REST API only)
+<!-- NAV_BOTTOM_START -->
+---
+[🏠 Home](README.md) · [🗺 Roadmap](ROADMAP.md) · [📋 Syllabus](SYLLABUS.md) · **📐 Project Spec** · [🏛 Architecture](ARCHITECTURE.md) · [🤝 Contributing](CONTRIBUTING.md) · [✅ Release Checklist](RELEASE_CHECKLIST.md) · [🗂 Curriculum Map](curriculum/NAVIGATION.md)
+---
+<!-- NAV_BOTTOM_END -->

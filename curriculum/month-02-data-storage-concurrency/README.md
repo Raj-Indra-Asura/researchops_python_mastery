@@ -1,3 +1,16 @@
+<!-- NAV_START -->
+---
+[🏠 Home](../../README.md) · [🗺 Roadmap](../../ROADMAP.md) · [📋 Syllabus](../../SYLLABUS.md) · [🗂 Curriculum Map](../NAVIGATION.md)
+
+**Month 2 — Storage, Search, Multiprocessing**
+
+[Week 05: SQLite Storage](./week-05-sqlite-storage/README.md) · [Week 06: PDF Parsing Pipeline](./week-06-pdf-parsing-pipeline/README.md) · [Week 07: Keyword Search and Data Quality](./week-07-keyword-search-data-quality/README.md) · [Week 08: Multiprocessing Ingestion](./week-08-multiprocessing-ingestion/README.md)
+
+⬅️ [← Month 1: Python Core and Project Foundation](../month-01-python-core/README.md) · ➡️ [Month 3: Advanced Python and ML Engineering →](../month-03-ml-engineering/README.md)
+
+---
+<!-- NAV_END -->
+
 # Month 2 — Data Storage and Concurrency
 
 > **Book section 2 of 5.** This month the scanner stops forgetting. You turn a
@@ -164,3 +177,12 @@ git tag month-2-complete
 
 Your repo should now ingest, store, de-duplicate, search, and parse in parallel —
 all with passing tests and clean lint.
+<!-- NAV_BOTTOM_START -->
+---
+⬅️ [← Month 1: Python Core and Project Foundation](../month-01-python-core/README.md) · ➡️ [Month 3: Advanced Python and ML Engineering →](../month-03-ml-engineering/README.md)
+
+[Week 05: SQLite Storage](./week-05-sqlite-storage/README.md) · [Week 06: PDF Parsing Pipeline](./week-06-pdf-parsing-pipeline/README.md) · [Week 07: Keyword Search and Data Quality](./week-07-keyword-search-data-quality/README.md) · [Week 08: Multiprocessing Ingestion](./week-08-multiprocessing-ingestion/README.md)
+
+[🏠 Home](../../README.md) · [🗺 Roadmap](../../ROADMAP.md) · [📋 Syllabus](../../SYLLABUS.md) · [🗂 Curriculum Map](../NAVIGATION.md)
+---
+<!-- NAV_BOTTOM_END -->

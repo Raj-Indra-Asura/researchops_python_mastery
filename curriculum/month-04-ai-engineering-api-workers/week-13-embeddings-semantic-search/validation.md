@@ -1,3 +1,28 @@
+
+<!-- QUICKREF -->
+## ⚡ Quick Commands
+
+| Command | Purpose |
+|---------|--------|
+| `python -m pip install -e ".[dev]"` | Install / update dependencies |
+| `researchops --help` | CLI smoke test |
+| `pytest -q` | Run full test suite |
+| `ruff check src tests` | Lint check |
+
+*Full commands for Week 13 are in the [Commands to run](#commands-to-run) section below.*
+
+<!-- QUICKREF_END -->
+<!-- NAV_START -->
+---
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 4: AI Engineering, API, Workers](../README.md)
+
+**Week 13 — Embeddings and Semantic Search:** [README](README.md) · [Notes](notes.md) · [Exercises](exercises.md) · [Break It](break_it.md) · **Validation** · [Reflection](reflection.md)
+
+⬅️ [← Break It](break_it.md) · ➡️ [Reflection →](reflection.md)
+
+---
+<!-- NAV_END -->
+
 # Validation — Week 13 Embeddings and Semantic Search
 
 ## 1. Pre-validation checklist
@@ -92,3 +117,12 @@ grep -rn "import sentence_transformers\|SentenceTransformer" src/researchops/ser
 - [ ] Empty-query behavior is defined.
 - [ ] Tests run offline; `pytest -q` passes; `ruff` is clean.
 - [ ] You can explain the full vector search flow aloud.
+<!-- NAV_BOTTOM_START -->
+---
+⬅️ [← Break It](break_it.md) · ➡️ [Reflection →](reflection.md)
+
+**Week 13 — Embeddings and Semantic Search:** [README](README.md) · [Notes](notes.md) · [Exercises](exercises.md) · [Break It](break_it.md) · **Validation** · [Reflection](reflection.md)
+
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 4: AI Engineering, API, Workers](../README.md)
+---
+<!-- NAV_BOTTOM_END -->

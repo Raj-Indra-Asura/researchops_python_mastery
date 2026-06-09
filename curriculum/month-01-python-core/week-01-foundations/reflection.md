@@ -1,3 +1,14 @@
+<!-- NAV_START -->
+---
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 1: Python Core and Project Foundation](../README.md)
+
+**Week 01 — Python Foundations:** [README](README.md) · [Notes](notes.md) · [Exercises](exercises.md) · [Break It](break_it.md) · [Validation](validation.md) · **Reflection**
+
+⬅️ [← Validation](validation.md) · ➡️ [📝 Week 01 Report](../../../docs/weekly-reports/README.md) · [Week 2 →](../week-02-files-errors-logging/README.md)
+
+---
+<!-- NAV_END -->
+
 # Reflection - Week 01 Foundations
 
 ## What I built
@@ -93,3 +104,25 @@
 - Can I explain the Week 1 execution flow from terminal to output?
 - Am I moving forward because I understand, or because I am impatient?
 - Based on my evidence, am I actually allowed to move to Week 2?
+
+<!-- WEEKLY_REPORT -->
+---
+
+## Weekly Report
+
+When you have completed this reflection, write your [Week 01 report](../../../docs/weekly-reports/README.md).
+
+Store it at `docs/weekly-reports/week-01-report.md` (see the [weekly reports guide](../../../docs/weekly-reports/README.md) for the template).
+
+Once your report is committed, advance to [Week 2 →](../week-02-files-errors-logging/README.md).
+<!-- WEEKLY_REPORT_END -->
+
+<!-- NAV_BOTTOM_START -->
+---
+⬅️ [← Validation](validation.md) · ➡️ [📝 Week 01 Report](../../../docs/weekly-reports/README.md) · [Week 2 →](../week-02-files-errors-logging/README.md)
+
+**Week 01 — Python Foundations:** [README](README.md) · [Notes](notes.md) · [Exercises](exercises.md) · [Break It](break_it.md) · [Validation](validation.md) · **Reflection**
+
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 1: Python Core and Project Foundation](../README.md)
+---
+<!-- NAV_BOTTOM_END -->
