@@ -11,407 +11,117 @@
 
 # Week 08 Notes — Multiprocessing Ingestion
 
-<!-- LEARNING_FORMAT_START -->
-# Complete Learning Format — Week 08: Multiprocessing Ingestion
-
-This guide is the clean learning path for the chapter.
-It uses short sentences.
-It breaks ideas into small pieces.
-It tells you what to focus on and what to ignore for now.
-Read it before the older detailed notes that follow.
-
-## Chapter overview
-
-The chapter title is **Doing many things at once, safely**.
-The practical milestone is: `researchops ingest ./papers --workers 4` ingests using 4 parallel worker processes.
-The expected capability is: Can explain the GIL, implement CPU-bound parallelism with ProcessPoolExecutor, and handle worker failures without crashing the batch.
-This chapter is one step in the ResearchOps system, not a random lesson.
-The visible feature matters because it proves the idea works.
-The hidden skill matters because it lets you build the next chapter without confusion.
-A complete pass through this chapter means you can read the code, run it, test it, break it, and explain it aloud.
-
-Use this study order:
-- Read the story first without typing.
-- Trace the smallest code example.
-- Find the project file that owns the behavior.
-- Run the validation command.
-- Explain one happy path and one failure path.
-
-## What you already know from previous weeks
-
-- Week 4 taught CLI and Packaging; keep its responsibility in mind, but do not rebuild it here.
-- Week 5 taught SQLite Storage Layer; keep its responsibility in mind, but do not rebuild it here.
-- Week 6 taught PDF Parsing Pipeline; keep its responsibility in mind, but do not rebuild it here.
-- Week 7 taught Keyword Search and Data Quality; keep its responsibility in mind, but do not rebuild it here.
-- You should be able to run the previous validation command before trusting new work.
-- You should be able to point at the main file from the previous week and say what job it owns.
-- If a previous idea feels weak, reread the example and trace one concrete value through it.
-- The safest learning rhythm is: understand one thing, change one thing, test one thing, explain one thing.
-
-## What problem this week solves
-
-Week 8 solves the project problem behind **Multiprocessing Ingestion**.
-Before this chapter, ResearchOps has a gap.
-The gap may be a missing feature, a missing boundary, a missing safety check, or a missing way to communicate with users.
-This chapter closes that gap with a focused milestone.
-Do not treat the milestone as a checklist only.
-Treat it as proof that the idea belongs in the system.
-- The concept `CPU-bound vs I/O-bound work` helps solve part of this gap.
-- The concept `Python GIL and why `ThreadPoolExecutor` does not help for CPU-heavy tasks` helps solve part of this gap.
-- The concept ``concurrent.futures.ProcessPoolExecutor`` helps solve part of this gap.
-- The concept `Pickling constraints: worker functions must be module-level` helps solve part of this gap.
-- The concept `Worker failure isolation: one bad PDF must not crash the batch` helps solve part of this gap.
-- The concept `Batch writes after parallel parsing` helps solve part of this gap.
-
-## Beginner mental model
-
-Use a simple four-part model: input, owner, transformation, proof.
-Input means the concrete thing entering the system.
-Owner means the file, object, or function responsible for the decision.
-Transformation means the useful change from raw data to meaningful result.
-Proof means the test or command that confirms the result.
-- Ask: what is the input for **Multiprocessing Ingestion**?
-- Ask: what is the owner for **Multiprocessing Ingestion**?
-- Ask: what is the transformation for **Multiprocessing Ingestion**?
-- Ask: what is the proof for **Multiprocessing Ingestion**?
-If you cannot answer those four questions, do not add more code yet.
-
-## Core vocabulary
-
-| Term | Simple meaning | Why it matters here |
-|------|----------------|---------------------|
-| CPU-bound vs I/O-bound work | CPU-bound vs I/O-bound work | This term names one job in the Week 8 milestone. |
-| Python GIL and why `ThreadPoolExecutor` does not help for CPU-heavy tasks | Python GIL and why `ThreadPoolExecutor` does not help for CPU-heavy tasks | This term names one job in the Week 8 milestone. |
-| concurrent.futures.ProcessPoolExecutor | `concurrent.futures.ProcessPoolExecutor` | This term names one job in the Week 8 milestone. |
-| Pickling constraints | Pickling constraints: worker functions must be module-level | This term names one job in the Week 8 milestone. |
-| Worker failure isolation | Worker failure isolation: one bad PDF must not crash the batch | This term names one job in the Week 8 milestone. |
-| Batch writes after parallel parsing | Batch writes after parallel parsing | This term names one job in the Week 8 milestone. |
-| Boundary | A line between responsibilities | It keeps the chapter understandable for a beginner. |
-| Failure path | What happens when the happy path is not available | It keeps the chapter understandable for a beginner. |
-| Validation | Evidence that the system still works | It keeps the chapter understandable for a beginner. |
-| Responsibility | The one job a file or function owns | It keeps the chapter understandable for a beginner. |
-
-## Concept explanations from first principles
-
-Read each concept as if you have never heard the term before.
-Do not skip the plain meaning.
-### Concept 1: CPU-bound vs I/O-bound work
-- **Plain meaning:** This is a named tool for solving one part of the chapter problem.
-- **Why it exists:** Real projects become confusing when this concern is unnamed.
-- **ResearchOps use:** In Week 8, it supports the milestone: `researchops ingest ./papers --workers 4` ingests using 4 parallel worker processes.
-- **Input question:** What data, command, file, request, or state reaches this concept?
-- **Output question:** What value, saved record, response, log, or state change should come out?
-- **Failure question:** What can be missing, malformed, slow, duplicated, stale, or invalid?
-- **Test question:** Which test would catch the mistake before a user sees it?
-- **Beginner trap:** Memorizing the word without tracing it in the project.
-- **Recovery move:** Use one concrete example and follow it through the files.
-- **Mastery signal:** You can explain the concept without saying "magic" or "it just works".
-
-### Concept 2: Python GIL and why `ThreadPoolExecutor` does not help for CPU-heavy tasks
-- **Plain meaning:** This is a named tool for solving one part of the chapter problem.
-- **Why it exists:** Real projects become confusing when this concern is unnamed.
-- **ResearchOps use:** In Week 8, it supports the milestone: `researchops ingest ./papers --workers 4` ingests using 4 parallel worker processes.
-- **Input question:** What data, command, file, request, or state reaches this concept?
-- **Output question:** What value, saved record, response, log, or state change should come out?
-- **Failure question:** What can be missing, malformed, slow, duplicated, stale, or invalid?
-- **Test question:** Which test would catch the mistake before a user sees it?
-- **Beginner trap:** Memorizing the word without tracing it in the project.
-- **Recovery move:** Use one concrete example and follow it through the files.
-- **Mastery signal:** You can explain the concept without saying "magic" or "it just works".
-
-### Concept 3: `concurrent.futures.ProcessPoolExecutor`
-- **Plain meaning:** This is a named tool for solving one part of the chapter problem.
-- **Why it exists:** Real projects become confusing when this concern is unnamed.
-- **ResearchOps use:** In Week 8, it supports the milestone: `researchops ingest ./papers --workers 4` ingests using 4 parallel worker processes.
-- **Input question:** What data, command, file, request, or state reaches this concept?
-- **Output question:** What value, saved record, response, log, or state change should come out?
-- **Failure question:** What can be missing, malformed, slow, duplicated, stale, or invalid?
-- **Test question:** Which test would catch the mistake before a user sees it?
-- **Beginner trap:** Memorizing the word without tracing it in the project.
-- **Recovery move:** Use one concrete example and follow it through the files.
-- **Mastery signal:** You can explain the concept without saying "magic" or "it just works".
-
-### Concept 4: Pickling constraints: worker functions must be module-level
-- **Plain meaning:** This is a named tool for solving one part of the chapter problem.
-- **Why it exists:** Real projects become confusing when this concern is unnamed.
-- **ResearchOps use:** In Week 8, it supports the milestone: `researchops ingest ./papers --workers 4` ingests using 4 parallel worker processes.
-- **Input question:** What data, command, file, request, or state reaches this concept?
-- **Output question:** What value, saved record, response, log, or state change should come out?
-- **Failure question:** What can be missing, malformed, slow, duplicated, stale, or invalid?
-- **Test question:** Which test would catch the mistake before a user sees it?
-- **Beginner trap:** Memorizing the word without tracing it in the project.
-- **Recovery move:** Use one concrete example and follow it through the files.
-- **Mastery signal:** You can explain the concept without saying "magic" or "it just works".
-
-### Concept 5: Worker failure isolation: one bad PDF must not crash the batch
-- **Plain meaning:** This is a named tool for solving one part of the chapter problem.
-- **Why it exists:** Real projects become confusing when this concern is unnamed.
-- **ResearchOps use:** In Week 8, it supports the milestone: `researchops ingest ./papers --workers 4` ingests using 4 parallel worker processes.
-- **Input question:** What data, command, file, request, or state reaches this concept?
-- **Output question:** What value, saved record, response, log, or state change should come out?
-- **Failure question:** What can be missing, malformed, slow, duplicated, stale, or invalid?
-- **Test question:** Which test would catch the mistake before a user sees it?
-- **Beginner trap:** Memorizing the word without tracing it in the project.
-- **Recovery move:** Use one concrete example and follow it through the files.
-- **Mastery signal:** You can explain the concept without saying "magic" or "it just works".
-
-### Concept 6: Batch writes after parallel parsing
-- **Plain meaning:** This is a named tool for solving one part of the chapter problem.
-- **Why it exists:** Real projects become confusing when this concern is unnamed.
-- **ResearchOps use:** In Week 8, it supports the milestone: `researchops ingest ./papers --workers 4` ingests using 4 parallel worker processes.
-- **Input question:** What data, command, file, request, or state reaches this concept?
-- **Output question:** What value, saved record, response, log, or state change should come out?
-- **Failure question:** What can be missing, malformed, slow, duplicated, stale, or invalid?
-- **Test question:** Which test would catch the mistake before a user sees it?
-- **Beginner trap:** Memorizing the word without tracing it in the project.
-- **Recovery move:** Use one concrete example and follow it through the files.
-- **Mastery signal:** You can explain the concept without saying "magic" or "it just works".
-
-## ResearchOps-specific application
-
-The chapter belongs to these project locations:
-- `src/researchops/workers/process_pool.py` — `ProcessPoolExecutor` wrapper
-- `src/researchops/services/ingestion_service.py` — updated with `workers` parameter
-- `src/researchops/cli/commands/ingest.py` — `--workers` option
-Study those files in this order:
-1. Find the user-facing entry point.
-2. Find the service or core concept that owns the meaning.
-3. Find the infrastructure only when outside resources are needed.
-4. Find the tests that prove the behavior.
-5. Find the validation command that a learner runs manually.
-The goal is to know why each file exists.
-If two files seem to own the same decision, stop and clarify the boundary.
-
-## Code examples with line-by-line explanation
-
-```python
-from concurrent.futures import ProcessPoolExecutor
-
-with ProcessPoolExecutor(max_workers=workers) as pool:
-    results = list(pool.map(parse_one_pdf, pdf_paths))
-```
-
-Line-by-line explanation:
-- Line 1: `from concurrent.futures import ProcessPoolExecutor` — This imports a tool before the example can use it.
-- Line 2: `(blank line)` — This blank line separates ideas so the example is easier to read.
-- Line 3: `with ProcessPoolExecutor(max_workers=workers) as pool:` — This stores a clear intermediate value for the next step.
-- Line 4: `results = list(pool.map(parse_one_pdf, pdf_paths))` — This stores a clear intermediate value for the next step.
-
-How to use this example:
-- Name the input.
-- Name the output.
-- Predict the result before running anything.
-- Connect the shape to the real ResearchOps file.
-- Write one sentence about why each line belongs.
-
-## Common beginner mistakes
-
-- **Mistake:** Pasting code before knowing the owner of the behavior.
-  **Why it hurts:** it hides the mental model and makes debugging harder.
-  **Better move:** make one small behavior clear, then prove it.
-- **Mistake:** Changing many files at once.
-  **Why it hurts:** it hides the mental model and makes debugging harder.
-  **Better move:** make one small behavior clear, then prove it.
-- **Mistake:** Skipping the failure path.
-  **Why it hurts:** it hides the mental model and makes debugging harder.
-  **Better move:** make one small behavior clear, then prove it.
-- **Mistake:** Reading only the happy path test.
-  **Why it hurts:** it hides the mental model and makes debugging harder.
-  **Better move:** make one small behavior clear, then prove it.
-- **Mistake:** Ignoring the validation command.
-  **Why it hurts:** it hides the mental model and makes debugging harder.
-  **Better move:** make one small behavior clear, then prove it.
-- **Mistake:** Using vague names.
-  **Why it hurts:** it hides the mental model and makes debugging harder.
-  **Better move:** make one small behavior clear, then prove it.
-- **Mistake:** Putting business rules in the user interface layer.
-  **Why it hurts:** it hides the mental model and makes debugging harder.
-  **Better move:** make one small behavior clear, then prove it.
-- **Mistake:** Treating logs, errors, and tests as decoration.
-  **Why it hurts:** it hides the mental model and makes debugging harder.
-  **Better move:** make one small behavior clear, then prove it.
-- **Mistake:** Optimizing before correctness is visible.
-  **Why it hurts:** it hides the mental model and makes debugging harder.
-  **Better move:** make one small behavior clear, then prove it.
-- **Mistake:** Building future-week features early.
-  **Why it hurts:** it hides the mental model and makes debugging harder.
-  **Better move:** make one small behavior clear, then prove it.
-
-## Debugging guidance
-
-- Copy the exact failing command.
-- Read the first useful error line.
-- Read the final error line.
-- Classify the failure as import, input, state, file, database, network, model, or expectation.
-- Reproduce it with the smallest command.
-- Inspect the value closest to the failure.
-- Fix the cause, not only the symptom.
-- Run the narrowest test.
-- Run the chapter validation command.
-- Write down what the error was teaching.
-Debugging questions:
-- What did I expect?
-- What happened?
-- Which value first became wrong?
-- Which layer created that value?
-- Which test should catch this next time?
-
-## Design tradeoffs
-
-- **Simple first version:** Easy to understand, but not the final production shape.
-- **Clear layers:** More files, but less confusion as features grow.
-- **Explicit errors:** More code, but failures become teachable.
-- **Small unit tests:** Fast feedback, but less end-to-end confidence.
-- **Integration tests:** Real wiring, but slower and more setup.
-- **Configuration:** Flexible behavior, but defaults must be clear.
-The right question is not "What is the fanciest design?"
-The right question is "What design teaches the responsibility clearly and can grow next week?"
-
-## Testing implications
-
-Tests for this chapter:
-- `tests/unit/test_process_pool.py`
-- `tests/integration/test_ingestion_service.py` — updated for parallel mode
-Validation commands:
-```bash
-researchops ingest ./examples/sample_papers --workers 2
-pytest tests/unit/test_process_pool.py -v
-```
-- Arrange the data.
-- Act on the system.
-- Assert the visible promise.
-- Check one failure path.
-- Keep unit tests fast.
-- Use integration tests only when real wiring matters.
-
-## Architecture implications
-
-ResearchOps stays understandable when dependencies point inward.
-```text
-CLI / API / Worker -> Services -> Core
-Infrastructure implements core-facing contracts and is wired at the outside.
-```
-- Does the UI layer avoid business logic?
-- Does the service layer own workflow decisions?
-- Does core avoid infrastructure imports?
-- Does infrastructure do outside-world work?
-- Do tests use fakes when possible?
-Architecture is not ceremony.
-Architecture is named responsibility.
-
-## How this connects to AI engineering / ML research
-
-AI engineering needs more than models.
-It needs reliable data flow, clear interfaces, repeatable experiments, visible failures, and honest evaluation.
-Week 8 contributes by making **multiprocessing ingestion** clear enough to trust.
-- Bad data creates bad model behavior.
-- Unclear boundaries make experiments hard to reproduce.
-- Missing tests let regressions change research results silently.
-- Good logs and errors shorten investigation time.
-- Clear documentation lets future users understand the system.
-
-## Mini quizzes
-
-- What problem does Week 8 solve?
-- What is the main input?
-- What is the main output?
-- Which file owns the main responsibility?
-- Which layer should not contain business logic?
-- What is one happy path?
-- What is one failure path?
-- What command proves the chapter works?
-- What should you not build early?
-- How does this prepare the next week?
-
-## Explain-it-aloud prompts
-
-- Explain Multiprocessing Ingestion in simple words.
-- Explain the data flow from input to result.
-- Explain the first file you would open.
-- Explain the test that gives confidence.
-- Explain what can break.
-- Explain the tradeoff made in this chapter.
-- Explain what you still find weak.
-
-## What to memorize
-
-- The topic: Multiprocessing Ingestion.
-- The milestone: `researchops ingest ./papers --workers 4` ingests using 4 parallel worker processes.
-- The main project files.
-- The validation command.
-- The boundary rule for the layer you are touching.
-- The habit of testing before moving forward.
-
-## What to understand deeply
-
-- Why this feature belongs now.
-- How data moves through the chapter.
-- Which file owns which decision.
-- How the failure path is handled.
-- Why the tests prove behavior.
-- How this week makes future work safer.
-
-## What not to worry about yet
-
-- Perfect scale.
-- Fancy abstractions.
-- Future-week features.
-- Every option in every library.
-- Premature optimization.
-- Comparing your speed to someone else.
-Focus on the milestone.
-A clear small milestone beats a confusing large one.
-
-## Bridge to next week
-
-Next week is Week 9: **Protocols, Interfaces, and Clean Architecture**.
-This week prepares you by giving ResearchOps a clearer piece of behavior before the next milestone: All services depend on protocols from `core/interfaces.py`. No service imports from `storage/`, `parsing/`, or `ml/` directly. Fake repositories in `tests/fakes/` pass protocol `isinstance` checks.
-- Run validation.
-- Explain the main files.
-- Explain one failure.
-- Explain one test.
-- Write down what still feels weak before moving on.
-
-## Guided deepening drills
-
-Use these drills if the chapter still feels abstract.
-- Drill 1: Trace `CPU-bound vs I/O-bound work` from user input to project result.
-- Drill 2: Write one sentence defining `CPU-bound vs I/O-bound work` without copying the notes.
-- Drill 3: Find the file where `CPU-bound vs I/O-bound work` appears or should appear.
-- Drill 4: Name one wrong implementation of `CPU-bound vs I/O-bound work` and why it would hurt.
-- Drill 5: Name one test that would protect `CPU-bound vs I/O-bound work`.
-- Drill 6: Trace `Python GIL and why `ThreadPoolExecutor` does not help for CPU-heavy tasks` from user input to project result.
-- Drill 7: Write one sentence defining `Python GIL and why `ThreadPoolExecutor` does not help for CPU-heavy tasks` without copying the notes.
-- Drill 8: Find the file where `Python GIL and why `ThreadPoolExecutor` does not help for CPU-heavy tasks` appears or should appear.
-- Drill 9: Name one wrong implementation of `Python GIL and why `ThreadPoolExecutor` does not help for CPU-heavy tasks` and why it would hurt.
-- Drill 10: Name one test that would protect `Python GIL and why `ThreadPoolExecutor` does not help for CPU-heavy tasks`.
-- Drill 11: Trace ``concurrent.futures.ProcessPoolExecutor`` from user input to project result.
-- Drill 12: Write one sentence defining ``concurrent.futures.ProcessPoolExecutor`` without copying the notes.
-- Drill 13: Find the file where ``concurrent.futures.ProcessPoolExecutor`` appears or should appear.
-- Drill 14: Name one wrong implementation of ``concurrent.futures.ProcessPoolExecutor`` and why it would hurt.
-- Drill 15: Name one test that would protect ``concurrent.futures.ProcessPoolExecutor``.
-- Drill 16: Trace `Pickling constraints: worker functions must be module-level` from user input to project result.
-- Drill 17: Write one sentence defining `Pickling constraints: worker functions must be module-level` without copying the notes.
-- Drill 18: Find the file where `Pickling constraints: worker functions must be module-level` appears or should appear.
-- Drill 19: Name one wrong implementation of `Pickling constraints: worker functions must be module-level` and why it would hurt.
-- Drill 20: Name one test that would protect `Pickling constraints: worker functions must be module-level`.
-- Drill 21: Trace `Worker failure isolation: one bad PDF must not crash the batch` from user input to project result.
-- Drill 22: Write one sentence defining `Worker failure isolation: one bad PDF must not crash the batch` without copying the notes.
-- Drill 23: Find the file where `Worker failure isolation: one bad PDF must not crash the batch` appears or should appear.
-- Drill 24: Name one wrong implementation of `Worker failure isolation: one bad PDF must not crash the batch` and why it would hurt.
-- Drill 25: Name one test that would protect `Worker failure isolation: one bad PDF must not crash the batch`.
-- Drill 26: Trace `Batch writes after parallel parsing` from user input to project result.
-- Drill 27: Write one sentence defining `Batch writes after parallel parsing` without copying the notes.
-- Drill 28: Find the file where `Batch writes after parallel parsing` appears or should appear.
-- Drill 29: Name one wrong implementation of `Batch writes after parallel parsing` and why it would hurt.
-- Drill 30: Name one test that would protect `Batch writes after parallel parsing`.
-
-<!-- LEARNING_FORMAT_END -->
-
----
-
-# Existing detailed notes
 ## 1. Chapter overview
+
+Week 8 is the chapter where ResearchOps learns to ingest a directory of research papers faster without making the ingestion result less trustworthy.
+The milestone is `researchops ingest ./papers --workers 4`: the same ingestion pipeline from earlier weeks can now parse more than one PDF at a time by using worker processes.
+This is not a generic speed chapter. It is specifically about CPU-bound PDF parsing, process pools, picklability, worker failures, and safe parent-process database writes.
+The important phrase is **doing many things at once, safely**.
+A faster command is a regression if it drops papers, hides failures, corrupts SQLite state, or produces different records from the single-worker path.
+
+Use this chapter as a single unified path:
+- Read the mental model before the implementation details.
+- Understand why PDF parsing is CPU-bound before choosing a tool.
+- Learn why Python threads are not the right tool for this CPU-heavy parse stage.
+- Treat `ProcessPoolExecutor` as a carefully bounded parser fan-out tool, not as permission to parallelize every line of ingestion.
+- Keep workers simple: receive a path, parse one PDF, return a success or failure payload.
+- Keep the parent process responsible for skip checks, saving papers, recording failures, and final summaries.
+- Validate with the real Week 8 command and the real Week 8 test file from the syllabus.
+
+By the end of the chapter, you should be able to explain the GIL, the reason worker functions must be module-level, the meaning of picklability, the parent-write pattern, and the test evidence that proves parallel ingestion is still correct.
+
+## 2. What you already know from previous weeks
+
+ResearchOps is not starting from nothing this week.
+Week 1 gave you the project layout, first CLI command, test discovery, and the habit of validating behavior from the command line.
+Week 2 taught file handling, custom exceptions, and logging, which matters because a parallel ingestion batch must make failures visible instead of hiding them inside a worker.
+Week 3 named the domain objects: `Paper`, `ParsedDocument`, `IngestionResult`, and `FailedDocument` are part of the language of the system.
+Week 4 made the CLI installable and testable, so `researchops ingest` is a real user-facing command rather than a one-off script.
+Week 5 introduced SQLite and repository boundaries, which is why storage decisions should stay controlled in one place.
+Week 6 built the PDF parsing pipeline and taught that one bad file should be recorded, not ignored.
+Week 7 added search and data-quality thinking, which makes ingestion quality even more important because search can only be as trustworthy as the stored text.
+
+Before learning multiprocessing, you should be able to trace the single-worker ingestion path:
+- A directory path enters from the CLI.
+- The service discovers PDF paths.
+- The service skips already-known papers when skip behavior is enabled.
+- One PDF is parsed into document data or a parse failure.
+- A successful parse becomes a `Paper` record.
+- A failed parse becomes a `FailedDocument` record.
+- The final `IngestionResult` reports successes, failures, and skipped files.
+
+If that older path is unclear, multiprocessing will feel random. Parallelism should speed up a known workflow, not hide a workflow you do not understand.
+
+## 3. What problem this week solves
+
+Sequential ingestion is correct but slow for large paper folders.
+If every PDF takes even a few seconds to parse, a few hundred PDFs can turn into a long wait.
+Each PDF is mostly independent during parsing: parsing `paper_a.pdf` does not require the text from `paper_b.pdf`.
+That independence is the opportunity for worker processes.
+
+The hard part is that not every stage is equally safe to parallelize.
+Parsing can be distributed because each worker can operate on one file path and return plain data.
+Saving to SQLite should remain coordinated because persistent state, duplicate checks, and failure recording are easier to reason about from the parent process.
+So the problem is not "make ingestion parallel everywhere."
+The real problem is: **parallelize CPU-heavy parsing while preserving the exact storage and failure semantics of the original ingestion workflow.**
+
+This week closes these gaps:
+- The CLI needs a `--workers` option.
+- The ingestion service needs to accept and use a worker count.
+- A process-pool helper needs to run parse work in child processes.
+- The worker function must be module-level so child processes can import it.
+- Worker inputs and outputs must be picklable.
+- One bad PDF must return a failure payload instead of crashing the whole batch.
+- The parent process must save successes and record failures after parsing payloads return.
+- Tests must prove single-worker and multi-worker paths agree logically.
+
+## 4. Beginner mental model
+
+Think of the parent process as a library desk and worker processes as assistants.
+The desk owns the catalog. The assistants do not edit the catalog.
+The desk hands each assistant a card containing one PDF path.
+An assistant opens that PDF, extracts what it can, and returns a report card.
+If the assistant cannot parse the PDF, it returns a failure report card rather than stopping all other assistants.
+The desk reads the returned report cards and updates the catalog in one controlled place.
+
+This model gives you four simple questions:
+- What crosses from the parent to a worker? A simple PDF path string.
+- What happens inside a worker? CPU-heavy parsing for one PDF.
+- What crosses back to the parent? A simple success or failure payload.
+- Who writes to SQLite? The parent process only.
+
+A process boundary is like a doorway that only plain, packed data can pass through.
+A string fits through. A dictionary of strings and numbers fits through. An open database connection does not fit through. A nested function does not fit through because the child process cannot import it by a stable module-level name.
+
+## 5. Core vocabulary
+
+| Term | Beginner meaning | Why it matters in Week 8 |
+|---|---|---|
+| CPU-bound work | Work limited mostly by calculation speed. | PDF parsing spends time decoding and reconstructing document content. |
+| I/O-bound work | Work limited mostly by waiting for disk, network, or another external resource. | Waiting-friendly techniques are not the main solution for CPU-heavy parsing. |
+| Concurrency | Multiple tasks are in progress during the same period. | A program can be concurrent without using multiple CPU cores at the same instant. |
+| Parallelism | Multiple tasks execute at the same instant. | ResearchOps wants different PDFs parsed on different CPU cores. |
+| GIL | The Global Interpreter Lock in CPython. | It explains why Python threads do not speed up this CPU-heavy parse stage. |
+| Process | A running program with its own memory space. | Each worker process has its own Python interpreter state. |
+| Thread | A unit of execution inside one process that shares memory with other threads. | Threads are not the Week 8 tool for CPU-heavy parsing. |
+| ProcessPoolExecutor | Standard-library helper for running function calls in worker processes. | It is the main Week 8 implementation tool. |
+| Worker function | Function executed in a child process. | It should parse one PDF and return plain data. |
+| Module-level function | Function defined at the top level of a Python module. | Child processes can import it by name. |
+| Pickling | Python serialization for sending values between processes. | Worker arguments and results must be picklable. |
+| Picklable value | A value that can be serialized and rebuilt. | Strings, ints, lists, dicts, and simple data shapes are safe choices. |
+| Unpicklable value | A value tied to live state or a local definition. | Open connections, open files, lambdas, and nested functions cause failures. |
+| Failure isolation | Keeping one bad item from destroying the whole batch. | One corrupt PDF should become one recorded failure. |
+| Batch write | Saving collected parse results from the parent process. | It protects SQLite and keeps storage rules centralized. |
+| Worker count | Number of child processes allowed to run work. | `--workers 2` asks for two parser workers. |
+| Startup overhead | Cost of creating worker processes and moving data. | Tiny folders may not speed up with more workers. |
+| Parity test | Test proving two paths produce the same logical result. | Single-worker and multi-worker ingestion must agree. |
+
+## 6. Concept explanations from first principles
+
+This section contains the detailed teaching for the chapter. Read it slowly: it moves from correctness, to workload type, to the GIL, to processes, to pickling, to safe ResearchOps ingestion.
+
+
+### Deep dive: Chapter overview
 
 You now have a complete local research library.
 ResearchOps can scan directories, parse PDFs, store papers, and search them.
@@ -432,7 +142,7 @@ By the end of this week, ResearchOps will support a `--workers` flag that can mu
 
 ---
 
-## 2. Correctness before speed
+### Deep dive: Correctness before speed
 
 A cardinal rule in software engineering: **make it work, then make it fast**.
 
@@ -460,7 +170,7 @@ If your single-process code had bugs, multiprocessing would amplify them.
 
 ---
 
-## 3. Concurrency vs parallelism
+### Deep dive: Concurrency vs parallelism
 
 These terms are often used interchangeably but mean different things.
 
@@ -484,12 +194,12 @@ For software:
 - **Concurrency** is about dealing with many tasks. It is a design property.
 - **Parallelism** is about doing many tasks at once. It is an execution property.
 
-Python's `asyncio` provides concurrency (many tasks in progress, but only one runs at a time in the event loop).
+Python's `waiting-oriented concurrency` provides concurrency (many tasks in progress, but only one runs at a time in the event loop).
 Python's `multiprocessing` provides parallelism (multiple processes, each on a separate CPU core).
 
 ---
 
-## 4. CPU-bound vs I/O-bound
+### Deep dive: CPU-bound vs I/O-bound
 
 Performance problems fall into two categories:
 
@@ -498,17 +208,17 @@ Performance problems fall into two categories:
 - Waiting for a database query to return.
 - Waiting for a file to be read from disk.
 
-For I/O-bound work, `asyncio` or threading is often effective.
+For I/O-bound work, `waiting-oriented concurrency` or threading is often effective.
 While one task waits for a response, another task can run.
 
 **CPU-bound**: the program spends most of its time computing.
 - PDF text extraction (parsing font tables, reconstructing character positions).
-- Machine learning inference.
+- Large numerical processing.
 - Image processing.
 - Compression/decompression.
 - Hashing large files.
 
-For CPU-bound work, `asyncio` is not useful because the event loop cannot run other tasks while Python is executing code.
+For CPU-bound work, `waiting-oriented concurrency` is not useful because the event loop cannot run other tasks while Python is executing code.
 Threading is also mostly unhelpful due to the Global Interpreter Lock (covered next).
 
 **PDF parsing is CPU-bound.**
@@ -520,7 +230,7 @@ Multiprocessing is the right tool.
 
 ---
 
-## 5. The Global Interpreter Lock (GIL)
+### Deep dive: The Global Interpreter Lock (GIL)
 
 This is one of the most important Python-specific concepts for performance.
 
@@ -584,7 +294,7 @@ This is why multiprocessing is the correct solution for CPU-bound work like PDF 
 
 ---
 
-## 6. Process vs Thread
+### Deep dive: Process vs Thread
 
 | Property              | Thread                          | Process                         |
 |-----------------------|---------------------------------|---------------------------------|
@@ -598,7 +308,7 @@ This is why multiprocessing is the correct solution for CPU-bound work like PDF 
 
 ---
 
-## 7. ProcessPoolExecutor
+### Deep dive: ProcessPoolExecutor
 
 `ProcessPoolExecutor` from the `concurrent.futures` module provides a high-level interface for process-based parallelism.
 
@@ -653,7 +363,7 @@ When the `with` block exits, the executor waits for all workers to finish before
 
 ---
 
-## 8. Pickling: the serialization requirement
+### Deep dive: Pickling: the serialization requirement
 
 Worker functions and their arguments must be **picklable**.
 
@@ -704,7 +414,7 @@ The safe pattern: **workers only parse, the main process saves**.
 
 ---
 
-## 9. The safe architecture: parse in parallel, save sequentially
+### Deep dive: The safe architecture: parse in parallel, save sequentially
 
 ```text
 Main process:
@@ -740,7 +450,7 @@ The main process catches the exception from that future and records a failure.
 
 ---
 
-## 10. Complete parallel ingestion implementation
+### Deep dive: Complete parallel ingestion implementation
 
 ```python
 from concurrent.futures import ProcessPoolExecutor, as_completed
@@ -872,7 +582,7 @@ class ParallelIngestionService:
 
 ---
 
-## 11. The worker function in detail
+### Deep dive: The worker function in detail
 
 ```python
 def _parse_worker(path_str: str) -> dict:
@@ -919,7 +629,7 @@ Catching it here and returning a failure-shaped dict is cleaner:
 
 ---
 
-## 12. Result aggregation
+### Deep dive: Result aggregation
 
 `executor.map(f, items)` returns results in the same order as `items`.
 If you submit 10 paths, you get 10 results in the same order.
@@ -948,7 +658,7 @@ Use `as_completed` when you want to process results as soon as they arrive (for 
 
 ---
 
-## 13. Progress reporting
+### Deep dive: Progress reporting
 
 A batch of 500 PDFs should show progress, not silence.
 
@@ -976,7 +686,7 @@ Combined with `end=""` and `flush=True`, this creates an in-place progress displ
 
 ---
 
-## 14. Benchmarking
+### Deep dive: Benchmarking
 
 Performance work requires measurement.
 Do not assume multiprocessing is faster.
@@ -1024,7 +734,7 @@ This is why the default should be `--workers 1` (sequential) until the user opts
 
 ---
 
-## 15. Architecture diagram
+### Deep dive: Architecture diagram
 
 ```text
 CLI: researchops ingest examples/ --workers 4
@@ -1061,7 +771,7 @@ CLI: print summary
 
 ---
 
-## 16. Choosing the number of workers
+### Deep dive: Choosing the number of workers
 
 A reasonable default is `min(4, os.cpu_count() or 1)`.
 
@@ -1078,7 +788,7 @@ On a 2-core laptop with hyperthreading, it might return 4.
 On a 16-core workstation, it returns 16.
 
 The cap of 4 is conservative.
-More workers means more memory usage (each process loads its own copy of `pypdf`, models, etc.).
+More workers means more memory usage (each process loads its own copy of `pypdf`, parsing libraries, etc.).
 For a learning tool, 4 is a reasonable maximum until you have profiled the actual workload.
 
 The CLI flag:
@@ -1089,7 +799,7 @@ researchops ingest examples/ --workers 1  # sequential (default, safest)
 
 ---
 
-## 17. Testing parallel ingestion
+### Deep dive: Testing parallel ingestion
 
 Testing concurrent code requires thinking about what guarantees you are testing.
 
@@ -1139,7 +849,7 @@ It uses sets for comparison.
 
 ---
 
-## 18. Why database writes from workers are dangerous
+### Deep dive: Why database writes from workers are dangerous
 
 Imagine if workers each had their own database connection and wrote directly:
 
@@ -1167,7 +877,7 @@ The safe rule: **workers only parse, main process only writes**.
 
 ---
 
-## 19. Connecting to previous weeks
+### Deep dive: Connecting to previous weeks
 
 Week 8 depends on everything that came before it.
 
@@ -1184,7 +894,7 @@ The key insight of Week 8: the good design decisions from earlier weeks (pure fu
 
 ---
 
-## 20. Review questions and self-checks
+### Deep dive: Review questions and self-checks
 
 **Conceptual questions:**
 
@@ -1239,6 +949,355 @@ The key insight of Week 8: the good design decisions from earlier weeks (pure fu
     Write a test that it returns at most 4.
 
 17. Write a test that verifies parallel mode produces the same set of paper IDs as sequential mode.
+
+
+
+## 7. ResearchOps-specific application
+
+Week 8 belongs to three main project areas named in the syllabus:
+- `src/researchops/workers/process_pool.py` — the process-pool wrapper or helper.
+- `src/researchops/services/ingestion_service.py` — the ingestion workflow, now with a worker-count path.
+- `src/researchops/cli/commands/ingest.py` — the user-facing `--workers` option.
+
+The real test names from the syllabus are:
+- `tests/unit/test_process_pool.py`
+- `tests/integration/test_ingestion_service.py` — updated for parallel mode.
+
+The service-level flow should remain understandable:
+1. The CLI receives a directory and a worker count.
+2. The CLI wires concrete objects and calls the ingestion service.
+3. The service discovers PDF paths.
+4. The service checks skip rules in the parent process.
+5. The service sends only selected path strings to the process-pool helper.
+6. Workers parse PDFs and return success or failure payloads.
+7. The parent process saves papers and records failures.
+8. The CLI displays a summary.
+
+If a design makes the worker responsible for storage, it has crossed the Week 8 boundary.
+If a design makes the CLI responsible for parsing details, it has crossed the Week 8 boundary.
+If a design makes the process-pool helper responsible for deciding business rules, it has crossed the Week 8 boundary.
+
+## 8. Code examples with line-by-line explanation
+
+```python
+from concurrent.futures import ProcessPoolExecutor
+from pathlib import Path
+
+
+def parse_one_pdf(path_string: str) -> dict[str, object]:
+    path = Path(path_string)
+    try:
+        from researchops.parsing.pdf_parser import parse_pdf
+
+        document = parse_pdf(path)
+        return {
+            "ok": True,
+            "path": path_string,
+            "raw_text": document.raw_text,
+            "num_pages": document.num_pages,
+            "file_size_bytes": document.file_size_bytes,
+            "metadata": document.metadata,
+        }
+    except Exception as error:
+        return {
+            "ok": False,
+            "path": path_string,
+            "error_type": type(error).__name__,
+            "error_message": str(error),
+        }
+
+
+def parse_many(path_strings: list[str], workers: int) -> list[dict[str, object]]:
+    with ProcessPoolExecutor(max_workers=workers) as executor:
+        return list(executor.map(parse_one_pdf, path_strings))
+```
+
+Line-by-line explanation:
+- `from concurrent.futures import ProcessPoolExecutor` imports the standard-library class that manages worker processes.
+- `from pathlib import Path` lets the worker rebuild a `Path` from the string it receives.
+- `def parse_one_pdf(...)` is defined at module level, not inside another function.
+- `path_string: str` is used because strings are easy to pickle and send to child processes.
+- `path = Path(path_string)` reconstructs a richer path object inside the worker.
+- `try:` starts the protected parse region so failures can become data.
+- The `parse_pdf` import happens inside the worker so the child process can load what it needs.
+- `document = parse_pdf(path)` performs the CPU-heavy parsing for one PDF.
+- The success dictionary contains only plain data the parent can understand.
+- `except Exception as error:` keeps one bad PDF from crashing the whole batch.
+- The failure dictionary includes the path, error type, and message for recording.
+- `parse_many` is parent-side orchestration for the process pool.
+- The `with` block creates and cleans up the pool.
+- `executor.map` sends each path string to the module-level worker.
+- `list(...)` collects payloads for parent-side saving.
+
+Unsafe example:
+
+```python
+# Wrong for Week 8.
+def parse_and_save(path_string: str, database_connection) -> None:
+    document = parse_pdf(Path(path_string))
+    database_connection.execute("INSERT INTO papers ...")
+```
+
+This is wrong because `database_connection` is live process state, not plain data.
+It also gives storage responsibility to the worker.
+The safe pattern is to return parsed data and let the parent save it.
+
+## 9. Common beginner mistakes
+
+- **Using threads for CPU-heavy parsing.** The GIL prevents threads in one CPython process from running Python bytecode truly in parallel for this workload. Use processes for the parse stage.
+- **Passing a repository into a worker.** Repositories often hide connections or state. Pass simple path strings instead.
+- **Passing an open SQLite connection into a worker.** Connections are not safe process-boundary payloads. Save from the parent.
+- **Defining the worker inside a service method.** Nested functions cannot be imported by child processes. Move the worker to module level.
+- **Using a lambda as the worker.** Lambdas do not have stable importable names. Use a named function.
+- **Letting worker exceptions escape.** One bad PDF can interrupt result collection. Return a failure payload.
+- **Assuming output order means completion order.** Parallel workers can finish at different times. Test counts and identities, not accidental timing.
+- **Expecting tiny folders to speed up.** Process startup and pickling overhead may dominate small examples.
+- **Writing to SQLite from every worker.** This risks lock contention and confusing duplicate behavior.
+- **Treating speed as the only validation.** Correctness and parity are the first requirements.
+
+## 10. Debugging guidance
+
+Start by locating the failure phase:
+- Did the CLI reject the worker count?
+- Did process-pool creation fail?
+- Did Python fail while pickling the worker function or arguments?
+- Did parsing fail inside a worker?
+- Did collecting results fail in the parent?
+- Did saving payloads fail after parsing completed?
+
+Common symptoms:
+- `Can't pickle local object` usually means the worker is nested or locally defined.
+- `Can't pickle <function <lambda>...>` usually means a lambda was used as the worker.
+- `cannot pickle sqlite3.Connection` means live database state crossed the boundary.
+- `max_workers must be greater than 0` means validation allowed zero or negative workers.
+- `database is locked` suggests writes may be happening concurrently or a transaction is held too long.
+- A batch stopping at the first corrupt PDF suggests exceptions are escaping the worker.
+
+Debug with narrow evidence first:
+1. Run `pytest tests/unit/test_process_pool.py -v`.
+2. Inspect the worker function signature.
+3. Print or log the payload shape before process submission in a local experiment.
+4. Confirm returned payloads contain `ok`, `path`, and either parsed fields or error fields.
+5. Run the integration test only after the process-pool contract is clear.
+
+## 11. Design tradeoffs
+
+- **Sequential default:** safer and simpler for tiny folders, but large folders need an opt-in worker count.
+- **Module-level worker:** less visually contained than a nested helper, but required for process execution.
+- **Dictionary payloads:** beginner-readable and picklable, but require consistent keys.
+- **Parent-only writes:** safer for SQLite and duplicate rules, but saving happens after parsing payloads return.
+- **Catching exceptions inside workers:** improves batch survival, but error payloads must contain enough detail.
+- **Ordered collection with `executor.map`:** easy to understand, but less flexible for progress reporting than completed-future loops.
+- **Worker cap:** avoids wasteful process counts, but a too-small cap may underuse a powerful machine.
+- **Parity tests over timing tests:** stable and correctness-focused, but performance still requires separate measurement.
+
+The right design is the one that a learner can explain and validate.
+
+## 12. Testing implications
+
+Week 8 tests must prove contracts, not lucky timing.
+`tests/unit/test_process_pool.py` should prove the process-pool helper behavior.
+`tests/integration/test_ingestion_service.py` should prove the service still ingests correctly with parallel mode.
+
+A good Week 8 test suite checks:
+- worker helper returns one payload per input path;
+- success payloads contain enough data for saving;
+- failure payloads contain path, error type, and message;
+- invalid worker counts are rejected or handled clearly;
+- one bad PDF does not erase other results;
+- parent-side database writes happen after worker payloads return;
+- single-worker and multi-worker ingestion agree logically;
+- tests avoid hidden completion-order assumptions.
+
+The official syllabus command is:
+
+```bash
+researchops ingest ./examples/sample_papers --workers 2
+pytest tests/unit/test_process_pool.py -v
+```
+
+Use this additional service check when validating the full workflow:
+
+```bash
+pytest tests/integration/test_ingestion_service.py -v
+```
+
+## 13. Architecture implications
+
+Week 8 is a boundary test for ResearchOps.
+The CLI should expose `--workers`, not own parse logic.
+The service should own ingestion workflow, not low-level process mechanics.
+The process-pool helper should run CPU-heavy worker calls, not decide business rules.
+The worker should parse one PDF, not write to storage.
+The repository should save records without caring whether parsing was single-worker or multi-worker.
+
+Safe direction:
+
+```text
+CLI command
+  -> ingestion service
+      -> process-pool helper
+          -> module-level parse worker
+              -> PDF parser for one path
+      -> repository writes in parent process
+```
+
+Questions to ask:
+- Does the CLI avoid business logic?
+- Does the service own workflow decisions?
+- Does the worker receive simple data?
+- Do workers avoid database writes?
+- Does the parent record failures?
+- Do tests prove the boundary?
+
+## 14. How this connects to AI engineering / ML research
+
+Research systems depend on trustworthy data preparation.
+A paper assistant cannot search, rank, summarize, or analyze papers that were silently dropped during ingestion.
+Parallel ingestion teaches the production habit that performance improvements must preserve behavior.
+Research folders are messy: they contain corrupt files, scanned PDFs, duplicates, odd metadata, and sometimes empty text extraction.
+A useful ingestion system reports those problems and keeps working.
+
+This chapter also teaches resource thinking.
+CPU cores are finite.
+Worker processes use memory.
+Process startup costs time.
+A well-designed pipeline splits independent CPU-heavy work while keeping shared state controlled.
+That habit is useful long before any advanced research feature appears.
+
+## 15. Mini quizzes
+
+1. What is the Week 8 milestone command?
+2. What does CPU-bound mean?
+3. Why is PDF parsing CPU-bound in this chapter?
+4. What does the GIL prevent inside one CPython process?
+5. Why does a process pool help with CPU-heavy parsing?
+6. What is pickling?
+7. Why should a worker receive a string path?
+8. Why must the worker be module-level?
+9. What happens if the worker is a lambda?
+10. What should a success payload contain?
+11. What should a failure payload contain?
+12. Why should workers not write to SQLite?
+13. What does parent-only saving protect?
+14. Why might a tiny folder not get faster with multiple workers?
+15. What does a parity test compare?
+16. Why is output order a risky assumption?
+17. Which unit test file is named in the Week 8 syllabus?
+18. Which integration test file is updated for parallel mode?
+19. What should happen when one PDF is corrupt?
+20. What evidence says the chapter is complete?
+
+## 16. Explain-it-aloud prompts
+
+- Explain `researchops ingest ./papers --workers 4` to a beginner.
+- Explain why PDF parsing belongs in a process pool.
+- Explain the GIL without using vague phrases.
+- Explain the difference between the parent process and a worker process.
+- Explain what crosses the process boundary.
+- Explain why open connections do not cross the process boundary.
+- Explain how a bad PDF becomes a failure record.
+- Explain why SQLite writes stay in the parent process.
+- Explain how single-worker and multi-worker paths are compared.
+- Explain why more workers may not help on tiny inputs.
+- Explain what `tests/unit/test_process_pool.py` should prove.
+- Explain what `tests/integration/test_ingestion_service.py` should prove.
+
+## 17. What to memorize
+
+- PDF parsing is CPU-bound in Week 8.
+- The GIL limits CPU-heavy Python threads inside one CPython process.
+- `ProcessPoolExecutor` is the Week 8 tool for CPU-bound parse parallelism.
+- Worker functions should be module-level.
+- Worker arguments and return values must be picklable.
+- Strings, numbers, booleans, lists, dictionaries, and simple data shapes are safe payloads.
+- Open database connections, open files, lambdas, and nested functions are unsafe payloads.
+- Workers parse; the parent writes.
+- One bad PDF should become one recorded failure.
+- Parallel mode must match single-worker mode logically.
+- The official Week 8 unit test is `tests/unit/test_process_pool.py`.
+
+## 18. What to understand deeply
+
+Understand that multiprocessing is not just a faster loop.
+It changes memory, error handling, serialization, startup cost, and the shape of tests.
+Understand that pickling errors are often design feedback: you tried to send behavior or live state where plain data belongs.
+Understand that parent-only database writes preserve the repository boundary and reduce SQLite contention.
+Understand that failure isolation is what makes batch ingestion useful on real research folders.
+Understand that result parity matters more than impressive timing.
+Understand that a process pool is chosen because of the workload, not because it is fashionable.
+Understand that every worker should have one small responsibility: parse one file and report what happened.
+
+Deep trace for a good file:
+- scanner finds `paper_a.pdf`;
+- service keeps it in the process list;
+- parent sends its string path to a worker;
+- worker parses it;
+- worker returns a success payload;
+- parent builds and saves a paper;
+- result counts one success.
+
+Deep trace for a bad file:
+- scanner finds `broken.pdf`;
+- parent sends its string path to a worker;
+- parser raises inside the worker;
+- worker catches the exception;
+- worker returns a failure payload;
+- parent records a failed document;
+- result counts one failure while the batch continues.
+
+## 19. What not to worry about yet
+
+- Do not build later-month interface features in Week 8.
+- Do not build later-month retrieval features in Week 8.
+- Do not add later-month serving features in Week 8.
+- Do not add distributed queues or clusters.
+- Do not replace SQLite.
+- Do not tune every possible worker-count strategy.
+- Do not chase perfect benchmarks on sample PDFs.
+- Do not parallelize database writes.
+- Do not hide failures for cleaner output.
+- Do not introduce future curriculum topics just to make the chapter feel bigger.
+
+Week 8 is complete when parallel parsing is correct, bounded, tested, and explainable.
+
+## 20. Bridge to next week
+
+Week 8 finishes Month 2 by making ResearchOps more realistic.
+The system can scan, parse, store, search, and now ingest with worker processes.
+That amount of behavior makes architecture boundaries more important, not less important.
+Next week focuses on cleaner interface thinking and dependency direction.
+The bridge is direct: multiprocessing is easier because earlier responsibilities were separated.
+The parser can run in a worker because it parses one file.
+The repository can stay in the parent because storage is already a named boundary.
+The service can coordinate the workflow because it already owns ingestion decisions.
+The CLI can stay small because it only exposes user options and displays results.
+
+Before moving forward, confirm you can explain:
+- why CPU-bound parsing belongs in worker processes;
+- why picklability shapes the worker function;
+- why worker failures become payloads;
+- why the parent writes to SQLite;
+- why one-worker and multi-worker results must match;
+- why future features should wait.
+
+Additional mastery drills:
+- Trace `paper_a.pdf` through the single-worker path, then trace it through the process-pool path and name what changed.
+- Trace `broken.pdf` through the process-pool path and identify where the error becomes a failure payload.
+- Write one sentence explaining why `Path` can be reconstructed inside the worker from a string.
+- Write one sentence explaining why a database connection should not appear in a worker argument list.
+- Compare `workers=1` and `workers=4` by correctness first, then by expected runtime behavior.
+- Inspect a hypothetical pickling error and identify whether the function, argument, or return value caused it.
+- Draw the parent process as one box and worker processes as separate boxes; label every value crossing between boxes.
+- Explain why a malformed PDF should affect the failure count but not erase successes from other PDFs.
+- Explain why tests should compare sets of paper identities rather than worker completion timing.
+- Explain why process startup overhead makes tiny sample folders poor performance benchmarks.
+- Identify the narrowest unit test that should fail if the worker stops catching parse exceptions.
+- Identify the integration test that should fail if parallel ingestion saves different papers than single-worker ingestion.
+- Review the CLI command and state which part is user interface and which part is service behavior.
+- Review the service flow and state which part belongs before worker submission and which part belongs after result collection.
+- Before Week 9, summarize the Week 8 boundary in one sentence: workers parse, parent writes, tests prove parity.
+
 <!-- NAV_BOTTOM_START -->
 ---
 ⬅️ [← README](README.md) · ➡️ [Exercises →](exercises.md)

@@ -11,392 +11,7 @@
 
 # Week 07 Notes — Keyword Search and Data Quality
 
-<!-- LEARNING_FORMAT_START -->
-# Complete Learning Format — Week 07: Keyword Search and Data Quality
-
-This guide is the clean learning path for the chapter.
-It uses short sentences.
-It breaks ideas into small pieces.
-It tells you what to focus on and what to ignore for now.
-Read it before the older detailed notes that follow.
-
-## Chapter overview
-
-The chapter title is **Finding signal in stored text**.
-The practical milestone is: `researchops search "transformer attention"` returns ranked results from stored papers.
-The expected capability is: Can implement basic text search with ranking, use fake repositories in unit tests, and explain what a data quality gate is.
-This chapter is one step in the ResearchOps system, not a random lesson.
-The visible feature matters because it proves the idea works.
-The hidden skill matters because it lets you build the next chapter without confusion.
-A complete pass through this chapter means you can read the code, run it, test it, break it, and explain it aloud.
-
-Use this study order:
-- Read the story first without typing.
-- Trace the smallest code example.
-- Find the project file that owns the behavior.
-- Run the validation command.
-- Explain one happy path and one failure path.
-
-## What you already know from previous weeks
-
-- Week 3 taught OOP, Dataclasses, and Domain Modeling; keep its responsibility in mind, but do not rebuild it here.
-- Week 4 taught CLI and Packaging; keep its responsibility in mind, but do not rebuild it here.
-- Week 5 taught SQLite Storage Layer; keep its responsibility in mind, but do not rebuild it here.
-- Week 6 taught PDF Parsing Pipeline; keep its responsibility in mind, but do not rebuild it here.
-- You should be able to run the previous validation command before trusting new work.
-- You should be able to point at the main file from the previous week and say what job it owns.
-- If a previous idea feels weak, reread the example and trace one concrete value through it.
-- The safest learning rhythm is: understand one thing, change one thing, test one thing, explain one thing.
-
-## What problem this week solves
-
-Week 7 solves the project problem behind **Keyword Search and Data Quality**.
-Before this chapter, ResearchOps has a gap.
-The gap may be a missing feature, a missing boundary, a missing safety check, or a missing way to communicate with users.
-This chapter closes that gap with a focused milestone.
-Do not treat the milestone as a checklist only.
-Treat it as proof that the idea belongs in the system.
-- The concept `In-memory inverted index basics` helps solve part of this gap.
-- The concept `Text normalisation: lowercasing, punctuation stripping, stopwords` helps solve part of this gap.
-- The concept `Basic scoring and ranking` helps solve part of this gap.
-- The concept `Data quality gates: detecting and reporting bad data` helps solve part of this gap.
-- The concept ``SearchService` and `SearchResult` domain objects` helps solve part of this gap.
-
-## Beginner mental model
-
-Use a simple four-part model: input, owner, transformation, proof.
-Input means the concrete thing entering the system.
-Owner means the file, object, or function responsible for the decision.
-Transformation means the useful change from raw data to meaningful result.
-Proof means the test or command that confirms the result.
-- Ask: what is the input for **Keyword Search and Data Quality**?
-- Ask: what is the owner for **Keyword Search and Data Quality**?
-- Ask: what is the transformation for **Keyword Search and Data Quality**?
-- Ask: what is the proof for **Keyword Search and Data Quality**?
-If you cannot answer those four questions, do not add more code yet.
-
-## Core vocabulary
-
-| Term | Simple meaning | Why it matters here |
-|------|----------------|---------------------|
-| In-memory inverted index basics | In-memory inverted index basics | This term names one job in the Week 7 milestone. |
-| Text normalisation | Text normalisation: lowercasing, punctuation stripping, stopwords | This term names one job in the Week 7 milestone. |
-| Basic scoring and ranking | Basic scoring and ranking | This term names one job in the Week 7 milestone. |
-| Data quality gates | Data quality gates: detecting and reporting bad data | This term names one job in the Week 7 milestone. |
-| SearchService` and `SearchResult` domain objects | `SearchService` and `SearchResult` domain objects | This term names one job in the Week 7 milestone. |
-| Boundary | A line between responsibilities | It keeps the chapter understandable for a beginner. |
-| Failure path | What happens when the happy path is not available | It keeps the chapter understandable for a beginner. |
-| Validation | Evidence that the system still works | It keeps the chapter understandable for a beginner. |
-| Responsibility | The one job a file or function owns | It keeps the chapter understandable for a beginner. |
-
-## Concept explanations from first principles
-
-Read each concept as if you have never heard the term before.
-Do not skip the plain meaning.
-### Concept 1: In-memory inverted index basics
-- **Plain meaning:** This is a named tool for solving one part of the chapter problem.
-- **Why it exists:** Real projects become confusing when this concern is unnamed.
-- **ResearchOps use:** In Week 7, it supports the milestone: `researchops search "transformer attention"` returns ranked results from stored papers.
-- **Input question:** What data, command, file, request, or state reaches this concept?
-- **Output question:** What value, saved record, response, log, or state change should come out?
-- **Failure question:** What can be missing, malformed, slow, duplicated, stale, or invalid?
-- **Test question:** Which test would catch the mistake before a user sees it?
-- **Beginner trap:** Memorizing the word without tracing it in the project.
-- **Recovery move:** Use one concrete example and follow it through the files.
-- **Mastery signal:** You can explain the concept without saying "magic" or "it just works".
-
-### Concept 2: Text normalisation: lowercasing, punctuation stripping, stopwords
-- **Plain meaning:** This is a named tool for solving one part of the chapter problem.
-- **Why it exists:** Real projects become confusing when this concern is unnamed.
-- **ResearchOps use:** In Week 7, it supports the milestone: `researchops search "transformer attention"` returns ranked results from stored papers.
-- **Input question:** What data, command, file, request, or state reaches this concept?
-- **Output question:** What value, saved record, response, log, or state change should come out?
-- **Failure question:** What can be missing, malformed, slow, duplicated, stale, or invalid?
-- **Test question:** Which test would catch the mistake before a user sees it?
-- **Beginner trap:** Memorizing the word without tracing it in the project.
-- **Recovery move:** Use one concrete example and follow it through the files.
-- **Mastery signal:** You can explain the concept without saying "magic" or "it just works".
-
-### Concept 3: Basic scoring and ranking
-- **Plain meaning:** This is a named tool for solving one part of the chapter problem.
-- **Why it exists:** Real projects become confusing when this concern is unnamed.
-- **ResearchOps use:** In Week 7, it supports the milestone: `researchops search "transformer attention"` returns ranked results from stored papers.
-- **Input question:** What data, command, file, request, or state reaches this concept?
-- **Output question:** What value, saved record, response, log, or state change should come out?
-- **Failure question:** What can be missing, malformed, slow, duplicated, stale, or invalid?
-- **Test question:** Which test would catch the mistake before a user sees it?
-- **Beginner trap:** Memorizing the word without tracing it in the project.
-- **Recovery move:** Use one concrete example and follow it through the files.
-- **Mastery signal:** You can explain the concept without saying "magic" or "it just works".
-
-### Concept 4: Data quality gates: detecting and reporting bad data
-- **Plain meaning:** This is a named tool for solving one part of the chapter problem.
-- **Why it exists:** Real projects become confusing when this concern is unnamed.
-- **ResearchOps use:** In Week 7, it supports the milestone: `researchops search "transformer attention"` returns ranked results from stored papers.
-- **Input question:** What data, command, file, request, or state reaches this concept?
-- **Output question:** What value, saved record, response, log, or state change should come out?
-- **Failure question:** What can be missing, malformed, slow, duplicated, stale, or invalid?
-- **Test question:** Which test would catch the mistake before a user sees it?
-- **Beginner trap:** Memorizing the word without tracing it in the project.
-- **Recovery move:** Use one concrete example and follow it through the files.
-- **Mastery signal:** You can explain the concept without saying "magic" or "it just works".
-
-### Concept 5: `SearchService` and `SearchResult` domain objects
-- **Plain meaning:** This is a named tool for solving one part of the chapter problem.
-- **Why it exists:** Real projects become confusing when this concern is unnamed.
-- **ResearchOps use:** In Week 7, it supports the milestone: `researchops search "transformer attention"` returns ranked results from stored papers.
-- **Input question:** What data, command, file, request, or state reaches this concept?
-- **Output question:** What value, saved record, response, log, or state change should come out?
-- **Failure question:** What can be missing, malformed, slow, duplicated, stale, or invalid?
-- **Test question:** Which test would catch the mistake before a user sees it?
-- **Beginner trap:** Memorizing the word without tracing it in the project.
-- **Recovery move:** Use one concrete example and follow it through the files.
-- **Mastery signal:** You can explain the concept without saying "magic" or "it just works".
-
-## ResearchOps-specific application
-
-The chapter belongs to these project locations:
-- `src/researchops/services/search_service.py`
-- `src/researchops/services/paper_service.py` — stats, list, show
-Study those files in this order:
-1. Find the user-facing entry point.
-2. Find the service or core concept that owns the meaning.
-3. Find the infrastructure only when outside resources are needed.
-4. Find the tests that prove the behavior.
-5. Find the validation command that a learner runs manually.
-The goal is to know why each file exists.
-If two files seem to own the same decision, stop and clarify the boundary.
-
-## Code examples with line-by-line explanation
-
-```python
-def score(query_words: set[str], document_words: set[str]) -> int:
-    matches = query_words & document_words
-    return len(matches)
-```
-
-Line-by-line explanation:
-- Line 1: `def score(query_words: set[str], document_words: set[str]) -> int:` — This names a reusable action and shows what information it receives.
-- Line 2: `matches = query_words & document_words` — This stores a clear intermediate value for the next step.
-- Line 3: `return len(matches)` — This produces the result or performs the declared setup step.
-
-How to use this example:
-- Name the input.
-- Name the output.
-- Predict the result before running anything.
-- Connect the shape to the real ResearchOps file.
-- Write one sentence about why each line belongs.
-
-## Common beginner mistakes
-
-- **Mistake:** Pasting code before knowing the owner of the behavior.
-  **Why it hurts:** it hides the mental model and makes debugging harder.
-  **Better move:** make one small behavior clear, then prove it.
-- **Mistake:** Changing many files at once.
-  **Why it hurts:** it hides the mental model and makes debugging harder.
-  **Better move:** make one small behavior clear, then prove it.
-- **Mistake:** Skipping the failure path.
-  **Why it hurts:** it hides the mental model and makes debugging harder.
-  **Better move:** make one small behavior clear, then prove it.
-- **Mistake:** Reading only the happy path test.
-  **Why it hurts:** it hides the mental model and makes debugging harder.
-  **Better move:** make one small behavior clear, then prove it.
-- **Mistake:** Ignoring the validation command.
-  **Why it hurts:** it hides the mental model and makes debugging harder.
-  **Better move:** make one small behavior clear, then prove it.
-- **Mistake:** Using vague names.
-  **Why it hurts:** it hides the mental model and makes debugging harder.
-  **Better move:** make one small behavior clear, then prove it.
-- **Mistake:** Putting business rules in the user interface layer.
-  **Why it hurts:** it hides the mental model and makes debugging harder.
-  **Better move:** make one small behavior clear, then prove it.
-- **Mistake:** Treating logs, errors, and tests as decoration.
-  **Why it hurts:** it hides the mental model and makes debugging harder.
-  **Better move:** make one small behavior clear, then prove it.
-- **Mistake:** Optimizing before correctness is visible.
-  **Why it hurts:** it hides the mental model and makes debugging harder.
-  **Better move:** make one small behavior clear, then prove it.
-- **Mistake:** Building future-week features early.
-  **Why it hurts:** it hides the mental model and makes debugging harder.
-  **Better move:** make one small behavior clear, then prove it.
-
-## Debugging guidance
-
-- Copy the exact failing command.
-- Read the first useful error line.
-- Read the final error line.
-- Classify the failure as import, input, state, file, database, network, model, or expectation.
-- Reproduce it with the smallest command.
-- Inspect the value closest to the failure.
-- Fix the cause, not only the symptom.
-- Run the narrowest test.
-- Run the chapter validation command.
-- Write down what the error was teaching.
-Debugging questions:
-- What did I expect?
-- What happened?
-- Which value first became wrong?
-- Which layer created that value?
-- Which test should catch this next time?
-
-## Design tradeoffs
-
-- **Simple first version:** Easy to understand, but not the final production shape.
-- **Clear layers:** More files, but less confusion as features grow.
-- **Explicit errors:** More code, but failures become teachable.
-- **Small unit tests:** Fast feedback, but less end-to-end confidence.
-- **Integration tests:** Real wiring, but slower and more setup.
-- **Configuration:** Flexible behavior, but defaults must be clear.
-The right question is not "What is the fanciest design?"
-The right question is "What design teaches the responsibility clearly and can grow next week?"
-
-## Testing implications
-
-Tests for this chapter:
-- `tests/unit/test_search_service.py` — search with FakePaperRepository
-- `tests/unit/test_paper_service.py`
-Validation commands:
-```bash
-researchops search "machine learning"
-researchops papers stats
-pytest tests/unit/test_search_service.py -v
-```
-- Arrange the data.
-- Act on the system.
-- Assert the visible promise.
-- Check one failure path.
-- Keep unit tests fast.
-- Use integration tests only when real wiring matters.
-
-## Architecture implications
-
-ResearchOps stays understandable when dependencies point inward.
-```text
-CLI / API / Worker -> Services -> Core
-Infrastructure implements core-facing contracts and is wired at the outside.
-```
-- Does the UI layer avoid business logic?
-- Does the service layer own workflow decisions?
-- Does core avoid infrastructure imports?
-- Does infrastructure do outside-world work?
-- Do tests use fakes when possible?
-Architecture is not ceremony.
-Architecture is named responsibility.
-
-## How this connects to AI engineering / ML research
-
-AI engineering needs more than models.
-It needs reliable data flow, clear interfaces, repeatable experiments, visible failures, and honest evaluation.
-Week 7 contributes by making **keyword search and data quality** clear enough to trust.
-- Bad data creates bad model behavior.
-- Unclear boundaries make experiments hard to reproduce.
-- Missing tests let regressions change research results silently.
-- Good logs and errors shorten investigation time.
-- Clear documentation lets future users understand the system.
-
-## Mini quizzes
-
-- What problem does Week 7 solve?
-- What is the main input?
-- What is the main output?
-- Which file owns the main responsibility?
-- Which layer should not contain business logic?
-- What is one happy path?
-- What is one failure path?
-- What command proves the chapter works?
-- What should you not build early?
-- How does this prepare the next week?
-
-## Explain-it-aloud prompts
-
-- Explain Keyword Search and Data Quality in simple words.
-- Explain the data flow from input to result.
-- Explain the first file you would open.
-- Explain the test that gives confidence.
-- Explain what can break.
-- Explain the tradeoff made in this chapter.
-- Explain what you still find weak.
-
-## What to memorize
-
-- The topic: Keyword Search and Data Quality.
-- The milestone: `researchops search "transformer attention"` returns ranked results from stored papers.
-- The main project files.
-- The validation command.
-- The boundary rule for the layer you are touching.
-- The habit of testing before moving forward.
-
-## What to understand deeply
-
-- Why this feature belongs now.
-- How data moves through the chapter.
-- Which file owns which decision.
-- How the failure path is handled.
-- Why the tests prove behavior.
-- How this week makes future work safer.
-
-## What not to worry about yet
-
-- Perfect scale.
-- Fancy abstractions.
-- Future-week features.
-- Every option in every library.
-- Premature optimization.
-- Comparing your speed to someone else.
-Focus on the milestone.
-A clear small milestone beats a confusing large one.
-
-## Bridge to next week
-
-Next week is Week 8: **Multiprocessing Ingestion**.
-This week prepares you by giving ResearchOps a clearer piece of behavior before the next milestone: `researchops ingest ./papers --workers 4` ingests using 4 parallel worker processes.
-- Run validation.
-- Explain the main files.
-- Explain one failure.
-- Explain one test.
-- Write down what still feels weak before moving on.
-
-## Guided deepening drills
-
-Use these drills if the chapter still feels abstract.
-- Drill 1: Trace `In-memory inverted index basics` from user input to project result.
-- Drill 2: Write one sentence defining `In-memory inverted index basics` without copying the notes.
-- Drill 3: Find the file where `In-memory inverted index basics` appears or should appear.
-- Drill 4: Name one wrong implementation of `In-memory inverted index basics` and why it would hurt.
-- Drill 5: Name one test that would protect `In-memory inverted index basics`.
-- Drill 6: Trace `Text normalisation: lowercasing, punctuation stripping, stopwords` from user input to project result.
-- Drill 7: Write one sentence defining `Text normalisation: lowercasing, punctuation stripping, stopwords` without copying the notes.
-- Drill 8: Find the file where `Text normalisation: lowercasing, punctuation stripping, stopwords` appears or should appear.
-- Drill 9: Name one wrong implementation of `Text normalisation: lowercasing, punctuation stripping, stopwords` and why it would hurt.
-- Drill 10: Name one test that would protect `Text normalisation: lowercasing, punctuation stripping, stopwords`.
-- Drill 11: Trace `Basic scoring and ranking` from user input to project result.
-- Drill 12: Write one sentence defining `Basic scoring and ranking` without copying the notes.
-- Drill 13: Find the file where `Basic scoring and ranking` appears or should appear.
-- Drill 14: Name one wrong implementation of `Basic scoring and ranking` and why it would hurt.
-- Drill 15: Name one test that would protect `Basic scoring and ranking`.
-- Drill 16: Trace `Data quality gates: detecting and reporting bad data` from user input to project result.
-- Drill 17: Write one sentence defining `Data quality gates: detecting and reporting bad data` without copying the notes.
-- Drill 18: Find the file where `Data quality gates: detecting and reporting bad data` appears or should appear.
-- Drill 19: Name one wrong implementation of `Data quality gates: detecting and reporting bad data` and why it would hurt.
-- Drill 20: Name one test that would protect `Data quality gates: detecting and reporting bad data`.
-- Drill 21: Trace ``SearchService` and `SearchResult` domain objects` from user input to project result.
-- Drill 22: Write one sentence defining ``SearchService` and `SearchResult` domain objects` without copying the notes.
-- Drill 23: Find the file where ``SearchService` and `SearchResult` domain objects` appears or should appear.
-- Drill 24: Name one wrong implementation of ``SearchService` and `SearchResult` domain objects` and why it would hurt.
-- Drill 25: Name one test that would protect ``SearchService` and `SearchResult` domain objects`.
-- Drill 26: Draw the Week 7 data flow in four boxes.
-- Drill 27: Say why `Keyword Search and Data Quality` belongs in this month of the curriculum.
-- Drill 28: Rewrite one error message in beginner-friendly language.
-- Drill 29: List the exact assumptions made by the example code.
-- Drill 30: List the exact assumptions checked by the tests.
-
-<!-- LEARNING_FORMAT_END -->
-
----
-
-# Existing detailed notes
 ## 1. Chapter overview
-
 In Weeks 5 and 6 you built a system that can ingest PDFs and store them in a database.
 Now you have papers.
 But having papers is not enough.
@@ -405,7 +20,7 @@ You need to be able to find them.
 This week you build keyword search.
 
 Keyword search is not glamorous.
-It is not neural, semantic, or intelligent.
+It is not a future advanced retrieval system; it is direct word matching.
 But it is the foundation that every more sophisticated search system is built on top of.
 Understanding keyword search teaches you to think about text as data, normalization as a prerequisite, and ranking as a tunable function.
 
@@ -417,26 +32,80 @@ By the end of this week, `researchops search "query"` will return ranked results
 
 ---
 
-## 2. Why search before AI?
+The unified chapter you are reading replaces the previous two-part format.
+There is no separate learning-format preface and no older-notes wrapper; this is one continuous beginner chapter.
+The syllabus title is **Finding signal in stored text**.
+The project milestone is `researchops search "transformer attention"` returning ranked results from stored papers.
+The validation thread also includes `researchops papers stats`, because search quality depends on stored-data quality.
+This week is intentionally ordinary keyword search and data-quality checking, not future-week retrieval or concurrency work.
+Ordinary keyword search is the baseline that later AI features must be able to beat and explain.
 
-A natural question is: why not skip keyword search and go directly to embeddings and semantic search?
+## 2. What you already know from previous weeks
+- Week 1 gave you the repository scaffold, package layout, and first CLI habits.
+- Week 2 made paths, exceptions, and logging part of normal development rather than afterthoughts.
+- Week 3 introduced domain modeling, so `Paper` and `SearchResult` should be meaningful objects instead of loose dictionaries.
+- Week 4 established that CLI commands should be thin and should delegate workflow decisions to services.
+- Week 5 introduced SQLite storage and the repository pattern, so services can ask for papers without knowing SQL details.
+- Week 6 introduced PDF parsing and showed that extracted text can be clean, empty, garbled, repeated, or incomplete.
+- You already know that `core/` must not depend on infrastructure layers.
+- You already know that fake repositories make unit tests fast and focused.
+- You already know that user-facing commands need clear errors for normal failure states.
+- You already know that validation commands are evidence, not ceremony.
 
-The answer is that semantic search requires your data to be clean and complete first.
+Week 7 combines those ideas: stored papers from Week 5 and parsed text from Week 6 become searchable through a service boundary.
+- Previous-week connection for **In-memory inverted index basics**: a mapping from terms to papers, introduced conceptually before more advanced storage-backed search, but implemented using only concepts available through Week 7.
+- Previous-week connection for **Text normalisation**: consistent lowercasing, Unicode cleanup, punctuation handling, and whitespace cleanup before comparison, but implemented using only concepts available through Week 7.
+- Previous-week connection for **Basic scoring and ranking**: a visible rule that counts matches and sorts higher scores first, but implemented using only concepts available through Week 7.
+- Previous-week connection for **Data quality gates**: checks that reveal empty, short, duplicated, or suspicious stored papers before search output is trusted, but implemented using only concepts available through Week 7.
+- Previous-week connection for **SearchService and SearchResult domain objects**: service workflow plus a domain object carrying paper, score, and snippet, but implemented using only concepts available through Week 7.
 
-If 30% of your PDFs extracted no useful text (image-only pages, corrupt files), vector embeddings of that empty text are meaningless.
-If titles are garbled and abstract fields are empty, semantic similarity cannot work on things that do not exist.
+## 3. What problem this week solves
+ResearchOps can store papers, but storage alone does not help a learner find a useful paper quickly.
+A paper library without search forces users to remember filenames, IDs, or ingestion order.
+Keyword search solves the first retrieval problem: compare a user query against stored title/body text and return the strongest matches first.
+Data-quality checks solve the trust problem: they reveal when stored data is too empty, short, suspicious, or inconsistent to support good retrieval.
+A natural question is: why not skip keyword search and jump to a later retrieval technique?
+
+The answer is that later retrieval techniques require your data to be clean and complete first.
+
+If 30% of your PDFs extracted no useful text, any later retrieval layer will be built on missing data.
+If titles are garbled and abstract fields are empty, later retrieval cannot use information that does not exist.
 
 Keyword search forces you to confront data quality directly.
 When a search for `"transformer architecture"` returns nothing from a paper you know discusses transformers, the bug is often in the data pipeline, not the search algorithm.
-Fixing the data makes all downstream systems better — including future semantic search.
+Fixing the data makes all downstream retrieval and analysis systems better.
 
 This is also why ResearchOps implements search in this order:
 1. Week 7: keyword search (forces data quality)
-2. Month 3+: embeddings and vector search (builds on clean data)
+2. Later retrieval work builds on clean data.
 
 ---
 
-## 3. The text processing journey
+Four practical user questions drive this week:
+- Can I find papers that mention this topic?
+- Why did this paper rank above another paper?
+- Why did a known paper fail to appear?
+- Is my stored library healthy enough to search?
+
+## 4. Beginner mental model
+Search is comparison plus ordering.
+Comparison asks whether a paper contains the query terms after both sides are made comparable.
+Ordering asks which matching paper should appear first.
+Data quality asks whether the stored paper text is trustworthy enough for either answer to matter.
+
+Trace the Week 7 flow as twelve small steps:
+- User enters a query.
+- CLI passes the query to a service.
+- Service strips whitespace.
+- Service rejects a blank query.
+- Query is normalized.
+- Query becomes terms.
+- Repository provides stored papers.
+- Each paper title and text become a haystack.
+- Each haystack receives a score.
+- Positive-score papers become SearchResult objects.
+- Results are sorted by score descending.
+- CLI displays results and stats in a human-readable way.
 
 Raw text extracted from a PDF is not clean.
 A research paper's raw text might look like:
@@ -455,8 +124,26 @@ Before you can search this text, you need to normalize it.
 
 ---
 
-## 4. Text normalization
+## 5. Core vocabulary
+- **Keyword search:** search that matches words or text fragments directly, without learned meaning.
+- **Query:** the text the user asks the system to search for.
+- **Document:** one searchable item; in ResearchOps this is usually a stored `Paper`.
+- **Corpus:** the full set of searchable papers.
+- **Normalization:** turning text into a consistent form before comparison.
+- **Tokenization:** splitting normalized text into searchable terms.
+- **Stopword:** a very common word such as `the`, `of`, or `and` that may carry little search meaning.
+- **Score:** a number representing match strength.
+- **Ranking:** sorting search results by score or another relevance rule.
+- **Snippet:** a short preview showing matching context.
+- **Inverted index:** a structure mapping terms to documents that contain them.
+- **SQLite LIKE:** basic SQL pattern matching over stored text.
+- **SQLite FTS:** SQLite full-text search support for keyword-style text search.
+- **Data quality gate:** a check that reports suspicious data before downstream features trust it.
+- **Fake repository:** an in-memory test double that implements repository behavior.
+- **Protocol:** an interface describing methods an object must provide.
+- **Boundary:** a responsibility line between core, services, CLI, and infrastructure.
 
+## 6. Concept explanations from first principles
 Normalization is the process of transforming text into a consistent, predictable form.
 
 The goal is not to make the text "better" in a human reading sense.
@@ -536,8 +223,6 @@ If both sides go through the same normalization, the comparison is fair.
 
 ---
 
-## 5. Tokenization
-
 Tokenization means splitting text into individual tokens (usually words).
 
 For a basic keyword search system, tokenization is just `str.split()` on normalized text:
@@ -562,8 +247,6 @@ Simple whitespace splitting on normalized text is enough.
 
 ---
 
-## 6. Stopwords
-
 **Stopwords** are very common words that carry little meaning for search purposes: `the`, `a`, `is`, `are`, `in`, `of`, `and`, `to`.
 
 The idea is that a query like `"what is a transformer"` should match on `"transformer"`, not on `"what"`, `"is"`, `"a"`.
@@ -576,8 +259,6 @@ For a first implementation, keyword matching without stopword removal is fine.
 Stopword removal is a meaningful stretch exercise.
 
 ---
-
-## 7. Exact match versus partial match
 
 **Exact token match**: `"transformer"` matches only the word `"transformer"`.
 
@@ -599,8 +280,6 @@ For a first implementation, exact token matching is cleaner.
 
 ---
 
-## 8. Simple scoring
-
 Once you have normalized tokens for both the query and each document, scoring is straightforward.
 
 **Term frequency score**: count how many times each query term appears in the document.
@@ -621,8 +300,96 @@ That is a natural extension for a stretch exercise.
 
 ---
 
-## 9. The KeywordSearchService
+### SQLite LIKE from first principles
+SQLite `LIKE` is a simple way to ask whether one text value contains a pattern.
+For example, `WHERE lower(text) LIKE "%attention%"` asks SQLite to find rows whose lowercase text contains `attention`.
+This can be useful for tiny libraries, but ranking multiple terms is awkward and large text scans can become slow.
+Use `LIKE` as a stepping stone, not as a magical search engine.
 
+### SQLite FTS from first principles
+SQLite FTS, usually FTS5, creates a full-text virtual table designed for keyword search.
+FTS stores an index that is conceptually similar to an inverted index: terms point back to rows that contain them.
+FTS is still keyword search; it indexes terms and rows rather than replacing the Week 7 scoring lesson.
+Week 7 can mention FTS as the realistic storage-backed direction while still keeping the beginner implementation understandable.
+
+### Data quality from first principles
+Data quality is the degree to which your stored data is accurate, complete, and consistent.
+Poor data quality is the hidden enemy of search systems.
+
+### Common data quality problems in ResearchOps
+
+**Empty text:** A PDF was ingested but `text = ""` or `text` is only whitespace.
+This happens for image-only PDFs that `pypdf` cannot extract from.
+Stored, but useless for search.
+
+**Extremely short text:** A paper with `word_count() < 50` may have had extraction problems.
+A 20-page paper with 40 words is suspicious.
+
+**Repeated boilerplate:** Some PDFs repeat headers and footers on every page.
+The extracted text becomes `"Page 1 of 50 - Journal of AI"` repeated 50 times, diluting the actual content.
+
+**Garbled Unicode:** Some PDF fonts use non-standard encoding.
+The extracted text looks like `"Tùéánsformer"` instead of `"Transformer"`.
+
+**Wrong title:** The metadata title may say `"Microsoft Word - paper.docx"` instead of the actual paper title.
+
+### Detecting quality problems
+
+```python
+from researchops.core.models import Paper
+
+
+def quality_check(paper: Paper) -> list[str]:
+    """Return a list of quality warnings for a paper."""
+    warnings = []
+
+    if paper.is_empty():
+        warnings.append("No text extracted")
+
+    elif paper.word_count() < 100:
+        warnings.append(f"Very short text: only {paper.word_count()} words")
+
+    if paper.title == "Untitled":
+        warnings.append("Could not extract title from metadata or text")
+
+    # Check for repetitive content (high ratio of repeated lines)
+    lines = paper.text.splitlines()
+    if lines:
+        unique_ratio = len(set(lines)) / len(lines)
+        if unique_ratio < 0.3:
+            warnings.append("High line repetition — possible boilerplate")
+
+    return warnings
+```
+
+### The stats command
+
+A `stats` command gives you a bird's-eye view of data quality:
+
+```python
+def compute_stats(repo: PaperRepository) -> dict:
+    papers = repo.list_all()
+    failures = repo.list_failures()
+
+    total_words = sum(p.word_count() for p in papers)
+    empty_papers = [p for p in papers if p.is_empty()]
+    short_papers = [p for p in papers if not p.is_empty() and p.word_count() < 100]
+
+    return {
+        "total_papers": len(papers),
+        "total_failures": len(failures),
+        "total_words": total_words,
+        "average_words": total_words / len(papers) if papers else 0,
+        "empty_papers": len(empty_papers),
+        "short_papers": len(short_papers),
+    }
+```
+
+Running `researchops stats` should show you immediately whether your database is healthy.
+
+---
+
+## 7. ResearchOps-specific application
 Here is the actual implementation from the codebase:
 
 ```python
@@ -686,8 +453,15 @@ Default is 10.
 
 ---
 
-## 10. Snippet extraction
+In this repository, read the Week 7 files in this order:
+- `src/researchops/services/search_service.py` for query handling, scoring, ranking, and snippets.
+- `src/researchops/parsing/text_cleaner.py` for `normalise_for_search`.
+- `src/researchops/core/models.py` for `Paper` and `SearchResult`.
+- `src/researchops/services/paper_service.py` for stored-paper stats.
+- `tests/unit/test_search_service.py` for service behavior with `FakePaperRepository`.
+- `tests/unit/test_paper_service.py` for paper lookup/list/stats behavior.
 
+## 8. Code examples with line-by-line explanation
 A search result should show more than a title.
 A snippet gives the user a glimpse of the context where the term was found.
 
@@ -723,8 +497,6 @@ Replace newlines with spaces so the snippet shows on one line.
 
 ---
 
-## 11. The SearchResult model
-
 From `core/models.py`:
 
 ```python
@@ -745,8 +517,193 @@ Keeping it as `float` allows future ranking functions (like TF-IDF) to use decim
 
 ---
 
-## 12. Hashing and duplicate detection
+Search tests need to be deterministic.
 
+**Test exact ranking:**
+```python
+def test_search_ranks_higher_frequency_first(tmp_path):
+    repo = SQLitePaperRepository(tmp_path / "test.db")
+
+    # paper_a: "transformer" appears 10 times
+    paper_a = Paper(
+        id="a1",
+        title="Transformers",
+        source_path="a.pdf",
+        text="transformer " * 10,
+        num_pages=1, file_size_bytes=100,
+        created_at=datetime.utcnow(),
+    )
+
+    # paper_b: "transformer" appears 2 times
+    paper_b = Paper(
+        id="b1",
+        title="Transformers",
+        source_path="b.pdf",
+        text="transformer " * 2,
+        num_pages=1, file_size_bytes=100,
+        created_at=datetime.utcnow(),
+    )
+
+    repo.save(paper_a)
+    repo.save(paper_b)
+
+    service = KeywordSearchService(repo)
+    results = service.search("transformer")
+
+    assert results[0].paper.id == "a1"  # higher frequency first
+    assert results[1].paper.id == "b1"
+```
+
+**Test empty query:**
+```python
+def test_empty_query_raises(tmp_path):
+    repo = SQLitePaperRepository(tmp_path / "test.db")
+    service = KeywordSearchService(repo)
+    with pytest.raises(EmptyQueryError):
+        service.search("   ")
+```
+
+**Test no matches:**
+```python
+def test_no_matches_returns_empty_list(tmp_path):
+    repo = SQLitePaperRepository(tmp_path / "test.db")
+    service = KeywordSearchService(repo)
+    # (no papers saved)
+    results = service.search("quantum entanglement")
+    assert results == []
+```
+
+---
+
+### Minimal query normalization walkthrough
+```python
+query = "  Transformer Attention!  "
+query = query.strip()
+terms = normalise_for_search(query).split()
+```
+Line by line:
+- The first line creates a realistic messy query with spaces, uppercase letters, and punctuation.
+- The second line removes spaces at the beginning and end so accidental typing does not change meaning.
+- The third line normalizes the query and splits it into comparable terms.
+- The expected terms are `transformer` and `attention`.
+
+### Minimal quality-gate walkthrough
+```python
+papers = repo.list_all()
+empty_papers = [paper for paper in papers if paper.is_empty()]
+total_words = sum(paper.word_count() for paper in papers)
+```
+Line by line:
+- The first line asks the repository for stored papers without caring whether storage is fake or SQLite.
+- The second line finds records that cannot support body-text search.
+- The third line measures how much searchable text exists across the library.
+
+## 9. Common beginner mistakes
+- **Mistake:** Normalizing only the query and not the document.
+  **Better move:** trace one query, one paper, one score, and one test before adding complexity.
+- **Mistake:** Deleting punctuation so words get glued together.
+  **Better move:** trace one query, one paper, one score, and one test before adding complexity.
+- **Mistake:** Treating blank query and no-match query as the same state.
+  **Better move:** trace one query, one paper, one score, and one test before adding complexity.
+- **Mistake:** Putting scoring rules in CLI code.
+  **Better move:** trace one query, one paper, one score, and one test before adding complexity.
+- **Mistake:** Importing SQLite storage directly inside the service.
+  **Better move:** trace one query, one paper, one score, and one test before adding complexity.
+- **Mistake:** Forgetting that title text should be searchable.
+  **Better move:** trace one query, one paper, one score, and one test before adding complexity.
+- **Mistake:** Depending on accidental tie order in ranking tests.
+  **Better move:** trace one query, one paper, one score, and one test before adding complexity.
+- **Mistake:** Assuming term frequency is perfect relevance.
+  **Better move:** trace one query, one paper, one score, and one test before adding complexity.
+- **Mistake:** Ignoring zero-word libraries.
+  **Better move:** trace one query, one paper, one score, and one test before adding complexity.
+- **Mistake:** Introducing future retrieval features before their assigned week.
+  **Better move:** trace one query, one paper, one score, and one test before adding complexity.
+- **Mistake:** Treating SQLite FTS as something other than keyword full-text search.
+  **Better move:** trace one query, one paper, one score, and one test before adding complexity.
+- **Mistake:** Writing tests that only assert results are not empty.
+  **Better move:** trace one query, one paper, one score, and one test before adding complexity.
+- **Mistake:** Forgetting snippets are display context, not score evidence.
+  **Better move:** trace one query, one paper, one score, and one test before adding complexity.
+- **Mistake:** Changing many layers before checking stored data.
+  **Better move:** trace one query, one paper, one score, and one test before adding complexity.
+- **Mistake:** Skipping `researchops papers stats` after ingestion.
+  **Better move:** trace one query, one paper, one score, and one test before adding complexity.
+
+## 10. Debugging guidance
+- Copy the exact failing command.
+- Classify the failure as input, normalization, repository state, scoring, sorting, snippet display, CLI wiring, or data quality.
+- Inspect the normalized query before changing ranking.
+- Inspect stored `Paper.title` and `Paper.text` before changing search code.
+- Check whether a blank query should have raised `EmptyQueryError`.
+- Check whether a no-match query is valid and should return `[]`.
+- Check scores as `(paper.id, score)` pairs when order surprises you.
+- Use targeted unit tests before running the full suite.
+- Remove temporary debug prints once the cause is understood.
+- Explain the cause in one sentence before moving on.
+**Conceptual questions:**
+
+1. What is normalization?
+   Give an example of two strings that are different before normalization but equal after.
+
+2. Why does keyword search come before later retrieval work in the curriculum?
+
+3. What are stopwords?
+   Give five examples.
+   Why might removing them sometimes be harmful?
+
+4. What is term frequency?
+   What is its weakness as a relevance metric?
+
+5. What does SHA-256 do?
+   Is SHA-256 encryption?
+   Explain the difference.
+
+6. What is the "avalanche effect" in hash functions?
+
+7. What is the difference between a path-based paper ID and a content-based paper ID?
+   When would you choose each?
+
+8. List four data quality problems that can affect search results.
+
+9. Why does later answer quality depend on search quality?
+
+**Code-reading questions:**
+
+10. Look at `normalise_for_search` in `parsing/text_cleaner.py`.
+    What happens to the string `"ﬁeld trials (2023)"` after each step?
+
+11. Look at `KeywordSearchService.search`.
+    What happens when `query = ""`?
+    Trace through the code.
+
+12. In `_extract_snippet`, why is `text` (not `lower`) used for the final snippet?
+
+**Design questions:**
+
+13. The current search loads ALL papers for every query.
+    If the database had 10,000 papers, how would you improve this?
+    Name two approaches (hint: SQLite FTS5, inverted index).
+
+14. You want title matches to count twice as much as body text matches.
+    What change would you make to the scoring function?
+
+15. A user searches for `"ml"` and gets no results, but they expected papers about machine learning.
+    What is the root cause?
+    How would you fix this with query expansion?
+
+**Practice tasks:**
+
+16. Trace `normalise_for_search("The BERT Model: Pre-training of Deep Bidirectional Transformers")` step by step.
+    What is the final output?
+
+17. Compute the score for query `"deep learning"` against a document containing `"deep learning deep neural networks"`.
+    Show your working.
+
+18. Write a function that detects if two `Paper` objects have identical content (ignoring IDs and paths).
+    Use SHA-256 on `paper.text`.
+
+## 11. Design tradeoffs
 ### Why duplicates are a problem
 
 Imagine you accidentally run the ingestion twice on the same directory with `skip_existing=False`.
@@ -842,123 +799,10 @@ That is a meaningful improvement for deduplication, but it requires reading the 
 
 ---
 
-## 13. Data quality
+Extra Week 7 tradeoff: in-memory scanning is easy to teach; SQLite `LIKE` is easy to write; SQLite FTS is more scalable for keyword text, but adds index maintenance concepts.
 
-Data quality is the degree to which your stored data is accurate, complete, and consistent.
-Poor data quality is the hidden enemy of search systems.
-
-### Common data quality problems in ResearchOps
-
-**Empty text:** A PDF was ingested but `text = ""` or `text` is only whitespace.
-This happens for image-only PDFs that `pypdf` cannot extract from.
-Stored, but useless for search.
-
-**Extremely short text:** A paper with `word_count() < 50` may have had extraction problems.
-A 20-page paper with 40 words is suspicious.
-
-**Repeated boilerplate:** Some PDFs repeat headers and footers on every page.
-The extracted text becomes `"Page 1 of 50 - Journal of AI"` repeated 50 times, diluting the actual content.
-
-**Garbled Unicode:** Some PDF fonts use non-standard encoding.
-The extracted text looks like `"Tùéánsformer"` instead of `"Transformer"`.
-
-**Wrong title:** The metadata title may say `"Microsoft Word - paper.docx"` instead of the actual paper title.
-
-### Detecting quality problems
-
-```python
-from researchops.core.models import Paper
-
-
-def quality_check(paper: Paper) -> list[str]:
-    """Return a list of quality warnings for a paper."""
-    warnings = []
-
-    if paper.is_empty():
-        warnings.append("No text extracted")
-
-    elif paper.word_count() < 100:
-        warnings.append(f"Very short text: only {paper.word_count()} words")
-
-    if paper.title == "Untitled":
-        warnings.append("Could not extract title from metadata or text")
-
-    # Check for repetitive content (high ratio of repeated lines)
-    lines = paper.text.splitlines()
-    if lines:
-        unique_ratio = len(set(lines)) / len(lines)
-        if unique_ratio < 0.3:
-            warnings.append("High line repetition — possible boilerplate")
-
-    return warnings
-```
-
-### The stats command
-
-A `stats` command gives you a bird's-eye view of data quality:
-
-```python
-def compute_stats(repo: PaperRepository) -> dict:
-    papers = repo.list_all()
-    failures = repo.list_failures()
-
-    total_words = sum(p.word_count() for p in papers)
-    empty_papers = [p for p in papers if p.is_empty()]
-    short_papers = [p for p in papers if not p.is_empty() and p.word_count() < 100]
-
-    return {
-        "total_papers": len(papers),
-        "total_failures": len(failures),
-        "total_words": total_words,
-        "average_words": total_words / len(papers) if papers else 0,
-        "empty_papers": len(empty_papers),
-        "short_papers": len(short_papers),
-    }
-```
-
-Running `researchops stats` should show you immediately whether your database is healthy.
-
----
-
-## 14. Connecting to previous weeks
-
-This week builds on both Week 5 and Week 6.
-
-**From Week 5 (storage):**
-`KeywordSearchService` calls `self._repo.list_all()`.
-This method was implemented in Week 5.
-Without the storage layer, there is nothing to search.
-
-**From Week 6 (pipeline):**
-The text stored by the ingestion pipeline is what gets searched.
-If Week 6 stored clean, complete text, Week 7 search will work well.
-If Week 6 stored empty or garbled text, Week 7 search will return bad results.
-This is the direct relationship between data quality and search quality.
-
----
-
-## 15. Why RAG will fail later without good search now
-
-Month 4 introduces Retrieval-Augmented Generation (RAG).
-RAG works by:
-1. Searching for the most relevant documents for a query.
-2. Passing those documents as context to a language model.
-3. Generating a response based on that context.
-
-If your search (step 1) returns low-quality or irrelevant documents, the language model gets bad context.
-Garbage in, garbage out.
-
-The specific failure modes:
-- **Empty retrieved documents**: if search returns papers with empty text, the LLM has nothing to work with.
-- **Wrong papers retrieved**: if normalization is inconsistent, relevant papers may score 0 and be excluded.
-- **Duplicate results**: if data deduplication failed, the same paper appears 3 times in the context, wasting tokens and producing confused answers.
-
-Investing in search quality and data quality now directly improves the quality of AI-powered features in Month 4.
-
----
-
-## 16. Testing search
-
+## 12. Testing implications
+Tests named by the syllabus: `tests/unit/test_search_service.py` and `tests/unit/test_paper_service.py`.
 Search tests need to be deterministic.
 
 **Test exact ranking:**
@@ -1017,69 +861,287 @@ def test_no_matches_returns_empty_list(tmp_path):
 
 ---
 
-## 17. Review questions and self-checks
+Current real search-service tests include:
+- `TestSearch.test_finds_matching_paper_by_title`
+- `TestSearch.test_finds_matching_paper_by_text`
+- `TestSearch.test_no_match_returns_empty`
+- `TestSearch.test_empty_query_raises`
+- `TestSearch.test_results_ordered_by_score_descending`
+- `TestSearch.test_limit_is_respected`
+- `TestSearch.test_result_has_snippet`
+- `TestSearch.test_snippet_extracted_from_text`
+- `TestSearchWithEmptyRepo.test_empty_repo_returns_empty_list`
+- `TestExtractSnippet.test_snippet_for_term_at_start`
+- `TestExtractSnippet.test_snippet_for_term_not_found`
+- `TestExtractSnippet.test_snippet_uses_ellipsis_for_mid_text`
+Current real paper-service tests include:
+- `TestGetPaper.test_returns_paper_by_id`
+- `TestGetPaper.test_raises_when_not_found`
+- `TestListPapers.test_empty_when_no_papers`
+- `TestListPapers.test_returns_all_saved_papers`
+- `TestStats.test_empty_stats`
+- `TestStats.test_counts_papers_words_pages`
 
-**Conceptual questions:**
+## 13. Architecture implications
+The Week 7 import direction remains `CLI -> Services -> Core`, with infrastructure implementing core-facing protocols.
+`KeywordSearchService` should depend on `PaperRepository`, not on a concrete SQLite class.
+`SearchResult` belongs in core models because it is a domain result, not terminal formatting.
+If SQLite FTS is added as infrastructure later, keep FTS SQL behind a repository/search adapter boundary.
+This week builds on both Week 5 and Week 6.
 
-1. What is normalization?
-   Give an example of two strings that are different before normalization but equal after.
+**From Week 5 (storage):**
+`KeywordSearchService` calls `self._repo.list_all()`.
+This method was implemented in Week 5.
+Without the storage layer, there is nothing to search.
 
-2. Why does keyword search come before semantic/vector search in the curriculum?
+**From Week 6 (pipeline):**
+The text stored by the ingestion pipeline is what gets searched.
+If Week 6 stored clean, complete text, Week 7 search will work well.
+If Week 6 stored empty or garbled text, Week 7 search will return bad results.
+This is the direct relationship between data quality and search quality.
 
-3. What are stopwords?
-   Give five examples.
-   Why might removing them sometimes be harmful?
+---
 
-4. What is term frequency?
-   What is its weakness as a relevance metric?
+## 14. How this connects to AI engineering / ML research
+AI engineering is not only model code.
+It is also data preparation, retrieval discipline, evaluation, and repeatable debugging.
+Week 7 contributes by making the stored paper corpus inspectable and searchable before any later layer depends on it.
 
-5. What does SHA-256 do?
-   Is SHA-256 encryption?
-   Explain the difference.
+A research workflow often starts with questions like:
+- Which papers mention this method?
+- Which papers discuss this dataset?
+- Which papers contain this failure mode?
+- Which papers have enough extracted text to be useful?
+- Which records look suspicious before analysis begins?
 
-6. What is the "avalanche effect" in hash functions?
+Keyword search gives a simple baseline for those questions.
+A baseline is valuable because it is easy to inspect.
+If the query is `attention`, you can point at the stored text and count why a result matched.
+If a result is missing, you can inspect the query normalization, the stored text, and the score.
+That kind of traceability is essential in research systems because unexplained retrieval behavior can lead to bad conclusions.
 
-7. What is the difference between a path-based paper ID and a content-based paper ID?
-   When would you choose each?
+Data quality is equally important.
+Empty text means there is no evidence to retrieve.
+Repeated boilerplate can distort frequency-based ranking.
+Duplicate records can make one paper look more important than it is.
+Garbled characters can hide terms that should have matched.
+Weak titles can make otherwise correct results hard for a human to recognize.
 
-8. List four data quality problems that can affect search results.
+This week therefore teaches an ML-engineering habit: inspect data before blaming the algorithm.
+When a search result is bad, do not immediately make the scoring function more complex.
+First ask whether the stored text is present, normalized, complete, and representative.
+Then ask whether the scoring rule did what it promised.
+Only after those checks should you consider a more advanced retrieval design.
 
-9. Why does RAG quality depend on search quality?
+Keyword search is also a baseline. Future retrieval work should be compared against this simple, inspectable behavior. If a later layer cannot find obvious keyword matches, it is not trustworthy yet.
 
-**Code-reading questions:**
+## 15. Mini quizzes
+1. What is the Week 7 milestone?
+2. Why does keyword search come before later retrieval work?
+3. What does normalization change?
+4. What is the difference between a blank query and a no-match query?
+5. What does `SearchResult` contain?
+6. Why should the service use `PaperRepository`?
+7. What is one weakness of frequency scoring?
+8. What does a snippet prove and not prove?
+9. What does `researchops papers stats` reveal?
+10. How is SQLite FTS different from a plain Python scan?
+11. Which tests prove search behavior?
+12. Which tests prove paper stats behavior?
+13. What data-quality issue would make search look broken?
+14. Where should CLI presentation logic live?
+15. What should not be implemented before its assigned future week?
 
-10. Look at `normalise_for_search` in `parsing/text_cleaner.py`.
-    What happens to the string `"ﬁeld trials (2023)"` after each step?
+## 16. Explain-it-aloud prompts
+- Explain the query-to-result path.
+- Explain normalization with a concrete string.
+- Explain scoring for one paper.
+- Explain ranking after scoring.
+- Explain a no-match result.
+- Explain an empty-query error.
+- Explain a data-quality gate.
+- Explain fake repositories.
+- Explain SQLite LIKE.
+- Explain SQLite FTS as keyword full-text search.
+- Explain why Week 8 needs trustworthy Week 7 data.
 
-11. Look at `KeywordSearchService.search`.
-    What happens when `query = ""`?
-    Trace through the code.
+## 17. What to memorize
+- Milestone: `researchops search "transformer attention"`.
+- Validation command: `researchops search "machine learning"`, `researchops papers stats`, `pytest tests/unit/test_search_service.py -v`.
+- Main files: `search_service.py`, `paper_service.py`, `models.py`, `interfaces.py`.
+- Blank queries raise `EmptyQueryError`.
+- Results are sorted by score descending.
+- `SearchResult` carries paper, score, and snippet.
+- Do not add future retrieval features in Week 7.
 
-12. In `_extract_snippet`, why is `text` (not `lower`) used for the final snippet?
+## 18. What to understand deeply
+- Search is a pipeline of small decisions, not one magical operation.
+- Normalization must be consistent on query and document text.
+- Scoring rules are product behavior and must be tested.
+- Data quality limits search quality.
+- Fakes make service tests focused; real storage belongs in integration tests.
+- Architecture boundaries make debugging smaller.
+- Keyword search remains useful even after later AI features exist.
 
-**Design questions:**
+## 19. What not to worry about yet
+- Future retrieval representations.
+- Future answer-generation templates.
+- Week 8 ingestion internals beyond the high-level bridge.
+- Perfect TF-IDF or BM25 ranking.
+- A complete stopword policy.
+- Stemming and lemmatization.
+- Internet-scale indexing.
+- Cloud deployment.
+- Replacing SQLite.
 
-13. The current search loads ALL papers for every query.
-    If the database had 10,000 papers, how would you improve this?
-    Name two approaches (hint: SQLite FTS5, inverted index).
+## 20. Bridge to next week
+Week 8 introduces multiprocessing ingestion.
+Week 7 prepares for it by making stored text visibly useful and visibly inspectable.
+Faster ingestion is only valuable if the resulting records remain searchable and trustworthy.
+Carry forward the habits from this week: preserve boundaries, test service rules with fakes, inspect data quality, and avoid future-week features until the curriculum reaches them.
+Before moving on, say aloud: `A user query is normalized, compared against stored paper text, scored, sorted into SearchResult objects, displayed by the CLI, and checked against paper statistics for data quality.`
 
-14. You want title matches to count twice as much as body text matches.
-    What change would you make to the scoring function?
-
-15. A user searches for `"ml"` and gets no results, but they expected papers about machine learning.
-    What is the root cause?
-    How would you fix this with query expansion?
-
-**Practice tasks:**
-
-16. Trace `normalise_for_search("The BERT Model: Pre-training of Deep Bidirectional Transformers")` step by step.
-    What is the final output?
-
-17. Compute the score for query `"deep learning"` against a document containing `"deep learning deep neural networks"`.
-    Show your working.
-
-18. Write a function that detects if two `Paper` objects have identical content (ignoring IDs and paths).
-    Use SHA-256 on `paper.text`.
+### Guided tracing drills
+1. Trace **tokenization** using one concrete query and one concrete paper.
+   - Name the input value, the intermediate value, the output value, and the test that would catch a mistake in tokenization.
+2. Trace **score calculation** using one concrete query and one concrete paper.
+   - Name the input value, the intermediate value, the output value, and the test that would catch a mistake in score calculation.
+3. Trace **ranking** using one concrete query and one concrete paper.
+   - Name the input value, the intermediate value, the output value, and the test that would catch a mistake in ranking.
+4. Trace **snippet extraction** using one concrete query and one concrete paper.
+   - Name the input value, the intermediate value, the output value, and the test that would catch a mistake in snippet extraction.
+5. Trace **empty-query behavior** using one concrete query and one concrete paper.
+   - Name the input value, the intermediate value, the output value, and the test that would catch a mistake in empty-query behavior.
+6. Trace **no-match behavior** using one concrete query and one concrete paper.
+   - Name the input value, the intermediate value, the output value, and the test that would catch a mistake in no-match behavior.
+7. Trace **paper stats** using one concrete query and one concrete paper.
+   - Name the input value, the intermediate value, the output value, and the test that would catch a mistake in paper stats.
+8. Trace **fake repository setup** using one concrete query and one concrete paper.
+   - Name the input value, the intermediate value, the output value, and the test that would catch a mistake in fake repository setup.
+9. Trace **architecture boundary** using one concrete query and one concrete paper.
+   - Name the input value, the intermediate value, the output value, and the test that would catch a mistake in architecture boundary.
+10. Trace **normalization** using one concrete query and one concrete paper.
+   - Name the input value, the intermediate value, the output value, and the test that would catch a mistake in normalization.
+11. Trace **tokenization** using one concrete query and one concrete paper.
+   - Name the input value, the intermediate value, the output value, and the test that would catch a mistake in tokenization.
+12. Trace **score calculation** using one concrete query and one concrete paper.
+   - Name the input value, the intermediate value, the output value, and the test that would catch a mistake in score calculation.
+13. Trace **ranking** using one concrete query and one concrete paper.
+   - Name the input value, the intermediate value, the output value, and the test that would catch a mistake in ranking.
+14. Trace **snippet extraction** using one concrete query and one concrete paper.
+   - Name the input value, the intermediate value, the output value, and the test that would catch a mistake in snippet extraction.
+15. Trace **empty-query behavior** using one concrete query and one concrete paper.
+   - Name the input value, the intermediate value, the output value, and the test that would catch a mistake in empty-query behavior.
+16. Trace **no-match behavior** using one concrete query and one concrete paper.
+   - Name the input value, the intermediate value, the output value, and the test that would catch a mistake in no-match behavior.
+17. Trace **paper stats** using one concrete query and one concrete paper.
+   - Name the input value, the intermediate value, the output value, and the test that would catch a mistake in paper stats.
+18. Trace **fake repository setup** using one concrete query and one concrete paper.
+   - Name the input value, the intermediate value, the output value, and the test that would catch a mistake in fake repository setup.
+19. Trace **architecture boundary** using one concrete query and one concrete paper.
+   - Name the input value, the intermediate value, the output value, and the test that would catch a mistake in architecture boundary.
+20. Trace **normalization** using one concrete query and one concrete paper.
+   - Name the input value, the intermediate value, the output value, and the test that would catch a mistake in normalization.
+21. Trace **tokenization** using one concrete query and one concrete paper.
+   - Name the input value, the intermediate value, the output value, and the test that would catch a mistake in tokenization.
+22. Trace **score calculation** using one concrete query and one concrete paper.
+   - Name the input value, the intermediate value, the output value, and the test that would catch a mistake in score calculation.
+23. Trace **ranking** using one concrete query and one concrete paper.
+   - Name the input value, the intermediate value, the output value, and the test that would catch a mistake in ranking.
+24. Trace **snippet extraction** using one concrete query and one concrete paper.
+   - Name the input value, the intermediate value, the output value, and the test that would catch a mistake in snippet extraction.
+25. Trace **empty-query behavior** using one concrete query and one concrete paper.
+   - Name the input value, the intermediate value, the output value, and the test that would catch a mistake in empty-query behavior.
+26. Trace **no-match behavior** using one concrete query and one concrete paper.
+   - Name the input value, the intermediate value, the output value, and the test that would catch a mistake in no-match behavior.
+27. Trace **paper stats** using one concrete query and one concrete paper.
+   - Name the input value, the intermediate value, the output value, and the test that would catch a mistake in paper stats.
+28. Trace **fake repository setup** using one concrete query and one concrete paper.
+   - Name the input value, the intermediate value, the output value, and the test that would catch a mistake in fake repository setup.
+29. Trace **architecture boundary** using one concrete query and one concrete paper.
+   - Name the input value, the intermediate value, the output value, and the test that would catch a mistake in architecture boundary.
+30. Trace **normalization** using one concrete query and one concrete paper.
+   - Name the input value, the intermediate value, the output value, and the test that would catch a mistake in normalization.
+31. Trace **tokenization** using one concrete query and one concrete paper.
+   - Name the input value, the intermediate value, the output value, and the test that would catch a mistake in tokenization.
+32. Trace **score calculation** using one concrete query and one concrete paper.
+   - Name the input value, the intermediate value, the output value, and the test that would catch a mistake in score calculation.
+33. Trace **ranking** using one concrete query and one concrete paper.
+   - Name the input value, the intermediate value, the output value, and the test that would catch a mistake in ranking.
+34. Trace **snippet extraction** using one concrete query and one concrete paper.
+   - Name the input value, the intermediate value, the output value, and the test that would catch a mistake in snippet extraction.
+35. Trace **empty-query behavior** using one concrete query and one concrete paper.
+   - Name the input value, the intermediate value, the output value, and the test that would catch a mistake in empty-query behavior.
+36. Trace **no-match behavior** using one concrete query and one concrete paper.
+   - Name the input value, the intermediate value, the output value, and the test that would catch a mistake in no-match behavior.
+37. Trace **paper stats** using one concrete query and one concrete paper.
+   - Name the input value, the intermediate value, the output value, and the test that would catch a mistake in paper stats.
+38. Trace **fake repository setup** using one concrete query and one concrete paper.
+   - Name the input value, the intermediate value, the output value, and the test that would catch a mistake in fake repository setup.
+39. Trace **architecture boundary** using one concrete query and one concrete paper.
+   - Name the input value, the intermediate value, the output value, and the test that would catch a mistake in architecture boundary.
+40. Trace **normalization** using one concrete query and one concrete paper.
+   - Name the input value, the intermediate value, the output value, and the test that would catch a mistake in normalization.
+41. Trace **tokenization** using one concrete query and one concrete paper.
+   - Name the input value, the intermediate value, the output value, and the test that would catch a mistake in tokenization.
+42. Trace **score calculation** using one concrete query and one concrete paper.
+   - Name the input value, the intermediate value, the output value, and the test that would catch a mistake in score calculation.
+43. Trace **ranking** using one concrete query and one concrete paper.
+   - Name the input value, the intermediate value, the output value, and the test that would catch a mistake in ranking.
+44. Trace **snippet extraction** using one concrete query and one concrete paper.
+   - Name the input value, the intermediate value, the output value, and the test that would catch a mistake in snippet extraction.
+45. Trace **empty-query behavior** using one concrete query and one concrete paper.
+   - Name the input value, the intermediate value, the output value, and the test that would catch a mistake in empty-query behavior.
+46. Trace **no-match behavior** using one concrete query and one concrete paper.
+   - Name the input value, the intermediate value, the output value, and the test that would catch a mistake in no-match behavior.
+47. Trace **paper stats** using one concrete query and one concrete paper.
+   - Name the input value, the intermediate value, the output value, and the test that would catch a mistake in paper stats.
+48. Trace **fake repository setup** using one concrete query and one concrete paper.
+   - Name the input value, the intermediate value, the output value, and the test that would catch a mistake in fake repository setup.
+49. Trace **architecture boundary** using one concrete query and one concrete paper.
+   - Name the input value, the intermediate value, the output value, and the test that would catch a mistake in architecture boundary.
+50. Trace **normalization** using one concrete query and one concrete paper.
+   - Name the input value, the intermediate value, the output value, and the test that would catch a mistake in normalization.
+51. Trace **tokenization** using one concrete query and one concrete paper.
+   - Name the input value, the intermediate value, the output value, and the test that would catch a mistake in tokenization.
+52. Trace **score calculation** using one concrete query and one concrete paper.
+   - Name the input value, the intermediate value, the output value, and the test that would catch a mistake in score calculation.
+53. Trace **ranking** using one concrete query and one concrete paper.
+   - Name the input value, the intermediate value, the output value, and the test that would catch a mistake in ranking.
+54. Trace **snippet extraction** using one concrete query and one concrete paper.
+   - Name the input value, the intermediate value, the output value, and the test that would catch a mistake in snippet extraction.
+55. Trace **empty-query behavior** using one concrete query and one concrete paper.
+   - Name the input value, the intermediate value, the output value, and the test that would catch a mistake in empty-query behavior.
+56. Trace **no-match behavior** using one concrete query and one concrete paper.
+   - Name the input value, the intermediate value, the output value, and the test that would catch a mistake in no-match behavior.
+57. Trace **paper stats** using one concrete query and one concrete paper.
+   - Name the input value, the intermediate value, the output value, and the test that would catch a mistake in paper stats.
+58. Trace **fake repository setup** using one concrete query and one concrete paper.
+   - Name the input value, the intermediate value, the output value, and the test that would catch a mistake in fake repository setup.
+59. Trace **architecture boundary** using one concrete query and one concrete paper.
+   - Name the input value, the intermediate value, the output value, and the test that would catch a mistake in architecture boundary.
+60. Trace **normalization** using one concrete query and one concrete paper.
+   - Name the input value, the intermediate value, the output value, and the test that would catch a mistake in normalization.
+61. Trace **tokenization** using one concrete query and one concrete paper.
+   - Name the input value, the intermediate value, the output value, and the test that would catch a mistake in tokenization.
+62. Trace **score calculation** using one concrete query and one concrete paper.
+   - Name the input value, the intermediate value, the output value, and the test that would catch a mistake in score calculation.
+63. Trace **ranking** using one concrete query and one concrete paper.
+   - Name the input value, the intermediate value, the output value, and the test that would catch a mistake in ranking.
+64. Trace **snippet extraction** using one concrete query and one concrete paper.
+   - Name the input value, the intermediate value, the output value, and the test that would catch a mistake in snippet extraction.
+65. Trace **empty-query behavior** using one concrete query and one concrete paper.
+   - Name the input value, the intermediate value, the output value, and the test that would catch a mistake in empty-query behavior.
+66. Trace **no-match behavior** using one concrete query and one concrete paper.
+   - Name the input value, the intermediate value, the output value, and the test that would catch a mistake in no-match behavior.
+67. Trace **paper stats** using one concrete query and one concrete paper.
+   - Name the input value, the intermediate value, the output value, and the test that would catch a mistake in paper stats.
+68. Trace **fake repository setup** using one concrete query and one concrete paper.
+   - Name the input value, the intermediate value, the output value, and the test that would catch a mistake in fake repository setup.
+69. Trace **architecture boundary** using one concrete query and one concrete paper.
+   - Name the input value, the intermediate value, the output value, and the test that would catch a mistake in architecture boundary.
+70. Trace **normalization** using one concrete query and one concrete paper.
+   - Name the input value, the intermediate value, the output value, and the test that would catch a mistake in normalization.
 <!-- NAV_BOTTOM_START -->
 ---
 ⬅️ [← README](README.md) · ➡️ [Exercises →](exercises.md)

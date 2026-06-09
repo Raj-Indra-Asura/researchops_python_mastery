@@ -11,65 +11,240 @@
 
 # Break It - Week 16 Local Worker and Job System
 
-## Intentional failure experiments
+This lab teaches reliability by making the local worker fail in controlled ways.
+Do not perform these experiments on important data.
+Use a disposable local database, then restore the correct implementation.
 
-### 1. Non-atomic claim
-Implement `claim_next_pending` as two separate database calls: SELECT (to find the job) and UPDATE (to mark it running), without wrapping them in a transaction. Start two worker threads. Both may SELECT the same job before either one runs the UPDATE. Both workers run the same job. Observe duplicate processing. Fix: use a single `UPDATE ... WHERE status='pending' ... RETURNING *` or wrap SELECT+UPDATE in `BEGIN IMMEDIATE` / `COMMIT`.
+## 1. Purpose of failure practice
+Background workers fail differently from foreground commands.
+A foreground command often either returns or crashes in front of the user.
+A worker may fail after the user has walked away.
+The only evidence may be a row status, an attempt count, an error message, and a log line.
+Failure practice trains you to design those pieces deliberately.
+The goal is not to make the worker unbreakable.
+The goal is to make breaks visible, bounded, and recoverable.
 
-### 2. Crash after marking running
-Simulate a worker that marks a job RUNNING and then raises an exception before completing. Restart the worker. The job stays RUNNING forever. Add a `rescue_stuck_jobs(timeout_seconds: int = 300)` method to your queue that finds jobs in RUNNING status with `updated_at` older than the timeout and resets them to PENDING. Write a test that simulates a stuck job and calls `rescue_stuck_jobs`.
+## 2. Failure lab rules
+- Use a throwaway SQLite database for every experiment.
+- Change one thing at a time so you know what caused the failure.
+- Write down the expected bad behavior before running the experiment.
+- Inspect the `jobs` table before and after the worker runs.
+- Restore the correct implementation after observing the failure.
+- Add or update a test that would catch the failure in the future.
+- Do not introduce Docker, RAG, LLM calls, or future-week infrastructure.
+- Do not keep intentionally broken code after the lab is complete.
 
-### 3. Non-idempotent handler
-Write a handler that always appends a new row to the database (no upsert). Run the same job twice. Observe two identical rows. Fix: use `INSERT OR REPLACE` or check for existence first. Write a test that runs the handler twice and asserts exactly one row exists.
+## 3. Intentional break experiments
+### Experiment 1: Non-atomic claim lets two workers run one job
 
-### 4. Unknown job type
-Enqueue a job with `job_type="does_not_exist"`. Run the worker. Without a guard, you get a `KeyError` or silent crash. Add explicit handling: if no handler is registered, mark the job FAILED with `"unknown job type: does_not_exist"` and do not retry. Write a test that confirms the job is FAILED after one attempt and `attempts == 1`.
+#### How to cause it
+Replace the safe claim transaction with a plain SELECT followed later by UPDATE. Start two worker threads or simulate two claim calls that both read before either updates.
 
-### 5. Infinite retries
-Set `max_attempts=999999` and have the handler always fail. Without a time limit or iteration limit in your test, the worker loops forever. Add a safeguard: in tests, limit the worker to `max_iterations=10`. In production, keep `max_attempts` bounded (3–5 is standard). Write a test that confirms the worker exits the loop after the configured limit.
+#### Expected error or bad behavior
+Both workers may observe the same queued row. The handler may run twice, and duplicate side effects may appear.
 
-### 6. Corrupt payload JSON
-Insert a job with `payload_json = "this is not json"` directly into the database. Run the worker. `json.loads` raises `json.JSONDecodeError`. Without handling this, the worker crashes. Add a try/except around `json.loads` that marks the job FAILED with `"invalid JSON payload"` without retrying (this is a data bug, not transient). Write a test.
+#### How to inspect it
+Query the job row, handler output table, and logs. Look for one job id appearing in two handler executions.
 
-### 7. Status not updated on exception
-Remove `mark_failed` from the except block. Run the worker on a failing job. The job stays RUNNING after the handler raises. It never gets retried or resolved. Observe this, then put `mark_failed` back. Write a test that confirms `mark_failed` is called even when the handler raises.
+#### How to fix it
+Restore an atomic claim using `BEGIN IMMEDIATE` plus update, or an equivalent single safe update pattern. Keep `WHERE status = queued` in the update.
 
-### 8. Retry a 404 fetch job
-Have a `fetch_url` handler that raises `httpx.HTTPStatusError` with status 404. In your retry logic, treat this as a retryable error (mistake). The worker retries 3 times. All fail. Write the correct version: check the status code in the except block and mark 404 jobs FAILED immediately without retrying.
+#### Test that should catch it
+A concurrency or controlled interleaving test should prove that only one claim succeeds for one queued job.
 
-### 9. Job enqueued twice
-Submit the same logical job twice — for example, indexing the same document ID. Without deduplication, the worker runs the handler twice. Whether this is a problem depends on idempotency. Write a test that enqueues the same document ID twice, runs the worker to completion, and asserts the document appears only once in the index (assuming an idempotent handler). Then disable idempotency and observe what breaks.
+#### What this teaches
+Claiming is ownership, not observation.
 
----
+#### Common wrong fixes
+Adding a sleep, hoping workers do not overlap, using a Python-only lock while multiple processes exist, or ignoring duplicate output because it is rare.
 
-## Debugging tasks
+### Experiment 2: Crash after marking running leaves a stuck job
 
-- Add `logging.info(f"Job {job.id} status → {new_status}")` at every status transition. Run the worker on 5 jobs and read the log to trace each job's lifecycle.
-- When a job is stuck in RUNNING, print `jobs WHERE status='running' AND updated_at < now - 60 seconds` using SQLite CLI to identify it manually.
-- Run `pytest tests/unit/test_job_states.py -v` and inspect failure output when you intentionally break a state transition.
-- Print `queue.get_counts_by_status()` (implement this as a debugging utility) after each worker iteration to observe the queue draining.
+#### How to cause it
+Insert a job, claim it, then raise `SystemExit` or simulate a process crash before mark_done or mark_failed runs.
 
----
+#### Expected error or bad behavior
+The job remains `running` forever. A normal worker that only claims queued jobs will skip it.
 
-## Edge cases to explore
+#### How to inspect it
+Run a query for `status = running` ordered by `updated_at`. Confirm updated_at is old and attempts did not resolve.
 
-| Case | Expected behaviour |
-|------|-------------------|
-| Empty queue | Worker sleeps and polls; does not crash |
-| All jobs already SUCCEEDED | Worker finds nothing, sleeps, loops |
-| Job with empty payload `{}` | Handler receives empty dict; define whether it's valid per type |
-| Job type registered but handler raises `SystemExit` | Do not catch `SystemExit` or `KeyboardInterrupt` in the except block — let them propagate |
-| `max_attempts = 1` | No retries — one failure and the job is permanently FAILED |
-| Worker stopped mid-batch | Jobs in RUNNING state need rescue on restart |
+#### How to fix it
+Add `rescue_stuck_jobs(timeout_seconds)` that requeues old running jobs or marks them failed according to policy.
 
----
+#### Test that should catch it
+A test should create an old running job, call rescue, and assert the job becomes queued with a useful last_error.
 
-## What did you learn?
+#### What this teaches
+Any crash window after claim needs a recovery story.
 
-- What was the hardest state transition to get right?
-- Which assumption about atomicity did you make that turned out to be wrong?
-- How did writing the crash-recovery test change the way you structured the worker loop?
-- Why is idempotency not just a nice-to-have but a correctness requirement?
+#### Common wrong fixes
+Manually deleting the row, marking it done without running the handler, or making the worker claim running jobs blindly.
+
+### Experiment 3: Non-idempotent handler duplicates documents
+
+#### How to cause it
+Change a document handler to always INSERT a new row with a fresh id instead of using the stable document id from the payload.
+
+#### Expected error or bad behavior
+Running the same job twice creates duplicate document records or duplicate index rows.
+
+#### How to inspect it
+Count rows by logical document id or source path before and after two handler runs.
+
+#### How to fix it
+Use a stable key and an upsert such as `ON CONFLICT(id) DO UPDATE`.
+
+#### Test that should catch it
+A test should call the handler twice with the same payload and assert exactly one logical document exists.
+
+#### What this teaches
+Retries are safe only when side effects are idempotent or guarded.
+
+#### Common wrong fixes
+Disabling retries, hiding duplicates in the UI, or generating a new document id on every attempt.
+
+### Experiment 4: Unknown job type crashes or loops
+
+#### How to cause it
+Enqueue `job_type = "ingset_document"` with the typo left in place. Remove the guard that handles missing registry entries.
+
+#### Expected error or bad behavior
+The worker may raise `KeyError`, crash, or retry a job that can never succeed.
+
+#### How to inspect it
+Inspect logs for KeyError and inspect the job row to see whether it stayed running or queued repeatedly.
+
+#### How to fix it
+Restore explicit missing-handler handling: mark the job failed with a clear error and do not retry.
+
+#### Test that should catch it
+A test should enqueue an unknown type, run one iteration, and assert status failed, attempts bounded, and last_error names the missing type.
+
+#### What this teaches
+Wiring problems should become visible job failures.
+
+#### Common wrong fixes
+Adding a catch-all handler that silently succeeds, retrying forever, or allowing the worker process to crash.
+
+### Experiment 5: Corrupt payload JSON kills the worker
+
+#### How to cause it
+Insert a job directly with `payload_json = "not valid json"` and a valid known job_type.
+
+#### Expected error or bad behavior
+`json.loads` raises `JSONDecodeError`. Without handling, the worker stops before recording a useful state.
+
+#### How to inspect it
+Inspect the process output and the job row. If the row is still running, the exception path is incomplete.
+
+#### How to fix it
+Catch `JSONDecodeError`, mark failed with `invalid JSON payload`, and skip the handler.
+
+#### Test that should catch it
+A test should insert malformed JSON and assert no handler was called and the job failed permanently.
+
+#### What this teaches
+Bad stored data is usually permanent until a person fixes the row or re-enqueues correctly.
+
+#### Common wrong fixes
+Retrying the same malformed string, swallowing the exception and marking done, or logging only without updating the row.
+
+### Experiment 6: Infinite retries hide a permanent failure
+
+#### How to cause it
+Set max_attempts extremely high or remove the exhausted-attempts branch. Use a handler that always raises a transient error.
+
+#### Expected error or bad behavior
+The worker keeps requeueing the same job and may never make progress through later jobs.
+
+#### How to inspect it
+Inspect attempts over time and status counts. You may see one job cycling queued/running repeatedly.
+
+#### How to fix it
+Restore a small bounded max_attempts and mark failed when attempts are exhausted.
+
+#### Test that should catch it
+A test should run enough iterations to exhaust attempts and assert final status failed.
+
+#### What this teaches
+Retries need limits because classification can be wrong and dependencies can stay broken.
+
+#### Common wrong fixes
+Using huge retry counts, making tests run forever, or resetting attempts to zero on each retry.
+
+### Experiment 7: Status not updated when handler raises
+
+#### How to cause it
+Remove `mark_failed` or `retry_or_fail` from the exception block around handler execution.
+
+#### Expected error or bad behavior
+A raised exception leaves the job running or crashes the loop without a durable failure state.
+
+#### How to inspect it
+Run a failing handler once, then query the job row. Look for `running` with no useful last_error.
+
+#### How to fix it
+Use try/except/else so every handler outcome records done, retry, or failed.
+
+#### Test that should catch it
+A test should use a handler that raises and then assert the job is not left running.
+
+#### What this teaches
+The exception path is part of the state machine, not an optional cleanup detail.
+
+#### Common wrong fixes
+Catching exceptions outside the worker loop only, printing the error, or marking done in a finally block.
+
+### Experiment 8: Graceful shutdown ignored during empty polling
+
+#### How to cause it
+Write the loop as `while True` with sleep and no stop callback check, or check stop only after long blocking work.
+
+#### Expected error or bad behavior
+The worker does not stop promptly when requested. Tests may hang and local users may need to kill the process.
+
+#### How to inspect it
+Use logs or a fake sleep counter to see that the loop continues after stop is requested.
+
+#### How to fix it
+Check the stop condition at the top of the loop and after safe boundaries. Keep sleeps short or injectable in tests.
+
+#### Test that should catch it
+A test should use a stop callback that becomes true and assert the loop exits within bounded iterations.
+
+#### What this teaches
+Long-running workers must have a cooperative shutdown path.
+
+#### Common wrong fixes
+Using only Ctrl+C stack traces, setting poll_seconds to zero and spinning CPU, or relying on test timeouts.
+
+## 4. Debugging checklist
+- [ ] Inspect the job id, job_type, status, attempts, max_attempts, last_error, updated_at, and scheduled_at.
+- [ ] Confirm the job is eligible before wondering why the worker did not claim it.
+- [ ] Confirm the handler is registered before debugging handler internals.
+- [ ] Confirm payload_json parses before debugging business logic.
+- [ ] Run one worker iteration before running the long polling loop.
+- [ ] Check whether the failure is transient or permanent.
+- [ ] Check whether attempts increased after a retryable failure.
+- [ ] Check whether scheduled_at moved forward after backoff.
+- [ ] Check whether the handler is idempotent before enabling retries.
+- [ ] Check whether shutdown is requested at safe loop boundaries.
+- [ ] Check logs for transition lines, not just stack traces.
+- [ ] After fixing, add a regression test that fails on the broken version.
+
+## 5. Reflection after breaking
+- Which failure surprised me most?
+- Which job state made the failure visible?
+- Which error was hidden until I inspected the database?
+- Which failure would have corrupted data without idempotency?
+- Which failure would have caused an infinite loop without max_attempts?
+- Which failure would have hung a test without a stop condition?
+- What test did I add or improve after the experiment?
+- What part of the worker still feels fragile?
+- Can I explain how to recover from a worker crash after claim?
+- Can I explain which failures should never be retried?
+
 <!-- NAV_BOTTOM_START -->
 ---
 ⬅️ [← Exercises](exercises.md) · ➡️ [Validation →](validation.md)

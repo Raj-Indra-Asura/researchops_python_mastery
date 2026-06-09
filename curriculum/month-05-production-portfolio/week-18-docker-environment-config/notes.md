@@ -8,883 +8,516 @@
 
 ---
 <!-- NAV_END -->
-
 # Notes - Week 18 Docker and Environment Configuration
-
-<!-- LEARNING_FORMAT_START -->
-# Complete Learning Format — Week 18: Docker and Environment Configuration
-
-This guide is the clean learning path for the chapter.
-It uses short sentences.
-It breaks ideas into small pieces.
-It tells you what to focus on and what to ignore for now.
-Read it before the older detailed notes that follow.
 
 ## Chapter overview
 
-The chapter title is **Shipping the whole system**.
-The practical milestone is: `docker-compose up` starts the API and worker. `curl http://localhost:8000/health` responds.
-The expected capability is: Can write a Dockerfile, compose multi-service applications, manage environment configuration with pydantic-settings, and explain layer caching.
-This chapter is one step in the ResearchOps system, not a random lesson.
-The visible feature matters because it proves the idea works.
-The hidden skill matters because it lets you build the next chapter without confusion.
-A complete pass through this chapter means you can read the code, run it, test it, break it, and explain it aloud.
-
-Use this study order:
-- Read the story first without typing.
-- Trace the smallest code example.
-- Find the project file that owns the behavior.
-- Run the validation command.
-- Explain one happy path and one failure path.
+Week 18 is the first week where Docker is allowed in ResearchOps.
+That timing is deliberate: Docker is not a substitute for a working application.
+You already have a CLI, API, worker loop, job storage, search paths, and the RAG assistant from Week 17.
+This week packages that already-working system into a reproducible runtime.
+The chapter title from the syllabus is **Shipping the whole system**.
+The milestone is concrete: `docker-compose up` starts the API and worker, and `curl http://localhost:8000/health` responds.
+The main files are `Dockerfile`, `docker-compose.yml`, `.env.example`, and `src/researchops/config/settings.py`.
+The skill is not memorising Docker commands; the skill is knowing which settings belong in code, which belong in the image, and which belong at runtime.
+A ResearchOps container should run the same command on every machine without asking the learner to recreate hidden setup steps.
+By the end of the chapter, you should be able to explain why the database lives in a mounted volume, why secrets never go into an image, and why the API and worker are separate compose services.
 
 ## What you already know from previous weeks
 
-- Week 14 taught FastAPI Layer; keep its responsibility in mind, but do not rebuild it here.
-- Week 15 taught Async I/O Network Fetching; keep its responsibility in mind, but do not rebuild it here.
-- Week 16 taught Local Worker and Job System; keep its responsibility in mind, but do not rebuild it here.
-- Week 17 taught RAG Assistant; keep its responsibility in mind, but do not rebuild it here.
-- You should be able to run the previous validation command before trusting new work.
-- You should be able to point at the main file from the previous week and say what job it owns.
-- If a previous idea feels weak, reread the example and trace one concrete value through it.
-- The safest learning rhythm is: understand one thing, change one thing, test one thing, explain one thing.
+From Week 1, you know a Python project can expose a `researchops` command through `pyproject.toml`.
+From Week 2, you know configuration and logging are separate concerns from business logic.
+From Week 4, you know the CLI entry point is the user-facing shell command, not a random script.
+From Week 5, you know SQLite stores data in a real file that must survive process restarts.
+From Week 8, you know CPU-heavy work belongs in process workers, not inside the async event loop.
+From Week 14, you know FastAPI owns HTTP request/response wiring and delegates real work to services.
+From Week 16, you know the local job worker polls persistent jobs and performs work outside the API request.
+From Week 17, you know the RAG assistant depends on the already-built retrieval pipeline and should not be rewritten here.
+This week does not change those responsibilities; it wraps them in a reproducible runtime boundary.
 
 ## What problem this week solves
 
-Week 18 solves the project problem behind **Docker and Environment Configuration**.
-Before this chapter, ResearchOps has a gap.
-The gap may be a missing feature, a missing boundary, a missing safety check, or a missing way to communicate with users.
-This chapter closes that gap with a focused milestone.
-Do not treat the milestone as a checklist only.
-Treat it as proof that the idea belongs in the system.
-- The concept `Dockerfile: `FROM`, `COPY`, `RUN`, `CMD`, layer caching` helps solve part of this gap.
-- The concept `Multi-stage builds: separate build and runtime layers` helps solve part of this gap.
-- The concept ``docker-compose.yml`: API and worker as separate services` helps solve part of this gap.
-- The concept `Volume mounts for the SQLite database` helps solve part of this gap.
-- The concept `Environment variable management: `.env`, `pydantic-settings`` helps solve part of this gap.
-- The concept `Testing the full stack in containers` helps solve part of this gap.
+Before Docker, ResearchOps works only if the host machine happens to have the right Python version, dependencies, working directory, environment variables, and data paths.
+That is fragile because two learners can run the same command and get different results.
+Docker solves the runtime reproducibility problem by describing the operating system layer, Python layer, installed package layer, source-code layer, and default command in one file.
+Compose solves the multi-process problem by starting the API and worker as separate services with shared configuration.
+Environment variables solve the deployment variation problem: development and production can use different database paths and log levels without changing Python source.
+Volumes solve the persistence problem: a container can be deleted while the SQLite database file remains available on the host or in a named volume.
+.env handling solves the local convenience problem while `.env.example` documents required variables without committing real secrets.
 
 ## Beginner mental model
 
-Use a simple four-part model: input, owner, transformation, proof.
-Input means the concrete thing entering the system.
-Owner means the file, object, or function responsible for the decision.
-Transformation means the useful change from raw data to meaningful result.
-Proof means the test or command that confirms the result.
-- Ask: what is the input for **Docker and Environment Configuration**?
-- Ask: what is the owner for **Docker and Environment Configuration**?
-- Ask: what is the transformation for **Docker and Environment Configuration**?
-- Ask: what is the proof for **Docker and Environment Configuration**?
-If you cannot answer those four questions, do not add more code yet.
+Think of an image as a sealed lunchbox recipe and a container as one lunchbox opened and used for a meal.
+The Dockerfile is the recipe for building the image.
+Each Dockerfile instruction creates or configures a layer.
+A layer is like a transparent sheet placed on top of previous sheets.
+If you change an early sheet, Docker must rebuild every sheet above it.
+If you change only source code near the end, Docker can reuse dependency layers from cache.
+Compose is a small local conductor: it starts multiple containers, gives them names, passes environment variables, mounts volumes, and connects ports.
+A `.env` file is not magic; it is just a convenient local source of environment variables for Compose and settings libraries.
+Runtime configuration is information the same image can receive differently each time it starts.
+Build-time configuration changes the image itself and should not contain secrets.
 
 ## Core vocabulary
 
-| Term | Simple meaning | Why it matters here |
-|------|----------------|---------------------|
-| Dockerfile | Dockerfile: `FROM`, `COPY`, `RUN`, `CMD`, layer caching | This term names one job in the Week 18 milestone. |
-| Multi-stage builds | Multi-stage builds: separate build and runtime layers | This term names one job in the Week 18 milestone. |
-| docker-compose.yml | `docker-compose.yml`: API and worker as separate services | This term names one job in the Week 18 milestone. |
-| Volume mounts for the SQLite database | Volume mounts for the SQLite database | This term names one job in the Week 18 milestone. |
-| Environment variable management | Environment variable management: `.env`, `pydantic-settings` | This term names one job in the Week 18 milestone. |
-| Testing the full stack in containers | Testing the full stack in containers | This term names one job in the Week 18 milestone. |
-| Boundary | A line between responsibilities | It keeps the chapter understandable for a beginner. |
-| Failure path | What happens when the happy path is not available | It keeps the chapter understandable for a beginner. |
-| Validation | Evidence that the system still works | It keeps the chapter understandable for a beginner. |
-| Responsibility | The one job a file or function owns | It keeps the chapter understandable for a beginner. |
+**Dockerfile**: text file containing instructions for building an image.
+**Image**: read-only packaged filesystem plus metadata used to create containers.
+**Container**: running process created from an image with its own filesystem view, environment, and network settings.
+**Layer**: cached filesystem change produced by a Dockerfile instruction.
+**Build context**: files sent to Docker during build; `.dockerignore` keeps unnecessary files out.
+**Base image**: starting filesystem, such as `python:3.11-slim`.
+**WORKDIR**: default directory for later Dockerfile commands and container startup.
+**COPY**: instruction that copies files from the build context into the image.
+**RUN**: build-time command that changes the image, such as installing dependencies.
+**CMD**: default runtime command for containers created from the image.
+**Port mapping**: host-to-container mapping such as `8000:8000`.
+**Volume**: storage mounted into a container so data can outlive the container.
+**Environment variable**: key/value string available to a running process.
+**`.env`**: local uncommitted file containing environment variable values.
+**`.env.example`**: committed template showing variable names and safe placeholder values.
+**Secret**: sensitive value such as an API key; never bake it into images or commit it.
+**12-factor config**: practice of keeping deploy-specific config in the environment, separate from code.
+**Compose service**: named container definition in `docker-compose.yml`, such as `api` or `worker`.
+**Health endpoint**: lightweight API route that proves the service is alive.
 
 ## Concept explanations from first principles
 
-Read each concept as if you have never heard the term before.
-Do not skip the plain meaning.
-### Concept 1: Dockerfile: `FROM`, `COPY`, `RUN`, `CMD`, layer caching
-- **Plain meaning:** This is a named tool for solving one part of the chapter problem.
-- **Why it exists:** Real projects become confusing when this concern is unnamed.
-- **ResearchOps use:** In Week 18, it supports the milestone: `docker-compose up` starts the API and worker. `curl http://localhost:8000/health` responds.
-- **Input question:** What data, command, file, request, or state reaches this concept?
-- **Output question:** What value, saved record, response, log, or state change should come out?
-- **Failure question:** What can be missing, malformed, slow, duplicated, stale, or invalid?
-- **Test question:** Which test would catch the mistake before a user sees it?
-- **Beginner trap:** Memorizing the word without tracing it in the project.
-- **Recovery move:** Use one concrete example and follow it through the files.
-- **Mastery signal:** You can explain the concept without saying "magic" or "it just works".
+### Why a container is not a virtual machine
+A virtual machine usually runs a full guest operating system.
+A container runs ordinary host-kernel processes with filesystem, network, and environment isolation.
+For this project, that means the ResearchOps API process still behaves like a Python process, but it starts inside a predictable filesystem.
 
-### Concept 2: Multi-stage builds: separate build and runtime layers
-- **Plain meaning:** This is a named tool for solving one part of the chapter problem.
-- **Why it exists:** Real projects become confusing when this concern is unnamed.
-- **ResearchOps use:** In Week 18, it supports the milestone: `docker-compose up` starts the API and worker. `curl http://localhost:8000/health` responds.
-- **Input question:** What data, command, file, request, or state reaches this concept?
-- **Output question:** What value, saved record, response, log, or state change should come out?
-- **Failure question:** What can be missing, malformed, slow, duplicated, stale, or invalid?
-- **Test question:** Which test would catch the mistake before a user sees it?
-- **Beginner trap:** Memorizing the word without tracing it in the project.
-- **Recovery move:** Use one concrete example and follow it through the files.
-- **Mastery signal:** You can explain the concept without saying "magic" or "it just works".
+### Why images should be boring
+A good image contains application code and installed dependencies.
+It should not contain your personal `.env`, private API keys, downloaded papers, local databases, or shell history.
+If an image can be pushed to a registry without leaking secrets, the boundary is healthier.
 
-### Concept 3: `docker-compose.yml`: API and worker as separate services
-- **Plain meaning:** This is a named tool for solving one part of the chapter problem.
-- **Why it exists:** Real projects become confusing when this concern is unnamed.
-- **ResearchOps use:** In Week 18, it supports the milestone: `docker-compose up` starts the API and worker. `curl http://localhost:8000/health` responds.
-- **Input question:** What data, command, file, request, or state reaches this concept?
-- **Output question:** What value, saved record, response, log, or state change should come out?
-- **Failure question:** What can be missing, malformed, slow, duplicated, stale, or invalid?
-- **Test question:** Which test would catch the mistake before a user sees it?
-- **Beginner trap:** Memorizing the word without tracing it in the project.
-- **Recovery move:** Use one concrete example and follow it through the files.
-- **Mastery signal:** You can explain the concept without saying "magic" or "it just works".
+### Why layer order matters
+Docker checks whether each instruction can reuse a cached result.
+If `COPY . .` happens before dependency installation, every source edit invalidates the dependency install layer.
+A better order copies dependency metadata first, installs dependencies, then copies source code.
 
-### Concept 4: Volume mounts for the SQLite database
-- **Plain meaning:** This is a named tool for solving one part of the chapter problem.
-- **Why it exists:** Real projects become confusing when this concern is unnamed.
-- **ResearchOps use:** In Week 18, it supports the milestone: `docker-compose up` starts the API and worker. `curl http://localhost:8000/health` responds.
-- **Input question:** What data, command, file, request, or state reaches this concept?
-- **Output question:** What value, saved record, response, log, or state change should come out?
-- **Failure question:** What can be missing, malformed, slow, duplicated, stale, or invalid?
-- **Test question:** Which test would catch the mistake before a user sees it?
-- **Beginner trap:** Memorizing the word without tracing it in the project.
-- **Recovery move:** Use one concrete example and follow it through the files.
-- **Mastery signal:** You can explain the concept without saying "magic" or "it just works".
+### Why Compose uses two services
+The API answers HTTP requests.
+The worker polls jobs and performs background work.
+They share the same image and configuration style, but they run different commands because they own different runtime responsibilities.
 
-### Concept 5: Environment variable management: `.env`, `pydantic-settings`
-- **Plain meaning:** This is a named tool for solving one part of the chapter problem.
-- **Why it exists:** Real projects become confusing when this concern is unnamed.
-- **ResearchOps use:** In Week 18, it supports the milestone: `docker-compose up` starts the API and worker. `curl http://localhost:8000/health` responds.
-- **Input question:** What data, command, file, request, or state reaches this concept?
-- **Output question:** What value, saved record, response, log, or state change should come out?
-- **Failure question:** What can be missing, malformed, slow, duplicated, stale, or invalid?
-- **Test question:** Which test would catch the mistake before a user sees it?
-- **Beginner trap:** Memorizing the word without tracing it in the project.
-- **Recovery move:** Use one concrete example and follow it through the files.
-- **Mastery signal:** You can explain the concept without saying "magic" or "it just works".
+### Why environment variables matter
+Hard-coded paths make the app brittle.
+Environment variables let the same image run with `DATABASE_URL=sqlite:////app/data/researchops.db` in Docker and a local path outside Docker.
+The Python settings module becomes the one place that translates strings from the environment into typed application settings.
 
-### Concept 6: Testing the full stack in containers
-- **Plain meaning:** This is a named tool for solving one part of the chapter problem.
-- **Why it exists:** Real projects become confusing when this concern is unnamed.
-- **ResearchOps use:** In Week 18, it supports the milestone: `docker-compose up` starts the API and worker. `curl http://localhost:8000/health` responds.
-- **Input question:** What data, command, file, request, or state reaches this concept?
-- **Output question:** What value, saved record, response, log, or state change should come out?
-- **Failure question:** What can be missing, malformed, slow, duplicated, stale, or invalid?
-- **Test question:** Which test would catch the mistake before a user sees it?
-- **Beginner trap:** Memorizing the word without tracing it in the project.
-- **Recovery move:** Use one concrete example and follow it through the files.
-- **Mastery signal:** You can explain the concept without saying "magic" or "it just works".
+
+ResearchOps trace:
+- Start with the already-working local command.
+- Identify the process that owns the behavior: CLI, API, or worker.
+- Move only runtime setup into Docker or settings.
+- Keep domain decisions in core and service decisions in services.
+- Pass variable values through environment variables.
+- Store durable files in `/app/data` or another configured data directory.
+- Use logs to prove the container received the expected settings.
+- Use the health endpoint to prove the API process is reachable.
 
 ## ResearchOps-specific application
 
-The chapter belongs to these project locations:
-- `Dockerfile`
-- `docker-compose.yml`
-- `.env.example` — documented environment variables
-- `src/researchops/config/settings.py` — all config from env vars
-Study those files in this order:
-1. Find the user-facing entry point.
-2. Find the service or core concept that owns the meaning.
-3. Find the infrastructure only when outside resources are needed.
-4. Find the tests that prove the behavior.
-5. Find the validation command that a learner runs manually.
-The goal is to know why each file exists.
-If two files seem to own the same decision, stop and clarify the boundary.
+ResearchOps has three runtime concerns this week: API, worker, and data.
+The API service should run the FastAPI app on `0.0.0.0` so Docker port mapping can expose it to the host.
+The worker service should use the same image but start the job runner command instead of the HTTP server.
+The SQLite file should be under a configured data directory, commonly `/app/data/researchops.db` inside the container.
+The compose file should mount persistent data into `/app/data` so ingested papers, job rows, and experiment records are not lost when containers restart.
+The settings module under `src/researchops/config/` should be importable by CLI, API, and workers without making services import infrastructure.
+The `.env.example` file should document values like `RESEARCHOPS_DATABASE_URL`, `RESEARCHOPS_LOG_LEVEL`, `RESEARCHOPS_DATA_DIR`, and optional RAG provider keys using placeholders only.
+The Dockerfile should install ResearchOps as a package so the `researchops` command works inside the container the same way it works locally.
+
+ResearchOps trace:
+- Start with the already-working local command.
+- Identify the process that owns the behavior: CLI, API, or worker.
+- Move only runtime setup into Docker or settings.
+- Keep domain decisions in core and service decisions in services.
+- Pass variable values through environment variables.
+- Store durable files in `/app/data` or another configured data directory.
+- Use logs to prove the container received the expected settings.
+- Use the health endpoint to prove the API process is reachable.
 
 ## Code examples with line-by-line explanation
 
 ```dockerfile
-FROM python:3.11-slim
+FROM python:3.11-slim AS runtime
 WORKDIR /app
-COPY . .
-RUN pip install .[all]
-CMD ["uvicorn", "researchops.api.main:app", "--host", "0.0.0.0"]
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+COPY pyproject.toml README.md ./
+COPY src ./src
+RUN pip install --no-cache-dir -e .
+CMD ["researchops", "--help"]
 ```
+Line 1: `FROM python:3.11-slim AS runtime` starts from a small official Python image and names the stage `runtime`.
+Line 2: `WORKDIR /app` creates or selects `/app` as the default directory for following instructions.
+Line 3: `PYTHONDONTWRITEBYTECODE=1` prevents `.pyc` files from being written into the container filesystem.
+Line 4: `PYTHONUNBUFFERED=1` makes logs appear immediately, which matters when reading container logs.
+Line 5: `COPY pyproject.toml README.md ./` copies package metadata before source code so dependency layers can be cached when possible.
+Line 6: `COPY src ./src` copies the ResearchOps package into the image.
+Line 7: `RUN pip install --no-cache-dir -e .` installs the package and console entry point inside the image without keeping pip cache files.
+Line 8: `CMD ["researchops", "--help"]` gives a safe default command that proves the CLI is installed.
 
-Line-by-line explanation:
-- Line 1: `FROM python:3.11-slim` — This produces the result or performs the declared setup step.
-- Line 2: `WORKDIR /app` — This produces the result or performs the declared setup step.
-- Line 3: `COPY . .` — This produces the result or performs the declared setup step.
-- Line 4: `RUN pip install .[all]` — This produces the result or performs the declared setup step.
-- Line 5: `CMD ["uvicorn", "researchops.api.main:app", "--host", "0.0.0.0"]` — This produces the result or performs the declared setup step.
+```python
+from functools import lru_cache
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
-How to use this example:
-- Name the input.
-- Name the output.
-- Predict the result before running anything.
-- Connect the shape to the real ResearchOps file.
-- Write one sentence about why each line belongs.
+class AppSettings(BaseSettings):
+    database_url: str = "sqlite:////app/data/researchops.db"
+    log_level: str = "INFO"
+    data_dir: str = "/app/data"
 
-## Common beginner mistakes
+    model_config = SettingsConfigDict(
+        env_prefix="RESEARCHOPS_",
+        env_file=".env",
+        extra="ignore",
+    )
 
-- **Mistake:** Pasting code before knowing the owner of the behavior.
-  **Why it hurts:** it hides the mental model and makes debugging harder.
-  **Better move:** make one small behavior clear, then prove it.
-- **Mistake:** Changing many files at once.
-  **Why it hurts:** it hides the mental model and makes debugging harder.
-  **Better move:** make one small behavior clear, then prove it.
-- **Mistake:** Skipping the failure path.
-  **Why it hurts:** it hides the mental model and makes debugging harder.
-  **Better move:** make one small behavior clear, then prove it.
-- **Mistake:** Reading only the happy path test.
-  **Why it hurts:** it hides the mental model and makes debugging harder.
-  **Better move:** make one small behavior clear, then prove it.
-- **Mistake:** Ignoring the validation command.
-  **Why it hurts:** it hides the mental model and makes debugging harder.
-  **Better move:** make one small behavior clear, then prove it.
-- **Mistake:** Using vague names.
-  **Why it hurts:** it hides the mental model and makes debugging harder.
-  **Better move:** make one small behavior clear, then prove it.
-- **Mistake:** Putting business rules in the user interface layer.
-  **Why it hurts:** it hides the mental model and makes debugging harder.
-  **Better move:** make one small behavior clear, then prove it.
-- **Mistake:** Treating logs, errors, and tests as decoration.
-  **Why it hurts:** it hides the mental model and makes debugging harder.
-  **Better move:** make one small behavior clear, then prove it.
-- **Mistake:** Optimizing before correctness is visible.
-  **Why it hurts:** it hides the mental model and makes debugging harder.
-  **Better move:** make one small behavior clear, then prove it.
-- **Mistake:** Building future-week features early.
-  **Why it hurts:** it hides the mental model and makes debugging harder.
-  **Better move:** make one small behavior clear, then prove it.
-
-## Debugging guidance
-
-- Copy the exact failing command.
-- Read the first useful error line.
-- Read the final error line.
-- Classify the failure as import, input, state, file, database, network, model, or expectation.
-- Reproduce it with the smallest command.
-- Inspect the value closest to the failure.
-- Fix the cause, not only the symptom.
-- Run the narrowest test.
-- Run the chapter validation command.
-- Write down what the error was teaching.
-Debugging questions:
-- What did I expect?
-- What happened?
-- Which value first became wrong?
-- Which layer created that value?
-- Which test should catch this next time?
-
-## Design tradeoffs
-
-- **Simple first version:** Easy to understand, but not the final production shape.
-- **Clear layers:** More files, but less confusion as features grow.
-- **Explicit errors:** More code, but failures become teachable.
-- **Small unit tests:** Fast feedback, but less end-to-end confidence.
-- **Integration tests:** Real wiring, but slower and more setup.
-- **Configuration:** Flexible behavior, but defaults must be clear.
-The right question is not "What is the fanciest design?"
-The right question is "What design teaches the responsibility clearly and can grow next week?"
-
-## Testing implications
-
-Tests for this chapter:
-- `tests/e2e/test_docker.py` (optional) — smoke test against running container
-Validation commands:
-```bash
-docker-compose build
-docker-compose up -d
-curl http://localhost:8000/health
-docker-compose down
+@lru_cache
+def get_settings() -> AppSettings:
+    return AppSettings()
 ```
-- Arrange the data.
-- Act on the system.
-- Assert the visible promise.
-- Check one failure path.
-- Keep unit tests fast.
-- Use integration tests only when real wiring matters.
-
-## Architecture implications
-
-ResearchOps stays understandable when dependencies point inward.
-```text
-CLI / API / Worker -> Services -> Core
-Infrastructure implements core-facing contracts and is wired at the outside.
-```
-- Does the UI layer avoid business logic?
-- Does the service layer own workflow decisions?
-- Does core avoid infrastructure imports?
-- Does infrastructure do outside-world work?
-- Do tests use fakes when possible?
-Architecture is not ceremony.
-Architecture is named responsibility.
-
-## How this connects to AI engineering / ML research
-
-AI engineering needs more than models.
-It needs reliable data flow, clear interfaces, repeatable experiments, visible failures, and honest evaluation.
-Week 18 contributes by making **docker and environment configuration** clear enough to trust.
-- Bad data creates bad model behavior.
-- Unclear boundaries make experiments hard to reproduce.
-- Missing tests let regressions change research results silently.
-- Good logs and errors shorten investigation time.
-- Clear documentation lets future users understand the system.
-
-## Mini quizzes
-
-- What problem does Week 18 solve?
-- What is the main input?
-- What is the main output?
-- Which file owns the main responsibility?
-- Which layer should not contain business logic?
-- What is one happy path?
-- What is one failure path?
-- What command proves the chapter works?
-- What should you not build early?
-- How does this prepare the next week?
-
-## Explain-it-aloud prompts
-
-- Explain Docker and Environment Configuration in simple words.
-- Explain the data flow from input to result.
-- Explain the first file you would open.
-- Explain the test that gives confidence.
-- Explain what can break.
-- Explain the tradeoff made in this chapter.
-- Explain what you still find weak.
-
-## What to memorize
-
-- The topic: Docker and Environment Configuration.
-- The milestone: `docker-compose up` starts the API and worker. `curl http://localhost:8000/health` responds.
-- The main project files.
-- The validation command.
-- The boundary rule for the layer you are touching.
-- The habit of testing before moving forward.
-
-## What to understand deeply
-
-- Why this feature belongs now.
-- How data moves through the chapter.
-- Which file owns which decision.
-- How the failure path is handled.
-- Why the tests prove behavior.
-- How this week makes future work safer.
-
-## What not to worry about yet
-
-- Perfect scale.
-- Fancy abstractions.
-- Future-week features.
-- Every option in every library.
-- Premature optimization.
-- Comparing your speed to someone else.
-Focus on the milestone.
-A clear small milestone beats a confusing large one.
-
-## Bridge to next week
-
-Next week is Week 19: **Documentation and Portfolio Polish**.
-This week prepares you by giving ResearchOps a clearer piece of behavior before the next milestone: README is portfolio-quality. Architecture document explains every design decision. A demo script exists.
-- Run validation.
-- Explain the main files.
-- Explain one failure.
-- Explain one test.
-- Write down what still feels weak before moving on.
-
-## Guided deepening drills
-
-Use these drills if the chapter still feels abstract.
-- Drill 1: Trace `Dockerfile: `FROM`, `COPY`, `RUN`, `CMD`, layer caching` from user input to project result.
-- Drill 2: Write one sentence defining `Dockerfile: `FROM`, `COPY`, `RUN`, `CMD`, layer caching` without copying the notes.
-- Drill 3: Find the file where `Dockerfile: `FROM`, `COPY`, `RUN`, `CMD`, layer caching` appears or should appear.
-- Drill 4: Name one wrong implementation of `Dockerfile: `FROM`, `COPY`, `RUN`, `CMD`, layer caching` and why it would hurt.
-- Drill 5: Name one test that would protect `Dockerfile: `FROM`, `COPY`, `RUN`, `CMD`, layer caching`.
-- Drill 6: Trace `Multi-stage builds: separate build and runtime layers` from user input to project result.
-- Drill 7: Write one sentence defining `Multi-stage builds: separate build and runtime layers` without copying the notes.
-- Drill 8: Find the file where `Multi-stage builds: separate build and runtime layers` appears or should appear.
-- Drill 9: Name one wrong implementation of `Multi-stage builds: separate build and runtime layers` and why it would hurt.
-- Drill 10: Name one test that would protect `Multi-stage builds: separate build and runtime layers`.
-- Drill 11: Trace ``docker-compose.yml`: API and worker as separate services` from user input to project result.
-- Drill 12: Write one sentence defining ``docker-compose.yml`: API and worker as separate services` without copying the notes.
-- Drill 13: Find the file where ``docker-compose.yml`: API and worker as separate services` appears or should appear.
-- Drill 14: Name one wrong implementation of ``docker-compose.yml`: API and worker as separate services` and why it would hurt.
-- Drill 15: Name one test that would protect ``docker-compose.yml`: API and worker as separate services`.
-- Drill 16: Trace `Volume mounts for the SQLite database` from user input to project result.
-- Drill 17: Write one sentence defining `Volume mounts for the SQLite database` without copying the notes.
-- Drill 18: Find the file where `Volume mounts for the SQLite database` appears or should appear.
-- Drill 19: Name one wrong implementation of `Volume mounts for the SQLite database` and why it would hurt.
-- Drill 20: Name one test that would protect `Volume mounts for the SQLite database`.
-- Drill 21: Trace `Environment variable management: `.env`, `pydantic-settings`` from user input to project result.
-- Drill 22: Write one sentence defining `Environment variable management: `.env`, `pydantic-settings`` without copying the notes.
-- Drill 23: Find the file where `Environment variable management: `.env`, `pydantic-settings`` appears or should appear.
-- Drill 24: Name one wrong implementation of `Environment variable management: `.env`, `pydantic-settings`` and why it would hurt.
-- Drill 25: Name one test that would protect `Environment variable management: `.env`, `pydantic-settings``.
-- Drill 26: Trace `Testing the full stack in containers` from user input to project result.
-- Drill 27: Write one sentence defining `Testing the full stack in containers` without copying the notes.
-- Drill 28: Find the file where `Testing the full stack in containers` appears or should appear.
-- Drill 29: Name one wrong implementation of `Testing the full stack in containers` and why it would hurt.
-- Drill 30: Name one test that would protect `Testing the full stack in containers`.
-
-<!-- LEARNING_FORMAT_END -->
-
----
-
-# Existing detailed notes
-## Why packaging matters
-
-You have built a working Python application. It runs on your machine. But "works on my machine" is not a product. It is a promise that is broken the moment anyone else tries to run it.
-
-Packaging solves this by capturing not just your code, but the exact Python version, the installed libraries, the required files, and the command needed to start the app. A packaged application can be reproduced — same code, same behaviour — on any machine that can run the package format.
-
-Docker is the most widely used packaging format for Python applications. Understanding it is a professional skill that appears in nearly every engineering job that involves running Python in any kind of server or cloud context.
-
----
-
-## What Docker is
-
-Docker is a system for building and running containers.
-
-A **container** is a lightweight, isolated environment that runs one or more processes. It looks like a miniature operating system from the perspective of the process running inside it, but it shares the host machine's kernel. This makes containers much lighter than full virtual machines.
-
-Docker gives you:
-- A standard way to describe the environment your app needs (a `Dockerfile`).
-- A command to build that description into an image.
-- A command to run the image as a container.
-- Tools to manage multiple containers together (`docker compose`).
-
-The key promise of Docker is reproducibility: an image built on your laptop can run identically on a colleague's laptop, a CI server, or a cloud VM.
-
----
-
-## Image
-
-A Docker **image** is a read-only, layered snapshot of a filesystem and its metadata. It includes:
-- A base operating system or language runtime.
-- Any libraries you installed.
-- Your application's source code.
-- The command to run when the container starts.
-
-An image is a built artifact. You build an image once (or rebuild it when code changes) and run it many times. Images are identified by a name and optional tag, e.g., `researchops:latest` or `researchops:1.0.0`.
-
-Images are stored locally (in Docker's local cache) and can be pushed to a registry like Docker Hub or GitHub Container Registry to share with others.
-
----
-
-## Container
-
-A Docker **container** is a running instance of an image. The image is the recipe; the container is the dish.
-
-You can run many containers from the same image. Each container gets its own isolated filesystem (a copy-on-write layer on top of the image). Changes made inside a container (like writing a file) are local to that container and disappear when the container stops, unless you explicitly use a volume to persist data.
-
-Containers are ephemeral by default. If you run a container, stop it, and start a new one, the new container starts fresh from the image, with no memory of what the previous container did. This is a feature: it forces you to store important data outside the container (in a volume or a database), which makes the system more reliable.
-
----
-
-## Dockerfile
-
-A `Dockerfile` is a text file that describes how to build an image. It is a sequence of instructions, each of which adds a layer to the image.
-
-Here is a Dockerfile appropriate for ResearchOps, explained line by line:
-
-```dockerfile
-FROM python:3.11-slim                        # line 1
-WORKDIR /app                                 # line 2
-COPY pyproject.toml README.md ./             # line 3
-COPY src ./src                               # line 4
-RUN pip install --no-cache-dir -e ".[api]"  # line 5
-CMD ["researchops", "--help"]               # line 6
-```
-
-**Line 1**: `FROM python:3.11-slim` — start from the official Python 3.11 "slim" image (a minimal Debian-based image with Python pre-installed). The `slim` variant excludes most optional system packages, keeping the image small. Always pin the Python version: `python:3.11` not `python:latest`. `latest` can change without warning.
-
-**Line 2**: `WORKDIR /app` — set the working directory inside the container. All subsequent commands run in `/app`. This creates the directory if it does not exist. Using `/app` is a common convention for Python apps.
-
-**Line 3**: `COPY pyproject.toml README.md ./` — copy the project metadata files into `/app`. These are copied before the source code so Docker can cache the dependency installation layer. If `pyproject.toml` does not change, Docker reuses the cached layer from the previous build and skips the `pip install` step.
-
-**Line 4**: `COPY src ./src` — copy the application source code into `/app/src`. This comes after the dependency copy. If you change source code (which is frequent), only layers from this line onwards are rebuilt. The dependency installation (line 5) is still cached.
-
-**Line 5**: `RUN pip install --no-cache-dir -e ".[api]"` — install the package in editable mode with the `api` extras. `--no-cache-dir` prevents pip from writing its own cache inside the image, keeping the image smaller. In a production image you might use a plain install (not editable), but for a learning project, editable mode is fine.
-
-**Line 6**: `CMD ["researchops", "--help"]` — the default command to run when the container starts. `CMD` uses the exec form (a JSON array of strings), which is preferred over the shell form. This is the default; it can be overridden when running the container.
-
----
-
-## Build context
-
-The **build context** is the set of files that Docker sends to the Docker daemon when you run `docker build`. By default it is the current directory (`.`).
-
-```bash
-docker build -t researchops:local .
-```
-
-The `.` at the end is the build context. Docker reads the `Dockerfile` from the context and sends the files to the daemon, which builds the image.
-
-A `.dockerignore` file (similar to `.gitignore`) excludes files from the build context. Always exclude:
-- `.git/` (large, not needed)
-- `__pycache__/`
-- `.venv/` or `venv/` (the container installs its own dependencies)
-- `data/` (runtime data, not source)
-- `*.pyc`
-
-A smaller build context means faster builds and smaller images.
-
----
-
-## Layer
-
-Each instruction in the `Dockerfile` that modifies the filesystem creates a new **layer**. Docker caches layers. When you rebuild, Docker checks whether the instruction and its inputs have changed. If not, it reuses the cached layer.
-
-This is why layer order matters: put infrequently changing instructions (like `FROM`, `RUN pip install`) before frequently changing ones (like `COPY src`). If the source code changes and `COPY src` is the last instruction, Docker can reuse all earlier layers and only rebuild from `COPY src` onwards. This makes rebuilds fast.
-
-If you copy the source code before installing dependencies, any source code change forces a full reinstall. That is slow and unnecessary.
-
-**Correct order**: copy metadata → install dependencies → copy source.
-
----
-
-## Environment variable
-
-An **environment variable** is a named value that the operating system makes available to running processes. Programs read environment variables to configure their behaviour without hardcoding values.
-
-In a container, you can set environment variables:
-- In the `Dockerfile` with `ENV KEY=value` (build-time, baked into the image).
-- At runtime with `docker run -e KEY=value` (run-time, not in the image).
-- From a file with `docker run --env-file .env` or in a compose file with `env_file: .env`.
-
-Run-time variables are preferred for anything that should change between environments (development, staging, production) or contains a secret.
-
-```bash
-docker run -e LOG_LEVEL=DEBUG researchops:local researchops --help
-```
-
-Inside the container, your Python code reads `LOG_LEVEL` with `os.environ.get("LOG_LEVEL", "INFO")`.
-
----
-
-## `.env` file
-
-A `.env` file is a plain text file containing key-value pairs, one per line:
-
-```bash
-DATABASE_URL=sqlite:///data/researchops.db
-LOG_LEVEL=INFO
-OPENAI_API_KEY=your-key-here
-```
-
-Tools like `docker compose`, `pydantic-settings`, and the `python-dotenv` package can load `.env` files automatically.
-
-**Critical rules**:
-- `.env` must be in `.gitignore`. It may contain secrets. Never commit it.
-- `.env.example` (no real values) must be committed so teammates know which variables are needed.
-
-The difference:
-- `.env` → contains real values, never committed.
-- `.env.example` → contains placeholder values, always committed.
-
----
-
-## Volume
-
-A Docker **volume** is a persistent storage location that exists outside the container's lifecycle. When a container stops and is removed, its internal filesystem disappears. Anything you want to survive (databases, uploaded files, generated data) must be stored in a volume.
-
-Two kinds of volumes:
-- **Named volume**: `docker volume create mydata`. Managed by Docker. Survives container restarts.
-- **Bind mount**: a directory on your host machine mounted into the container. Used in development.
-
-```yaml
-volumes:
-  - ./data:/app/data    # bind mount: ./data on host → /app/data in container
-```
-
-This means any file written to `/app/data` inside the container is actually written to `./data` on your host. When the container stops, the data persists in `./data`.
-
-For ResearchOps, the SQLite database and any artifact files should be stored in a volume so they survive container restarts.
-
----
-
-## Port mapping
-
-A container runs in isolation. By default, network ports inside the container are not accessible from outside. You must map a container port to a host port.
-
-```bash
-docker run -p 8000:8000 researchops:local uvicorn researchops.api.main:app --host 0.0.0.0 --port 8000
-```
-
-`-p 8000:8000` means: map port 8000 on the host to port 8000 in the container. After this, `curl http://localhost:8000` on your host reaches the FastAPI server running inside the container.
-
-The format is `-p HOST_PORT:CONTAINER_PORT`. You can use different port numbers:
-
-```bash
--p 9000:8000    # host port 9000 → container port 8000
-```
-
-Inside the container, the app must listen on `0.0.0.0` (all interfaces), not `127.0.0.1` (loopback only). `0.0.0.0` allows traffic that arrives from outside the container to reach the app.
-
----
-
-## docker-compose
-
-**docker compose** (or the older `docker-compose` command) is a tool for defining and running multi-container applications. Instead of running multiple long `docker run` commands manually, you define all services in a single `docker-compose.yml` file.
-
-Benefits:
-- One command (`docker compose up`) starts everything.
-- Services can reference each other by name.
-- Volumes and environment variables are defined once.
-- Easy to reproduce the exact local setup.
-
----
-
-## ResearchOps docker-compose.yml explained
+Line 1: `lru_cache` lets the application create settings once per process instead of reparsing the environment repeatedly.
+Line 2: `BaseSettings` reads values from environment variables and optional env files.
+Line 4: `AppSettings` is the one typed object the rest of the app asks for when it needs configuration.
+Line 5: `database_url` defaults to the container path where Compose will mount persistent storage.
+Line 6: `log_level` defaults to `INFO`, which is useful in containers because logs are the main debugging surface.
+Line 7: `data_dir` names the directory where durable runtime files should live.
+Line 9: `model_config` controls how settings are loaded.
+Line 10: `env_prefix="RESEARCHOPS_"` means `database_url` is overridden by `RESEARCHOPS_DATABASE_URL`.
+Line 11: `env_file=".env"` allows local development to load values from a local file.
+Line 12: `extra="ignore"` prevents unrelated variables in the environment from breaking settings creation.
+Line 16: `get_settings` is a small factory used by API, CLI, and worker wiring code.
+Line 17: `return AppSettings()` performs the actual load from defaults, environment variables, and `.env`.
 
 ```yaml
 services:
-  app:
-    build: .
-    command: researchops --help
-    env_file:
-      - .env
-    volumes:
-      - ./data:/app/data
-
   api:
     build: .
     command: uvicorn researchops.api.main:app --host 0.0.0.0 --port 8000
-    env_file:
-      - .env
+    env_file: .env
     ports:
       - "8000:8000"
     volumes:
-      - ./data:/app/data
+      - researchops-data:/app/data
 
   worker:
     build: .
     command: researchops jobs run
-    env_file:
-      - .env
+    env_file: .env
     volumes:
-      - ./data:/app/data
+      - researchops-data:/app/data
+
+volumes:
+  researchops-data:
 ```
+Line 1: `services:` starts the list of runnable containers.
+Line 2: `api:` names the HTTP service.
+Line 3: `build: .` tells Compose to build the image from the current repository.
+Line 4: the API command starts Uvicorn and binds to `0.0.0.0` so the host can reach it through port mapping.
+Line 5: `env_file: .env` passes local runtime settings into the container.
+Line 6: `ports:` starts host/container port mappings.
+Line 7: `8000:8000` maps host port 8000 to container port 8000.
+Line 8: `volumes:` starts persistent storage mounts.
+Line 9: `researchops-data:/app/data` stores SQLite data outside the container filesystem.
+Line 11: `worker:` names the background job service.
+Line 13: `researchops jobs run` starts the existing worker command rather than an API server.
+Line 18: `volumes:` declares named volumes managed by Docker.
 
-**`services:`** — the top-level key. Each named entry is a service (a container definition).
-
-**`app:` service**
-
-```yaml
-  app:
-    build: .
-    command: researchops --help
-    env_file:
-      - .env
-    volumes:
-      - ./data:/app/data
+Additional `.env.example` pattern:
+```dotenv
+# SQLite database URL used by CLI, API, and worker.
+RESEARCHOPS_DATABASE_URL=sqlite:////app/data/researchops.db
+# Log level for container logs.
+RESEARCHOPS_LOG_LEVEL=INFO
+# Directory for durable local application data.
+RESEARCHOPS_DATA_DIR=/app/data
+# Optional provider key; leave blank until you intentionally configure one.
+RESEARCHOPS_OPENAI_API_KEY=
 ```
-
-`build: .` — build the image from the `Dockerfile` in the current directory. Docker will rebuild it only if the source files change.
-
-`command: researchops --help` — override the `CMD` from the `Dockerfile`. This service just prints the CLI help and exits. Useful for smoke-testing that the CLI entry point is working.
-
-`env_file: - .env` — load environment variables from `.env`. The variables become available inside the container.
-
-`volumes: - ./data:/app/data` — bind mount the `./data` directory. The ResearchOps database and artifact files live here. This ensures they persist between container runs.
-
-**`api:` service**
-
-```yaml
-  api:
-    build: .
-    command: uvicorn researchops.api.main:app --host 0.0.0.0 --port 8000
-    env_file:
-      - .env
-    ports:
-      - "8000:8000"
-    volumes:
-      - ./data:/app/data
-```
-
-`command: uvicorn researchops.api.main:app --host 0.0.0.0 --port 8000` — start the FastAPI app using uvicorn. `--host 0.0.0.0` is required (see port mapping section above). `--port 8000` is the port inside the container.
-
-`ports: - "8000:8000"` — map host port 8000 to container port 8000. After `docker compose up api`, `curl http://localhost:8000` reaches FastAPI.
-
-**`worker:` service**
-
-```yaml
-  worker:
-    build: .
-    command: researchops jobs run
-    env_file:
-      - .env
-    volumes:
-      - ./data:/app/data
-```
-
-`command: researchops jobs run` — run the background job worker. Same environment and volume as the other services.
-
-**This is a learning template.** Real production compose files add health checks, restart policies, resource limits, and separate networks. Start with this template and adapt it to your needs.
-
----
-
-## Service
-
-In docker-compose terms, a **service** is one container definition. Each service has:
-- A build source or pre-built image.
-- A command to run.
-- Environment variables.
-- Ports.
-- Volumes.
-
-Services are independent but can communicate over a shared network that docker compose creates automatically. Services reference each other by name (e.g., `http://api:8000` from the `worker` container).
-
----
-
-## Why Docker comes late in the curriculum
-
-Docker is introduced in Week 18 rather than Week 1 because:
-
-1. **First, make it work. Then make it portable.** You need to understand what the application does before packaging it. A Docker image of a broken app is just a broken app in a box.
-
-2. **Docker reveals assumptions.** When you containerise an app, Docker forces you to be explicit about everything: which files are needed, which env vars are required, which ports are used, where data is stored. This is only meaningful once the app is mature enough to have those answers.
-
-3. **Learning curve.** Docker has its own conceptual model (images, layers, contexts, volumes). Learning it while also learning the application domain is too much at once.
-
-4. **Reward structure.** In Week 18 you already have a working app. Containerising it is satisfying. The demo is clean: `docker compose up api` → `curl http://localhost:8000/papers` → it works.
-
----
-
-## pydantic-settings for environment configuration
-
-Instead of reading `os.environ.get(...)` manually throughout the codebase, use `pydantic-settings` to centralise configuration:
-
-```python
-from pydantic_settings import BaseSettings, SettingsConfigDict
-
-
-class Settings(BaseSettings):
-    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
-
-    database_url: str = "sqlite:///data/researchops.db"
-    log_level: str = "INFO"
-    openai_api_key: str = ""
-    embedding_model: str = "sentence-transformers/all-MiniLM-L6-v2"
-```
-
-Line by line:
-
-`from pydantic_settings import BaseSettings, SettingsConfigDict` — import the base class and the configuration descriptor.
-
-`model_config = SettingsConfigDict(env_file=".env", ...)` — tell pydantic-settings to load variables from `.env` if the file exists. Environment variables take precedence over `.env` values.
-
-`database_url: str = "sqlite:///data/researchops.db"` — declare a setting with a default value. If `DATABASE_URL` is set in the environment, pydantic-settings uses that value. If not, it uses the default.
-
-`openai_api_key: str = ""` — an empty string default means the app starts without the key. Any code that uses the key should check whether it is empty before making API calls.
-
-To use settings anywhere in the codebase:
-
-```python
-from researchops.settings import Settings
-
-settings = Settings()
-print(settings.database_url)
-```
-
----
-
-## Testing configuration
-
-Configuration bugs often appear only in deployment. Writing tests for settings prevents this.
-
-```python
-import os
-import pytest
-from researchops.settings import Settings
-
-
-def test_default_database_url():
-    settings = Settings()
-    assert settings.database_url == "sqlite:///data/researchops.db"
-
-
-def test_env_override(monkeypatch):
-    monkeypatch.setenv("DATABASE_URL", "sqlite:///tmp/test.db")
-    settings = Settings()
-    assert settings.database_url == "sqlite:///tmp/test.db"
-```
-
-`monkeypatch.setenv` sets an environment variable for the duration of the test and removes it afterwards. This keeps tests isolated: they do not accidentally affect each other or the real environment.
-
-Always test:
-- Default values are correct.
-- Environment variable overrides are applied.
-- Missing required variables raise a clear error (not a silent `None`).
-
----
-
-## `.env.example` conventions
-
-A well-written `.env.example` documents every variable:
-
-```bash
-# ResearchOps environment configuration
-# Copy this file to .env and fill in your values.
-# Never commit .env.
-
-# Path to the SQLite database file
-DATABASE_URL=sqlite:///data/researchops.db
-
-# Logging verbosity: DEBUG, INFO, WARNING, ERROR
-LOG_LEVEL=INFO
-
-# Embedding model name (sentence-transformers hub name)
-EMBEDDING_MODEL=sentence-transformers/all-MiniLM-L6-v2
-
-# Optional: OpenAI-compatible API key for real generation
-# Leave empty to use Ollama or the fake generator.
-OPENAI_API_KEY=
-```
-
-This serves as self-documenting configuration. Any new developer clones the repo, copies `.env.example` to `.env`, fills in values, and the app runs.
-
----
-
-## Common mistakes and how to avoid them
-
-**Mistake 1: Copying `.venv` into the image**
-If you do not add `.venv/` to `.dockerignore`, Docker copies the entire virtual environment into the build context. This makes builds slow and images huge. Add `.venv/` to `.dockerignore`.
-
-**Mistake 2: Using `ENV` in Dockerfile for secrets**
-`ENV KEY=value` in a `Dockerfile` bakes the value into the image. The image can be inspected with `docker inspect`. Never use `ENV` for secrets. Use `--env-file` at run time.
-
-**Mistake 3: Listening on `127.0.0.1` in the container**
-If uvicorn binds to `127.0.0.1`, traffic from outside the container is rejected. Always use `0.0.0.0` inside a container.
-
-**Mistake 4: No data volume**
-If you write the SQLite database inside the container without a volume mount, every `docker compose down` wipes the data. Mount `./data:/app/data` to persist data across restarts.
-
-**Mistake 5: Building every time**
-`docker compose up --build` rebuilds the image every time. In development, omit `--build` after the first build, unless you have actually changed the source code. `docker compose up` (no `--build`) starts existing containers quickly.
-
----
-
-## Build and run commands
-
-```bash
-# Build the image
-docker build -t researchops:local .
-
-# Run the CLI help
-docker run researchops:local researchops --help
-
-# Run the API server
-docker run -p 8000:8000 --env-file .env -v $(pwd)/data:/app/data researchops:local \
-    uvicorn researchops.api.main:app --host 0.0.0.0 --port 8000
-
-# With docker compose
-docker compose up           # start all services (uses cached images)
-docker compose up --build   # rebuild and start all services
-docker compose up api       # start only the api service
-docker compose down         # stop and remove containers (data volume persists)
-docker compose logs api     # show logs from the api service
-```
-
----
-
-## Summary
-
-- Docker packages an application with its runtime environment for reproducible execution.
-- An image is a read-only snapshot; a container is a running instance.
-- A `Dockerfile` describes how to build an image, layer by layer.
-- Layer order matters: put infrequently changing instructions first.
-- Environment variables configure runtime behaviour without changing code.
-- A `.env` file stores local settings; never commit it. `.env.example` documents the variables; always commit it.
-- Volumes persist data outside the container lifecycle.
-- Port mapping exposes container ports to the host.
-- `docker-compose.yml` orchestrates multiple services with a single command.
-- `pydantic-settings` centralises configuration and makes it testable.
-- Docker comes late because it is most valuable once the app is working.
+Line 1: # SQLite database URL used by CLI, API, and worker. -- this line is safe for a template because it contains no real secret.
+Line 2: RESEARCHOPS_DATABASE_URL=sqlite:////app/data/researchops.db -- this line is safe for a template because it contains no real secret.
+Line 3: # Log level for container logs. -- this line is safe for a template because it contains no real secret.
+Line 4: RESEARCHOPS_LOG_LEVEL=INFO -- this line is safe for a template because it contains no real secret.
+Line 5: # Directory for durable local application data. -- this line is safe for a template because it contains no real secret.
+Line 6: RESEARCHOPS_DATA_DIR=/app/data -- this line is safe for a template because it contains no real secret.
+Line 7: # Optional provider key; leave blank until you intentionally configure one. -- this line is safe for a template because it contains no real secret.
+Line 8: RESEARCHOPS_OPENAI_API_KEY= -- this line is safe for a template because it contains no real secret.
+
+## Common beginner mistakes
+
+Putting `.env` into the image with `COPY . .` and forgetting to exclude it in `.dockerignore`.
+Using `localhost` inside one container to reach another container; service names are used for container-to-container networking.
+Binding Uvicorn to `127.0.0.1` inside the container, then wondering why the host cannot connect.
+Writing the SQLite database inside an unmounted image path, then losing data when the container is removed.
+Adding secrets with Dockerfile `ENV`, which bakes them into image history.
+Letting services import Docker-specific details; Docker belongs in deployment files, while Python reads normal settings.
+Confusing `docker compose build` with `docker compose up`; one builds images, the other starts containers.
+Rebuilding the world after every source change because the Dockerfile copies the whole repository before installing dependencies.
+
+## Debugging guidance
+
+If the image fails to build, read the first failing Dockerfile instruction, not only the last line.
+If `researchops` is not found in the container, confirm the package installation step ran and that `pyproject.toml` defines the script.
+If the API starts but `curl` fails, check the Uvicorn host, Compose port mapping, and container logs.
+If settings ignore your `.env`, check the prefix: `RESEARCHOPS_LOG_LEVEL` is not the same as `LOG_LEVEL` when an env prefix is configured.
+If the worker cannot find the same database rows as the API, confirm both services mount the same volume and use the same database URL.
+If a secret appears in build output, stop and remove it from Dockerfile instructions before sharing the image.
+Use `docker compose logs api` for API errors and `docker compose logs worker` for background job errors.
+Use `docker compose config` to see the final Compose configuration after variable interpolation.
+
+ResearchOps trace:
+- Start with the already-working local command.
+- Identify the process that owns the behavior: CLI, API, or worker.
+- Move only runtime setup into Docker or settings.
+- Keep domain decisions in core and service decisions in services.
+- Pass variable values through environment variables.
+- Store durable files in `/app/data` or another configured data directory.
+- Use logs to prove the container received the expected settings.
+- Use the health endpoint to prove the API process is reachable.
+
+## Design tradeoffs
+
+One shared image for API and worker avoids duplicate builds and keeps dependency versions identical.
+Separate service commands keep runtime responsibilities clean: API handles HTTP, worker handles jobs.
+A named Docker volume is easier for beginners than bind-mounting many host paths, but bind mounts can be useful when inspecting files directly.
+Editable install inside an image is acceptable for this learning project; a later hardened release could build a wheel, but that is not required this week.
+Using `.env` improves local ergonomics, but production systems often inject variables through deployment platforms instead.
+Keeping configuration in `src/researchops/config/settings.py` centralises decisions and avoids scattering `os.environ` across commands and routes.
+
+ResearchOps trace:
+- Start with the already-working local command.
+- Identify the process that owns the behavior: CLI, API, or worker.
+- Move only runtime setup into Docker or settings.
+- Keep domain decisions in core and service decisions in services.
+- Pass variable values through environment variables.
+- Store durable files in `/app/data` or another configured data directory.
+- Use logs to prove the container received the expected settings.
+- Use the health endpoint to prove the API process is reachable.
+
+## Testing implications
+
+Settings tests should prove defaults work when no environment variables are set.
+Settings tests should prove environment variables override defaults.
+Tests should use `monkeypatch` for environment variables so one test does not leak state into another.
+If `get_settings` is cached, tests must clear the cache before checking a new environment.
+Container validation is not a replacement for unit tests; it proves packaging and service wiring.
+The health endpoint should stay lightweight and should not require expensive model loading or network calls.
+
+ResearchOps trace:
+- Start with the already-working local command.
+- Identify the process that owns the behavior: CLI, API, or worker.
+- Move only runtime setup into Docker or settings.
+- Keep domain decisions in core and service decisions in services.
+- Pass variable values through environment variables.
+- Store durable files in `/app/data` or another configured data directory.
+- Use logs to prove the container received the expected settings.
+- Use the health endpoint to prove the API process is reachable.
+
+## Architecture implications
+
+The `config/` package is allowed to depend on settings libraries and Python standard library tools.
+Core models and protocols must not import settings because core must remain independent of runtime environment.
+Services should still depend on protocols, not concrete repositories, even when running inside Docker.
+CLI, API, and worker entry points are the correct places to read settings and wire concrete infrastructure.
+Docker files live at the deployment boundary; they should not force business logic into command handlers.
+The image packages the modular monolith; it does not turn the app into microservices.
+
+ResearchOps trace:
+- Start with the already-working local command.
+- Identify the process that owns the behavior: CLI, API, or worker.
+- Move only runtime setup into Docker or settings.
+- Keep domain decisions in core and service decisions in services.
+- Pass variable values through environment variables.
+- Store durable files in `/app/data` or another configured data directory.
+- Use logs to prove the container received the expected settings.
+- Use the health endpoint to prove the API process is reachable.
+
+## How this connects to AI engineering / ML research
+
+Research and ML projects often fail to reproduce because environment setup is implicit.
+A container makes the Python version, installed dependencies, command, and runtime paths explicit.
+Experiment tracking is more trustworthy when the runtime can be recreated.
+RAG behavior depends on storage, retrieval, and configuration; Docker helps run those pieces together consistently.
+Secrets for model providers or external APIs must be injected at runtime so images can be shared safely.
+Workers are common in ML systems because expensive tasks should not block API requests.
+
+## Mini quizzes
+
+1. What is the difference between an image and a container?
+2. Which Dockerfile instruction usually installs Python dependencies?
+3. Why should `.env` be ignored by Git and Docker build context?
+4. Why does the API bind to `0.0.0.0` inside the container?
+5. What happens to SQLite data stored only inside a removed container?
+6. Why can the API and worker use the same image but different commands?
+7. What setting should override the default database URL at runtime?
+8. Why should tests clear a cached settings factory?
+
+## Explain-it-aloud prompts
+
+Explain the path from `docker compose up` to a running FastAPI server.
+Explain why Docker was not introduced before the CLI and API worked locally.
+Explain how `RESEARCHOPS_DATABASE_URL` changes application behavior without editing Python code.
+Explain how a named volume protects the SQLite database from container deletion.
+Explain why a secret in a Dockerfile is more dangerous than a secret in an uncommitted local `.env` file.
+
+## What to memorize
+
+Images are built; containers run.
+Put secrets in runtime environment, not images.
+Use `.env.example` for documentation and `.env` for local private values.
+Use volumes for data that must survive container removal.
+Use `docker compose up --build` when you need to rebuild and start services.
+Bind web servers to `0.0.0.0` inside containers when exposing ports.
+
+## What to understand deeply
+
+Understand that Docker packages the runtime boundary, not the business architecture.
+Understand that settings are part of application design because they define what can vary safely between environments.
+Understand layer caching well enough to place slow-changing files before fast-changing source code.
+Understand that API and worker containers can share image code while performing different process roles.
+Understand that persistence belongs outside disposable containers.
+
+## What not to worry about yet
+
+Do not worry about Kubernetes.
+Do not worry about publishing images to registries.
+Do not worry about production secrets managers.
+Do not worry about final portfolio packaging or release notes.
+Do not rewrite the RAG assistant, worker, API, or storage layer while learning Docker.
+Do not introduce new heavy ML dependencies this week.
+
+## Bridge to next week
+
+At the end of Week 18, ResearchOps should be runnable as a complete local stack.
+That gives the next week a stable runtime story to build on.
+You will be able to say: the app runs locally, the app runs in containers, and the runtime settings are documented.
+The next chapter can focus on communicating and polishing the system rather than discovering hidden setup problems.
+
+## Detailed beginner review drill
+
+1. Trace the ResearchOps container decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+2. Trace the ResearchOps layer decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+3. Trace the ResearchOps settings decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+4. Trace the ResearchOps volume decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+5. Trace the ResearchOps compose service decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+6. Trace the ResearchOps image decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+7. Trace the ResearchOps container decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+8. Trace the ResearchOps layer decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+9. Trace the ResearchOps settings decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+10. Trace the ResearchOps volume decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+11. Trace the ResearchOps compose service decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+12. Trace the ResearchOps image decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+13. Trace the ResearchOps container decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+14. Trace the ResearchOps layer decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+15. Trace the ResearchOps settings decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+16. Trace the ResearchOps volume decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+17. Trace the ResearchOps compose service decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+18. Trace the ResearchOps image decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+19. Trace the ResearchOps container decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+20. Trace the ResearchOps layer decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+21. Trace the ResearchOps settings decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+22. Trace the ResearchOps volume decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+23. Trace the ResearchOps compose service decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+24. Trace the ResearchOps image decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+25. Trace the ResearchOps container decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+26. Trace the ResearchOps layer decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+27. Trace the ResearchOps settings decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+28. Trace the ResearchOps volume decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+29. Trace the ResearchOps compose service decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+30. Trace the ResearchOps image decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+31. Trace the ResearchOps container decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+32. Trace the ResearchOps layer decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+33. Trace the ResearchOps settings decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+34. Trace the ResearchOps volume decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+35. Trace the ResearchOps compose service decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+36. Trace the ResearchOps image decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+37. Trace the ResearchOps container decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+38. Trace the ResearchOps layer decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+39. Trace the ResearchOps settings decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+40. Trace the ResearchOps volume decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+41. Trace the ResearchOps compose service decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+42. Trace the ResearchOps image decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+43. Trace the ResearchOps container decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+44. Trace the ResearchOps layer decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+45. Trace the ResearchOps settings decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+46. Trace the ResearchOps volume decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+47. Trace the ResearchOps compose service decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+48. Trace the ResearchOps image decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+49. Trace the ResearchOps container decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+50. Trace the ResearchOps layer decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+51. Trace the ResearchOps settings decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+52. Trace the ResearchOps volume decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+53. Trace the ResearchOps compose service decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+54. Trace the ResearchOps image decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+55. Trace the ResearchOps container decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+56. Trace the ResearchOps layer decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+57. Trace the ResearchOps settings decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+58. Trace the ResearchOps volume decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+59. Trace the ResearchOps compose service decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+60. Trace the ResearchOps image decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+61. Trace the ResearchOps container decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+62. Trace the ResearchOps layer decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+63. Trace the ResearchOps settings decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+64. Trace the ResearchOps volume decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+65. Trace the ResearchOps compose service decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+66. Trace the ResearchOps image decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+67. Trace the ResearchOps container decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+68. Trace the ResearchOps layer decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+69. Trace the ResearchOps settings decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+70. Trace the ResearchOps volume decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+71. Trace the ResearchOps compose service decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+72. Trace the ResearchOps image decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+73. Trace the ResearchOps container decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+74. Trace the ResearchOps layer decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+75. Trace the ResearchOps settings decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+76. Trace the ResearchOps volume decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+77. Trace the ResearchOps compose service decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+78. Trace the ResearchOps image decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+79. Trace the ResearchOps container decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+80. Trace the ResearchOps layer decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+81. Trace the ResearchOps settings decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+82. Trace the ResearchOps volume decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+83. Trace the ResearchOps compose service decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+84. Trace the ResearchOps image decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+85. Trace the ResearchOps container decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+86. Trace the ResearchOps layer decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+87. Trace the ResearchOps settings decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+88. Trace the ResearchOps volume decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+89. Trace the ResearchOps compose service decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+90. Trace the ResearchOps image decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+91. Trace the ResearchOps container decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+92. Trace the ResearchOps layer decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+93. Trace the ResearchOps settings decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+94. Trace the ResearchOps volume decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+95. Trace the ResearchOps compose service decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+96. Trace the ResearchOps image decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+97. Trace the ResearchOps container decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+98. Trace the ResearchOps layer decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+99. Trace the ResearchOps settings decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+100. Trace the ResearchOps volume decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+101. Trace the ResearchOps compose service decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+102. Trace the ResearchOps image decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+103. Trace the ResearchOps container decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+104. Trace the ResearchOps layer decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+105. Trace the ResearchOps settings decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+106. Trace the ResearchOps volume decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+107. Trace the ResearchOps compose service decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+108. Trace the ResearchOps image decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+109. Trace the ResearchOps container decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+110. Trace the ResearchOps layer decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+111. Trace the ResearchOps settings decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+112. Trace the ResearchOps volume decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+113. Trace the ResearchOps compose service decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+114. Trace the ResearchOps image decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+115. Trace the ResearchOps container decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+116. Trace the ResearchOps layer decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+117. Trace the ResearchOps settings decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+118. Trace the ResearchOps volume decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+119. Trace the ResearchOps compose service decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
+120. Trace the ResearchOps image decision with a real value: start from the file that declares it, name the process that reads it, and state the command that proves it worked.
 <!-- NAV_BOTTOM_START -->
 ---
 ⬅️ [← README](README.md) · ➡️ [Exercises →](exercises.md)
