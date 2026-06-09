@@ -165,7 +165,7 @@ You start with nothing and end with an installable Python package, a working CLI
 
 ### Month 2 — Storage, Search, Multiprocessing (Weeks 5–8)
 
-You persist data, parse real PDFs, search them, and parallelise expensive work.
+Builds on Month 1's installable package and domain models (`Paper`, `ParsedDocument`, `IngestionResult`). You persist data, parse real PDFs, search them, and parallelise expensive work.
 
 | Week | Title | Milestone | Builds on |
 |------|-------|-----------|-----------|
@@ -176,7 +176,7 @@ You persist data, parse real PDFs, search them, and parallelise expensive work.
 
 ### Month 3 — Advanced Python and ML Engineering (Weeks 9–12)
 
-You learn clean architecture, testing discipline, ML classification, and experiment tracking.
+Builds on Month 2's storage and ingestion pipeline. You formalise the architecture by introducing clean interfaces, enforce test coverage, add a topic classifier, and track every experiment run.
 
 | Week | Title | Milestone | Builds on |
 |------|-------|-----------|-----------|
@@ -187,7 +187,7 @@ You learn clean architecture, testing discipline, ML classification, and experim
 
 ### Month 4 — AI Engineering, API, Async, Workers (Weeks 13–16)
 
-You add vector search, a REST API, async HTTP fetching, and a background job system.
+Builds on Month 3's clean protocols and test suite. You add vector search, expose everything over a REST API, add async HTTP fetching, and build a background job system — the platform's first distributed-computing layer.
 
 | Week | Title | Milestone | Builds on |
 |------|-------|-----------|-----------|
@@ -198,7 +198,7 @@ You add vector search, a REST API, async HTTP fetching, and a background job sys
 
 ### Month 5 — RAG, Production, Portfolio (Weeks 17–20)
 
-You build a RAG assistant, containerise the stack, write production documentation, and release v1.0.
+Builds on all four prior months: the semantic search from Month 4, the experiment tracking from Month 3, and the storage layer from Month 2, all composed into a RAG assistant. You containerise the complete stack, write production documentation, and ship v1.0.
 
 | Week | Title | Milestone | Builds on |
 |------|-------|-----------|-----------|
