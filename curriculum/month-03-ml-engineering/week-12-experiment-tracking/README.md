@@ -1,39 +1,60 @@
-# Week 12 - Experiment Tracking
+# Week 12 — Experiment Tracking
+
+## Theme
+
+You can train a model. Now you need to do it repeatedly, systematically, and with memory. This week turns the training pipeline into a research system: every run is logged, every artifact is versioned, every result is comparable.
 
 ## Learning objectives
-- Track parameters, metrics, and artifacts for ML runs.
-- Design a lightweight experiment record format.
-- Version model outputs and training data references.
-- Compare multiple training runs systematically.
-- Make experiment results reproducible.
-- Separate run metadata from model logic.
-- Prepare the project for iterative ML improvement.
+
+By the end of this week you will be able to:
+
+- Explain what an experiment, run, parameter, hyperparameter, metric, and artifact are.
+- Define reproducibility and lineage for a trained model.
+- Implement an `ExperimentRun` dataclass that captures all run metadata.
+- Implement a file-based tracker that saves and loads run records as JSON.
+- Update the training pipeline to automatically log every run.
+- Use run-specific artifact names so training runs never overwrite each other.
+- Write CLI commands to create, list, show, and compare experiments.
+- Explain why dataset version and artifact path must be stored together.
+- Write tests that verify training produces a valid run record.
+- Explain when file-based tracking is sufficient and when tools like MLflow are needed.
 
 ## Project milestone
-Add experiment tracking so every training run records its configuration, metrics, and artifacts in a reproducible way.
 
-## Files to modify/create
-- `src/researchops/experiments/tracker.py`
-- `src/researchops/experiments/models.py`
-- `src/researchops/ml/train.py`
-- `tests/unit/test_experiment_tracker.py`
-- `tests/integration/test_training_records_run.py`
-- `artifacts/experiments/`
+Integrate experiment tracking into the training pipeline. Every training run should produce both a model artifact and a run record. Implement `experiment list`, `experiment show`, and `experiment compare` CLI commands.
+
+## Key source files to study
+
+| File | What it teaches |
+|---|---|
+| `src/researchops/services/experiment_service.py` | Stub for Week 12 — you implement this |
+| `src/researchops/storage/experiment_repository.py` | Stub for Week 12 — you implement this |
+| `src/researchops/core/interfaces.py` | `ExperimentRepository` protocol |
+| `src/researchops/cli/commands/experiments.py` | CLI commands for experiments |
 
 ## Concepts covered
-Experiment metadata, reproducibility, model versioning, parameters, metrics, artifacts, and comparative analysis.
+
+Experiment, run, parameter, hyperparameter, metric, artifact, dataset version, model version, reproducibility, lineage, experiment store, file-based tracking, JSON serialization, run comparison, failed runs, research notebook vs. experiment tracker.
 
 ## Expected deliverables
-- A tracker that records run IDs, params, metrics, and artifact paths.
-- Training code that logs a run automatically.
-- Tests proving experiment records are written correctly.
-- A convention for model versions and artifact storage.
+
+- `ExperimentRun` dataclass with all required fields.
+- `save_run`, `load_run`, `list_runs`, `compare_runs` functions.
+- Training pipeline updated to log every run automatically.
+- Model artifacts named with run IDs (no overwriting).
+- CLI commands: `experiment list`, `experiment show RUN_ID`, `experiment compare RUN_ID RUN_ID`.
+- At least two different training runs logged (different `max_features` values).
+- Tests verifying run record creation and artifact linkage.
 
 ## Definition of done
-- [ ] Experiment runs have unique IDs.
-- [ ] Params and metrics are stored together.
-- [ ] Artifacts are linked from the run record.
-- [ ] Training code logs every run.
-- [ ] Run records are easy to inspect.
-- [ ] Tests verify tracker behavior.
-- [ ] You can compare at least two runs meaningfully.
+
+- [ ] You can explain what information makes a run reproducible.
+- [ ] Every training run produces a JSON record in `artifacts/experiments/`.
+- [ ] Artifact filenames include the run ID.
+- [ ] `experiment list` prints a summary of all runs.
+- [ ] `experiment show RUN_ID` prints all params and metrics for that run.
+- [ ] `experiment compare RUN_ID_1 RUN_ID_2` prints a side-by-side metric table.
+- [ ] Tests verify run records have required fields.
+- [ ] Tests verify artifact path in record exists on disk.
+- [ ] `pytest -q` passes.
+- [ ] `ruff check src tests` exits clean.
