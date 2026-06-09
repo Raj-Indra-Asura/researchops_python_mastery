@@ -11,778 +11,284 @@
 
 # Week 06 Notes — PDF Parsing Pipeline
 
-<!-- LEARNING_FORMAT_START -->
-# Complete Learning Format — Week 06: PDF Parsing Pipeline
-
-This guide is the clean learning path for the chapter.
-It uses short sentences.
-It breaks ideas into small pieces.
-It tells you what to focus on and what to ignore for now.
-Read it before the older detailed notes that follow.
-
 ## Chapter overview
 
-The chapter title is **Raw bytes become structured knowledge**.
-The practical milestone is: `researchops ingest ./papers` extracts text and metadata from PDFs and stores them. Failed documents are recorded, not silently dropped.
-The expected capability is: Can integrate a third-party library, wire a multi-step pipeline through a service, and handle partial failures without crashing the program.
-This chapter is one step in the ResearchOps system, not a random lesson.
-The visible feature matters because it proves the idea works.
-The hidden skill matters because it lets you build the next chapter without confusion.
-A complete pass through this chapter means you can read the code, run it, test it, break it, and explain it aloud.
+Week 06 is the chapter where ResearchOps turns raw PDF files into structured project data.
 
-Use this study order:
-- Read the story first without typing.
-- Trace the smallest code example.
-- Find the project file that owns the behavior.
-- Run the validation command.
-- Explain one happy path and one failure path.
+The chapter title is **Raw bytes become structured knowledge**.
+
+That phrase is literal: a PDF starts as bytes on disk, and the pipeline turns those bytes into `Paper` or `FailedDocument` records.
+
+The visible milestone is the syllabus command `researchops ingest ./papers`, with the sample validation path `./examples/sample_papers`.
+
+The command must extract text and metadata, save successful papers, and record failures instead of dropping them.
+
+This is not a random PDF lesson; it is the first complete data-ingestion workflow in the ResearchOps platform.
+
+By the end, you should be able to trace a directory path through discovery, parsing, cleaning, metadata extraction, storage, and reporting.
+
+The happy path is `PDF -> ParsedDocument -> Paper -> SQLite`.
+
+The failure path is `PDF -> ParsingError or EmptyDocumentError -> FailedDocument -> SQLite`.
+
+Both paths are equally important because real research libraries always contain imperfect files.
+
+- Pipeline stage: Directory of PDFs.
+- Pipeline stage: find `.pdf` files.
+- Pipeline stage: parse each file with `pypdf`.
+- Pipeline stage: clean extracted text.
+- Pipeline stage: derive title and author hints.
+- Pipeline stage: save a `Paper`.
+- Pipeline stage: record a `FailedDocument` for parse failures.
+- Pipeline stage: return an `IngestionResult` summary.
+A complete pass through this chapter means you can run the command, read the code, break one PDF on purpose, inspect the failure, and explain why the rest of the batch continues.
 
 ## What you already know from previous weeks
 
-- Week 2 taught Files, Paths, Exceptions, and Logging; keep its responsibility in mind, but do not rebuild it here.
-- Week 3 taught OOP, Dataclasses, and Domain Modeling; keep its responsibility in mind, but do not rebuild it here.
-- Week 4 taught CLI and Packaging; keep its responsibility in mind, but do not rebuild it here.
-- Week 5 taught SQLite Storage Layer; keep its responsibility in mind, but do not rebuild it here.
-- You should be able to run the previous validation command before trusting new work.
-- You should be able to point at the main file from the previous week and say what job it owns.
-- If a previous idea feels weak, reread the example and trace one concrete value through it.
-- The safest learning rhythm is: understand one thing, change one thing, test one thing, explain one thing.
+- Week 1 gave you repository scaffold, core models, and the idea that packages have separate responsibilities.
+  In Week 6, that earlier skill appears inside the ingestion pipeline rather than as a separate exercise.
+- Week 2 gave you `pathlib.Path`, exceptions, logging, and safe file handling.
+  In Week 6, that earlier skill appears inside the ingestion pipeline rather than as a separate exercise.
+- Week 3 gave you domain modeling with names such as `Paper`, `ParsedDocument`, `FailedDocument`, and `IngestionResult`.
+  In Week 6, that earlier skill appears inside the ingestion pipeline rather than as a separate exercise.
+- Week 4 gave you CLI shape, entry points, and the rule that terminal commands should delegate business work.
+  In Week 6, that earlier skill appears inside the ingestion pipeline rather than as a separate exercise.
+- Week 5 gave you SQLite persistence and repository methods that hide SQL from services.
+  In Week 6, that earlier skill appears inside the ingestion pipeline rather than as a separate exercise.
+If you are unsure where a concept came from, trace one concrete file named `paper.pdf` through the pipeline.
+When the code asks whether the path exists, that is Week 2.
+When the parser returns `ParsedDocument`, that is Week 3.
+When the user runs `researchops ingest`, that is Week 4.
+When the service saves a `Paper`, that is Week 5.
+The new Week 6 skill is coordination: several already-known ideas now have to work together.
 
 ## What problem this week solves
 
-Week 6 solves the project problem behind **PDF Parsing Pipeline**.
-Before this chapter, ResearchOps has a gap.
-The gap may be a missing feature, a missing boundary, a missing safety check, or a missing way to communicate with users.
-This chapter closes that gap with a focused milestone.
-Do not treat the milestone as a checklist only.
-Treat it as proof that the idea belongs in the system.
-- The concept `Third-party library integration (`pypdf`)` helps solve part of this gap.
-- The concept `Optional dependencies and graceful import errors` helps solve part of this gap.
-- The concept `Designing parsers that return domain objects, not strings` helps solve part of this gap.
-- The concept ``IngestionService` orchestration: discover → parse → save` helps solve part of this gap.
-- The concept `Real parsing failures and how to record them` helps solve part of this gap.
-- The concept `Integration tests with real PDF fixtures` helps solve part of this gap.
+- **Discovery:** A user gives a directory, not a hand-written list of every file.
+  Without this part, the ingest command gives the learner an incomplete or misleading result.
+- **Extraction:** The system must open each PDF and recover page text.
+  Without this part, the ingest command gives the learner an incomplete or misleading result.
+- **Metadata:** The system must keep useful facts such as title, author, page count, and file size.
+  Without this part, the ingest command gives the learner an incomplete or misleading result.
+- **Cleanup:** The system must normalize text enough that later commands can read it.
+  Without this part, the ingest command gives the learner an incomplete or misleading result.
+- **Persistence:** Successful documents must become stored `Paper` records.
+  Without this part, the ingest command gives the learner an incomplete or misleading result.
+- **Failure recording:** Unreadable or empty documents must become stored `FailedDocument` records.
+  Without this part, the ingest command gives the learner an incomplete or misleading result.
+- **Reporting:** The user must see counts for successes, failures, and skips.
+  Without this part, the ingest command gives the learner an incomplete or misleading result.
+The central problem is partial success.
+A batch of PDFs can contain five good files, one corrupt file, and one scanned image-only file.
+The correct result is not all-or-nothing.
+The correct result is five saved papers and two recorded failures.
+Silent failure is dangerous because the database looks complete even when documents were lost.
+Week 6 teaches you to make failures visible and queryable.
 
 ## Beginner mental model
 
-Use a simple four-part model: input, owner, transformation, proof.
-Input means the concrete thing entering the system.
-Owner means the file, object, or function responsible for the decision.
-Transformation means the useful change from raw data to meaningful result.
-Proof means the test or command that confirms the result.
-- Ask: what is the input for **PDF Parsing Pipeline**?
-- Ask: what is the owner for **PDF Parsing Pipeline**?
-- Ask: what is the transformation for **PDF Parsing Pipeline**?
-- Ask: what is the proof for **PDF Parsing Pipeline**?
-If you cannot answer those four questions, do not add more code yet.
+Use the conveyor-belt mental model.
+A directory enters the belt.
+The scanner station finds PDF paths.
+The parser station turns one path into a `ParsedDocument`.
+The cleaner station improves text shape without changing the parser responsibility.
+The metadata station chooses title and author hints.
+The service station decides whether to save a paper or record a failure.
+The repository station writes durable records.
+The result station counts what happened.
+
+- **Input:** the concrete thing entering a stage.
+- **Owner:** the module or object responsible for the decision.
+- **Transformation:** the useful change made by the stage.
+- **Proof:** the command or test that confirms behavior.
+For every Week 6 feature, ask those four questions before editing code.
+If you cannot name the owner, you are likely about to put code in the wrong layer.
+If you cannot name the proof, you are likely about to make an untested change.
 
 ## Core vocabulary
 
-| Term | Simple meaning | Why it matters here |
-|------|----------------|---------------------|
-| Third-party library integration (`pypdf`) | Third-party library integration (`pypdf`) | This term names one job in the Week 6 milestone. |
-| Optional dependencies and graceful import errors | Optional dependencies and graceful import errors | This term names one job in the Week 6 milestone. |
-| Designing parsers that return domain objects, not strings | Designing parsers that return domain objects, not strings | This term names one job in the Week 6 milestone. |
-| IngestionService` orchestration | `IngestionService` orchestration: discover → parse → save | This term names one job in the Week 6 milestone. |
-| Real parsing failures and how to record them | Real parsing failures and how to record them | This term names one job in the Week 6 milestone. |
-| Integration tests with real PDF fixtures | Integration tests with real PDF fixtures | This term names one job in the Week 6 milestone. |
-| Boundary | A line between responsibilities | It keeps the chapter understandable for a beginner. |
-| Failure path | What happens when the happy path is not available | It keeps the chapter understandable for a beginner. |
-| Validation | Evidence that the system still works | It keeps the chapter understandable for a beginner. |
-| Responsibility | The one job a file or function owns | It keeps the chapter understandable for a beginner. |
+- **Pipeline:** a sequence of stages where each output becomes the next input.
+  In Week 6, this word helps you name one piece of the ingestion pipeline clearly.
+- **PDF:** a page-layout file format optimized for viewing and printing, not always for text extraction.
+  In Week 6, this word helps you name one piece of the ingestion pipeline clearly.
+- **Text extraction:** recovering strings from PDF page instructions.
+  In Week 6, this word helps you name one piece of the ingestion pipeline clearly.
+- **pypdf:** the third-party library used this week to read PDF pages and metadata.
+  In Week 6, this word helps you name one piece of the ingestion pipeline clearly.
+- **Optional dependency:** a package needed for one feature but not for the entire project.
+  In Week 6, this word helps you name one piece of the ingestion pipeline clearly.
+- **Parser:** code that turns one source file into a structured parsed result.
+  In Week 6, this word helps you name one piece of the ingestion pipeline clearly.
+- **ParsedDocument:** the parser output containing path, raw text, page count, file size, and metadata.
+  In Week 6, this word helps you name one piece of the ingestion pipeline clearly.
+- **Raw text:** text as the PDF library extracted it before ResearchOps cleanup.
+  In Week 6, this word helps you name one piece of the ingestion pipeline clearly.
+- **Cleaned text:** text after simple normalization such as whitespace cleanup.
+  In Week 6, this word helps you name one piece of the ingestion pipeline clearly.
+- **Metadata:** descriptive facts such as title, author, and PDF header fields.
+  In Week 6, this word helps you name one piece of the ingestion pipeline clearly.
+- **Heuristic:** a practical rule that often works but is not guaranteed.
+  In Week 6, this word helps you name one piece of the ingestion pipeline clearly.
+- **Paper:** the successful stored ResearchOps record.
+  In Week 6, this word helps you name one piece of the ingestion pipeline clearly.
+- **FailedDocument:** the stored record for a file that could not become a paper.
+  In Week 6, this word helps you name one piece of the ingestion pipeline clearly.
+- **IngestionResult:** the summary of one ingestion run.
+  In Week 6, this word helps you name one piece of the ingestion pipeline clearly.
+- **Idempotency:** safe repeated execution without accidental duplicates.
+  In Week 6, this word helps you name one piece of the ingestion pipeline clearly.
+- **Failure path:** the planned route for errors.
+  In Week 6, this word helps you name one piece of the ingestion pipeline clearly.
+- **Integration test:** a test that exercises multiple real components together.
+  In Week 6, this word helps you name one piece of the ingestion pipeline clearly.
 
 ## Concept explanations from first principles
 
-Read each concept as if you have never heard the term before.
-Do not skip the plain meaning.
-### Concept 1: Third-party library integration (`pypdf`)
-- **Plain meaning:** This is a named tool for solving one part of the chapter problem.
-- **Why it exists:** Real projects become confusing when this concern is unnamed.
-- **ResearchOps use:** In Week 6, it supports the milestone: `researchops ingest ./papers` extracts text and metadata from PDFs and stores them. Failed documents are recorded, not silently dropped.
-- **Input question:** What data, command, file, request, or state reaches this concept?
-- **Output question:** What value, saved record, response, log, or state change should come out?
-- **Failure question:** What can be missing, malformed, slow, duplicated, stale, or invalid?
-- **Test question:** Which test would catch the mistake before a user sees it?
-- **Beginner trap:** Memorizing the word without tracing it in the project.
-- **Recovery move:** Use one concrete example and follow it through the files.
-- **Mastery signal:** You can explain the concept without saying "magic" or "it just works".
+### Third-party library integration (`pypdf`)
+- Plain meaning: Python does not ship a complete PDF text extractor, so ResearchOps uses `pypdf` inside the parsing layer only.
+- ResearchOps use: The rest of the system should ask the parser for `ParsedDocument` and should not learn the `pypdf` API.
+- Beginner question: what exact value enters this concept?
+- Output question: what exact value should leave this concept?
+- Failure question: what can be missing, malformed, empty, duplicated, or unreadable?
+- Test question: which test would catch the mistake before a learner trusts the command?
+- Mastery signal: you can explain the concept without using the words "magic" or "somehow".
 
-### Concept 2: Optional dependencies and graceful import errors
-- **Plain meaning:** This is a named tool for solving one part of the chapter problem.
-- **Why it exists:** Real projects become confusing when this concern is unnamed.
-- **ResearchOps use:** In Week 6, it supports the milestone: `researchops ingest ./papers` extracts text and metadata from PDFs and stores them. Failed documents are recorded, not silently dropped.
-- **Input question:** What data, command, file, request, or state reaches this concept?
-- **Output question:** What value, saved record, response, log, or state change should come out?
-- **Failure question:** What can be missing, malformed, slow, duplicated, stale, or invalid?
-- **Test question:** Which test would catch the mistake before a user sees it?
-- **Beginner trap:** Memorizing the word without tracing it in the project.
-- **Recovery move:** Use one concrete example and follow it through the files.
-- **Mastery signal:** You can explain the concept without saying "magic" or "it just works".
+### Optional dependencies and graceful import errors
+- Plain meaning: PDF parsing is optional project capability, so `pypdf` belongs in the `parsing` extra.
+- ResearchOps use: A missing dependency should raise a ResearchOps parsing error with the install hint `pip install -e ".[parsing]"` or the full Week 6 install command.
+- Beginner question: what exact value enters this concept?
+- Output question: what exact value should leave this concept?
+- Failure question: what can be missing, malformed, empty, duplicated, or unreadable?
+- Test question: which test would catch the mistake before a learner trusts the command?
+- Mastery signal: you can explain the concept without using the words "magic" or "somehow".
 
-### Concept 3: Designing parsers that return domain objects, not strings
-- **Plain meaning:** This is a named tool for solving one part of the chapter problem.
-- **Why it exists:** Real projects become confusing when this concern is unnamed.
-- **ResearchOps use:** In Week 6, it supports the milestone: `researchops ingest ./papers` extracts text and metadata from PDFs and stores them. Failed documents are recorded, not silently dropped.
-- **Input question:** What data, command, file, request, or state reaches this concept?
-- **Output question:** What value, saved record, response, log, or state change should come out?
-- **Failure question:** What can be missing, malformed, slow, duplicated, stale, or invalid?
-- **Test question:** Which test would catch the mistake before a user sees it?
-- **Beginner trap:** Memorizing the word without tracing it in the project.
-- **Recovery move:** Use one concrete example and follow it through the files.
-- **Mastery signal:** You can explain the concept without saying "magic" or "it just works".
+### Parsers return domain objects, not strings
+- Plain meaning: A string alone loses source path, page count, file size, and metadata.
+- ResearchOps use: `ParsedDocument` keeps those facts together so later stages can build a useful `Paper`.
+- Beginner question: what exact value enters this concept?
+- Output question: what exact value should leave this concept?
+- Failure question: what can be missing, malformed, empty, duplicated, or unreadable?
+- Test question: which test would catch the mistake before a learner trusts the command?
+- Mastery signal: you can explain the concept without using the words "magic" or "somehow".
 
-### Concept 4: `IngestionService` orchestration: discover → parse → save
-- **Plain meaning:** This is a named tool for solving one part of the chapter problem.
-- **Why it exists:** Real projects become confusing when this concern is unnamed.
-- **ResearchOps use:** In Week 6, it supports the milestone: `researchops ingest ./papers` extracts text and metadata from PDFs and stores them. Failed documents are recorded, not silently dropped.
-- **Input question:** What data, command, file, request, or state reaches this concept?
-- **Output question:** What value, saved record, response, log, or state change should come out?
-- **Failure question:** What can be missing, malformed, slow, duplicated, stale, or invalid?
-- **Test question:** Which test would catch the mistake before a user sees it?
-- **Beginner trap:** Memorizing the word without tracing it in the project.
-- **Recovery move:** Use one concrete example and follow it through the files.
-- **Mastery signal:** You can explain the concept without saying "magic" or "it just works".
+### `IngestionService` orchestration
+- Plain meaning: The service owns the order: discover, skip existing, parse, clean, save, record failure, summarize.
+- ResearchOps use: It should coordinate collaborators rather than become a PDF library or SQL module.
+- Beginner question: what exact value enters this concept?
+- Output question: what exact value should leave this concept?
+- Failure question: what can be missing, malformed, empty, duplicated, or unreadable?
+- Test question: which test would catch the mistake before a learner trusts the command?
+- Mastery signal: you can explain the concept without using the words "magic" or "somehow".
 
-### Concept 5: Real parsing failures and how to record them
-- **Plain meaning:** This is a named tool for solving one part of the chapter problem.
-- **Why it exists:** Real projects become confusing when this concern is unnamed.
-- **ResearchOps use:** In Week 6, it supports the milestone: `researchops ingest ./papers` extracts text and metadata from PDFs and stores them. Failed documents are recorded, not silently dropped.
-- **Input question:** What data, command, file, request, or state reaches this concept?
-- **Output question:** What value, saved record, response, log, or state change should come out?
-- **Failure question:** What can be missing, malformed, slow, duplicated, stale, or invalid?
-- **Test question:** Which test would catch the mistake before a user sees it?
-- **Beginner trap:** Memorizing the word without tracing it in the project.
-- **Recovery move:** Use one concrete example and follow it through the files.
-- **Mastery signal:** You can explain the concept without saying "magic" or "it just works".
+### Real parsing failures
+- Plain meaning: PDFs can be corrupt, encrypted, image-only, missing, or unsupported.
+- ResearchOps use: The system should record a `FailedDocument` for failures so the learner can inspect what happened.
+- Beginner question: what exact value enters this concept?
+- Output question: what exact value should leave this concept?
+- Failure question: what can be missing, malformed, empty, duplicated, or unreadable?
+- Test question: which test would catch the mistake before a learner trusts the command?
+- Mastery signal: you can explain the concept without using the words "magic" or "somehow".
 
-### Concept 6: Integration tests with real PDF fixtures
-- **Plain meaning:** This is a named tool for solving one part of the chapter problem.
-- **Why it exists:** Real projects become confusing when this concern is unnamed.
-- **ResearchOps use:** In Week 6, it supports the milestone: `researchops ingest ./papers` extracts text and metadata from PDFs and stores them. Failed documents are recorded, not silently dropped.
-- **Input question:** What data, command, file, request, or state reaches this concept?
-- **Output question:** What value, saved record, response, log, or state change should come out?
-- **Failure question:** What can be missing, malformed, slow, duplicated, stale, or invalid?
-- **Test question:** Which test would catch the mistake before a user sees it?
-- **Beginner trap:** Memorizing the word without tracing it in the project.
-- **Recovery move:** Use one concrete example and follow it through the files.
-- **Mastery signal:** You can explain the concept without saying "magic" or "it just works".
+### Integration tests with real PDF fixtures
+- Plain meaning: Fake parsers are excellent for service decisions but cannot prove real extraction.
+- ResearchOps use: A real integration test proves parser, service, and SQLite wiring work together.
+- Beginner question: what exact value enters this concept?
+- Output question: what exact value should leave this concept?
+- Failure question: what can be missing, malformed, empty, duplicated, or unreadable?
+- Test question: which test would catch the mistake before a learner trusts the command?
+- Mastery signal: you can explain the concept without using the words "magic" or "somehow".
 
 ## ResearchOps-specific application
 
-The chapter belongs to these project locations:
-- `src/researchops/parsing/pdf_parser.py` — implements `DocumentParser`
-- `src/researchops/parsing/text_cleaner.py`
-- `src/researchops/parsing/metadata_extractor.py`
-- `src/researchops/services/ingestion_service.py`
-Study those files in this order:
-1. Find the user-facing entry point.
-2. Find the service or core concept that owns the meaning.
-3. Find the infrastructure only when outside resources are needed.
-4. Find the tests that prove the behavior.
-5. Find the validation command that a learner runs manually.
-The goal is to know why each file exists.
-If two files seem to own the same decision, stop and clarify the boundary.
+- `src/researchops/parsing/pdf_parser.py` — opens PDFs, extracts page text, reads metadata, returns `ParsedDocument`, and raises parsing exceptions.
+  Study this file only for that responsibility; do not make it own unrelated work.
+- `src/researchops/parsing/text_cleaner.py` — normalizes extracted text without knowing about PDF files or SQLite.
+  Study this file only for that responsibility; do not make it own unrelated work.
+- `src/researchops/parsing/metadata_extractor.py` — derives title and author hints from parsed document metadata and text.
+  Study this file only for that responsibility; do not make it own unrelated work.
+- `src/researchops/services/ingestion_service.py` — coordinates discovery, parsing, saving, failure recording, skipping, and result summary.
+  Study this file only for that responsibility; do not make it own unrelated work.
+- `src/researchops/cli/commands/ingest.py` — accepts user arguments, wires concrete parser and repository implementations, and prints a summary.
+  Study this file only for that responsibility; do not make it own unrelated work.
+- `src/researchops/storage/sqlite_repository.py` — persists successful papers and failed document records.
+  Study this file only for that responsibility; do not make it own unrelated work.
+- `tests/unit/test_ingestion_service.py` — checks orchestration with fakes and includes current service test names.
+  Study this file only for that responsibility; do not make it own unrelated work.
+- `tests/integration/test_ingestion_service.py` — is the syllabus-named full pipeline test with sample PDFs.
+  Study this file only for that responsibility; do not make it own unrelated work.
+The ResearchOps-specific rule is: if you change where a decision lives, you change how easy the project is to teach.
+Keep parsing in parsing, orchestration in services, wiring in CLI, and persistence in storage.
 
 ## Code examples with line-by-line explanation
 
-```python
-class PdfParser:
-    def parse(self, path: Path) -> ParsedDocument:
-        raw_text = read_pdf_text(path)
-        cleaned_text = clean_text(raw_text)
-        return ParsedDocument(source_path=path, text=cleaned_text)
-```
-
-Line-by-line explanation:
-- Line 1: `class PdfParser:` — This names a project concept so the code can talk in domain language.
-- Line 2: `def parse(self, path: Path) -> ParsedDocument:` — This names a reusable action and shows what information it receives.
-- Line 3: `raw_text = read_pdf_text(path)` — This stores a clear intermediate value for the next step.
-- Line 4: `cleaned_text = clean_text(raw_text)` — This stores a clear intermediate value for the next step.
-- Line 5: `return ParsedDocument(source_path=path, text=cleaned_text)` — This produces the result or performs the declared setup step.
-
-How to use this example:
-- Name the input.
-- Name the output.
-- Predict the result before running anything.
-- Connect the shape to the real ResearchOps file.
-- Write one sentence about why each line belongs.
-
-## Common beginner mistakes
-
-- **Mistake:** Pasting code before knowing the owner of the behavior.
-  **Why it hurts:** it hides the mental model and makes debugging harder.
-  **Better move:** make one small behavior clear, then prove it.
-- **Mistake:** Changing many files at once.
-  **Why it hurts:** it hides the mental model and makes debugging harder.
-  **Better move:** make one small behavior clear, then prove it.
-- **Mistake:** Skipping the failure path.
-  **Why it hurts:** it hides the mental model and makes debugging harder.
-  **Better move:** make one small behavior clear, then prove it.
-- **Mistake:** Reading only the happy path test.
-  **Why it hurts:** it hides the mental model and makes debugging harder.
-  **Better move:** make one small behavior clear, then prove it.
-- **Mistake:** Ignoring the validation command.
-  **Why it hurts:** it hides the mental model and makes debugging harder.
-  **Better move:** make one small behavior clear, then prove it.
-- **Mistake:** Using vague names.
-  **Why it hurts:** it hides the mental model and makes debugging harder.
-  **Better move:** make one small behavior clear, then prove it.
-- **Mistake:** Putting business rules in the user interface layer.
-  **Why it hurts:** it hides the mental model and makes debugging harder.
-  **Better move:** make one small behavior clear, then prove it.
-- **Mistake:** Treating logs, errors, and tests as decoration.
-  **Why it hurts:** it hides the mental model and makes debugging harder.
-  **Better move:** make one small behavior clear, then prove it.
-- **Mistake:** Optimizing before correctness is visible.
-  **Why it hurts:** it hides the mental model and makes debugging harder.
-  **Better move:** make one small behavior clear, then prove it.
-- **Mistake:** Building future-week features early.
-  **Why it hurts:** it hides the mental model and makes debugging harder.
-  **Better move:** make one small behavior clear, then prove it.
-
-## Debugging guidance
-
-- Copy the exact failing command.
-- Read the first useful error line.
-- Read the final error line.
-- Classify the failure as import, input, state, file, database, network, model, or expectation.
-- Reproduce it with the smallest command.
-- Inspect the value closest to the failure.
-- Fix the cause, not only the symptom.
-- Run the narrowest test.
-- Run the chapter validation command.
-- Write down what the error was teaching.
-Debugging questions:
-- What did I expect?
-- What happened?
-- Which value first became wrong?
-- Which layer created that value?
-- Which test should catch this next time?
-
-## Design tradeoffs
-
-- **Simple first version:** Easy to understand, but not the final production shape.
-- **Clear layers:** More files, but less confusion as features grow.
-- **Explicit errors:** More code, but failures become teachable.
-- **Small unit tests:** Fast feedback, but less end-to-end confidence.
-- **Integration tests:** Real wiring, but slower and more setup.
-- **Configuration:** Flexible behavior, but defaults must be clear.
-The right question is not "What is the fanciest design?"
-The right question is "What design teaches the responsibility clearly and can grow next week?"
-
-## Testing implications
-
-Tests for this chapter:
-- `tests/integration/test_ingestion_service.py` — full pipeline with sample PDFs
-Validation commands:
-```bash
-researchops ingest ./examples/sample_papers
-researchops papers list
-researchops papers failed
-pytest tests/integration/test_ingestion_service.py -v
-```
-- Arrange the data.
-- Act on the system.
-- Assert the visible promise.
-- Check one failure path.
-- Keep unit tests fast.
-- Use integration tests only when real wiring matters.
-
-## Architecture implications
-
-ResearchOps stays understandable when dependencies point inward.
-```text
-CLI / API / Worker -> Services -> Core
-Infrastructure implements core-facing contracts and is wired at the outside.
-```
-- Does the UI layer avoid business logic?
-- Does the service layer own workflow decisions?
-- Does core avoid infrastructure imports?
-- Does infrastructure do outside-world work?
-- Do tests use fakes when possible?
-Architecture is not ceremony.
-Architecture is named responsibility.
-
-## How this connects to AI engineering / ML research
-
-AI engineering needs more than models.
-It needs reliable data flow, clear interfaces, repeatable experiments, visible failures, and honest evaluation.
-Week 6 contributes by making **pdf parsing pipeline** clear enough to trust.
-- Bad data creates bad model behavior.
-- Unclear boundaries make experiments hard to reproduce.
-- Missing tests let regressions change research results silently.
-- Good logs and errors shorten investigation time.
-- Clear documentation lets future users understand the system.
-
-## Mini quizzes
-
-- What problem does Week 6 solve?
-- What is the main input?
-- What is the main output?
-- Which file owns the main responsibility?
-- Which layer should not contain business logic?
-- What is one happy path?
-- What is one failure path?
-- What command proves the chapter works?
-- What should you not build early?
-- How does this prepare the next week?
-
-## Explain-it-aloud prompts
-
-- Explain PDF Parsing Pipeline in simple words.
-- Explain the data flow from input to result.
-- Explain the first file you would open.
-- Explain the test that gives confidence.
-- Explain what can break.
-- Explain the tradeoff made in this chapter.
-- Explain what you still find weak.
-
-## What to memorize
-
-- The topic: PDF Parsing Pipeline.
-- The milestone: `researchops ingest ./papers` extracts text and metadata from PDFs and stores them. Failed documents are recorded, not silently dropped.
-- The main project files.
-- The validation command.
-- The boundary rule for the layer you are touching.
-- The habit of testing before moving forward.
-
-## What to understand deeply
-
-- Why this feature belongs now.
-- How data moves through the chapter.
-- Which file owns which decision.
-- How the failure path is handled.
-- Why the tests prove behavior.
-- How this week makes future work safer.
-
-## What not to worry about yet
-
-- Perfect scale.
-- Fancy abstractions.
-- Future-week features.
-- Every option in every library.
-- Premature optimization.
-- Comparing your speed to someone else.
-Focus on the milestone.
-A clear small milestone beats a confusing large one.
-
-## Bridge to next week
-
-Next week is Week 7: **Keyword Search and Data Quality**.
-This week prepares you by giving ResearchOps a clearer piece of behavior before the next milestone: `researchops search "transformer attention"` returns ranked results from stored papers.
-- Run validation.
-- Explain the main files.
-- Explain one failure.
-- Explain one test.
-- Write down what still feels weak before moving on.
-
-## Guided deepening drills
-
-Use these drills if the chapter still feels abstract.
-- Drill 1: Trace `Third-party library integration (`pypdf`)` from user input to project result.
-- Drill 2: Write one sentence defining `Third-party library integration (`pypdf`)` without copying the notes.
-- Drill 3: Find the file where `Third-party library integration (`pypdf`)` appears or should appear.
-- Drill 4: Name one wrong implementation of `Third-party library integration (`pypdf`)` and why it would hurt.
-- Drill 5: Name one test that would protect `Third-party library integration (`pypdf`)`.
-- Drill 6: Trace `Optional dependencies and graceful import errors` from user input to project result.
-- Drill 7: Write one sentence defining `Optional dependencies and graceful import errors` without copying the notes.
-- Drill 8: Find the file where `Optional dependencies and graceful import errors` appears or should appear.
-- Drill 9: Name one wrong implementation of `Optional dependencies and graceful import errors` and why it would hurt.
-- Drill 10: Name one test that would protect `Optional dependencies and graceful import errors`.
-- Drill 11: Trace `Designing parsers that return domain objects, not strings` from user input to project result.
-- Drill 12: Write one sentence defining `Designing parsers that return domain objects, not strings` without copying the notes.
-- Drill 13: Find the file where `Designing parsers that return domain objects, not strings` appears or should appear.
-- Drill 14: Name one wrong implementation of `Designing parsers that return domain objects, not strings` and why it would hurt.
-- Drill 15: Name one test that would protect `Designing parsers that return domain objects, not strings`.
-- Drill 16: Trace ``IngestionService` orchestration: discover → parse → save` from user input to project result.
-- Drill 17: Write one sentence defining ``IngestionService` orchestration: discover → parse → save` without copying the notes.
-- Drill 18: Find the file where ``IngestionService` orchestration: discover → parse → save` appears or should appear.
-- Drill 19: Name one wrong implementation of ``IngestionService` orchestration: discover → parse → save` and why it would hurt.
-- Drill 20: Name one test that would protect ``IngestionService` orchestration: discover → parse → save`.
-- Drill 21: Trace `Real parsing failures and how to record them` from user input to project result.
-- Drill 22: Write one sentence defining `Real parsing failures and how to record them` without copying the notes.
-- Drill 23: Find the file where `Real parsing failures and how to record them` appears or should appear.
-- Drill 24: Name one wrong implementation of `Real parsing failures and how to record them` and why it would hurt.
-- Drill 25: Name one test that would protect `Real parsing failures and how to record them`.
-- Drill 26: Trace `Integration tests with real PDF fixtures` from user input to project result.
-- Drill 27: Write one sentence defining `Integration tests with real PDF fixtures` without copying the notes.
-- Drill 28: Find the file where `Integration tests with real PDF fixtures` appears or should appear.
-- Drill 29: Name one wrong implementation of `Integration tests with real PDF fixtures` and why it would hurt.
-- Drill 30: Name one test that would protect `Integration tests with real PDF fixtures`.
-
-<!-- LEARNING_FORMAT_END -->
-
----
-
-# Existing detailed notes
-## 1. Chapter overview
-
-In Week 5 you built the storage layer.
-You have a database that can hold papers and failure records.
-But the database is empty.
-
-This week you connect the dots.
-You will learn how to take a directory of PDF files and turn them into stored papers through a coordinated sequence of steps called a pipeline.
-
-By the end of this week, you will be able to run one command and populate your database with real research papers.
-The system will store successes and record failures.
-Nothing will be silently lost.
-
----
-
-## 2. What you already know
-
-You know how to model a `Paper`, `ParsedDocument`, `FailedDocument`, and `IngestionResult`.
-You know how to save and retrieve papers using `SQLitePaperRepository`.
-You know how to work with file paths using `pathlib.Path`.
-You know how to raise and catch exceptions.
-
-This week adds: how to extract text from PDFs, how to chain these steps together in a service, and how to handle the inevitable failures along the way.
-
----
-
-## 3. What is a pipeline?
-
-A pipeline is a sequence of processing stages where each stage takes the output of the previous stage as its input.
-
-Think of an assembly line in a factory.
-Raw materials enter at one end.
-Each station performs one specific task.
-Finished products exit at the other end.
-If a part is defective at one station, it does not disrupt the other stations.
-
-In software, pipelines are useful when:
-- You need to transform data through multiple distinct steps.
-- Each step has a single clear responsibility.
-- Failures in one step should not destroy the whole batch.
-- You want to replace or modify one step without rewriting everything.
-
-The ResearchOps ingestion pipeline looks like this:
-
-```text
-Directory of PDFs
-      |
-      v
-[Stage 1] Scanner: find all .pdf files
-      |
-      v
-[Stage 2] Parser: extract text from each PDF
-      |
-      v
-[Stage 3] Metadata extractor: derive title, author
-      |
-      v
-[Stage 4] Service: coordinate and make decisions
-      |
-      v
-[Stage 5] Repository: save Paper or record FailedDocument
-      |
-      v
-Database
-```
-
-Each box is a separate module or function with a clear contract.
-The scanner does not know about the parser.
-The parser does not know about the repository.
-The service knows about all of them but does not do their jobs.
-
----
-
-## 4. Why PDFs are hard
-
-PDFs were designed for printing, not for text extraction.
-
-A PDF describes a page in terms of:
-- Fonts and their coordinates
-- Character codes (which may not map to standard Unicode)
-- Vector graphics
-- Images
-
-There is no concept of "paragraphs" or "words" in the PDF standard.
-Text extraction software has to reverse-engineer words and lines from character positions.
-This works well on digitally-created PDFs (made from Word, LaTeX, etc.).
-It works poorly on scanned images embedded in PDFs (no embedded text, just pixels).
-
-The practical consequences for ResearchOps:
-- Some PDFs yield clean text.
-- Some yield text with broken spacing (`"trans former"` instead of `"transformer"`).
-- Some yield garbled Unicode from unusual fonts.
-- Some yield nothing at all (image-only PDFs).
-- Some yield repeated headers and footers on every page.
-
-Your pipeline must handle all of these cases gracefully.
-
----
-
-## 5. pypdf at a beginner level
-
-`pypdf` is a pure-Python library for working with PDF files.
-It does not require any system-level PDF software to be installed.
-
-The basic usage:
-
-```python
-from pathlib import Path
-from pypdf import PdfReader
-
-
-def extract_text_from_pdf(pdf_path: Path) -> str:
-    reader = PdfReader(str(pdf_path))
-    pages: list[str] = []
-    for page in reader.pages:
-        text = page.extract_text() or ""
-        pages.append(text)
-    return "\n".join(pages).strip()
-```
-
-Let us read every line.
-
-`reader = PdfReader(str(pdf_path))` — Opens the PDF file.
-`PdfReader` reads the file structure and gives you access to pages.
-`str(pdf_path)` converts the `Path` object to a string because `pypdf` expects a string path.
-
-`for page in reader.pages:` — Iterates through every page in the document.
-`reader.pages` is a sequence of `PageObject` instances.
-Each `PageObject` represents one physical page.
-
-`text = page.extract_text() or ""` — Extracts the text from one page.
-The `or ""` is critical.
-`extract_text()` can return `None` for image-only pages.
-Without the `or ""`, a `None` result would propagate through the pipeline and cause a `TypeError` later.
-
-`pages.append(text)` — Collects each page's text in a list.
-
-`return "\n".join(pages).strip()` — Joins all pages with a newline separator and removes leading/trailing whitespace.
-
-### Getting metadata
-
-PDFs often embed metadata in their file header:
-
-```python
-reader = PdfReader(str(pdf_path))
-meta = reader.metadata  # May be None for some PDFs
-if meta:
-    title = meta.title      # May be None
-    author = meta.author    # May be None
-```
-
-The metadata is not always reliable.
-Many PDFs have empty or incorrect title fields.
-Your metadata extractor should treat it as a hint, not a guarantee.
-
----
-
-## 6. The parsing stage: a single responsibility
-
-The parser has one job: turn a file path into a `ParsedDocument` or raise an exception.
+### Example 1: parser shape
 
 ```python
 from pathlib import Path
 from researchops.core.models import ParsedDocument
-from researchops.core.exceptions import ParsingError, EmptyDocumentError
-
 
 def parse_pdf(path: Path) -> ParsedDocument:
-    if not path.exists():
-        raise ParsingError(f"File not found: {path}")
-    if path.suffix.lower() != ".pdf":
-        raise ParsingError(f"Not a PDF file: {path}")
+    reader = pypdf.PdfReader(str(path))
+    pages_text: list[str] = []
 
-    try:
-        import pypdf
-        reader = pypdf.PdfReader(str(path))
-        pages_text = [page.extract_text() or "" for page in reader.pages]
-        full_text = "\n".join(pages_text)
-        meta = reader.metadata or {}
-        metadata = {
-            k.lstrip("/"): v
-            for k, v in meta.items()
-            if isinstance(v, str) and v.strip()
-        }
-    except Exception as exc:
-        raise ParsingError(f"Failed to parse {path}: {exc}") from exc
+    for page in reader.pages:
+        text = page.extract_text() or ""
+        pages_text.append(text)
 
-    doc = ParsedDocument(
+    full_text = "\n".join(pages_text)
+
+    return ParsedDocument(
         source_path=path,
         raw_text=full_text,
         num_pages=len(reader.pages),
         file_size_bytes=path.stat().st_size,
-        metadata=metadata,
+        metadata={},
     )
-
-    if doc.is_empty():
-        raise EmptyDocumentError(str(path))
-
-    return doc
 ```
 
-This function does not talk to a database.
-It does not log.
-It does not build a `Paper`.
-It only parses.
-This single-responsibility design means you can test parsing without any database setup.
+- Line 1: `from pathlib import Path`
+  This line contributes one traceable step in turning a PDF path into a structured parsed document.
+- Line 2: `from researchops.core.models import ParsedDocument`
+  This line contributes one traceable step in turning a PDF path into a structured parsed document.
+- Line 4: `def parse_pdf(path: Path) -> ParsedDocument:`
+  This line contributes one traceable step in turning a PDF path into a structured parsed document.
+- Line 5: `    reader = pypdf.PdfReader(str(path))`
+  This line contributes one traceable step in turning a PDF path into a structured parsed document.
+- Line 6: `    pages_text: list[str] = []`
+  This line contributes one traceable step in turning a PDF path into a structured parsed document.
+- Line 8: `    for page in reader.pages:`
+  This line contributes one traceable step in turning a PDF path into a structured parsed document.
+- Line 9: `        text = page.extract_text() or ""`
+  This line contributes one traceable step in turning a PDF path into a structured parsed document.
+- Line 10: `        pages_text.append(text)`
+  This line contributes one traceable step in turning a PDF path into a structured parsed document.
+- Line 12: `    full_text = "\n".join(pages_text)`
+  This line contributes one traceable step in turning a PDF path into a structured parsed document.
+- Line 14: `    return ParsedDocument(`
+  This line contributes one traceable step in turning a PDF path into a structured parsed document.
+- Line 15: `        source_path=path,`
+  This line contributes one traceable step in turning a PDF path into a structured parsed document.
+- Line 16: `        raw_text=full_text,`
+  This line contributes one traceable step in turning a PDF path into a structured parsed document.
+- Line 17: `        num_pages=len(reader.pages),`
+  This line contributes one traceable step in turning a PDF path into a structured parsed document.
+- Line 18: `        file_size_bytes=path.stat().st_size,`
+  This line contributes one traceable step in turning a PDF path into a structured parsed document.
+- Line 19: `        metadata={},`
+  This line contributes one traceable step in turning a PDF path into a structured parsed document.
+- Line 20: `    )`
+  This line contributes one traceable step in turning a PDF path into a structured parsed document.
 
----
-
-## 7. The metadata extraction stage
-
-After parsing, you have raw text and a metadata dictionary from the PDF header.
-The next stage derives structured metadata like `title` and `author`.
-
-```python
-def extract_title(doc: ParsedDocument) -> str:
-    """Try PDF metadata first, then fall back to first line of text."""
-    if "Title" in doc.metadata and doc.metadata["Title"].strip():
-        return doc.metadata["Title"].strip()
-    lines = [l.strip() for l in doc.raw_text.splitlines() if l.strip()]
-    if lines:
-        return lines[0][:200]  # truncate very long lines
-    return "Untitled"
-
-
-def extract_author(doc: ParsedDocument) -> str | None:
-    """Return author from PDF metadata if available."""
-    author = doc.metadata.get("Author", "").strip()
-    return author if author else None
-```
-
-These functions are heuristics.
-They will be wrong sometimes.
-That is acceptable at this stage.
-The important thing is they have a fallback and never crash.
-
----
-
-## 8. The service layer: orchestrating the pipeline
-
-The ingestion service coordinates all the stages.
-It does not implement any stage itself.
-It calls the right things in the right order.
-
-```python
-class IngestionService:
-    def __init__(
-        self,
-        parser: DocumentParser,
-        paper_repo: PaperRepository,
-        failure_repo: FailureRepository,
-    ) -> None:
-        self._parser = parser
-        self._paper_repo = paper_repo
-        self._failure_repo = failure_repo
-```
-
-Line by line:
-
-`def __init__(self, parser, paper_repo, failure_repo):` — The service receives its collaborators through the constructor.
-It does not create them.
-This is called **constructor injection**, a form of **dependency injection**.
-
-**Dependency injection** means: the dependencies a class needs are given to it from the outside, not created inside.
-
-Why does this matter?
-
-Consider the alternative:
-```python
-class IngestionService:
-    def __init__(self, db_path):
-        self._parser = PdfParser()                           # created inside
-        self._paper_repo = SQLitePaperRepository(db_path)   # created inside
-        self._failure_repo = SQLiteFailureRepository(db_path) # created inside
-```
-
-This is tightly coupled.
-To test `IngestionService`, you must have a real PDF parser and a real database.
-You cannot swap in a fake parser that returns controlled results.
-
-With dependency injection:
-```python
-# In production code:
-service = IngestionService(
-    parser=PdfParser(),
-    paper_repo=SQLitePaperRepository(db_path),
-    failure_repo=SQLitePaperRepository(db_path),
-)
-
-# In tests:
-service = IngestionService(
-    parser=FakeParser(returns=sample_document),
-    paper_repo=InMemoryRepository(),
-    failure_repo=InMemoryRepository(),
-)
-```
-
-The test does not touch the filesystem or database.
-It can run in milliseconds.
-It can test every code path by controlling what the fake objects return.
-
-### The ingest_directory method
-
-```python
-def ingest_directory(
-    self,
-    directory: Path,
-    *,
-    recursive: bool = False,
-    skip_existing: bool = True,
-) -> IngestionResult:
-    run_id = str(uuid.uuid4())[:8]
-    result = IngestionResult(
-        run_id=run_id,
-        directory=directory,
-        started_at=datetime.utcnow(),
-    )
-
-    pdfs = find_pdfs(directory, recursive=recursive)
-
-    for pdf_path in pdfs:
-        paper_id = str(PaperId.from_path(pdf_path))
-
-        if skip_existing and self._paper_repo.exists(paper_id):
-            result.skipped.append(pdf_path)
-            continue
-
-        paper = self._ingest_one(pdf_path, paper_id)
-        if paper is not None:
-            result.successes.append(paper)
-
-    result.finished_at = datetime.utcnow()
-    return result
-```
-
-`run_id = str(uuid.uuid4())[:8]` — Creates a short unique identifier for this ingestion run.
-Useful for log correlation and debugging.
-
-`pdfs = find_pdfs(directory, recursive=recursive)` — Scans the directory.
-`find_pdfs` is a utility function that uses `pathlib` to find `.pdf` files.
-This separates scanning from the service logic.
-
-`paper_id = str(PaperId.from_path(pdf_path))` — Computes the stable hash-based ID for the paper.
-The same file path always produces the same ID.
-This means `skip_existing` works correctly across multiple runs.
-
-`if skip_existing and self._paper_repo.exists(paper_id):` — Avoids re-ingesting files that are already in the database.
-This is an idempotency check.
-Running the ingest command twice should not double the data.
-
-### The _ingest_one method
+### Example 2: one-file ingestion
 
 ```python
 def _ingest_one(self, path: Path, paper_id: str) -> Paper | None:
     try:
         doc = self._parser.parse(path)
-    except (ParsingError, ResearchOpsError) as exc:
+    except ParsingError as exc:
         failure = FailedDocument(
             source_path=path,
             error_message=str(exc),
-            error_type=type(exc).__name__,
-        )
-        self._failure_repo.record_failure(failure)
-        return None
-    except Exception as exc:
-        failure = FailedDocument(
-            source_path=path,
-            error_message=f"Unexpected error: {exc}",
             error_type=type(exc).__name__,
         )
         self._failure_repo.record_failure(failure)
@@ -799,316 +305,517 @@ def _ingest_one(self, path: Path, paper_id: str) -> Paper | None:
         abstract=None,
     )
 
-    try:
-        self._paper_repo.save(paper)
-    except Exception as exc:
-        return None
-
+    self._paper_repo.save(paper)
     return paper
 ```
 
-`try: doc = self._parser.parse(path)` — Attempts to parse the PDF.
+- Line 1: `def _ingest_one(self, path: Path, paper_id: str) -> Paper | None:`
+  Read this line as part of the happy path or the failure path, then name which model it touches.
+- Line 2: `    try:`
+  Read this line as part of the happy path or the failure path, then name which model it touches.
+- Line 3: `        doc = self._parser.parse(path)`
+  Read this line as part of the happy path or the failure path, then name which model it touches.
+- Line 4: `    except ParsingError as exc:`
+  Read this line as part of the happy path or the failure path, then name which model it touches.
+- Line 5: `        failure = FailedDocument(`
+  Read this line as part of the happy path or the failure path, then name which model it touches.
+- Line 6: `            source_path=path,`
+  Read this line as part of the happy path or the failure path, then name which model it touches.
+- Line 7: `            error_message=str(exc),`
+  Read this line as part of the happy path or the failure path, then name which model it touches.
+- Line 8: `            error_type=type(exc).__name__,`
+  Read this line as part of the happy path or the failure path, then name which model it touches.
+- Line 9: `        )`
+  Read this line as part of the happy path or the failure path, then name which model it touches.
+- Line 10: `        self._failure_repo.record_failure(failure)`
+  Read this line as part of the happy path or the failure path, then name which model it touches.
+- Line 11: `        return None`
+  Read this line as part of the happy path or the failure path, then name which model it touches.
+- Line 13: `    paper = Paper(`
+  Read this line as part of the happy path or the failure path, then name which model it touches.
+- Line 14: `        id=paper_id,`
+  Read this line as part of the happy path or the failure path, then name which model it touches.
+- Line 15: `        title=extract_title(doc),`
+  Read this line as part of the happy path or the failure path, then name which model it touches.
+- Line 16: `        source_path=str(path),`
+  Read this line as part of the happy path or the failure path, then name which model it touches.
+- Line 17: `        text=clean_text(doc.raw_text),`
+  Read this line as part of the happy path or the failure path, then name which model it touches.
+- Line 18: `        num_pages=doc.num_pages,`
+  Read this line as part of the happy path or the failure path, then name which model it touches.
+- Line 19: `        file_size_bytes=doc.file_size_bytes,`
+  Read this line as part of the happy path or the failure path, then name which model it touches.
+- Line 20: `        author=extract_author(doc),`
+  Read this line as part of the happy path or the failure path, then name which model it touches.
+- Line 21: `        abstract=None,`
+  Read this line as part of the happy path or the failure path, then name which model it touches.
+- Line 22: `    )`
+  Read this line as part of the happy path or the failure path, then name which model it touches.
+- Line 24: `    self._paper_repo.save(paper)`
+  Read this line as part of the happy path or the failure path, then name which model it touches.
+- Line 25: `    return paper`
+  Read this line as part of the happy path or the failure path, then name which model it touches.
 
-`except (ParsingError, ResearchOpsError) as exc:` — Catches expected parsing errors.
-Expected errors are ones your code knows about and has a plan for.
-
-`except Exception as exc:` — Catches unexpected errors.
-A corrupt PDF might raise a low-level exception from inside `pypdf` that your code did not anticipate.
-You still want to record it as a failure rather than crash.
-
-**One bad PDF should not crash the whole batch.**
-This is the critical design principle of the `_ingest_one` method.
-Each PDF is processed independently.
-A failure for one creates a `FailedDocument` record and continues with the next.
-
-`failure = FailedDocument(source_path=path, error_message=str(exc), error_type=type(exc).__name__)` — Records exactly what went wrong, for which file, and what type of error it was.
-This is how you debug ingestion problems later.
-
-`text=clean_text(doc.raw_text)` — Applies text cleaning before storing.
-This removes control characters, normalizes whitespace, and collapses repeated blank lines.
-
----
-
-## 9. Failure handling philosophy
-
-Failures are data.
-
-A naive pipeline treats failures as exceptions to be logged and ignored.
-The result is a database full of gaps that you cannot query.
-You do not know which papers failed.
-You do not know why.
-You cannot even tell how many papers are missing.
-
-The ResearchOps approach:
-- Every failure is a `FailedDocument` record stored in the database.
-- The failure includes the source path, error message, error type, and timestamp.
-- You can query failures: `repo.list_failures()`.
-- You can re-process specific failures later (perhaps with a different parser or after fixing a corrupt file).
-- The `IngestionResult` summary reports exact counts of successes, failures, and skips.
-
-This is the same philosophy as structured logging over silent try-except swallowing.
-Visible failures are fixable failures.
-
----
-
-## 10. Wiring it all together in the CLI
-
-The CLI is where concrete implementations are assembled.
-
-```python
-# src/researchops/cli/commands/ingest.py
-
-from pathlib import Path
-import click
-
-from researchops.parsing.pdf_parser import PdfParserAdapter
-from researchops.services.ingestion_service import IngestionService
-from researchops.storage.sqlite_repository import SQLitePaperRepository
-
-
-@click.command()
-@click.argument("directory", type=click.Path(exists=True, file_okay=False, path_type=Path))
-@click.option("--db", default="researchops.db", help="Database file path.")
-def ingest(directory: Path, db: str) -> None:
-    """Ingest all PDFs in DIRECTORY into the database."""
-    db_path = Path(db)
-    repo = SQLitePaperRepository(db_path)
-    parser = PdfParserAdapter()
-
-    service = IngestionService(
-        parser=parser,
-        paper_repo=repo,
-        failure_repo=repo,   # same object implements both protocols
-    )
-
-    result = service.ingest_directory(directory)
-    click.echo(f"Ingested: {len(result.successes)} ok / "
-               f"{len(result.failures)} failed / "
-               f"{len(result.skipped)} skipped")
-```
-
-The CLI does three things:
-1. Parses command-line arguments.
-2. Wires up the concrete implementations.
-3. Calls the service.
-
-The service knows nothing about Click or the CLI.
-The service can be called from tests, scripts, or other commands with no changes.
-
----
-
-## 11. Parser abstraction
-
-The `DocumentParser` protocol in `core/interfaces.py` defines the contract:
+### Example 3: directory loop
 
 ```python
-class DocumentParser(Protocol):
-    def parse(self, path: Path) -> ParsedDocument:
-        ...
+for pdf_path in pdfs:
+    paper_id = str(PaperId.from_path(pdf_path))
+
+    if skip_existing and self._paper_repo.exists(paper_id):
+        result.skipped.append(pdf_path)
+        continue
+
+    paper = self._ingest_one(pdf_path, paper_id)
+    if paper is not None:
+        result.successes.append(paper)
 ```
 
-Any class with a `parse(path)` method that returns a `ParsedDocument` satisfies this protocol.
+- Line 1: `for pdf_path in pdfs:`
+  This line keeps the batch readable by delegating detailed work to focused helpers.
+- Line 2: `    paper_id = str(PaperId.from_path(pdf_path))`
+  This line keeps the batch readable by delegating detailed work to focused helpers.
+- Line 4: `    if skip_existing and self._paper_repo.exists(paper_id):`
+  This line keeps the batch readable by delegating detailed work to focused helpers.
+- Line 5: `        result.skipped.append(pdf_path)`
+  This line keeps the batch readable by delegating detailed work to focused helpers.
+- Line 6: `        continue`
+  This line keeps the batch readable by delegating detailed work to focused helpers.
+- Line 8: `    paper = self._ingest_one(pdf_path, paper_id)`
+  This line keeps the batch readable by delegating detailed work to focused helpers.
+- Line 9: `    if paper is not None:`
+  This line keeps the batch readable by delegating detailed work to focused helpers.
+- Line 10: `        result.successes.append(paper)`
+  This line keeps the batch readable by delegating detailed work to focused helpers.
 
-This means:
-- In production: `PdfParserAdapter` wraps `pypdf`.
-- In tests: `FakeParser` returns controlled results.
+### Worked scenario: tracing three files through the pipeline
+
+Imagine the input directory contains exactly three entries.
+
+- `good.pdf` is a normal digitally-created PDF with embedded text.
+- `scan.pdf` is a scanned image-only PDF with no embedded text.
+- `notes.txt` is a non-PDF file that happens to sit in the same folder.
+
+- **Discovery:** `find_pdfs` should include `good.pdf` and `scan.pdf` because their suffix is `.pdf`.
+  This is a concrete checkpoint you can verify with a test or manual command.
+- **Discovery:** `notes.txt` should not enter the parser because it is not a PDF candidate.
+  This is a concrete checkpoint you can verify with a test or manual command.
+- **Parsing good.pdf:** the parser opens the file with `pypdf.PdfReader`.
+  This is a concrete checkpoint you can verify with a test or manual command.
+- **Parsing good.pdf:** the parser loops through pages and collects text strings.
+  This is a concrete checkpoint you can verify with a test or manual command.
+- **Parsing good.pdf:** the parser builds a `ParsedDocument` with path, raw text, page count, file size, and metadata.
+  This is a concrete checkpoint you can verify with a test or manual command.
+- **Cleaning good.pdf:** the service passes raw text to `clean_text` before storing the `Paper`.
+  This is a concrete checkpoint you can verify with a test or manual command.
+- **Metadata good.pdf:** the service asks the metadata extractor for a title and optional author.
+  This is a concrete checkpoint you can verify with a test or manual command.
+- **Saving good.pdf:** the repository saves one successful `Paper` record.
+  This is a concrete checkpoint you can verify with a test or manual command.
+- **Parsing scan.pdf:** `pypdf` may return empty strings because the pages contain pictures of text, not embedded text.
+  This is a concrete checkpoint you can verify with a test or manual command.
+- **Failure scan.pdf:** the parser should raise `EmptyDocumentError` when the resulting document is empty.
+  This is a concrete checkpoint you can verify with a test or manual command.
+- **Recording scan.pdf:** the service should convert that exception into a `FailedDocument` record.
+  This is a concrete checkpoint you can verify with a test or manual command.
+- **Summary:** the final result should communicate one success, one failure, and zero or one skipped files depending on existing state.
+  This is a concrete checkpoint you can verify with a test or manual command.
+
+The important beginner lesson is that `scan.pdf` is not invisible.
+
+It attempted ingestion and failed for a recorded reason.
+
+That is better than pretending only `good.pdf` existed.
+
+### Worked example: optional dependency failure
+
+A learner may install only the base package.
+
+The base package can run commands that do not parse PDFs.
+
+When the learner runs PDF parsing, the parser needs `pypdf`.
+
+If `pypdf` is missing, Python raises `ImportError`.
+
+The parser should catch that import error.
+
+The parser should raise `ParsingError` with an installation hint.
+
+The service can then record that as a failed document if it happens during batch ingestion.
+
+The CLI can display a readable result instead of a traceback wall.
 
 ```python
-class FakeParser:
-    """Returns a pre-set ParsedDocument for any path."""
-
-    def __init__(self, document: ParsedDocument) -> None:
-        self._document = document
-
-    def parse(self, path: Path) -> ParsedDocument:
-        return self._document
+try:
+    import pypdf
+except ImportError as exc:
+    raise ParsingError(
+        "pypdf is required for PDF parsing. "
+        "Install it with: pip install 'researchops[parsing]'"
+    ) from exc
 ```
 
-Using `FakeParser` in tests:
+- Line 1: `try:`
+  The parser is about to run code that might fail because an optional dependency may be absent.
+- Line 2: `    import pypdf`
+  The third-party package is imported only when the parsing feature is actually needed.
+- Line 3: `except ImportError as exc:`
+  This catches the missing-package case specifically rather than hiding every possible problem.
+- Line 4: `    raise ParsingError(`
+  The low-level import problem becomes a ResearchOps parsing problem.
+- Line 5: `        "pypdf is required for PDF parsing. "`
+  The message teaches the learner what to install next.
+- Line 6: `        "Install it with: pip install 'researchops[parsing]'"`
+  The message teaches the learner what to install next.
+- Line 7: `    ) from exc`
+  The original exception remains attached for deeper debugging.
 
-```python
-def test_ingest_records_success(tmp_path):
-    fake_doc = ParsedDocument(
-        source_path=tmp_path / "paper.pdf",
-        raw_text="Deep learning enables...",
-        num_pages=5,
-        file_size_bytes=10000,
-    )
+### Trace table practice
 
-    repo = SQLitePaperRepository(tmp_path / "test.db")
-    service = IngestionService(
-        parser=FakeParser(fake_doc),
-        paper_repo=repo,
-        failure_repo=repo,
-    )
+| Stage | Input | Output on success | Output on failure | Proof |
+|---|---|---|---|---|
+| Discovery | directory path | list of PDF paths | empty list or invalid-directory result | unit test for recursive and non-recursive discovery |
+| Parser | one PDF path | `ParsedDocument` | `ParsingError` or `EmptyDocumentError` | parser unit test |
+| Cleaner | raw text | normalized text | normally no exception for ordinary strings | text cleaner unit test |
+| Metadata extractor | `ParsedDocument` | title and optional author | fallback values | metadata extractor unit test |
+| Service | PDF path plus collaborators | saved `Paper` | recorded `FailedDocument` | ingestion service unit test |
+| CLI | terminal arguments | printed summary | readable error or zero-count summary | manual command |
+| Repository | domain model | durable SQLite row | storage exception or duplicate behavior | integration test |
 
-    # Create a placeholder file so the scanner finds it
-    pdf_path = tmp_path / "paper.pdf"
-    pdf_path.write_bytes(b"fake pdf content")
+Fill this table before changing code.
 
-    result = service.ingest_directory(tmp_path)
+If a row has no proof, add or identify a test.
 
-    assert len(result.successes) == 1
-    assert len(result.failures) == 0
-    papers = repo.list_all()
-    assert len(papers) == 1
-    assert papers[0].num_pages == 5
-```
+If two rows name the same owner, check whether responsibilities are mixed.
 
-This test does not require a real PDF.
-It is fast, deterministic, and covers the full flow from scanning to storage.
+If a failure output says only "log it", ask where the learner can query it later.
 
----
+If the CLI is the owner of parsing, move that logic down into parsing and service layers.
 
-## 12. End-to-end integration tests
+If the parser is the owner of saving, move that logic out to the service and repository.
 
-End-to-end tests use real files and a real database.
-They are slower but test the actual integration of all components.
+If the service is the owner of PDF page extraction, move that logic into the parser.
 
-For end-to-end tests, the repository provides sample PDFs in `examples/sample_papers/`.
+If storage is the owner of title extraction, move that logic into the metadata extractor.
 
-```python
-import pytest
-from pathlib import Path
-from researchops.parsing.pdf_parser import parse_pdf
-from researchops.services.ingestion_service import IngestionService
-from researchops.storage.sqlite_repository import SQLitePaperRepository
+### Mini lab: predict before running
 
+1. Predict how many `.pdf` files discovery should find before running the command.
+   After running validation, compare the actual evidence to this prediction.
+2. Predict which files should become `Paper` records.
+   After running validation, compare the actual evidence to this prediction.
+3. Predict which files should become `FailedDocument` records.
+   After running validation, compare the actual evidence to this prediction.
+4. Predict whether a second run should skip anything.
+   After running validation, compare the actual evidence to this prediction.
+5. Predict which command will prove the successful records exist.
+   After running validation, compare the actual evidence to this prediction.
+6. Predict which command will prove the failed records exist.
+   After running validation, compare the actual evidence to this prediction.
+7. Predict which test protects parser behavior.
+   After running validation, compare the actual evidence to this prediction.
+8. Predict which test protects service behavior.
+   After running validation, compare the actual evidence to this prediction.
+9. Predict which test protects real component wiring.
+   After running validation, compare the actual evidence to this prediction.
+10. Predict which module you would edit if text cleanup is wrong.
+   After running validation, compare the actual evidence to this prediction.
+11. Predict which module you would edit if title fallback is wrong.
+   After running validation, compare the actual evidence to this prediction.
+12. Predict which module you would edit if the CLI summary is wrong.
+   After running validation, compare the actual evidence to this prediction.
+13. Predict which module you would edit if SQLite rows are wrong.
+   After running validation, compare the actual evidence to this prediction.
+14. Predict what should happen when `pypdf` is missing.
+   After running validation, compare the actual evidence to this prediction.
+15. Predict what should happen when a PDF has pages but no extractable text.
+   After running validation, compare the actual evidence to this prediction.
+16. Predict what should happen when the directory is empty.
+   After running validation, compare the actual evidence to this prediction.
+17. Predict what should happen when a nested PDF exists and recursive mode is false.
+   After running validation, compare the actual evidence to this prediction.
+18. Predict what should happen when recursive mode is true.
+   After running validation, compare the actual evidence to this prediction.
+19. Predict why a logged-only failure is insufficient.
+   After running validation, compare the actual evidence to this prediction.
+20. Predict why adding future worker behavior would distract from this week.
+   After running validation, compare the actual evidence to this prediction.
 
-@pytest.fixture
-def sample_papers_dir() -> Path:
-    return Path(__file__).parent.parent.parent / "examples" / "sample_papers"
+## Common beginner mistakes
 
+- **Mistake:** Returning only a string from the parser.
+  **Why it hurts:** it hides a boundary, hides evidence, or makes the pipeline harder to debug.
+  **Better move:** keep the stage focused, record evidence, and prove behavior with a targeted test.
+- **Mistake:** Importing `pypdf` inside the service layer.
+  **Why it hurts:** it hides a boundary, hides evidence, or makes the pipeline harder to debug.
+  **Better move:** keep the stage focused, record evidence, and prove behavior with a targeted test.
+- **Mistake:** Letting one corrupt PDF crash the whole batch.
+  **Why it hurts:** it hides a boundary, hides evidence, or makes the pipeline harder to debug.
+  **Better move:** keep the stage focused, record evidence, and prove behavior with a targeted test.
+- **Mistake:** Catching an exception and doing nothing.
+  **Why it hurts:** it hides a boundary, hides evidence, or makes the pipeline harder to debug.
+  **Better move:** keep the stage focused, record evidence, and prove behavior with a targeted test.
+- **Mistake:** Logging a failure but not saving `FailedDocument`.
+  **Why it hurts:** it hides a boundary, hides evidence, or makes the pipeline harder to debug.
+  **Better move:** keep the stage focused, record evidence, and prove behavior with a targeted test.
+- **Mistake:** Trusting PDF metadata as guaranteed truth.
+  **Why it hurts:** it hides a boundary, hides evidence, or makes the pipeline harder to debug.
+  **Better move:** keep the stage focused, record evidence, and prove behavior with a targeted test.
+- **Mistake:** Forgetting that `extract_text()` can return `None`.
+  **Why it hurts:** it hides a boundary, hides evidence, or makes the pipeline harder to debug.
+  **Better move:** keep the stage focused, record evidence, and prove behavior with a targeted test.
+- **Mistake:** Saving empty extracted text as a successful paper.
+  **Why it hurts:** it hides a boundary, hides evidence, or makes the pipeline harder to debug.
+  **Better move:** keep the stage focused, record evidence, and prove behavior with a targeted test.
+- **Mistake:** Putting text cleanup inside the CLI.
+  **Why it hurts:** it hides a boundary, hides evidence, or makes the pipeline harder to debug.
+  **Better move:** keep the stage focused, record evidence, and prove behavior with a targeted test.
+- **Mistake:** Hard-coding the database path inside the service.
+  **Why it hurts:** it hides a boundary, hides evidence, or makes the pipeline harder to debug.
+  **Better move:** keep the stage focused, record evidence, and prove behavior with a targeted test.
+- **Mistake:** Treating skipped files as failures.
+  **Why it hurts:** it hides a boundary, hides evidence, or makes the pipeline harder to debug.
+  **Better move:** keep the stage focused, record evidence, and prove behavior with a targeted test.
+- **Mistake:** Using a real database in every unit test.
+  **Why it hurts:** it hides a boundary, hides evidence, or makes the pipeline harder to debug.
+  **Better move:** keep the stage focused, record evidence, and prove behavior with a targeted test.
+- **Mistake:** Skipping the integration test because fakes pass.
+  **Why it hurts:** it hides a boundary, hides evidence, or makes the pipeline harder to debug.
+  **Better move:** keep the stage focused, record evidence, and prove behavior with a targeted test.
+- **Mistake:** Adding worker options to Week 6 validation.
+  **Why it hurts:** it hides a boundary, hides evidence, or makes the pipeline harder to debug.
+  **Better move:** keep the stage focused, record evidence, and prove behavior with a targeted test.
+- **Mistake:** Adding OCR before local text extraction is clear.
+  **Why it hurts:** it hides a boundary, hides evidence, or makes the pipeline harder to debug.
+  **Better move:** keep the stage focused, record evidence, and prove behavior with a targeted test.
+- **Mistake:** Changing many layers without a focused proof.
+  **Why it hurts:** it hides a boundary, hides evidence, or makes the pipeline harder to debug.
+  **Better move:** keep the stage focused, record evidence, and prove behavior with a targeted test.
 
-def test_ingest_sample_papers(tmp_path, sample_papers_dir):
-    """Full end-to-end: scan, parse, store, verify."""
-    if not sample_papers_dir.exists():
-        pytest.skip("No sample papers directory")
+## Debugging guidance
 
-    repo = SQLitePaperRepository(tmp_path / "test.db")
-    from researchops.parsing.pdf_parser import PdfParserAdapter
-    service = IngestionService(
-        parser=PdfParserAdapter(),
-        paper_repo=repo,
-        failure_repo=repo,
-    )
+- **Symptom:** No PDFs are found.
+  **Inspect:** inspect the sample directory with `find examples/sample_papers -maxdepth 2 -type f`.
+  **Reason:** debugging one stage at a time is faster than guessing across the whole pipeline.
+- **Symptom:** `pypdf` is missing.
+  **Inspect:** reinstall with `python -m pip install -e ".[dev,parsing,storage]"`.
+  **Reason:** debugging one stage at a time is faster than guessing across the whole pipeline.
+- **Symptom:** A PDF yields empty text.
+  **Inspect:** decide whether it is image-only and confirm `EmptyDocumentError` handling.
+  **Reason:** debugging one stage at a time is faster than guessing across the whole pipeline.
+- **Symptom:** The title looks wrong.
+  **Inspect:** inspect metadata and first-line fallback behavior.
+  **Reason:** debugging one stage at a time is faster than guessing across the whole pipeline.
+- **Symptom:** The CLI prints a placeholder.
+  **Inspect:** check `src/researchops/cli/commands/ingest.py` wiring.
+  **Reason:** debugging one stage at a time is faster than guessing across the whole pipeline.
+- **Symptom:** Papers are not listed after ingest.
+  **Inspect:** confirm the ingest and papers commands use the same database.
+  **Reason:** debugging one stage at a time is faster than guessing across the whole pipeline.
+- **Symptom:** Failures are not visible.
+  **Inspect:** check `record_failure` and `researchops papers failed`.
+  **Reason:** debugging one stage at a time is faster than guessing across the whole pipeline.
+- **Symptom:** Recursive tests fail.
+  **Inspect:** draw the directory tree and compare recursive versus non-recursive discovery.
+  **Reason:** debugging one stage at a time is faster than guessing across the whole pipeline.
+- **Symptom:** Unit tests pass but manual ingest fails.
+  **Inspect:** suspect CLI wiring or real dependency setup.
+  **Reason:** debugging one stage at a time is faster than guessing across the whole pipeline.
+- **Symptom:** Manual ingest works but tests fail.
+  **Inspect:** suspect hard-coded paths or missing fakes.
+  **Reason:** debugging one stage at a time is faster than guessing across the whole pipeline.
+When stuck, make a trace table with columns: stage, input, output, failure, proof.
+Fill one row at a time until the broken stage becomes obvious.
 
-    result = service.ingest_directory(sample_papers_dir)
+## Design tradeoffs
 
-    assert result.total > 0
-    assert len(result.successes) >= 0  # depends on sample PDFs
-    stored = repo.list_all()
-    assert len(stored) == len(result.successes)
-```
+- **Sequential processing:** easier to teach and trace than faster approaches; Week 6 values correctness over speed.
+  The chosen tradeoff should make the Week 6 milestone more reliable and easier to explain.
+- **Raw text vs cleaned text:** parser output should remain raw, while stored `Paper` text can be cleaned by a dedicated helper.
+  The chosen tradeoff should make the Week 6 milestone more reliable and easier to explain.
+- **Raise errors vs return failure objects:** parser raises when it cannot parse; service converts that exception into stored failure data.
+  The chosen tradeoff should make the Week 6 milestone more reliable and easier to explain.
+- **PDF metadata vs fallback text:** metadata is convenient but unreliable, so title extraction should have a fallback.
+  The chosen tradeoff should make the Week 6 milestone more reliable and easier to explain.
+- **Fakes vs real fixtures:** fakes prove decisions, real fixtures prove integration.
+  The chosen tradeoff should make the Week 6 milestone more reliable and easier to explain.
+- **Broad exception handling:** dangerous if careless, useful around one-file ingestion so a batch can continue.
+  The chosen tradeoff should make the Week 6 milestone more reliable and easier to explain.
+- **Strict empty-document policy:** prevents blank papers from polluting later search results.
+  The chosen tradeoff should make the Week 6 milestone more reliable and easier to explain.
+- **Beginner readability vs compact code:** explicit loops can be better teaching code than clever one-liners.
+  The chosen tradeoff should make the Week 6 milestone more reliable and easier to explain.
 
-End-to-end tests are valuable for verifying that the whole chain works.
-But they are fragile when PDFs change.
-Balance end-to-end tests with unit tests that cover error paths using fakes.
+## Testing implications
 
----
+- Command: `pytest tests/integration/test_ingestion_service.py -v`
+  This command protects one part of the Week 6 pipeline or the full regression surface.
+- Command: `pytest tests/unit/test_ingestion_service.py -v`
+  This command protects one part of the Week 6 pipeline or the full regression surface.
+- Command: `pytest tests/unit/test_pdf_parser.py -v`
+  This command protects one part of the Week 6 pipeline or the full regression surface.
+- Command: `pytest tests/unit/test_metadata_extractor.py -v`
+  This command protects one part of the Week 6 pipeline or the full regression surface.
+- Command: `pytest tests/unit/test_text_cleaner.py -v`
+  This command protects one part of the Week 6 pipeline or the full regression surface.
+- Command: `pytest -k "ingestion_service or pdf_parser or metadata_extractor or text_cleaner" -v`
+  This command protects one part of the Week 6 pipeline or the full regression surface.
+- Command: `pytest -q`
+  This command protects one part of the Week 6 pipeline or the full regression surface.
+Current service test names to understand:
+- `TestIngestDirectory::test_ingests_single_pdf`
+- `TestIngestDirectory::test_ingests_multiple_pdfs`
+- `TestIngestDirectory::test_parse_failure_recorded`
+- `TestIngestDirectory::test_unexpected_error_recorded_as_failure`
+- `TestIngestDirectory::test_skip_existing_paper`
+- `TestIngestDirectory::test_no_skip_when_skip_existing_false`
+- `TestIngestDirectory::test_empty_directory_returns_empty_result`
+- `TestIngestDirectory::test_invalid_directory_returns_empty_result`
+- `TestIngestDirectory::test_result_has_run_id`
+- `TestIngestDirectory::test_recursive_discovers_nested_pdfs`
+- `TestIngestDirectory::test_nonrecursive_misses_nested_pdfs`
+The syllabus specifically names `tests/integration/test_ingestion_service.py` as the Week 6 full-pipeline test.
+If a parser test file is missing, that is a Week 6 implementation gap, not a reason to skip parser validation.
 
-## 13. Connecting to Week 5
+## Architecture implications
 
-This week depends on Week 5 completely.
+- `core/` must not import parser, storage, CLI, API, ML, workers, or search packages.
+  This preserves the dependency direction taught by the project architecture.
+- `parsing/pdf_parser.py` may import `pypdf` because it is infrastructure.
+  This preserves the dependency direction taught by the project architecture.
+- `services/ingestion_service.py` should not import `SQLitePaperRepository`.
+  This preserves the dependency direction taught by the project architecture.
+- `cli/commands/ingest.py` may wire `PdfParser` and `SQLitePaperRepository` into `IngestionService`.
+  This preserves the dependency direction taught by the project architecture.
+- `storage/sqlite_repository.py` may know SQL because persistence is its job.
+  This preserves the dependency direction taught by the project architecture.
+- Failures belong in domain records, not only in terminal output.
+  This preserves the dependency direction taught by the project architecture.
+- The command line should display results, not own business policy.
+  This preserves the dependency direction taught by the project architecture.
+- Do not add future parallel or API architecture to Week 6.
+  This preserves the dependency direction taught by the project architecture.
 
-`IngestionService` calls `self._paper_repo.save(paper)`.
-That method is `SQLitePaperRepository.save()` from Week 5.
+## How this connects to AI engineering / ML research
 
-`IngestionService` calls `self._failure_repo.record_failure(failure)`.
-That method is `SQLitePaperRepository.record_failure()` from Week 5.
+- Search quality depends on extracted text quality.
+  This is why Week 6 is an AI-engineering foundation rather than merely a file-format exercise.
+- A classifier trained on bad extraction learns from bad data.
+  This is why Week 6 is an AI-engineering foundation rather than merely a file-format exercise.
+- A question-answering system with missing papers gives incomplete answers.
+  This is why Week 6 is an AI-engineering foundation rather than merely a file-format exercise.
+- Failure records support research integrity because they show which sources were attempted.
+  This is why Week 6 is an AI-engineering foundation rather than merely a file-format exercise.
+- Metadata quality affects how humans trust later search results.
+  This is why Week 6 is an AI-engineering foundation rather than merely a file-format exercise.
+- Ingestion counts make data preparation reproducible.
+  This is why Week 6 is an AI-engineering foundation rather than merely a file-format exercise.
+- Reliable local ingestion is a prerequisite for later AI features.
+  This is why Week 6 is an AI-engineering foundation rather than merely a file-format exercise.
+- Do not jump to models before the document pipeline is observable.
+  This is why Week 6 is an AI-engineering foundation rather than merely a file-format exercise.
 
-`IngestionResult` collects `Paper` objects in `result.successes`.
-Those `Paper` objects are what Week 5 stores.
+## Mini quizzes
 
-The clean separation is possible only because Week 5 defined a repository with a stable interface.
-The service does not know or care how papers are stored.
-It only calls the interface.
+1. What is the input to `researchops ingest ./examples/sample_papers`?
+2. Why should the parser return `ParsedDocument`?
+3. What does `page.extract_text() or ""` protect against?
+4. Why can a scanned PDF produce no text?
+5. Which layer should import `pypdf`?
+6. Which layer records a `FailedDocument`?
+7. Why is a skipped file not a failed file?
+8. What does `skip_existing` protect against?
+9. Why are PDF metadata fields only hints?
+10. What is the syllabus-named integration test?
+11. Why do service tests use fakes?
+12. Why is a manual `papers failed` command useful?
+13. What future-week feature should not be implemented now?
+14. Draw the happy path.
+15. Draw the failure path.
 
----
+## Explain-it-aloud prompts
 
-## 14. What belongs where
+- Explain why PDFs are harder than plain text files.
+- Explain how one PDF path becomes `ParsedDocument`.
+- Explain why `FailedDocument` is data, not just an error.
+- Explain why the service coordinates but does not parse.
+- Explain why the CLI wires concrete objects but should not contain SQL.
+- Explain the difference between parser tests and service tests.
+- Explain why the integration test matters even if unit tests pass.
+- Explain how idempotency affects a second ingest run.
+- Explain how this week prepares later search.
+- Explain why Week 6 stays sequential.
 
-| Concern                     | Module                              |
-|-----------------------------|-------------------------------------|
-| Parse PDF to raw text       | `parsing/pdf_parser.py`             |
-| Extract title, author       | `parsing/metadata_extractor.py`     |
-| Clean text                  | `parsing/text_cleaner.py`           |
-| Coordinate ingestion flow   | `services/ingestion_service.py`     |
-| Save papers to database     | `storage/sqlite_repository.py`      |
-| CLI arguments and output    | `cli/commands/ingest.py`            |
-| Domain models               | `core/models.py`                    |
-| Interface contracts         | `core/interfaces.py`                |
+## What to memorize
 
-The rule: each module should have one reason to change.
-If you change the PDF library from `pypdf` to something else, only `pdf_parser.py` changes.
-If you change the database from SQLite to PostgreSQL, only `storage/` changes.
-If you change the CLI framework, only `cli/` changes.
-The domain models and interfaces stay stable.
+- Pipeline order: discover -> parse -> clean -> extract metadata -> save or record failure -> summarize.
+- Main files: parser, cleaner, metadata extractor, ingestion service, ingest CLI, SQLite repository.
+- Main models: `ParsedDocument`, `Paper`, `FailedDocument`, `IngestionResult`.
+- Install command: `python -m pip install -e ".[dev,parsing,storage]"`.
+- Syllabus validation commands: ingest sample papers, list papers, list failures, run integration test.
+- Phrase: failures are data.
+- Rule: `extract_text()` can return `None`.
+- Rule: metadata is a hint.
+- Rule: no Week 8 worker behavior in Week 6.
 
----
+## What to understand deeply
 
-## 15. Review questions and self-checks
+- Understand deeply: Why a parser returning a domain object makes later stages safer.
+  You should be able to give a concrete ResearchOps example, not just define the phrase.
+- Understand deeply: Why recording failures is more trustworthy than printing errors.
+  You should be able to give a concrete ResearchOps example, not just define the phrase.
+- Understand deeply: Why service orchestration is separate from infrastructure.
+  You should be able to give a concrete ResearchOps example, not just define the phrase.
+- Understand deeply: Why fakes make service tests deterministic.
+  You should be able to give a concrete ResearchOps example, not just define the phrase.
+- Understand deeply: Why real fixtures still matter.
+  You should be able to give a concrete ResearchOps example, not just define the phrase.
+- Understand deeply: Why repeated commands should not create accidental duplicates.
+  You should be able to give a concrete ResearchOps example, not just define the phrase.
+- Understand deeply: Why ingestion quality affects every later AI feature.
+  You should be able to give a concrete ResearchOps example, not just define the phrase.
+- Understand deeply: Why clear boundaries help beginners debug.
+  You should be able to give a concrete ResearchOps example, not just define the phrase.
 
-**Conceptual questions:**
+## What not to worry about yet
 
-1. Draw the ingestion pipeline as a box-and-arrow diagram.
-   Label each box with its module name.
+- Do not worry about multiprocessing yet.
+  Keep the Week 6 local PDF parsing pipeline correct, visible, and teachable.
+- Do not worry about async ingestion yet.
+  Keep the Week 6 local PDF parsing pipeline correct, visible, and teachable.
+- Do not worry about OCR yet.
+  Keep the Week 6 local PDF parsing pipeline correct, visible, and teachable.
+- Do not worry about perfect title extraction yet.
+  Keep the Week 6 local PDF parsing pipeline correct, visible, and teachable.
+- Do not worry about perfect author extraction yet.
+  Keep the Week 6 local PDF parsing pipeline correct, visible, and teachable.
+- Do not worry about citation parsing yet.
+  Keep the Week 6 local PDF parsing pipeline correct, visible, and teachable.
+- Do not worry about semantic search yet.
+  Keep the Week 6 local PDF parsing pipeline correct, visible, and teachable.
+- Do not worry about RAG prompts yet.
+  Keep the Week 6 local PDF parsing pipeline correct, visible, and teachable.
+- Do not worry about remote fetching yet.
+  Keep the Week 6 local PDF parsing pipeline correct, visible, and teachable.
+- Do not worry about web APIs yet.
+  Keep the Week 6 local PDF parsing pipeline correct, visible, and teachable.
+- Do not worry about elaborate progress dashboards yet.
+  Keep the Week 6 local PDF parsing pipeline correct, visible, and teachable.
+- Do not worry about every obscure PDF edge case yet.
+  Keep the Week 6 local PDF parsing pipeline correct, visible, and teachable.
+- Do not worry about perfect performance yet.
+  Keep the Week 6 local PDF parsing pipeline correct, visible, and teachable.
 
-2. What does `or ""` protect against in `page.extract_text() or ""`?
+## Bridge to next week
 
-3. Why does one bad PDF not crash the whole ingestion batch?
-
-4. What is the difference between `ParsingError` (expected failure) and the catch-all `except Exception` (unexpected failure)?
-
-5. What is dependency injection?
-   Give a one-sentence definition.
-
-6. Why does the `IngestionService` receive its parser and repository through the constructor rather than creating them internally?
-
-7. What would you need to change to switch from `pypdf` to a different PDF library?
-   Name all files that would need to change.
-
-8. What information does `FailedDocument` store?
-   Why is each field important?
-
-**Code-reading questions:**
-
-9. Look at `_ingest_one` in the actual `ingestion_service.py`.
-   What happens when parsing succeeds but saving to the repository fails?
-
-10. Look at `ingest_directory`.
-    What is the `skip_existing` check doing?
-    Under what circumstances would you want `skip_existing=False`?
-
-11. Why does `_ingest_one` return `Paper | None` instead of always returning a `Paper` or always raising an exception?
-
-**Design questions:**
-
-12. The current pipeline processes PDFs sequentially.
-    If you had 1000 PDFs, how would you know the current approach is too slow?
-    What information would you collect?
-
-13. A team member suggests adding a `print()` statement inside `parse_pdf` to show progress.
-    What problems does this create for testing?
-    What is the better alternative?
-
-14. You want to add a "page count filter" that skips PDFs with fewer than 3 pages.
-    Where in the pipeline does this belong?
-    Write a one-line pseudocode description.
-
-**Practice tasks:**
-
-15. Without running code, trace through the `ingest_directory` method for a directory containing:
-    - `paper_a.pdf` (valid, not yet in database)
-    - `paper_b.pdf` (valid, already in database, `skip_existing=True`)
-    - `paper_c.pdf` (corrupt, raises `ParsingError`)
-
-    What is in `result.successes`, `result.skipped`, and `result.failures` after the run?
-
-16. Write a fake `DocumentParser` that raises `ParsingError` for every file.
-    Use it in a test to verify that `ingest_directory` handles 3 parsing failures correctly.
-
-17. What would `IngestionResult.success_rate` return after the scenario in question 15?
+Week 6 fills the database with paper text that later features can use.
+The stored text becomes the input for search and analysis.
+The stored metadata becomes context for human-facing results.
+The stored failures become a repair list for data quality.
+Future chapters will add more sophisticated processing, but they depend on this foundation.
+Carry forward the input-owner-transformation-proof habit.
+Carry forward the failures-are-data habit.
+Do not move forward until you can explain both the happy path and the failure path aloud.
 <!-- NAV_BOTTOM_START -->
 ---
 ⬅️ [← README](README.md) · ➡️ [Exercises →](exercises.md)

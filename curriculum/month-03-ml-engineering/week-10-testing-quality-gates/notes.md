@@ -11,893 +11,818 @@
 
 # Notes - Week 10 Testing Discipline and Quality Gates
 
-<!-- LEARNING_FORMAT_START -->
-# Complete Learning Format — Week 10: Testing Discipline and Quality Gates
+## 1. Chapter overview
+- This chapter turns ResearchOps from code that can be manually checked into code that can defend itself against regressions.
+- By Week 10 the system has domain models, parsing, SQLite storage, keyword search, service boundaries, CLI wiring, and protocol-based architecture.
+- That is too much behavior to verify by clicking around or rerunning one happy-path command from memory.
+- The professional habit is to make every important promise executable as a test.
+- The professional gate is to make the important checks run before a change is considered acceptable.
+- The exact lint gate for this week is `ruff check src tests`.
+- The exact test and coverage gate for this week is `pytest --cov=researchops --cov-report=term-missing -q`.
+- The coverage floor is 70 percent through coverage configuration, so low coverage fails the command.
+- The goal is not to worship a number; the goal is to stop untested code from growing quietly.
+- This week teaches fixtures, `tmp_path`, `monkeypatch`, parametrized tests, fakes, coverage reports, and CI lint-plus-test gates.
+- Fixtures make setup reusable without hiding where test values come from.
+- `tmp_path` makes file and SQLite tests isolated from a learner's real machine.
+- `monkeypatch` makes environment and difficult failure paths controllable for one test at a time.
+- Fakes in `tests/fakes/` keep service tests fast by replacing infrastructure with protocol-shaped in-memory objects.
+- Coverage reports show which lines were exercised and which lines still need investigation.
+- CI runs the same checks in a clean environment so the main branch does not depend on one developer's laptop.
+- This chapter does not introduce classical ML model code, because topic classification begins in Week 11.
+- This chapter does not introduce embeddings, RAG, FastAPI, or async testing patterns.
+- The visible deliverable is a stronger quality gate; the deeper skill is knowing what kind of proof a behavior deserves.
+- When finished, you should be able to explain why a fake is enough for a unit test and why real SQLite is still needed for an integration test.
+1. In this chapter, **pytest discovery** matters because pytest finds files named like tests, then functions named like tests, and treats uncaught exceptions as failures.
+2. In this chapter, **fixtures** matters because pytest fixtures are named setup functions requested by test parameters instead of called directly.
+3. In this chapter, **fixture scope** matters because fixture scope controls how long a returned setup object lives before pytest creates a new one.
+4. In this chapter, **function scope** matters because function scope gives every test a clean object and is safest for mutable fakes.
+5. In this chapter, **module scope** matters because module scope shares one object across a file and is safe only when shared state cannot leak.
+6. In this chapter, **session scope** matters because session scope shares one object across the whole run and should be rare in beginner project tests.
+7. In this chapter, **tmp_path** matters because tmp_path gives each test a pathlib.Path directory managed by pytest for isolated file work.
+8. In this chapter, **monkeypatch** matters because monkeypatch temporarily changes environment variables or attributes and then restores them.
+9. In this chapter, **fakes** matters because fakes are small test implementations of ResearchOps protocols stored under tests/fakes.
+10. In this chapter, **unit tests** matters because unit tests prove one service or function with outside dependencies replaced by fakes.
 
-This guide is the clean learning path for the chapter.
-It uses short sentences.
-It breaks ideas into small pieces.
-It tells you what to focus on and what to ignore for now.
-Read it before the older detailed notes that follow.
+## 2. What you already know from previous weeks
+- Week 1 taught repository scaffold and CLI shape; this matters because tests can now check a package instead of loose scripts.
+- Week 2 taught files, pathlib, exceptions, and logging; this matters because `tmp_path` and precise failure assertions now have context.
+- Week 3 taught domain models and dataclasses; this matters because tests should create real domain objects instead of vague dictionaries.
+- Week 4 taught packaging and entry points; this matters because CLI smoke tests can verify the installed command responds.
+- Week 5 taught SQLite storage; this matters because integration tests can prove real persistence without polluting local files.
+- Week 6 taught parsing pipeline; this matters because failure-path tests can prove parser errors are recorded safely.
+- Week 7 taught keyword search and data quality; this matters because parametrized tests can cover search normalization and edge cases.
+- Week 8 taught multiprocessing ingestion; this matters because tests should avoid accidental heavy process work when a fake is enough.
+- Week 9 taught protocols and clean architecture; this matters because fakes can implement interfaces so services do not import infrastructure.
+- You already know that core should not import storage, CLI, API, workers, search, or ML infrastructure.
+- You already know that services should depend on protocols rather than concrete SQLite or parser classes.
+- You already know that CLI code should wire dependencies and delegate business behavior to services.
+- Testing now becomes the way to prove those boundaries stay honest.
+- A service test that cannot run without SQLite is a warning sign unless the service is explicitly about SQLite.
+- A fake that cannot implement a protocol cleanly is a warning sign that the protocol may be unclear.
+- A test that writes into the repository root is a warning sign that file isolation is missing.
+- A failing test is not an insult; it is feedback about a promise that is either broken or poorly stated.
+- Prior weeks make **integration tests** meaningful now: integration tests prove real boundaries such as SQLite repository behavior with tmp_path isolation.
+- Prior weeks make **E2E smoke tests** meaningful now: E2E smoke tests prove the installed CLI starts without trying to test every branch.
+- Prior weeks make **parametrize** meaningful now: parametrize runs the same behavior check against multiple clear input and expected output cases.
+- Prior weeks make **coverage** meaningful now: coverage records which ResearchOps source lines ran while tests executed.
+- Prior weeks make **term-missing** meaningful now: term-missing prints uncovered line numbers so the learner can inspect concrete gaps.
+- Prior weeks make **fail_under** meaningful now: fail_under turns a coverage percentage into a failing command when it drops below the floor.
+- Prior weeks make **Ruff** meaningful now: Ruff checks source and tests for Python errors, import issues, and selected style rules.
+- Prior weeks make **CI gates** meaningful now: CI gates run the same checks automatically so broken changes cannot rely on memory or luck.
+- Prior weeks make **flaky tests** meaningful now: flaky tests pass and fail without code changes and destroy trust in the suite.
+- Prior weeks make **test names** meaningful now: test names should read like behavior statements so failures explain what broke.
 
-## Chapter overview
+## 3. What problem this week solves
+- ResearchOps has reached the point where manual verification is too slow and too unreliable.
+- A learner can fix one search case while breaking another search edge case.
+- A learner can alter storage code and silently change ingestion behavior.
+- A learner can add a source file and forget to add tests for failure paths.
+- A learner can pass local tests and still fail CI if the local command differs from the project gate.
+- This week solves those problems by making evidence repeatable.
+- Every important behavior should have a focused test that names the behavior.
+- Every test should prepare its own state or request clean state through a fixture.
+- Every file-system test should use pytest-managed paths rather than existing project files.
+- Every service unit test should prefer fakes over real infrastructure unless infrastructure is the behavior under inspection.
+- Every coverage report should be read as a map of unvisited behavior, not as a scoreboard.
+- Every CI failure should block progress until understood.
+- The week also solves communication: good test names tell future maintainers what promise failed.
+- The week also solves fear: a meaningful suite makes refactoring less scary because behavior is checked automatically.
+- The problem addressed by **pytest discovery** is this: pytest finds files named like tests, then functions named like tests, and treats uncaught exceptions as failures, so the learner can move from hope to evidence.
+- The problem addressed by **fixtures** is this: pytest fixtures are named setup functions requested by test parameters instead of called directly, so the learner can move from hope to evidence.
+- The problem addressed by **fixture scope** is this: fixture scope controls how long a returned setup object lives before pytest creates a new one, so the learner can move from hope to evidence.
+- The problem addressed by **function scope** is this: function scope gives every test a clean object and is safest for mutable fakes, so the learner can move from hope to evidence.
+- The problem addressed by **module scope** is this: module scope shares one object across a file and is safe only when shared state cannot leak, so the learner can move from hope to evidence.
+- The problem addressed by **session scope** is this: session scope shares one object across the whole run and should be rare in beginner project tests, so the learner can move from hope to evidence.
+- The problem addressed by **tmp_path** is this: tmp_path gives each test a pathlib.Path directory managed by pytest for isolated file work, so the learner can move from hope to evidence.
+- The problem addressed by **monkeypatch** is this: monkeypatch temporarily changes environment variables or attributes and then restores them, so the learner can move from hope to evidence.
+- The problem addressed by **fakes** is this: fakes are small test implementations of ResearchOps protocols stored under tests/fakes, so the learner can move from hope to evidence.
+- The problem addressed by **unit tests** is this: unit tests prove one service or function with outside dependencies replaced by fakes, so the learner can move from hope to evidence.
+- The problem addressed by **integration tests** is this: integration tests prove real boundaries such as SQLite repository behavior with tmp_path isolation, so the learner can move from hope to evidence.
+- The problem addressed by **E2E smoke tests** is this: E2E smoke tests prove the installed CLI starts without trying to test every branch, so the learner can move from hope to evidence.
+- The problem addressed by **parametrize** is this: parametrize runs the same behavior check against multiple clear input and expected output cases, so the learner can move from hope to evidence.
+- The problem addressed by **coverage** is this: coverage records which ResearchOps source lines ran while tests executed, so the learner can move from hope to evidence.
+- The problem addressed by **term-missing** is this: term-missing prints uncovered line numbers so the learner can inspect concrete gaps, so the learner can move from hope to evidence.
+- The problem addressed by **fail_under** is this: fail_under turns a coverage percentage into a failing command when it drops below the floor, so the learner can move from hope to evidence.
+- The problem addressed by **Ruff** is this: Ruff checks source and tests for Python errors, import issues, and selected style rules, so the learner can move from hope to evidence.
+- The problem addressed by **CI gates** is this: CI gates run the same checks automatically so broken changes cannot rely on memory or luck, so the learner can move from hope to evidence.
+- The problem addressed by **flaky tests** is this: flaky tests pass and fail without code changes and destroy trust in the suite, so the learner can move from hope to evidence.
+- The problem addressed by **test names** is this: test names should read like behavior statements so failures explain what broke, so the learner can move from hope to evidence.
 
-The chapter title is **Tests that give you confidence**.
-The practical milestone is: Test coverage ≥ 70%. CI fails if coverage drops below threshold. All services tested via fixtures and fakes.
-The expected capability is: Can write `conftest.py` fixtures, use `monkeypatch`, explain test coverage, and configure a minimum threshold in CI.
-This chapter is one step in the ResearchOps system, not a random lesson.
-The visible feature matters because it proves the idea works.
-The hidden skill matters because it lets you build the next chapter without confusion.
-A complete pass through this chapter means you can read the code, run it, test it, break it, and explain it aloud.
+## 4. Beginner mental model
+- Think of a test as a tiny science experiment.
+- The experiment prepares a controlled world, exercises one behavior, and inspects the result.
+- This is the Arrange, Act, Assert pattern.
+- Arrange creates papers, repositories, paths, settings, or fakes.
+- Act calls the one behavior being tested.
+- Assert checks the outcome that matters to ResearchOps.
+- A fixture is reusable laboratory equipment supplied by pytest.
+- Function-scoped fixtures give each experiment clean equipment.
+- `tmp_path` is a clean workbench for temporary files and databases.
+- `monkeypatch` is a temporary switch that pytest flips back after the experiment.
+- A fake is a stage prop that keeps the same shape as a real dependency but avoids outside resources.
+- Coverage is a map of where the experiments walked through the source code.
+- A quality gate is a locked door that opens only when the agreed checks pass.
+1. Ask before writing a test: what exact behavior am I proving, what state must be isolated, and what assertion would fail if the behavior regressed?
+2. Ask before writing a test: what exact behavior am I proving, what state must be isolated, and what assertion would fail if the behavior regressed?
+3. Ask before writing a test: what exact behavior am I proving, what state must be isolated, and what assertion would fail if the behavior regressed?
+4. Ask before writing a test: what exact behavior am I proving, what state must be isolated, and what assertion would fail if the behavior regressed?
+5. Ask before writing a test: what exact behavior am I proving, what state must be isolated, and what assertion would fail if the behavior regressed?
+6. Ask before writing a test: what exact behavior am I proving, what state must be isolated, and what assertion would fail if the behavior regressed?
+7. Ask before writing a test: what exact behavior am I proving, what state must be isolated, and what assertion would fail if the behavior regressed?
+8. Ask before writing a test: what exact behavior am I proving, what state must be isolated, and what assertion would fail if the behavior regressed?
+9. Ask before writing a test: what exact behavior am I proving, what state must be isolated, and what assertion would fail if the behavior regressed?
+10. Ask before writing a test: what exact behavior am I proving, what state must be isolated, and what assertion would fail if the behavior regressed?
+11. Ask before writing a test: what exact behavior am I proving, what state must be isolated, and what assertion would fail if the behavior regressed?
+12. Ask before writing a test: what exact behavior am I proving, what state must be isolated, and what assertion would fail if the behavior regressed?
+13. Ask before writing a test: what exact behavior am I proving, what state must be isolated, and what assertion would fail if the behavior regressed?
+14. Ask before writing a test: what exact behavior am I proving, what state must be isolated, and what assertion would fail if the behavior regressed?
+15. Ask before writing a test: what exact behavior am I proving, what state must be isolated, and what assertion would fail if the behavior regressed?
 
-Use this study order:
-- Read the story first without typing.
-- Trace the smallest code example.
-- Find the project file that owns the behavior.
-- Run the validation command.
-- Explain one happy path and one failure path.
+## 5. Core vocabulary
+| Term | Beginner meaning | ResearchOps reason |
+|---|---|---|
+| pytest discovery | pytest finds files named like tests, then functions named like tests, and treats uncaught exceptions as failures. | It helps Week 10 build reliable tests and quality gates without future-week features. |
+| fixtures | pytest fixtures are named setup functions requested by test parameters instead of called directly. | It helps Week 10 build reliable tests and quality gates without future-week features. |
+| fixture scope | fixture scope controls how long a returned setup object lives before pytest creates a new one. | It helps Week 10 build reliable tests and quality gates without future-week features. |
+| function scope | function scope gives every test a clean object and is safest for mutable fakes. | It helps Week 10 build reliable tests and quality gates without future-week features. |
+| module scope | module scope shares one object across a file and is safe only when shared state cannot leak. | It helps Week 10 build reliable tests and quality gates without future-week features. |
+| session scope | session scope shares one object across the whole run and should be rare in beginner project tests. | It helps Week 10 build reliable tests and quality gates without future-week features. |
+| tmp_path | tmp_path gives each test a pathlib.Path directory managed by pytest for isolated file work. | It helps Week 10 build reliable tests and quality gates without future-week features. |
+| monkeypatch | monkeypatch temporarily changes environment variables or attributes and then restores them. | It helps Week 10 build reliable tests and quality gates without future-week features. |
+| fakes | fakes are small test implementations of ResearchOps protocols stored under tests/fakes. | It helps Week 10 build reliable tests and quality gates without future-week features. |
+| unit tests | unit tests prove one service or function with outside dependencies replaced by fakes. | It helps Week 10 build reliable tests and quality gates without future-week features. |
+| integration tests | integration tests prove real boundaries such as SQLite repository behavior with tmp_path isolation. | It helps Week 10 build reliable tests and quality gates without future-week features. |
+| E2E smoke tests | E2E smoke tests prove the installed CLI starts without trying to test every branch. | It helps Week 10 build reliable tests and quality gates without future-week features. |
+| parametrize | parametrize runs the same behavior check against multiple clear input and expected output cases. | It helps Week 10 build reliable tests and quality gates without future-week features. |
+| coverage | coverage records which ResearchOps source lines ran while tests executed. | It helps Week 10 build reliable tests and quality gates without future-week features. |
+| term-missing | term-missing prints uncovered line numbers so the learner can inspect concrete gaps. | It helps Week 10 build reliable tests and quality gates without future-week features. |
+| fail_under | fail_under turns a coverage percentage into a failing command when it drops below the floor. | It helps Week 10 build reliable tests and quality gates without future-week features. |
+| Ruff | Ruff checks source and tests for Python errors, import issues, and selected style rules. | It helps Week 10 build reliable tests and quality gates without future-week features. |
+| CI gates | CI gates run the same checks automatically so broken changes cannot rely on memory or luck. | It helps Week 10 build reliable tests and quality gates without future-week features. |
+| flaky tests | flaky tests pass and fail without code changes and destroy trust in the suite. | It helps Week 10 build reliable tests and quality gates without future-week features. |
+| test names | test names should read like behavior statements so failures explain what broke. | It helps Week 10 build reliable tests and quality gates without future-week features. |
+| Arrange | the setup phase. | keeps test data obvious. |
+| Act | the behavior call. | keeps the test focused. |
+| Assert | the verification phase. | turns expectation into proof. |
+| regression | a previously working behavior breaking. | tests catch it early. |
+| test double | an object that stands in for a collaborator. | fakes are the preferred project-owned double here. |
+| isolation | keeping one test from affecting another. | prevents order-dependent failures. |
+| quality gate | a required check before accepting code. | CI automates the standard. |
+| failure path | what happens when inputs or dependencies go wrong. | ResearchOps must record and report failures clearly. |
+- Vocabulary is useful only when connected to files.
+- For each term, point to one test, fixture, fake, command, or configuration line before moving on.
 
-## What you already know from previous weeks
+## 6. Concept explanations from first principles
+### pytest discovery
+- Plain meaning: pytest finds files named like tests, then functions named like tests, and treats uncaught exceptions as failures.
+- Why it exists: without pytest discovery, ResearchOps would rely on memory instead of a repeatable check.
+- Beginner risk: treating pytest discovery as a magic word instead of tracing what value enters and what proof comes out.
+- ResearchOps use: apply pytest discovery only at the layer being tested, and do not use it to sneak in Week 11 or later features.
+- Good question: what would break if this pytest discovery example were removed from the quality workflow?
+### fixtures
+- Plain meaning: pytest fixtures are named setup functions requested by test parameters instead of called directly.
+- Why it exists: without fixtures, ResearchOps would rely on memory instead of a repeatable check.
+- Beginner risk: treating fixtures as a magic word instead of tracing what value enters and what proof comes out.
+- ResearchOps use: apply fixtures only at the layer being tested, and do not use it to sneak in Week 11 or later features.
+- Good question: what would break if this fixtures example were removed from the quality workflow?
+### fixture scope
+- Plain meaning: fixture scope controls how long a returned setup object lives before pytest creates a new one.
+- Why it exists: without fixture scope, ResearchOps would rely on memory instead of a repeatable check.
+- Beginner risk: treating fixture scope as a magic word instead of tracing what value enters and what proof comes out.
+- ResearchOps use: apply fixture scope only at the layer being tested, and do not use it to sneak in Week 11 or later features.
+- Good question: what would break if this fixture scope example were removed from the quality workflow?
+### function scope
+- Plain meaning: function scope gives every test a clean object and is safest for mutable fakes.
+- Why it exists: without function scope, ResearchOps would rely on memory instead of a repeatable check.
+- Beginner risk: treating function scope as a magic word instead of tracing what value enters and what proof comes out.
+- ResearchOps use: apply function scope only at the layer being tested, and do not use it to sneak in Week 11 or later features.
+- Good question: what would break if this function scope example were removed from the quality workflow?
+### module scope
+- Plain meaning: module scope shares one object across a file and is safe only when shared state cannot leak.
+- Why it exists: without module scope, ResearchOps would rely on memory instead of a repeatable check.
+- Beginner risk: treating module scope as a magic word instead of tracing what value enters and what proof comes out.
+- ResearchOps use: apply module scope only at the layer being tested, and do not use it to sneak in Week 11 or later features.
+- Good question: what would break if this module scope example were removed from the quality workflow?
+### session scope
+- Plain meaning: session scope shares one object across the whole run and should be rare in beginner project tests.
+- Why it exists: without session scope, ResearchOps would rely on memory instead of a repeatable check.
+- Beginner risk: treating session scope as a magic word instead of tracing what value enters and what proof comes out.
+- ResearchOps use: apply session scope only at the layer being tested, and do not use it to sneak in Week 11 or later features.
+- Good question: what would break if this session scope example were removed from the quality workflow?
+### tmp_path
+- Plain meaning: tmp_path gives each test a pathlib.Path directory managed by pytest for isolated file work.
+- Why it exists: without tmp_path, ResearchOps would rely on memory instead of a repeatable check.
+- Beginner risk: treating tmp_path as a magic word instead of tracing what value enters and what proof comes out.
+- ResearchOps use: apply tmp_path only at the layer being tested, and do not use it to sneak in Week 11 or later features.
+- Good question: what would break if this tmp_path example were removed from the quality workflow?
+### monkeypatch
+- Plain meaning: monkeypatch temporarily changes environment variables or attributes and then restores them.
+- Why it exists: without monkeypatch, ResearchOps would rely on memory instead of a repeatable check.
+- Beginner risk: treating monkeypatch as a magic word instead of tracing what value enters and what proof comes out.
+- ResearchOps use: apply monkeypatch only at the layer being tested, and do not use it to sneak in Week 11 or later features.
+- Good question: what would break if this monkeypatch example were removed from the quality workflow?
+### fakes
+- Plain meaning: fakes are small test implementations of ResearchOps protocols stored under tests/fakes.
+- Why it exists: without fakes, ResearchOps would rely on memory instead of a repeatable check.
+- Beginner risk: treating fakes as a magic word instead of tracing what value enters and what proof comes out.
+- ResearchOps use: apply fakes only at the layer being tested, and do not use it to sneak in Week 11 or later features.
+- Good question: what would break if this fakes example were removed from the quality workflow?
+### unit tests
+- Plain meaning: unit tests prove one service or function with outside dependencies replaced by fakes.
+- Why it exists: without unit tests, ResearchOps would rely on memory instead of a repeatable check.
+- Beginner risk: treating unit tests as a magic word instead of tracing what value enters and what proof comes out.
+- ResearchOps use: apply unit tests only at the layer being tested, and do not use it to sneak in Week 11 or later features.
+- Good question: what would break if this unit tests example were removed from the quality workflow?
+### integration tests
+- Plain meaning: integration tests prove real boundaries such as SQLite repository behavior with tmp_path isolation.
+- Why it exists: without integration tests, ResearchOps would rely on memory instead of a repeatable check.
+- Beginner risk: treating integration tests as a magic word instead of tracing what value enters and what proof comes out.
+- ResearchOps use: apply integration tests only at the layer being tested, and do not use it to sneak in Week 11 or later features.
+- Good question: what would break if this integration tests example were removed from the quality workflow?
+### E2E smoke tests
+- Plain meaning: E2E smoke tests prove the installed CLI starts without trying to test every branch.
+- Why it exists: without E2E smoke tests, ResearchOps would rely on memory instead of a repeatable check.
+- Beginner risk: treating E2E smoke tests as a magic word instead of tracing what value enters and what proof comes out.
+- ResearchOps use: apply E2E smoke tests only at the layer being tested, and do not use it to sneak in Week 11 or later features.
+- Good question: what would break if this E2E smoke tests example were removed from the quality workflow?
+### parametrize
+- Plain meaning: parametrize runs the same behavior check against multiple clear input and expected output cases.
+- Why it exists: without parametrize, ResearchOps would rely on memory instead of a repeatable check.
+- Beginner risk: treating parametrize as a magic word instead of tracing what value enters and what proof comes out.
+- ResearchOps use: apply parametrize only at the layer being tested, and do not use it to sneak in Week 11 or later features.
+- Good question: what would break if this parametrize example were removed from the quality workflow?
+### coverage
+- Plain meaning: coverage records which ResearchOps source lines ran while tests executed.
+- Why it exists: without coverage, ResearchOps would rely on memory instead of a repeatable check.
+- Beginner risk: treating coverage as a magic word instead of tracing what value enters and what proof comes out.
+- ResearchOps use: apply coverage only at the layer being tested, and do not use it to sneak in Week 11 or later features.
+- Good question: what would break if this coverage example were removed from the quality workflow?
+### term-missing
+- Plain meaning: term-missing prints uncovered line numbers so the learner can inspect concrete gaps.
+- Why it exists: without term-missing, ResearchOps would rely on memory instead of a repeatable check.
+- Beginner risk: treating term-missing as a magic word instead of tracing what value enters and what proof comes out.
+- ResearchOps use: apply term-missing only at the layer being tested, and do not use it to sneak in Week 11 or later features.
+- Good question: what would break if this term-missing example were removed from the quality workflow?
+### fail_under
+- Plain meaning: fail_under turns a coverage percentage into a failing command when it drops below the floor.
+- Why it exists: without fail_under, ResearchOps would rely on memory instead of a repeatable check.
+- Beginner risk: treating fail_under as a magic word instead of tracing what value enters and what proof comes out.
+- ResearchOps use: apply fail_under only at the layer being tested, and do not use it to sneak in Week 11 or later features.
+- Good question: what would break if this fail_under example were removed from the quality workflow?
+### Ruff
+- Plain meaning: Ruff checks source and tests for Python errors, import issues, and selected style rules.
+- Why it exists: without Ruff, ResearchOps would rely on memory instead of a repeatable check.
+- Beginner risk: treating Ruff as a magic word instead of tracing what value enters and what proof comes out.
+- ResearchOps use: apply Ruff only at the layer being tested, and do not use it to sneak in Week 11 or later features.
+- Good question: what would break if this Ruff example were removed from the quality workflow?
+### CI gates
+- Plain meaning: CI gates run the same checks automatically so broken changes cannot rely on memory or luck.
+- Why it exists: without CI gates, ResearchOps would rely on memory instead of a repeatable check.
+- Beginner risk: treating CI gates as a magic word instead of tracing what value enters and what proof comes out.
+- ResearchOps use: apply CI gates only at the layer being tested, and do not use it to sneak in Week 11 or later features.
+- Good question: what would break if this CI gates example were removed from the quality workflow?
+### flaky tests
+- Plain meaning: flaky tests pass and fail without code changes and destroy trust in the suite.
+- Why it exists: without flaky tests, ResearchOps would rely on memory instead of a repeatable check.
+- Beginner risk: treating flaky tests as a magic word instead of tracing what value enters and what proof comes out.
+- ResearchOps use: apply flaky tests only at the layer being tested, and do not use it to sneak in Week 11 or later features.
+- Good question: what would break if this flaky tests example were removed from the quality workflow?
+### test names
+- Plain meaning: test names should read like behavior statements so failures explain what broke.
+- Why it exists: without test names, ResearchOps would rely on memory instead of a repeatable check.
+- Beginner risk: treating test names as a magic word instead of tracing what value enters and what proof comes out.
+- ResearchOps use: apply test names only at the layer being tested, and do not use it to sneak in Week 11 or later features.
+- Good question: what would break if this test names example were removed from the quality workflow?
 
-- Week 6 taught PDF Parsing Pipeline; keep its responsibility in mind, but do not rebuild it here.
-- Week 7 taught Keyword Search and Data Quality; keep its responsibility in mind, but do not rebuild it here.
-- Week 8 taught Multiprocessing Ingestion; keep its responsibility in mind, but do not rebuild it here.
-- Week 9 taught Protocols, Interfaces, and Clean Architecture; keep its responsibility in mind, but do not rebuild it here.
-- You should be able to run the previous validation command before trusting new work.
-- You should be able to point at the main file from the previous week and say what job it owns.
-- If a previous idea feels weak, reread the example and trace one concrete value through it.
-- The safest learning rhythm is: understand one thing, change one thing, test one thing, explain one thing.
-
-## What problem this week solves
-
-Week 10 solves the project problem behind **Testing Discipline and Quality Gates**.
-Before this chapter, ResearchOps has a gap.
-The gap may be a missing feature, a missing boundary, a missing safety check, or a missing way to communicate with users.
-This chapter closes that gap with a focused milestone.
-Do not treat the milestone as a checklist only.
-Treat it as proof that the idea belongs in the system.
-- The concept ``pytest` fixture scopes: `function`, `module`, `session`` helps solve part of this gap.
-- The concept ``tmp_path` for temporary file system fixtures` helps solve part of this gap.
-- The concept ``monkeypatch` for environment variables and dependency substitution` helps solve part of this gap.
-- The concept ``conftest.py` for shared fixtures` helps solve part of this gap.
-- The concept ``pytest-cov` and minimum coverage threshold` helps solve part of this gap.
-- The concept `CI failure on coverage regression` helps solve part of this gap.
-- The concept `Parametrised tests with `@pytest.mark.parametrize`` helps solve part of this gap.
-
-## Beginner mental model
-
-Use a simple four-part model: input, owner, transformation, proof.
-Input means the concrete thing entering the system.
-Owner means the file, object, or function responsible for the decision.
-Transformation means the useful change from raw data to meaningful result.
-Proof means the test or command that confirms the result.
-- Ask: what is the input for **Testing Discipline and Quality Gates**?
-- Ask: what is the owner for **Testing Discipline and Quality Gates**?
-- Ask: what is the transformation for **Testing Discipline and Quality Gates**?
-- Ask: what is the proof for **Testing Discipline and Quality Gates**?
-If you cannot answer those four questions, do not add more code yet.
-
-## Core vocabulary
-
-| Term | Simple meaning | Why it matters here |
-|------|----------------|---------------------|
-| pytest` fixture scopes | `pytest` fixture scopes: `function`, `module`, `session` | This term names one job in the Week 10 milestone. |
-| tmp_path` for temporary file system fixtures | `tmp_path` for temporary file system fixtures | This term names one job in the Week 10 milestone. |
-| monkeypatch` for environment variables and dependency substitution | `monkeypatch` for environment variables and dependency substitution | This term names one job in the Week 10 milestone. |
-| conftest.py` for shared fixtures | `conftest.py` for shared fixtures | This term names one job in the Week 10 milestone. |
-| pytest-cov` and minimum coverage threshold | `pytest-cov` and minimum coverage threshold | This term names one job in the Week 10 milestone. |
-| CI failure on coverage regression | CI failure on coverage regression | This term names one job in the Week 10 milestone. |
-| Parametrised tests with `@pytest.mark.parametrize | Parametrised tests with `@pytest.mark.parametrize` | This term names one job in the Week 10 milestone. |
-| Boundary | A line between responsibilities | It keeps the chapter understandable for a beginner. |
-| Failure path | What happens when the happy path is not available | It keeps the chapter understandable for a beginner. |
-| Validation | Evidence that the system still works | It keeps the chapter understandable for a beginner. |
-| Responsibility | The one job a file or function owns | It keeps the chapter understandable for a beginner. |
-
-## Concept explanations from first principles
-
-Read each concept as if you have never heard the term before.
-Do not skip the plain meaning.
-### Concept 1: `pytest` fixture scopes: `function`, `module`, `session`
-- **Plain meaning:** This is a named tool for solving one part of the chapter problem.
-- **Why it exists:** Real projects become confusing when this concern is unnamed.
-- **ResearchOps use:** In Week 10, it supports the milestone: Test coverage ≥ 70%. CI fails if coverage drops below threshold. All services tested via fixtures and fakes.
-- **Input question:** What data, command, file, request, or state reaches this concept?
-- **Output question:** What value, saved record, response, log, or state change should come out?
-- **Failure question:** What can be missing, malformed, slow, duplicated, stale, or invalid?
-- **Test question:** Which test would catch the mistake before a user sees it?
-- **Beginner trap:** Memorizing the word without tracing it in the project.
-- **Recovery move:** Use one concrete example and follow it through the files.
-- **Mastery signal:** You can explain the concept without saying "magic" or "it just works".
-
-### Concept 2: `tmp_path` for temporary file system fixtures
-- **Plain meaning:** This is a named tool for solving one part of the chapter problem.
-- **Why it exists:** Real projects become confusing when this concern is unnamed.
-- **ResearchOps use:** In Week 10, it supports the milestone: Test coverage ≥ 70%. CI fails if coverage drops below threshold. All services tested via fixtures and fakes.
-- **Input question:** What data, command, file, request, or state reaches this concept?
-- **Output question:** What value, saved record, response, log, or state change should come out?
-- **Failure question:** What can be missing, malformed, slow, duplicated, stale, or invalid?
-- **Test question:** Which test would catch the mistake before a user sees it?
-- **Beginner trap:** Memorizing the word without tracing it in the project.
-- **Recovery move:** Use one concrete example and follow it through the files.
-- **Mastery signal:** You can explain the concept without saying "magic" or "it just works".
-
-### Concept 3: `monkeypatch` for environment variables and dependency substitution
-- **Plain meaning:** This is a named tool for solving one part of the chapter problem.
-- **Why it exists:** Real projects become confusing when this concern is unnamed.
-- **ResearchOps use:** In Week 10, it supports the milestone: Test coverage ≥ 70%. CI fails if coverage drops below threshold. All services tested via fixtures and fakes.
-- **Input question:** What data, command, file, request, or state reaches this concept?
-- **Output question:** What value, saved record, response, log, or state change should come out?
-- **Failure question:** What can be missing, malformed, slow, duplicated, stale, or invalid?
-- **Test question:** Which test would catch the mistake before a user sees it?
-- **Beginner trap:** Memorizing the word without tracing it in the project.
-- **Recovery move:** Use one concrete example and follow it through the files.
-- **Mastery signal:** You can explain the concept without saying "magic" or "it just works".
-
-### Concept 4: `conftest.py` for shared fixtures
-- **Plain meaning:** This is a named tool for solving one part of the chapter problem.
-- **Why it exists:** Real projects become confusing when this concern is unnamed.
-- **ResearchOps use:** In Week 10, it supports the milestone: Test coverage ≥ 70%. CI fails if coverage drops below threshold. All services tested via fixtures and fakes.
-- **Input question:** What data, command, file, request, or state reaches this concept?
-- **Output question:** What value, saved record, response, log, or state change should come out?
-- **Failure question:** What can be missing, malformed, slow, duplicated, stale, or invalid?
-- **Test question:** Which test would catch the mistake before a user sees it?
-- **Beginner trap:** Memorizing the word without tracing it in the project.
-- **Recovery move:** Use one concrete example and follow it through the files.
-- **Mastery signal:** You can explain the concept without saying "magic" or "it just works".
-
-### Concept 5: `pytest-cov` and minimum coverage threshold
-- **Plain meaning:** This is a named tool for solving one part of the chapter problem.
-- **Why it exists:** Real projects become confusing when this concern is unnamed.
-- **ResearchOps use:** In Week 10, it supports the milestone: Test coverage ≥ 70%. CI fails if coverage drops below threshold. All services tested via fixtures and fakes.
-- **Input question:** What data, command, file, request, or state reaches this concept?
-- **Output question:** What value, saved record, response, log, or state change should come out?
-- **Failure question:** What can be missing, malformed, slow, duplicated, stale, or invalid?
-- **Test question:** Which test would catch the mistake before a user sees it?
-- **Beginner trap:** Memorizing the word without tracing it in the project.
-- **Recovery move:** Use one concrete example and follow it through the files.
-- **Mastery signal:** You can explain the concept without saying "magic" or "it just works".
-
-### Concept 6: CI failure on coverage regression
-- **Plain meaning:** This is a named tool for solving one part of the chapter problem.
-- **Why it exists:** Real projects become confusing when this concern is unnamed.
-- **ResearchOps use:** In Week 10, it supports the milestone: Test coverage ≥ 70%. CI fails if coverage drops below threshold. All services tested via fixtures and fakes.
-- **Input question:** What data, command, file, request, or state reaches this concept?
-- **Output question:** What value, saved record, response, log, or state change should come out?
-- **Failure question:** What can be missing, malformed, slow, duplicated, stale, or invalid?
-- **Test question:** Which test would catch the mistake before a user sees it?
-- **Beginner trap:** Memorizing the word without tracing it in the project.
-- **Recovery move:** Use one concrete example and follow it through the files.
-- **Mastery signal:** You can explain the concept without saying "magic" or "it just works".
-
-### Concept 7: Parametrised tests with `@pytest.mark.parametrize`
-- **Plain meaning:** This is a named tool for solving one part of the chapter problem.
-- **Why it exists:** Real projects become confusing when this concern is unnamed.
-- **ResearchOps use:** In Week 10, it supports the milestone: Test coverage ≥ 70%. CI fails if coverage drops below threshold. All services tested via fixtures and fakes.
-- **Input question:** What data, command, file, request, or state reaches this concept?
-- **Output question:** What value, saved record, response, log, or state change should come out?
-- **Failure question:** What can be missing, malformed, slow, duplicated, stale, or invalid?
-- **Test question:** Which test would catch the mistake before a user sees it?
-- **Beginner trap:** Memorizing the word without tracing it in the project.
-- **Recovery move:** Use one concrete example and follow it through the files.
-- **Mastery signal:** You can explain the concept without saying "magic" or "it just works".
-
-## ResearchOps-specific application
-
-The chapter belongs to these project locations:
-- `tests/conftest.py` — shared fixtures
-- `pyproject.toml` — `fail_under = 70`
-- `.github/workflows/ci.yml` — coverage gate
-Study those files in this order:
-1. Find the user-facing entry point.
-2. Find the service or core concept that owns the meaning.
-3. Find the infrastructure only when outside resources are needed.
-4. Find the tests that prove the behavior.
-5. Find the validation command that a learner runs manually.
-The goal is to know why each file exists.
-If two files seem to own the same decision, stop and clarify the boundary.
-
-## Code examples with line-by-line explanation
-
+### Fixture example
 ```python
 import pytest
 
-@pytest.mark.parametrize("query, expected", [("ml", 1), ("missing", 0)])
-def test_search_counts_results(search_service, query: str, expected: int) -> None:
-    assert len(search_service.search(query)) == expected
-```
-
-Line-by-line explanation:
-- Line 1: `import pytest` — This imports a tool before the example can use it.
-- Line 2: `(blank line)` — This blank line separates ideas so the example is easier to read.
-- Line 3: `@pytest.mark.parametrize("query, expected", [("ml", 1), ("missing", 0)])` — This attaches framework or test behavior to the next function or class.
-- Line 4: `def test_search_counts_results(search_service, query: str, expected: int) -> None:` — This names a reusable action and shows what information it receives.
-- Line 5: `assert len(search_service.search(query)) == expected` — This stores a clear intermediate value for the next step.
-
-How to use this example:
-- Name the input.
-- Name the output.
-- Predict the result before running anything.
-- Connect the shape to the real ResearchOps file.
-- Write one sentence about why each line belongs.
-
-## Common beginner mistakes
-
-- **Mistake:** Pasting code before knowing the owner of the behavior.
-  **Why it hurts:** it hides the mental model and makes debugging harder.
-  **Better move:** make one small behavior clear, then prove it.
-- **Mistake:** Changing many files at once.
-  **Why it hurts:** it hides the mental model and makes debugging harder.
-  **Better move:** make one small behavior clear, then prove it.
-- **Mistake:** Skipping the failure path.
-  **Why it hurts:** it hides the mental model and makes debugging harder.
-  **Better move:** make one small behavior clear, then prove it.
-- **Mistake:** Reading only the happy path test.
-  **Why it hurts:** it hides the mental model and makes debugging harder.
-  **Better move:** make one small behavior clear, then prove it.
-- **Mistake:** Ignoring the validation command.
-  **Why it hurts:** it hides the mental model and makes debugging harder.
-  **Better move:** make one small behavior clear, then prove it.
-- **Mistake:** Using vague names.
-  **Why it hurts:** it hides the mental model and makes debugging harder.
-  **Better move:** make one small behavior clear, then prove it.
-- **Mistake:** Putting business rules in the user interface layer.
-  **Why it hurts:** it hides the mental model and makes debugging harder.
-  **Better move:** make one small behavior clear, then prove it.
-- **Mistake:** Treating logs, errors, and tests as decoration.
-  **Why it hurts:** it hides the mental model and makes debugging harder.
-  **Better move:** make one small behavior clear, then prove it.
-- **Mistake:** Optimizing before correctness is visible.
-  **Why it hurts:** it hides the mental model and makes debugging harder.
-  **Better move:** make one small behavior clear, then prove it.
-- **Mistake:** Building future-week features early.
-  **Why it hurts:** it hides the mental model and makes debugging harder.
-  **Better move:** make one small behavior clear, then prove it.
-
-## Debugging guidance
-
-- Copy the exact failing command.
-- Read the first useful error line.
-- Read the final error line.
-- Classify the failure as import, input, state, file, database, network, model, or expectation.
-- Reproduce it with the smallest command.
-- Inspect the value closest to the failure.
-- Fix the cause, not only the symptom.
-- Run the narrowest test.
-- Run the chapter validation command.
-- Write down what the error was teaching.
-Debugging questions:
-- What did I expect?
-- What happened?
-- Which value first became wrong?
-- Which layer created that value?
-- Which test should catch this next time?
-
-## Design tradeoffs
-
-- **Simple first version:** Easy to understand, but not the final production shape.
-- **Clear layers:** More files, but less confusion as features grow.
-- **Explicit errors:** More code, but failures become teachable.
-- **Small unit tests:** Fast feedback, but less end-to-end confidence.
-- **Integration tests:** Real wiring, but slower and more setup.
-- **Configuration:** Flexible behavior, but defaults must be clear.
-The right question is not "What is the fanciest design?"
-The right question is "What design teaches the responsibility clearly and can grow next week?"
-
-## Testing implications
-
-Tests for this chapter:
-- Coverage of all service modules ≥ 70%
-Validation commands:
-```bash
-pytest --cov=researchops --cov-report=term-missing -q
-ruff check src tests
-```
-- Arrange the data.
-- Act on the system.
-- Assert the visible promise.
-- Check one failure path.
-- Keep unit tests fast.
-- Use integration tests only when real wiring matters.
-
-## Architecture implications
-
-ResearchOps stays understandable when dependencies point inward.
-```text
-CLI / API / Worker -> Services -> Core
-Infrastructure implements core-facing contracts and is wired at the outside.
-```
-- Does the UI layer avoid business logic?
-- Does the service layer own workflow decisions?
-- Does core avoid infrastructure imports?
-- Does infrastructure do outside-world work?
-- Do tests use fakes when possible?
-Architecture is not ceremony.
-Architecture is named responsibility.
-
-## How this connects to AI engineering / ML research
-
-AI engineering needs more than models.
-It needs reliable data flow, clear interfaces, repeatable experiments, visible failures, and honest evaluation.
-Week 10 contributes by making **testing discipline and quality gates** clear enough to trust.
-- Bad data creates bad model behavior.
-- Unclear boundaries make experiments hard to reproduce.
-- Missing tests let regressions change research results silently.
-- Good logs and errors shorten investigation time.
-- Clear documentation lets future users understand the system.
-
-## Mini quizzes
-
-- What problem does Week 10 solve?
-- What is the main input?
-- What is the main output?
-- Which file owns the main responsibility?
-- Which layer should not contain business logic?
-- What is one happy path?
-- What is one failure path?
-- What command proves the chapter works?
-- What should you not build early?
-- How does this prepare the next week?
-
-## Explain-it-aloud prompts
-
-- Explain Testing Discipline and Quality Gates in simple words.
-- Explain the data flow from input to result.
-- Explain the first file you would open.
-- Explain the test that gives confidence.
-- Explain what can break.
-- Explain the tradeoff made in this chapter.
-- Explain what you still find weak.
-
-## What to memorize
-
-- The topic: Testing Discipline and Quality Gates.
-- The milestone: Test coverage ≥ 70%. CI fails if coverage drops below threshold. All services tested via fixtures and fakes.
-- The main project files.
-- The validation command.
-- The boundary rule for the layer you are touching.
-- The habit of testing before moving forward.
-
-## What to understand deeply
-
-- Why this feature belongs now.
-- How data moves through the chapter.
-- Which file owns which decision.
-- How the failure path is handled.
-- Why the tests prove behavior.
-- How this week makes future work safer.
-
-## What not to worry about yet
-
-- Perfect scale.
-- Fancy abstractions.
-- Future-week features.
-- Every option in every library.
-- Premature optimization.
-- Comparing your speed to someone else.
-Focus on the milestone.
-A clear small milestone beats a confusing large one.
-
-## Bridge to next week
-
-Next week is Week 11: **Classical ML — Topic Classification**.
-This week prepares you by giving ResearchOps a clearer piece of behavior before the next milestone: `researchops train-topic-model` trains and saves a classifier. `researchops classify PAPER_ID` returns the predicted topic.
-- Run validation.
-- Explain the main files.
-- Explain one failure.
-- Explain one test.
-- Write down what still feels weak before moving on.
-
-## Guided deepening drills
-
-Use these drills if the chapter still feels abstract.
-- Drill 1: Trace ``pytest` fixture scopes: `function`, `module`, `session`` from user input to project result.
-- Drill 2: Write one sentence defining ``pytest` fixture scopes: `function`, `module`, `session`` without copying the notes.
-- Drill 3: Find the file where ``pytest` fixture scopes: `function`, `module`, `session`` appears or should appear.
-- Drill 4: Name one wrong implementation of ``pytest` fixture scopes: `function`, `module`, `session`` and why it would hurt.
-- Drill 5: Name one test that would protect ``pytest` fixture scopes: `function`, `module`, `session``.
-- Drill 6: Trace ``tmp_path` for temporary file system fixtures` from user input to project result.
-- Drill 7: Write one sentence defining ``tmp_path` for temporary file system fixtures` without copying the notes.
-- Drill 8: Find the file where ``tmp_path` for temporary file system fixtures` appears or should appear.
-- Drill 9: Name one wrong implementation of ``tmp_path` for temporary file system fixtures` and why it would hurt.
-- Drill 10: Name one test that would protect ``tmp_path` for temporary file system fixtures`.
-- Drill 11: Trace ``monkeypatch` for environment variables and dependency substitution` from user input to project result.
-- Drill 12: Write one sentence defining ``monkeypatch` for environment variables and dependency substitution` without copying the notes.
-- Drill 13: Find the file where ``monkeypatch` for environment variables and dependency substitution` appears or should appear.
-- Drill 14: Name one wrong implementation of ``monkeypatch` for environment variables and dependency substitution` and why it would hurt.
-- Drill 15: Name one test that would protect ``monkeypatch` for environment variables and dependency substitution`.
-- Drill 16: Trace ``conftest.py` for shared fixtures` from user input to project result.
-- Drill 17: Write one sentence defining ``conftest.py` for shared fixtures` without copying the notes.
-- Drill 18: Find the file where ``conftest.py` for shared fixtures` appears or should appear.
-- Drill 19: Name one wrong implementation of ``conftest.py` for shared fixtures` and why it would hurt.
-- Drill 20: Name one test that would protect ``conftest.py` for shared fixtures`.
-- Drill 21: Trace ``pytest-cov` and minimum coverage threshold` from user input to project result.
-- Drill 22: Write one sentence defining ``pytest-cov` and minimum coverage threshold` without copying the notes.
-- Drill 23: Find the file where ``pytest-cov` and minimum coverage threshold` appears or should appear.
-- Drill 24: Name one wrong implementation of ``pytest-cov` and minimum coverage threshold` and why it would hurt.
-- Drill 25: Name one test that would protect ``pytest-cov` and minimum coverage threshold`.
-- Drill 26: Trace `CI failure on coverage regression` from user input to project result.
-- Drill 27: Write one sentence defining `CI failure on coverage regression` without copying the notes.
-- Drill 28: Find the file where `CI failure on coverage regression` appears or should appear.
-- Drill 29: Name one wrong implementation of `CI failure on coverage regression` and why it would hurt.
-- Drill 30: Name one test that would protect `CI failure on coverage regression`.
-- Drill 31: Trace `Parametrised tests with `@pytest.mark.parametrize`` from user input to project result.
-- Drill 32: Write one sentence defining `Parametrised tests with `@pytest.mark.parametrize`` without copying the notes.
-- Drill 33: Find the file where `Parametrised tests with `@pytest.mark.parametrize`` appears or should appear.
-- Drill 34: Name one wrong implementation of `Parametrised tests with `@pytest.mark.parametrize`` and why it would hurt.
-- Drill 35: Name one test that would protect `Parametrised tests with `@pytest.mark.parametrize``.
-
-<!-- LEARNING_FORMAT_END -->
-
----
-
-# Existing detailed notes
-## Why tests exist
-
-Before automated tests existed, developers verified their code by running it manually, checking the output, and hoping nothing else broke. That works for a single module in isolation. It collapses when the codebase grows.
-
-Tests exist for three reasons:
-
-1. **Verification**: prove that the code does what you intended right now.
-2. **Regression protection**: prove that it still does what you intended after a change.
-3. **Documentation**: show how the code is meant to be used.
-
-A regression is when a previously working feature breaks because of a change elsewhere. Without automated tests, you discover regressions when users report bugs. With tests, you discover them in seconds, locally, before the code ever ships.
-
-For ResearchOps, this matters enormously. By Month 3 the codebase has ingestion, parsing, storage, search, and is about to get ML models. A change to the text cleaner could silently break search relevance. A change to the SQLite schema could silently break ingestion. Tests are the safety net that lets you move quickly.
-
----
-
-## The test pyramid
-
-The **test pyramid** is a model that describes how many tests you should have at each level of abstraction:
-
-```
-         /\
-        /  \
-       / E2E \       (few — slow, brittle, end-to-end)
-      /--------\
-     /          \
-    / Integration \  (moderate — test boundaries like SQLite, file system)
-   /--------------\
-  /                \
- /   Unit Tests     \ (many — fast, isolated, no I/O)
-/--------------------\
-```
-
-**Unit tests** test a single function or class in complete isolation. They use fakes for all dependencies. They should run in milliseconds. You should have dozens or hundreds.
-
-**Integration tests** test the interaction between two real components — for example, `SQLiteRepository` plus the actual SQLite database. They may be slower (tens of milliseconds). You should have a moderate number.
-
-**End-to-end (E2E) tests** run the full system as a user would. For ResearchOps, that means running the actual CLI commands and checking outputs. They are the slowest and the most brittle (fragile). You should have a small number of the most critical user flows.
-
-The pyramid shape is important. Many codebases have it inverted — lots of slow E2E tests and few unit tests. That leads to a test suite that takes minutes to run, breaks for infrastructure reasons, and gives you no confidence about specific behaviors. Resist this.
-
-In ResearchOps:
-
-- `tests/unit/` — unit tests using fakes. Should be fast and numerous.
-- `tests/integration/` — tests using real SQLite. Moderate count.
-- `tests/e2e/` — tests using the real installed CLI. Small count.
-
----
-
-## pytest fundamentals
-
-### Running tests
-
-```bash
-pytest tests/unit/ -v        # verbose: see each test name
-pytest tests/unit/ -q        # quiet: see only failures
-pytest tests/unit/ -k "ingest"  # filter: run only tests whose name contains "ingest"
-pytest -x                   # stop at first failure
-pytest --maxfail=3           # stop after 3 failures
-pytest -s                   # show print() output (useful for debugging)
-pytest -vv                  # extra verbose: show diffs on assertion failures
-```
-
-### Fixture in depth
-
-A **fixture** is reusable setup code that pytest injects into test functions as arguments.
-
-```python
-import pytest
-
-@pytest.fixture()
-def sample_query() -> str:
-    return "semantic search"
-
-def test_normalize_query(sample_query: str) -> None:
-    assert normalize_text(sample_query) == "semantic search"
-```
-
-When pytest sees `test_normalize_query(sample_query: str)`, it looks for a fixture named `sample_query`, calls it, and passes the result as the `sample_query` argument. The test function never calls the fixture directly.
-
-Fixtures can be:
-
-- **Function-scoped** (default): called fresh for every test.
-- **Module-scoped**: called once per test module file.
-- **Session-scoped**: called once for the entire test run.
-
-For fast unit tests, function scope is almost always right. For expensive setup like a filled database, module or session scope can save time.
-
-Fixtures can also use other fixtures:
-
-```python
 @pytest.fixture()
 def paper_repo() -> FakePaperRepository:
     return FakePaperRepository()
 
-@pytest.fixture()
-def service(paper_repo: FakePaperRepository) -> KeywordSearchService:
-    return KeywordSearchService(paper_repo=paper_repo)
+def test_new_repository_starts_empty(paper_repo: FakePaperRepository) -> None:
+    assert paper_repo.list_all() == []
 ```
-
-`service` depends on `paper_repo`. pytest resolves the dependency chain automatically.
-
-### Temporary directory
-
-`tmp_path` is a built-in pytest fixture that provides a temporary directory unique to the current test. The directory is cleaned up after the test run.
-
+- Line 1 imports pytest so the fixture decorator is available.
+- Line 3 marks the next function as pytest-managed setup.
+- Line 4 names the fixture and states the returned fake type.
+- Line 5 creates a fresh in-memory repository.
+- Line 7 requests the fixture by parameter name.
+- Line 8 asserts the visible initial behavior.
+- The test does not call the fixture directly because pytest owns fixture setup and scope.
+### tmp_path example
 ```python
-def test_artifact_saved(tmp_path: Path) -> None:
-    artifact_file = tmp_path / "model.joblib"
-    save_artifact(artifact_file)
-    assert artifact_file.exists()
+def test_reads_title_from_file(tmp_path: Path) -> None:
+    paper_file = tmp_path / "paper.txt"
+    paper_file.write_text("Quality Gates\nBody", encoding="utf-8")
+    title = read_first_line(paper_file)
+    assert title == "Quality Gates"
 ```
-
-You never need to create or clean up `tmp_path` yourself. This is especially useful for integration tests that write files.
-
-### Temporary database
-
-For tests that need SQLite, use `tmp_path` to give each test its own database:
-
+- Line 1 requests a pytest-managed temporary directory.
+- Line 2 creates a file path inside that directory.
+- Line 3 writes controlled test data.
+- Line 4 acts by calling the behavior under test.
+- Line 5 asserts the exact result.
+- No manual cleanup is needed because pytest manages the temporary location.
+### monkeypatch example
 ```python
-@pytest.fixture()
-def sqlite_repo(tmp_path: Path) -> SQLiteRepository:
-    db_path = tmp_path / "test.db"
-    conn = sqlite3.connect(str(db_path))
-    repo = SQLiteRepository(conn)
-    repo.initialize_schema()
-    return repo
+def test_setting_uses_environment(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("RESEARCHOPS_DB_NAME", "quality-gate.db")
+    settings = Settings()
+    assert settings.db_name == "quality-gate.db"
 ```
+- Line 1 requests the monkeypatch fixture.
+- Line 2 changes an environment variable for this one test.
+- Line 3 creates settings after the environment is controlled.
+- Line 4 asserts the setting used the override.
+- pytest restores the environment after the test.
 
-Each test gets a fresh, isolated database. No test can contaminate another.
+## 7. ResearchOps-specific application
+- Service tests should use fakes for repositories, parsers, and failure stores when the service decision is under test.
+- SQLite repository tests should use the real repository and a database path under `tmp_path`.
+- CLI smoke tests should prove the command starts and delegates, not duplicate every service test.
+- `tests/fakes/` should contain reusable fake implementations of core protocols.
+- `tests/conftest.py` should contain shared fixtures only when sharing improves clarity.
+- The coverage command should measure `researchops`, not the tests themselves.
+- The CI workflow should run Ruff and pytest coverage as named, understandable steps.
+- No future-week model, embedding, API, or async behavior is needed to complete this week.
+- In researchops-specific application, **pytest discovery** means pytest finds files named like tests, then functions named like tests, and treats uncaught exceptions as failures; apply it only when it proves a real ResearchOps responsibility.
+- In researchops-specific application, **fixtures** means pytest fixtures are named setup functions requested by test parameters instead of called directly; apply it only when it proves a real ResearchOps responsibility.
+- In researchops-specific application, **fixture scope** means fixture scope controls how long a returned setup object lives before pytest creates a new one; apply it only when it proves a real ResearchOps responsibility.
+- In researchops-specific application, **function scope** means function scope gives every test a clean object and is safest for mutable fakes; apply it only when it proves a real ResearchOps responsibility.
+- In researchops-specific application, **module scope** means module scope shares one object across a file and is safe only when shared state cannot leak; apply it only when it proves a real ResearchOps responsibility.
+- In researchops-specific application, **session scope** means session scope shares one object across the whole run and should be rare in beginner project tests; apply it only when it proves a real ResearchOps responsibility.
+- In researchops-specific application, **tmp_path** means tmp_path gives each test a pathlib.Path directory managed by pytest for isolated file work; apply it only when it proves a real ResearchOps responsibility.
+- In researchops-specific application, **monkeypatch** means monkeypatch temporarily changes environment variables or attributes and then restores them; apply it only when it proves a real ResearchOps responsibility.
+- In researchops-specific application, **fakes** means fakes are small test implementations of ResearchOps protocols stored under tests/fakes; apply it only when it proves a real ResearchOps responsibility.
+- In researchops-specific application, **unit tests** means unit tests prove one service or function with outside dependencies replaced by fakes; apply it only when it proves a real ResearchOps responsibility.
+- In researchops-specific application, **integration tests** means integration tests prove real boundaries such as SQLite repository behavior with tmp_path isolation; apply it only when it proves a real ResearchOps responsibility.
+- In researchops-specific application, **E2E smoke tests** means E2E smoke tests prove the installed CLI starts without trying to test every branch; apply it only when it proves a real ResearchOps responsibility.
 
-### Parametrize
+## 8. Code examples with line-by-line explanation
+- In code examples with line-by-line explanation, **pytest discovery** means pytest finds files named like tests, then functions named like tests, and treats uncaught exceptions as failures; apply it only when it proves a real ResearchOps responsibility.
+- In code examples with line-by-line explanation, **fixtures** means pytest fixtures are named setup functions requested by test parameters instead of called directly; apply it only when it proves a real ResearchOps responsibility.
+- In code examples with line-by-line explanation, **fixture scope** means fixture scope controls how long a returned setup object lives before pytest creates a new one; apply it only when it proves a real ResearchOps responsibility.
+- In code examples with line-by-line explanation, **function scope** means function scope gives every test a clean object and is safest for mutable fakes; apply it only when it proves a real ResearchOps responsibility.
+- In code examples with line-by-line explanation, **module scope** means module scope shares one object across a file and is safe only when shared state cannot leak; apply it only when it proves a real ResearchOps responsibility.
+- In code examples with line-by-line explanation, **session scope** means session scope shares one object across the whole run and should be rare in beginner project tests; apply it only when it proves a real ResearchOps responsibility.
+- In code examples with line-by-line explanation, **tmp_path** means tmp_path gives each test a pathlib.Path directory managed by pytest for isolated file work; apply it only when it proves a real ResearchOps responsibility.
+- In code examples with line-by-line explanation, **monkeypatch** means monkeypatch temporarily changes environment variables or attributes and then restores them; apply it only when it proves a real ResearchOps responsibility.
+- In code examples with line-by-line explanation, **fakes** means fakes are small test implementations of ResearchOps protocols stored under tests/fakes; apply it only when it proves a real ResearchOps responsibility.
+- In code examples with line-by-line explanation, **unit tests** means unit tests prove one service or function with outside dependencies replaced by fakes; apply it only when it proves a real ResearchOps responsibility.
+- In code examples with line-by-line explanation, **integration tests** means integration tests prove real boundaries such as SQLite repository behavior with tmp_path isolation; apply it only when it proves a real ResearchOps responsibility.
+- In code examples with line-by-line explanation, **E2E smoke tests** means E2E smoke tests prove the installed CLI starts without trying to test every branch; apply it only when it proves a real ResearchOps responsibility.
 
-`@pytest.mark.parametrize` runs the same test with multiple inputs:
+### Shared conftest fixture example
+```python
+import pytest
 
+from tests.fakes.fake_repository import FakePaperRepository
+
+
+@pytest.fixture()
+def paper_repo() -> FakePaperRepository:
+    return FakePaperRepository()
+```
+- Line 1 imports pytest because fixture decorators belong to pytest.
+- Line 3 imports the test fake, not a production SQLite repository.
+- Line 6 marks the function as a fixture available to tests below this conftest scope.
+- Line 7 gives the fixture a behavior name instead of a vague name like data.
+- Line 8 returns a fresh fake repository for each test by default.
+- This belongs in conftest only when multiple test modules use the same idea.
+- If one test file uses the fixture, keeping it local can be clearer.
+- A huge conftest file is a hidden dependency map and becomes hard for beginners to follow.
+### Fake repository behavior example
+```python
+class FakePaperRepository:
+    def __init__(self) -> None:
+        self._papers: dict[str, Paper] = {}
+
+    def save(self, paper: Paper) -> None:
+        self._papers[paper.id] = paper
+
+    def list_all(self) -> list[Paper]:
+        return list(self._papers.values())
+```
+- Line 1 defines a fake, not a mock tied to call counts.
+- Line 2 creates private in-memory storage for the fake.
+- Line 3 chooses a dictionary so paper IDs stay unique.
+- Line 5 implements the same save idea the service expects from a repository.
+- Line 6 stores the paper by ID.
+- Line 8 implements list behavior expected by services.
+- Line 9 returns papers without touching SQLite.
+- The fake is intentionally boring because its job is to support service tests, not simulate every database detail.
+- If a service needs sorting, filtering, or existence behavior, the fake should implement enough of the protocol to make that service test honest.
+- If the fake grows complex, check whether the production protocol is too broad or the test is trying to prove too much.
+### SQLite integration example
+```python
+def test_sqlite_delete_removes_saved_paper(tmp_path: Path) -> None:
+    database_path = tmp_path / "researchops.db"
+    repository = SQLitePaperRepository(database_path)
+    repository.initialize_schema()
+
+    repository.save(make_paper(paper_id="p1"))
+    repository.save(make_paper(paper_id="p2"))
+    repository.delete("p1")
+
+    remaining_ids = [paper.id for paper in repository.list_all()]
+
+    assert remaining_ids == ["p2"]
+    assert repository.exists("p1") is False
+```
+- Line 1 names a real persistence behavior.
+- Line 2 uses tmp_path so the test does not touch a developer database.
+- Line 3 creates the real SQLite repository because this is integration coverage.
+- Line 4 initializes tables before saving data.
+- Lines 6 and 7 arrange two records.
+- Line 8 acts by deleting one record.
+- Line 10 reads the visible state after deletion.
+- Line 12 asserts the remaining record list.
+- Line 13 asserts the deleted record no longer exists.
+- This is not a unit test because it intentionally crosses the SQLite boundary.
+- The value of the test is that SQL schema, write behavior, delete behavior, and read behavior all meet correctly.
+### Parametrized search validation example
 ```python
 @pytest.mark.parametrize(
-    ("raw", "expected"),
+    ("query", "should_raise"),
     [
-        ("Machine Learning", "machine learning"),
-        ("  NLP  ", "nlp"),
-        ("BERT-based Retrieval", "bert-based retrieval"),
+        ("", True),
+        ("   ", True),
+        ("graph", False),
+        ("Graph", False),
     ],
 )
-def test_normalise_for_search(raw: str, expected: str) -> None:
-    assert normalise_for_search(raw) == expected
-```
-
-This generates three separate test cases from one test definition. pytest names them `test_normalise_for_search[Machine Learning-machine learning]`, etc. If one fails, the others still run.
-
----
-
-## monkeypatch in depth
-
-`monkeypatch` is a built-in pytest fixture that temporarily replaces attributes, functions, environment variables, or other objects during a single test. Replacements are automatically undone after the test.
-
-### Patching a function
-
-```python
-def test_parser_returns_empty_on_failure(monkeypatch, tmp_path: Path) -> None:
-    pdf = tmp_path / "broken.pdf"
-    pdf.write_bytes(b"not a pdf")
-
-    # Replace the underlying extract_text call to simulate a failure
-    monkeypatch.setattr(
-        "researchops.parsing.pdf_parser.fitz.open",
-        lambda _: (_ for _ in ()).throw(Exception("cannot open")),
-    )
-    # Now test how the service handles the failure...
-```
-
-### Patching an environment variable
-
-```python
-def test_config_uses_env_db_path(monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setenv("RESEARCHOPS_DB_PATH", "/tmp/test.db")
-    settings = Settings()
-    assert settings.db_path == "/tmp/test.db"
-```
-
-### When to use monkeypatch
-
-monkeypatch is the right tool when:
-
-- You need to test a specific failure path that is hard to trigger naturally.
-- You need to control an environment variable or system call.
-- The dependency cannot be injected (e.g., a function call inside a third-party library).
-
-monkeypatch is the wrong tool when:
-
-- The dependency CAN be injected (prefer a fake instead — it is more explicit).
-- You find yourself patching many things to test one function (a sign the function has too many responsibilities).
-
-The key difference between monkeypatch and a fake: a fake is explicit architecture. monkeypatch is a surgical bypass of the real code. Prefer fakes for your own collaborators. Prefer monkeypatch for third-party or stdlib code you do not control.
-
----
-
-## Coverage
-
-**Test coverage** is a measurement of how many lines (or branches) in your code were executed during a test run. It does not tell you whether your tests are correct — a bad test can achieve 100% coverage. But low coverage reliably reveals untested code paths.
-
-Running coverage in ResearchOps:
-
-```bash
-pytest --cov=researchops --cov-report=term-missing -q
-```
-
-`--cov=researchops` — measure coverage for the `researchops` package only.
-`--cov-report=term-missing` — print a summary showing which line numbers were not covered.
-
-Example output:
-
-```
-Name                                    Stmts   Miss  Cover   Missing
----------------------------------------------------------------
-researchops/core/models.py                 45      2    96%   87, 91
-researchops/services/ingestion_service.py  63      0   100%
-researchops/ml/topic_classifier.py          4      4     0%   1-4
-```
-
-The `0%` on `topic_classifier.py` is expected — that module is a stub for Week 11. The `96%` on `models.py` means lines 87 and 91 are not tested — worth investigating.
-
-The project enforces a minimum coverage threshold in `pyproject.toml`:
-
-```toml
-[tool.pytest.ini_options]
-addopts = "--cov=researchops --cov-fail-under=70"
-```
-
-`--cov-fail-under=70` — pytest exits with a failure code if coverage drops below 70%. This means a PR that deletes tests will fail CI automatically.
-
----
-
-## Arrange / Act / Assert pattern
-
-Every test has three phases. Making them explicit improves readability.
-
-```python
-def test_search_returns_results_in_score_order(
-    paper_repo: FakePaperRepository,
-) -> None:
-    # Arrange — set up the system under test
-    paper_repo.save(Paper(id="a", title="NLP", text="neural language model", ...))
-    paper_repo.save(Paper(id="b", title="NLP NLP", text="neural neural language", ...))
+def test_search_query_validation(query: str, should_raise: bool, paper_repo: FakePaperRepository) -> None:
     service = KeywordSearchService(paper_repo=paper_repo)
 
-    # Act — do the thing being tested
-    results = service.search("neural")
-
-    # Assert — verify the outcome
-    assert len(results) == 2
-    assert results[0].score >= results[1].score
+    if should_raise:
+        with pytest.raises(EmptyQueryError):
+            service.search(query)
+    else:
+        service.search(query)
 ```
-
-The blank lines between sections make the test easy to scan. Avoid mixing Arrange and Assert. Avoid having multiple Act phases. If you need multiple assertions after one Act, that is fine, but if you need two separate Act phases, write two tests.
-
----
-
-## Test naming
-
-Good test names describe the behavior being tested, not the implementation:
-
-| Bad name | Good name |
-|---|---|
-| `test_search_1` | `test_search_returns_results_in_score_order` |
-| `test_uses_sorted_call` | `test_empty_query_raises_empty_query_error` |
-| `test_ingestion_service_ingest_directory` | `test_ingestion_skips_existing_paper` |
-
-The good names are longer. That is intentional. A test name should be a specification: "when X, then Y." When the test fails, the name tells you what behavior broke.
-
-Use classes to group related tests:
-
-```python
-class TestIngestDirectory:
-    def test_ingests_single_pdf(self, ...) -> None: ...
-    def test_ingests_multiple_pdfs(self, ...) -> None: ...
-    def test_parse_failure_recorded(self, ...) -> None: ...
+- Line 1 starts parametrization for repeated validation behavior.
+- Line 2 names the changing values.
+- Lines 4 and 5 cover empty and whitespace-only inputs.
+- Lines 6 and 7 cover normal text with different casing.
+- Line 10 requests the fake repository fixture.
+- Line 11 creates the service under test.
+- Line 13 branches inside the test based on the expected category.
+- Line 14 asserts the exact exception for invalid input.
+- Line 15 calls the behavior that should reject the query.
+- Line 17 calls the behavior that should not reject the query.
+- This example is acceptable because all cases test one concept: query validation.
+- If the normal query cases needed detailed result assertions, they should become separate search-result tests.
+### Coverage output reading example
+```text
+Name                                      Stmts   Miss  Cover   Missing
+-----------------------------------------------------------------------
+researchops/services/search_service.py       54      6    89%   41-44, 67
+researchops/storage/sqlite_repository.py     88     18    80%   102-130
+researchops/cli/main.py                      20      2    90%   35-36
+TOTAL                                       240     26    89%
 ```
+- Line 1 is the table header produced by coverage.
+- Line 3 shows a service module with missing lines.
+- The learner should open lines 41 through 44 before deciding what test to write.
+- Line 4 shows a larger SQLite gap that may need integration tests.
+- The learner should not blindly test every line if some belong to unreachable defensive code.
+- Line 5 shows CLI missing lines, which may be appropriate for a small smoke test.
+- Line 6 shows total coverage, but the total is less important than meaningful missing behavior.
+- A strong coverage workflow reads missing lines, classifies behavior, then writes the smallest useful test.
+- A weak coverage workflow adds shallow calls only to move the percentage.
+### CI gate example
+```yaml
+- name: Lint source and tests
+  run: ruff check src tests
 
-The class name is the "describe" and each method is an "it":
-
-- Describe `IngestDirectory`
-- It `ingests_single_pdf`
-- It `records parse failure`
-
----
-
-## How to test bugs
-
-When you find a bug, write a test that fails because of the bug before you fix the bug. This is called a **regression test**. The steps are:
-
-1. Reproduce the bug minimally — find the smallest input that triggers it.
-2. Write a test that captures that input and the expected correct behavior.
-3. Run the test. It should fail (because the bug exists).
-4. Fix the bug.
-5. Run the test. It should now pass.
-6. Never delete this test. It protects against the same bug re-appearing.
-
-Example: you discover that `normalise_for_search` crashes on an empty string. The test:
-
-```python
-def test_normalise_for_search_handles_empty_string() -> None:
-    # This was a bug: empty string caused IndexError in the split
-    result = normalise_for_search("")
-    assert result == ""
+- name: Run tests with coverage
+  run: pytest --cov=researchops --cov-report=term-missing -q
 ```
+- Line 1 gives the lint gate a readable CI name.
+- Line 2 runs the exact Week 10 Ruff command.
+- Line 4 gives the test gate a readable CI name.
+- Line 5 runs the exact Week 10 pytest coverage command.
+- The 70 percent floor can live in coverage configuration rather than being repeated in the command.
+- Readable CI names help beginners understand which gate failed.
+- Do not add model training, web service startup, embedding generation, or async workers to this Week 10 gate.
+### Choosing the right proof
+- If the behavior is pure text normalization, use a parametrized unit test.
+- If the behavior is service coordination, use fakes for repositories and parsers.
+- If the behavior is SQLite persistence, use a real SQLite repository under tmp_path.
+- If the behavior is CLI startup, use a small E2E smoke test.
+- If the behavior is environment configuration, use monkeypatch.setenv or monkeypatch.delenv.
+- If the behavior is a third-party failure that is hard to trigger, monkeypatch may be appropriate.
+- If the behavior is a project-owned dependency with a protocol, prefer a fake.
+- If the behavior is future model training, stop because that belongs to Week 11.
+- If the behavior is embeddings or RAG, stop because that belongs later.
+- If the behavior is FastAPI or async wiring, stop because this week is not about that layer.
+### Good assertion checklist
+- Assert exact IDs when identity matters.
+- Assert exact counts when count matters.
+- Assert ordering when ranking matters.
+- Assert exception types when invalid input matters.
+- Assert failure records when failure handling matters.
+- Assert file existence only when file creation is the promise.
+- Assert file content when content correctness is the promise.
+- Avoid `assert result` when an empty list is a meaningful outcome.
+- Avoid `assert result is not None` when a precise value is available.
+- Avoid asserting private helper calls unless the call itself is the public contract.
 
-This test is named after the behavior, not the bug number. Future maintainers do not need to know the history — the test just says "empty strings should not crash."
+## 9. Common beginner mistakes
+- Using real SQLite in every service unit test makes the suite slow and hides service intent.
+- Using monkeypatch instead of an injected fake couples tests to internal names.
+- Putting every helper into `conftest.py` hides local test setup.
+- Making mutable fixtures module-scoped creates order-dependent failures.
+- Asserting only `is not None` gives coverage without useful proof.
+- Lowering `fail_under` after failure weakens the gate instead of fixing the gap.
+- Adding future-week features distracts from testing discipline.
+- Ignoring Ruff in tests treats test code as disposable even though it protects the project.
+- In common beginner mistakes, **pytest discovery** means pytest finds files named like tests, then functions named like tests, and treats uncaught exceptions as failures; apply it only when it proves a real ResearchOps responsibility.
+- In common beginner mistakes, **fixtures** means pytest fixtures are named setup functions requested by test parameters instead of called directly; apply it only when it proves a real ResearchOps responsibility.
+- In common beginner mistakes, **fixture scope** means fixture scope controls how long a returned setup object lives before pytest creates a new one; apply it only when it proves a real ResearchOps responsibility.
+- In common beginner mistakes, **function scope** means function scope gives every test a clean object and is safest for mutable fakes; apply it only when it proves a real ResearchOps responsibility.
+- In common beginner mistakes, **module scope** means module scope shares one object across a file and is safe only when shared state cannot leak; apply it only when it proves a real ResearchOps responsibility.
+- In common beginner mistakes, **session scope** means session scope shares one object across the whole run and should be rare in beginner project tests; apply it only when it proves a real ResearchOps responsibility.
+- In common beginner mistakes, **tmp_path** means tmp_path gives each test a pathlib.Path directory managed by pytest for isolated file work; apply it only when it proves a real ResearchOps responsibility.
+- In common beginner mistakes, **monkeypatch** means monkeypatch temporarily changes environment variables or attributes and then restores them; apply it only when it proves a real ResearchOps responsibility.
+- In common beginner mistakes, **fakes** means fakes are small test implementations of ResearchOps protocols stored under tests/fakes; apply it only when it proves a real ResearchOps responsibility.
+- In common beginner mistakes, **unit tests** means unit tests prove one service or function with outside dependencies replaced by fakes; apply it only when it proves a real ResearchOps responsibility.
+- In common beginner mistakes, **integration tests** means integration tests prove real boundaries such as SQLite repository behavior with tmp_path isolation; apply it only when it proves a real ResearchOps responsibility.
+- In common beginner mistakes, **E2E smoke tests** means E2E smoke tests prove the installed CLI starts without trying to test every branch; apply it only when it proves a real ResearchOps responsibility.
 
----
+## 10. Debugging guidance
+- Start with the first failing test name, then classify the failure as import, fixture, runtime, assertion, lint, or coverage.
+- Fixture-not-found means pytest could not discover a name; check spelling and `conftest.py` visibility.
+- Import failure means the test module did not load; fix paths and dependencies before debugging behavior.
+- Assertion failure means the behavior ran and produced an unexpected value; inspect the closest value to the assertion.
+- Monkeypatch failure often means the wrong object was patched; patch where the code under test looks up the object.
+- File-not-found in tests often means the code used a different path than the one created under `tmp_path`.
+- Coverage failure means the suite completed but did not execute enough source; read missing lines before editing configuration.
+- CI-only failure often means local commands, environment, or hidden state differ from the clean gate.
+- In debugging guidance, **pytest discovery** means pytest finds files named like tests, then functions named like tests, and treats uncaught exceptions as failures; apply it only when it proves a real ResearchOps responsibility.
+- In debugging guidance, **fixtures** means pytest fixtures are named setup functions requested by test parameters instead of called directly; apply it only when it proves a real ResearchOps responsibility.
+- In debugging guidance, **fixture scope** means fixture scope controls how long a returned setup object lives before pytest creates a new one; apply it only when it proves a real ResearchOps responsibility.
+- In debugging guidance, **function scope** means function scope gives every test a clean object and is safest for mutable fakes; apply it only when it proves a real ResearchOps responsibility.
+- In debugging guidance, **module scope** means module scope shares one object across a file and is safe only when shared state cannot leak; apply it only when it proves a real ResearchOps responsibility.
+- In debugging guidance, **session scope** means session scope shares one object across the whole run and should be rare in beginner project tests; apply it only when it proves a real ResearchOps responsibility.
+- In debugging guidance, **tmp_path** means tmp_path gives each test a pathlib.Path directory managed by pytest for isolated file work; apply it only when it proves a real ResearchOps responsibility.
+- In debugging guidance, **monkeypatch** means monkeypatch temporarily changes environment variables or attributes and then restores them; apply it only when it proves a real ResearchOps responsibility.
+- In debugging guidance, **fakes** means fakes are small test implementations of ResearchOps protocols stored under tests/fakes; apply it only when it proves a real ResearchOps responsibility.
+- In debugging guidance, **unit tests** means unit tests prove one service or function with outside dependencies replaced by fakes; apply it only when it proves a real ResearchOps responsibility.
+- In debugging guidance, **integration tests** means integration tests prove real boundaries such as SQLite repository behavior with tmp_path isolation; apply it only when it proves a real ResearchOps responsibility.
+- In debugging guidance, **E2E smoke tests** means E2E smoke tests prove the installed CLI starts without trying to test every branch; apply it only when it proves a real ResearchOps responsibility.
 
-## Flaky tests
+## 11. Design tradeoffs
+- Unit tests are fast and precise but cannot prove real SQLite wiring.
+- Integration tests prove boundaries but should be fewer because they are slower and more setup-heavy.
+- E2E smoke tests prove package entry points but become brittle when they assert too much formatting.
+- Function-scoped fixtures repeat setup but protect isolation.
+- Broader fixture scopes can save time but require strong confidence that state cannot leak.
+- Fakes make architecture visible but must stay faithful to protocols.
+- Monkeypatch reaches hard failure paths but should not replace clean dependency injection.
+- Coverage thresholds prevent neglect but cannot judge assertion quality.
+- In design tradeoffs, **pytest discovery** means pytest finds files named like tests, then functions named like tests, and treats uncaught exceptions as failures; apply it only when it proves a real ResearchOps responsibility.
+- In design tradeoffs, **fixtures** means pytest fixtures are named setup functions requested by test parameters instead of called directly; apply it only when it proves a real ResearchOps responsibility.
+- In design tradeoffs, **fixture scope** means fixture scope controls how long a returned setup object lives before pytest creates a new one; apply it only when it proves a real ResearchOps responsibility.
+- In design tradeoffs, **function scope** means function scope gives every test a clean object and is safest for mutable fakes; apply it only when it proves a real ResearchOps responsibility.
+- In design tradeoffs, **module scope** means module scope shares one object across a file and is safe only when shared state cannot leak; apply it only when it proves a real ResearchOps responsibility.
+- In design tradeoffs, **session scope** means session scope shares one object across the whole run and should be rare in beginner project tests; apply it only when it proves a real ResearchOps responsibility.
+- In design tradeoffs, **tmp_path** means tmp_path gives each test a pathlib.Path directory managed by pytest for isolated file work; apply it only when it proves a real ResearchOps responsibility.
+- In design tradeoffs, **monkeypatch** means monkeypatch temporarily changes environment variables or attributes and then restores them; apply it only when it proves a real ResearchOps responsibility.
+- In design tradeoffs, **fakes** means fakes are small test implementations of ResearchOps protocols stored under tests/fakes; apply it only when it proves a real ResearchOps responsibility.
+- In design tradeoffs, **unit tests** means unit tests prove one service or function with outside dependencies replaced by fakes; apply it only when it proves a real ResearchOps responsibility.
+- In design tradeoffs, **integration tests** means integration tests prove real boundaries such as SQLite repository behavior with tmp_path isolation; apply it only when it proves a real ResearchOps responsibility.
+- In design tradeoffs, **E2E smoke tests** means E2E smoke tests prove the installed CLI starts without trying to test every branch; apply it only when it proves a real ResearchOps responsibility.
 
-A **flaky test** is a test that sometimes passes and sometimes fails, without any code change. Flaky tests are extremely damaging because they erode trust in the suite. Developers start ignoring failures ("oh, that one is flaky") and miss real regressions.
+## 12. Testing implications
+- Every new feature needs a test in the same change.
+- Every bug fix should add a regression test when the behavior can be reproduced.
+- Unit tests belong in `tests/unit/` and should be fast.
+- Integration tests belong in `tests/integration/` and may use real SQLite under `tmp_path`.
+- E2E smoke tests belong in `tests/e2e/` and should remain small.
+- Fake implementations belong in `tests/fakes/`.
+- Shared fixtures belong in `tests/conftest.py` only when they express common vocabulary.
+- The two required validation commands are `ruff check src tests` and `pytest --cov=researchops --cov-report=term-missing -q`.
+- In testing implications, **pytest discovery** means pytest finds files named like tests, then functions named like tests, and treats uncaught exceptions as failures; apply it only when it proves a real ResearchOps responsibility.
+- In testing implications, **fixtures** means pytest fixtures are named setup functions requested by test parameters instead of called directly; apply it only when it proves a real ResearchOps responsibility.
+- In testing implications, **fixture scope** means fixture scope controls how long a returned setup object lives before pytest creates a new one; apply it only when it proves a real ResearchOps responsibility.
+- In testing implications, **function scope** means function scope gives every test a clean object and is safest for mutable fakes; apply it only when it proves a real ResearchOps responsibility.
+- In testing implications, **module scope** means module scope shares one object across a file and is safe only when shared state cannot leak; apply it only when it proves a real ResearchOps responsibility.
+- In testing implications, **session scope** means session scope shares one object across the whole run and should be rare in beginner project tests; apply it only when it proves a real ResearchOps responsibility.
+- In testing implications, **tmp_path** means tmp_path gives each test a pathlib.Path directory managed by pytest for isolated file work; apply it only when it proves a real ResearchOps responsibility.
+- In testing implications, **monkeypatch** means monkeypatch temporarily changes environment variables or attributes and then restores them; apply it only when it proves a real ResearchOps responsibility.
+- In testing implications, **fakes** means fakes are small test implementations of ResearchOps protocols stored under tests/fakes; apply it only when it proves a real ResearchOps responsibility.
+- In testing implications, **unit tests** means unit tests prove one service or function with outside dependencies replaced by fakes; apply it only when it proves a real ResearchOps responsibility.
+- In testing implications, **integration tests** means integration tests prove real boundaries such as SQLite repository behavior with tmp_path isolation; apply it only when it proves a real ResearchOps responsibility.
+- In testing implications, **E2E smoke tests** means E2E smoke tests prove the installed CLI starts without trying to test every branch; apply it only when it proves a real ResearchOps responsibility.
 
-Common causes:
+## 13. Architecture implications
+- Tests should reinforce the inward dependency direction rather than bypass it.
+- Core tests should not need infrastructure imports.
+- Service tests should depend on protocols and fakes rather than concrete SQLite implementations.
+- Infrastructure tests may import infrastructure because that boundary is the subject.
+- CLI tests should check user-visible command behavior and not host business logic.
+- A hard-to-test service often reveals hidden dependencies.
+- A fake that mirrors a protocol confirms that the protocol is usable.
+- A CI gate protects architecture only when tests and lint rules reflect the intended boundaries.
+- In architecture implications, **pytest discovery** means pytest finds files named like tests, then functions named like tests, and treats uncaught exceptions as failures; apply it only when it proves a real ResearchOps responsibility.
+- In architecture implications, **fixtures** means pytest fixtures are named setup functions requested by test parameters instead of called directly; apply it only when it proves a real ResearchOps responsibility.
+- In architecture implications, **fixture scope** means fixture scope controls how long a returned setup object lives before pytest creates a new one; apply it only when it proves a real ResearchOps responsibility.
+- In architecture implications, **function scope** means function scope gives every test a clean object and is safest for mutable fakes; apply it only when it proves a real ResearchOps responsibility.
+- In architecture implications, **module scope** means module scope shares one object across a file and is safe only when shared state cannot leak; apply it only when it proves a real ResearchOps responsibility.
+- In architecture implications, **session scope** means session scope shares one object across the whole run and should be rare in beginner project tests; apply it only when it proves a real ResearchOps responsibility.
+- In architecture implications, **tmp_path** means tmp_path gives each test a pathlib.Path directory managed by pytest for isolated file work; apply it only when it proves a real ResearchOps responsibility.
+- In architecture implications, **monkeypatch** means monkeypatch temporarily changes environment variables or attributes and then restores them; apply it only when it proves a real ResearchOps responsibility.
+- In architecture implications, **fakes** means fakes are small test implementations of ResearchOps protocols stored under tests/fakes; apply it only when it proves a real ResearchOps responsibility.
+- In architecture implications, **unit tests** means unit tests prove one service or function with outside dependencies replaced by fakes; apply it only when it proves a real ResearchOps responsibility.
+- In architecture implications, **integration tests** means integration tests prove real boundaries such as SQLite repository behavior with tmp_path isolation; apply it only when it proves a real ResearchOps responsibility.
+- In architecture implications, **E2E smoke tests** means E2E smoke tests prove the installed CLI starts without trying to test every branch; apply it only when it proves a real ResearchOps responsibility.
 
-- **Time dependency**: `datetime.utcnow()` returns different values. Fix: inject a `FixedClock` (see Week 9 stretch exercise).
-- **Random seed**: randomness without a fixed seed. Fix: set `random.seed(42)` in the fixture.
-- **Ordering dependency**: test A depends on state left by test B. Fix: each test must set up its own state.
-- **Network call**: test reaches out to a real URL. Fix: monkeypatch or use a fake.
-- **Filesystem state**: test assumes a file exists that a previous test created. Fix: use `tmp_path`.
+## 14. How this connects to AI engineering / ML research
+- AI systems fail quietly when data pipelines change without proof.
+- A parser regression can corrupt future training data while producing plausible text.
+- A search normalization regression can change retrieval results while still returning papers.
+- A storage regression can lose labels or metadata that future models need.
+- Testing discipline creates reproducibility before model evaluation begins.
+- Coverage reveals whether failure paths in research infrastructure have been exercised.
+- Fakes keep service rules testable without expensive computation.
+- CI gives every experiment-supporting change the same baseline evidence.
+- In how this connects to ai engineering / ml research, **pytest discovery** means pytest finds files named like tests, then functions named like tests, and treats uncaught exceptions as failures; apply it only when it proves a real ResearchOps responsibility.
+- In how this connects to ai engineering / ml research, **fixtures** means pytest fixtures are named setup functions requested by test parameters instead of called directly; apply it only when it proves a real ResearchOps responsibility.
+- In how this connects to ai engineering / ml research, **fixture scope** means fixture scope controls how long a returned setup object lives before pytest creates a new one; apply it only when it proves a real ResearchOps responsibility.
+- In how this connects to ai engineering / ml research, **function scope** means function scope gives every test a clean object and is safest for mutable fakes; apply it only when it proves a real ResearchOps responsibility.
+- In how this connects to ai engineering / ml research, **module scope** means module scope shares one object across a file and is safe only when shared state cannot leak; apply it only when it proves a real ResearchOps responsibility.
+- In how this connects to ai engineering / ml research, **session scope** means session scope shares one object across the whole run and should be rare in beginner project tests; apply it only when it proves a real ResearchOps responsibility.
+- In how this connects to ai engineering / ml research, **tmp_path** means tmp_path gives each test a pathlib.Path directory managed by pytest for isolated file work; apply it only when it proves a real ResearchOps responsibility.
+- In how this connects to ai engineering / ml research, **monkeypatch** means monkeypatch temporarily changes environment variables or attributes and then restores them; apply it only when it proves a real ResearchOps responsibility.
+- In how this connects to ai engineering / ml research, **fakes** means fakes are small test implementations of ResearchOps protocols stored under tests/fakes; apply it only when it proves a real ResearchOps responsibility.
+- In how this connects to ai engineering / ml research, **unit tests** means unit tests prove one service or function with outside dependencies replaced by fakes; apply it only when it proves a real ResearchOps responsibility.
+- In how this connects to ai engineering / ml research, **integration tests** means integration tests prove real boundaries such as SQLite repository behavior with tmp_path isolation; apply it only when it proves a real ResearchOps responsibility.
+- In how this connects to ai engineering / ml research, **E2E smoke tests** means E2E smoke tests prove the installed CLI starts without trying to test every branch; apply it only when it proves a real ResearchOps responsibility.
 
-The rule: every test must be able to run independently, in any order, any number of times.
+## 15. Mini quizzes
+1. What does pytest discover by naming convention?
+2. Why should mutable fixtures usually be function-scoped?
+3. What does `tmp_path` return?
+4. When is monkeypatch better than a fake?
+5. When is a fake better than monkeypatch?
+6. Why should fakes live under `tests/fakes/`?
+7. What is the difference between unit and integration tests?
+8. What exact command runs Ruff for Week 10?
+9. What exact command runs pytest with coverage for Week 10?
+10. What does `term-missing` show?
+11. What does `fail_under = 70` enforce?
+12. Why can high coverage still hide weak assertions?
+13. What does CI add beyond local commands?
+14. Why are flaky tests urgent?
+15. Which future-week topics are forbidden here?
 
----
+## 16. Explain-it-aloud prompts
+- Explain pytest discovery in your own words, then give one ResearchOps example where pytest finds files named like tests, then functions named like tests, and treats uncaught exceptions as failures.
+- Explain fixtures in your own words, then give one ResearchOps example where pytest fixtures are named setup functions requested by test parameters instead of called directly.
+- Explain fixture scope in your own words, then give one ResearchOps example where fixture scope controls how long a returned setup object lives before pytest creates a new one.
+- Explain function scope in your own words, then give one ResearchOps example where function scope gives every test a clean object and is safest for mutable fakes.
+- Explain module scope in your own words, then give one ResearchOps example where module scope shares one object across a file and is safe only when shared state cannot leak.
+- Explain session scope in your own words, then give one ResearchOps example where session scope shares one object across the whole run and should be rare in beginner project tests.
+- Explain tmp_path in your own words, then give one ResearchOps example where tmp_path gives each test a pathlib.Path directory managed by pytest for isolated file work.
+- Explain monkeypatch in your own words, then give one ResearchOps example where monkeypatch temporarily changes environment variables or attributes and then restores them.
+- Explain fakes in your own words, then give one ResearchOps example where fakes are small test implementations of ResearchOps protocols stored under tests/fakes.
+- Explain unit tests in your own words, then give one ResearchOps example where unit tests prove one service or function with outside dependencies replaced by fakes.
+- Explain integration tests in your own words, then give one ResearchOps example where integration tests prove real boundaries such as SQLite repository behavior with tmp_path isolation.
+- Explain E2E smoke tests in your own words, then give one ResearchOps example where E2E smoke tests prove the installed CLI starts without trying to test every branch.
+- Explain parametrize in your own words, then give one ResearchOps example where parametrize runs the same behavior check against multiple clear input and expected output cases.
+- Explain coverage in your own words, then give one ResearchOps example where coverage records which ResearchOps source lines ran while tests executed.
+- Explain term-missing in your own words, then give one ResearchOps example where term-missing prints uncovered line numbers so the learner can inspect concrete gaps.
+- Explain fail_under in your own words, then give one ResearchOps example where fail_under turns a coverage percentage into a failing command when it drops below the floor.
+- Explain Ruff in your own words, then give one ResearchOps example where Ruff checks source and tests for Python errors, import issues, and selected style rules.
+- Explain CI gates in your own words, then give one ResearchOps example where CI gates run the same checks automatically so broken changes cannot rely on memory or luck.
+- Explain flaky tests in your own words, then give one ResearchOps example where flaky tests pass and fail without code changes and destroy trust in the suite.
+- Explain test names in your own words, then give one ResearchOps example where test names should read like behavior statements so failures explain what broke.
+- Explain why Week 10 is a quality chapter rather than a feature chapter.
+- Explain what evidence would make you comfortable changing a service next week.
 
-## CI: the quality gate that never sleeps
+## 17. What to memorize
+- `ruff check src tests` is the lint gate.
+- `pytest --cov=researchops --cov-report=term-missing -q` is the test and coverage gate.
+- Coverage must fail under 70 percent.
+- Fixtures are requested by parameter name.
+- Function scope is the default and safest mutable-fixture scope.
+- `tmp_path` is for isolated file and database paths.
+- `monkeypatch` changes are temporary.
+- Fakes for protocols live in `tests/fakes/`.
+- Unit tests use fakes; integration tests use real boundaries intentionally.
+- Week 10 does not introduce classical ML models, embeddings, FastAPI, or async patterns.
+- Remember the role of pytest discovery in the Week 10 quality gate.
+- Remember the role of fixtures in the Week 10 quality gate.
+- Remember the role of fixture scope in the Week 10 quality gate.
+- Remember the role of function scope in the Week 10 quality gate.
+- Remember the role of module scope in the Week 10 quality gate.
+- Remember the role of session scope in the Week 10 quality gate.
+- Remember the role of tmp_path in the Week 10 quality gate.
+- Remember the role of monkeypatch in the Week 10 quality gate.
+- Remember the role of fakes in the Week 10 quality gate.
+- Remember the role of unit tests in the Week 10 quality gate.
+- Remember the role of integration tests in the Week 10 quality gate.
+- Remember the role of E2E smoke tests in the Week 10 quality gate.
+- Remember the role of parametrize in the Week 10 quality gate.
+- Remember the role of coverage in the Week 10 quality gate.
+- Remember the role of term-missing in the Week 10 quality gate.
+- Remember the role of fail_under in the Week 10 quality gate.
+- Remember the role of Ruff in the Week 10 quality gate.
+- Remember the role of CI gates in the Week 10 quality gate.
+- Remember the role of flaky tests in the Week 10 quality gate.
+- Remember the role of test names in the Week 10 quality gate.
 
-**CI** (Continuous Integration) means automatically running validation checks on every code change. In ResearchOps, CI is configured in `.github/workflows/ci.yml`.
+## 18. What to understand deeply
+- Isolation is what lets tests run in any order.
+- Fakes are possible because services depend on protocols.
+- Coverage is a map, not a moral score.
+- A threshold is useful only when the tests have meaningful assertions.
+- Monkeypatch is safest when used surgically.
+- Fixture scope is a design decision about shared state.
+- CI is the project standard repeated automatically.
+- Testing pain often reveals architecture pain.
+- Understand deeply that pytest discovery is not separate from design: pytest finds files named like tests, then functions named like tests, and treats uncaught exceptions as failures.
+- Understand deeply that fixtures is not separate from design: pytest fixtures are named setup functions requested by test parameters instead of called directly.
+- Understand deeply that fixture scope is not separate from design: fixture scope controls how long a returned setup object lives before pytest creates a new one.
+- Understand deeply that function scope is not separate from design: function scope gives every test a clean object and is safest for mutable fakes.
+- Understand deeply that module scope is not separate from design: module scope shares one object across a file and is safe only when shared state cannot leak.
+- Understand deeply that session scope is not separate from design: session scope shares one object across the whole run and should be rare in beginner project tests.
+- Understand deeply that tmp_path is not separate from design: tmp_path gives each test a pathlib.Path directory managed by pytest for isolated file work.
+- Understand deeply that monkeypatch is not separate from design: monkeypatch temporarily changes environment variables or attributes and then restores them.
+- Understand deeply that fakes is not separate from design: fakes are small test implementations of ResearchOps protocols stored under tests/fakes.
+- Understand deeply that unit tests is not separate from design: unit tests prove one service or function with outside dependencies replaced by fakes.
+- Understand deeply that integration tests is not separate from design: integration tests prove real boundaries such as SQLite repository behavior with tmp_path isolation.
+- Understand deeply that E2E smoke tests is not separate from design: E2E smoke tests prove the installed CLI starts without trying to test every branch.
+- Understand deeply that parametrize is not separate from design: parametrize runs the same behavior check against multiple clear input and expected output cases.
+- Understand deeply that coverage is not separate from design: coverage records which ResearchOps source lines ran while tests executed.
+- Understand deeply that term-missing is not separate from design: term-missing prints uncovered line numbers so the learner can inspect concrete gaps.
+- Understand deeply that fail_under is not separate from design: fail_under turns a coverage percentage into a failing command when it drops below the floor.
+- Understand deeply that Ruff is not separate from design: Ruff checks source and tests for Python errors, import issues, and selected style rules.
+- Understand deeply that CI gates is not separate from design: CI gates run the same checks automatically so broken changes cannot rely on memory or luck.
+- Understand deeply that flaky tests is not separate from design: flaky tests pass and fail without code changes and destroy trust in the suite.
+- Understand deeply that test names is not separate from design: test names should read like behavior statements so failures explain what broke.
 
-The workflow runs:
+## 19. What not to worry about yet
+- Do not write classical ML classifier code; Week 11 owns that.
+- Do not write embedding code.
+- Do not write RAG prompt or retrieval-answer tests.
+- Do not add FastAPI test clients.
+- Do not add async test patterns.
+- Do not chase perfect coverage before meaningful behavior.
+- Do not introduce new heavy dependencies.
+- Do not turn `conftest.py` into a hidden maze.
+- Do not benchmark performance formally.
+- Do not mock every call when state-based assertions are clearer.
+- For now, prefer one clear behavior test over advanced tooling idea 1.
+- For now, prefer one clear behavior test over advanced tooling idea 2.
+- For now, prefer one clear behavior test over advanced tooling idea 3.
+- For now, prefer one clear behavior test over advanced tooling idea 4.
+- For now, prefer one clear behavior test over advanced tooling idea 5.
+- For now, prefer one clear behavior test over advanced tooling idea 6.
+- For now, prefer one clear behavior test over advanced tooling idea 7.
+- For now, prefer one clear behavior test over advanced tooling idea 8.
+- For now, prefer one clear behavior test over advanced tooling idea 9.
+- For now, prefer one clear behavior test over advanced tooling idea 10.
+- For now, prefer one clear behavior test over advanced tooling idea 11.
+- For now, prefer one clear behavior test over advanced tooling idea 12.
+- For now, prefer one clear behavior test over advanced tooling idea 13.
+- For now, prefer one clear behavior test over advanced tooling idea 14.
+- For now, prefer one clear behavior test over advanced tooling idea 15.
 
-1. `ruff check src tests` — linting: catches syntax errors, unused imports, style issues.
-2. `pytest --cov=researchops --cov-report=term-missing -q` — tests and coverage.
+## 20. Bridge to next week
+- Week 11 introduces classical ML topic classification, which will depend on reliable data and stable service behavior.
+- Week 10 prepares that work by making existing behavior testable and guarded.
+- The future classifier will need clean inputs, trustworthy storage, and repeatable validation habits.
+- The coverage gate will prevent large untested additions.
+- The fake pattern will help service tests avoid expensive work.
+- The integration-test pattern will keep persistence honest.
+- The CI commands will give every future change the same baseline gate.
+- Do not move to Week 11 until you can explain the Week 10 gate without reading the notes.
+- The bridge includes pytest discovery: pytest finds files named like tests, then functions named like tests, and treats uncaught exceptions as failures, which keeps later ML work safer without implementing it early.
+- The bridge includes fixtures: pytest fixtures are named setup functions requested by test parameters instead of called directly, which keeps later ML work safer without implementing it early.
+- The bridge includes fixture scope: fixture scope controls how long a returned setup object lives before pytest creates a new one, which keeps later ML work safer without implementing it early.
+- The bridge includes function scope: function scope gives every test a clean object and is safest for mutable fakes, which keeps later ML work safer without implementing it early.
+- The bridge includes module scope: module scope shares one object across a file and is safe only when shared state cannot leak, which keeps later ML work safer without implementing it early.
+- The bridge includes session scope: session scope shares one object across the whole run and should be rare in beginner project tests, which keeps later ML work safer without implementing it early.
+- The bridge includes tmp_path: tmp_path gives each test a pathlib.Path directory managed by pytest for isolated file work, which keeps later ML work safer without implementing it early.
+- The bridge includes monkeypatch: monkeypatch temporarily changes environment variables or attributes and then restores them, which keeps later ML work safer without implementing it early.
+- The bridge includes fakes: fakes are small test implementations of ResearchOps protocols stored under tests/fakes, which keeps later ML work safer without implementing it early.
+- The bridge includes unit tests: unit tests prove one service or function with outside dependencies replaced by fakes, which keeps later ML work safer without implementing it early.
+- The bridge includes integration tests: integration tests prove real boundaries such as SQLite repository behavior with tmp_path isolation, which keeps later ML work safer without implementing it early.
+- The bridge includes E2E smoke tests: E2E smoke tests prove the installed CLI starts without trying to test every branch, which keeps later ML work safer without implementing it early.
+- The bridge includes parametrize: parametrize runs the same behavior check against multiple clear input and expected output cases, which keeps later ML work safer without implementing it early.
+- The bridge includes coverage: coverage records which ResearchOps source lines ran while tests executed, which keeps later ML work safer without implementing it early.
+- The bridge includes term-missing: term-missing prints uncovered line numbers so the learner can inspect concrete gaps, which keeps later ML work safer without implementing it early.
+- The bridge includes fail_under: fail_under turns a coverage percentage into a failing command when it drops below the floor, which keeps later ML work safer without implementing it early.
+- The bridge includes Ruff: Ruff checks source and tests for Python errors, import issues, and selected style rules, which keeps later ML work safer without implementing it early.
+- The bridge includes CI gates: CI gates run the same checks automatically so broken changes cannot rely on memory or luck, which keeps later ML work safer without implementing it early.
+- The bridge includes flaky tests: flaky tests pass and fail without code changes and destroy trust in the suite, which keeps later ML work safer without implementing it early.
+- The bridge includes test names: test names should read like behavior statements so failures explain what broke, which keeps later ML work safer without implementing it early.
 
-Every push and pull request triggers this. If any check fails, the CI is marked red. The rule: never merge a red PR.
-
-CI means that "it works on my machine" is not enough. It must work on a clean, reproducible environment. This prevents a common failure mode where local development environments accumulate quirks that make broken code seem to pass.
-
-The CI commands can be reproduced locally:
-
-```bash
-ruff check src tests
-pytest --cov=researchops --cov-report=term-missing -q
-```
-
-Running these before pushing is a good habit. It means you see CI failures before the push, which is faster.
-
----
-
-## Linting with Ruff
-
-**Ruff** is a fast Python linter written in Rust. It catches:
-
-- Syntax errors.
-- Unused imports (`F401`).
-- Undefined names (`F821`).
-- Style issues (many PEP 8 rules).
-- Complexity issues (function too long, too many branches).
-
-Run it:
-
-```bash
-ruff check src tests         # report errors
-ruff check src tests --fix   # auto-fix what is fixable
-```
-
-Ruff is configured in `pyproject.toml`:
-
-```toml
-[tool.ruff]
-line-length = 100
-target-version = "py311"
-
-[tool.ruff.lint]
-select = ["E", "F", "W", "I", "UP"]
-```
-
-`E` — pycodestyle errors (PEP 8 style).
-`F` — Pyflakes (unused imports, undefined names).
-`W` — pycodestyle warnings.
-`I` — isort (import ordering).
-`UP` — pyupgrade (modernize Python syntax).
-
-A clean `ruff check src tests` means no violations. This should always be true before committing.
-
----
-
-## Type checking with mypy (or pyright)
-
-Python is dynamically typed, meaning you can pass anything to any function at runtime. Type annotations are optional hints. A **type checker** reads those hints and reports mismatches statically — without running the code.
-
-```python
-def save(self, paper: Paper) -> None: ...
-```
-
-If you call `repo.save("not a paper")`, a type checker will flag this as an error even though Python itself would not complain until runtime.
-
-Type checking catches:
-
-- Wrong argument types.
-- Missing return values.
-- Calling methods that do not exist.
-- Protocol violations (a fake that does not satisfy its protocol).
-
-Running mypy:
-
-```bash
-mypy src
-```
-
-Type checking is not yet enforced in CI for ResearchOps (the codebase is being built progressively), but running it locally teaches you to write more precise code and catches real bugs before they become runtime failures.
-
----
-
-## Quality gates summary
-
-| Gate | Tool | What it catches | When to run |
-|---|---|---|---|
-| Linting | `ruff check` | Style, unused imports, syntax | Always before commit |
-| Type checking | `mypy src` | Type mismatches, protocol violations | Often locally |
-| Unit tests | `pytest tests/unit/` | Service and domain logic bugs | Always before commit |
-| Integration tests | `pytest tests/integration/` | Database and file system integration | Before push |
-| Coverage threshold | `pytest --cov-fail-under=70` | Untested code | In CI |
-| E2E tests | `pytest tests/e2e/` | CLI behavior | Before release |
-
-All of these together form the quality gate. CI automates the most important ones. The others you run locally as needed.
-
----
-
-## Fixtures in conftest.py
-
-When multiple test files need the same fixtures, put them in `tests/conftest.py`. pytest automatically discovers this file and makes its fixtures available to all tests in the directory tree.
-
-```python
-# tests/conftest.py
-import pytest
-from tests.fakes.fake_repository import FakePaperRepository, FakeFailureRepository
-
-@pytest.fixture()
-def paper_repo() -> FakePaperRepository:
-    return FakePaperRepository()
-
-@pytest.fixture()
-def failure_repo() -> FakeFailureRepository:
-    return FakeFailureRepository()
-```
-
-Now any test file under `tests/` can use `paper_repo` and `failure_repo` as arguments without importing them.
-
----
-
-## Summary
-
-Testing discipline is a professional habit. It is not optional for a portfolio-grade project. The rules:
-
-1. Write tests for every feature and every bug fix.
-2. Keep unit tests fast and isolated.
-3. Use fakes, not real databases, in unit tests.
-4. Name tests after behaviors, not implementations.
-5. Follow Arrange / Act / Assert.
-6. Never delete regression tests.
-7. Eliminate flaky tests immediately when you find them.
-8. Run `ruff check src tests` and `pytest -q` before every commit.
-9. Treat CI failures as blockers — never merge a red pipeline.
-10. Let coverage reports guide you toward under-tested code.
 <!-- NAV_BOTTOM_START -->
 ---
 ⬅️ [← README](README.md) · ➡️ [Exercises →](exercises.md)

@@ -11,865 +11,1002 @@
 
 # Notes - Week 12 Experiment Tracking
 
-<!-- LEARNING_FORMAT_START -->
-# Complete Learning Format — Week 12: Experiment Tracking
-
-This guide is the clean learning path for the chapter.
-It uses short sentences.
-It breaks ideas into small pieces.
-It tells you what to focus on and what to ignore for now.
-Read it before the older detailed notes that follow.
-
 ## Chapter overview
 
-The chapter title is **Remembering what you tried**.
-The practical milestone is: `researchops experiment list` shows all training runs with params and metrics. `researchops experiment compare` shows which run had the best F1.
-The expected capability is: Can implement a tracking system that persists experiment metadata, retrieve and compare runs, and explain why reproducibility matters in ML.
-This chapter is one step in the ResearchOps system, not a random lesson.
-The visible feature matters because it proves the idea works.
-The hidden skill matters because it lets you build the next chapter without confusion.
-A complete pass through this chapter means you can read the code, run it, test it, break it, and explain it aloud.
+### Purpose
 
-Use this study order:
-- Read the story first without typing.
-- Trace the smallest code example.
-- Find the project file that owns the behavior.
-- Run the validation command.
-- Explain one happy path and one failure path.
+Week 12 teaches ResearchOps to remember machine-learning work.
+The Week 11 classifier can produce a score, but a score printed once is not durable evidence.
+A tracker records the run ID, experiment name, parameters, metrics, artifacts, and metadata.
+A learner should finish this chapter able to explain how a saved model file is tied to the settings that produced it.
+Stay local: JSON files and SQLite-style thinking are enough for this chapter.
+
+ResearchOps check:
+Can this idea help a future reader understand which data, settings, metrics, and artifacts belonged to one classifier run?
+If yes, it belongs in the Week 12 mental model.
+If no, leave it out until the project needs it.
+
+### Milestone
+
+The visible milestone is a local experiment tracker for classifier runs.
+It should save one record per training attempt.
+It should list old records in deterministic order.
+It should show a single record in detail.
+It should compare selected records by metrics such as macro F1.
+
+ResearchOps check:
+Can this idea help a future reader understand which data, settings, metrics, and artifacts belonged to one classifier run?
+If yes, it belongs in the Week 12 mental model.
+If no, leave it out until the project needs it.
+
+### Boundaries
+
+This chapter is not about hosted ML platforms.
+It is not about web APIs, containers, dashboards, or future model-representation topics.
+It is about the basic engineering habit of recording what happened.
+That habit makes later model work auditable.
+The implementation should remain understandable to a learner who has completed Weeks 1 through 11.
+
+ResearchOps check:
+Can this idea help a future reader understand which data, settings, metrics, and artifacts belonged to one classifier run?
+If yes, it belongs in the Week 12 mental model.
+If no, leave it out until the project needs it.
+
+### Study path
+
+First learn the vocabulary.
+Then inspect a run as a plain dictionary.
+Then wrap the shape in a dataclass.
+Then save and load records.
+Finally connect the tracker to Week 11 training and compare runs.
+
+ResearchOps check:
+Can this idea help a future reader understand which data, settings, metrics, and artifacts belonged to one classifier run?
+If yes, it belongs in the Week 12 mental model.
+If no, leave it out until the project needs it.
 
 ## What you already know from previous weeks
 
-- Week 8 taught Multiprocessing Ingestion; keep its responsibility in mind, but do not rebuild it here.
-- Week 9 taught Protocols, Interfaces, and Clean Architecture; keep its responsibility in mind, but do not rebuild it here.
-- Week 10 taught Testing Discipline and Quality Gates; keep its responsibility in mind, but do not rebuild it here.
-- Week 11 taught Classical ML — Topic Classification; keep its responsibility in mind, but do not rebuild it here.
-- You should be able to run the previous validation command before trusting new work.
-- You should be able to point at the main file from the previous week and say what job it owns.
-- If a previous idea feels weak, reread the example and trace one concrete value through it.
-- The safest learning rhythm is: understand one thing, change one thing, test one thing, explain one thing.
+### Files and paths
+
+Week 2 taught you that paths are data, not magic strings.
+Run records live on disk when JSON is used.
+Artifact paths must be written carefully because another command will read them later.
+A useful error message should include the path or run ID that failed.
+That makes tracking bugs much easier to diagnose.
+
+ResearchOps check:
+Can this idea help a future reader understand which data, settings, metrics, and artifacts belonged to one classifier run?
+If yes, it belongs in the Week 12 mental model.
+If no, leave it out until the project needs it.
+
+### Domain objects
+
+Week 3 introduced objects that represent project ideas.
+An experiment run is a domain idea, not just a random dictionary.
+A dataclass gives the run a named shape.
+Named fields make code easier to read than scattered keys.
+The shape also tells tests what must be preserved.
+
+ResearchOps check:
+Can this idea help a future reader understand which data, settings, metrics, and artifacts belonged to one classifier run?
+If yes, it belongs in the Week 12 mental model.
+If no, leave it out until the project needs it.
+
+### SQLite memory
+
+Week 5 introduced SQLite as a local database.
+This week can start with JSON because it is simple.
+SQLite becomes useful when you want sorted, filtered, and aggregated run queries.
+The concepts are the same either way: save records, load records, and preserve fields.
+Do not let the storage choice change the meaning of a run.
+
+ResearchOps check:
+Can this idea help a future reader understand which data, settings, metrics, and artifacts belonged to one classifier run?
+If yes, it belongs in the Week 12 mental model.
+If no, leave it out until the project needs it.
+
+### Protocols
+
+Week 9 taught dependency boundaries.
+A service should depend on an `ExperimentRepository` protocol.
+A JSON repository and SQLite repository can both implement that protocol.
+The service should not care which storage implementation is currently wired in.
+That is how ResearchOps stays flexible without becoming tangled.
+
+ResearchOps check:
+Can this idea help a future reader understand which data, settings, metrics, and artifacts belonged to one classifier run?
+If yes, it belongs in the Week 12 mental model.
+If no, leave it out until the project needs it.
+
+### Classifier context
+
+Week 11 supplied the ML behavior being tracked.
+The classifier has parameters such as feature limits and model settings.
+It has metrics such as accuracy and macro F1.
+It produces an artifact such as a saved model file.
+Week 12 records those facts instead of changing the classifier concept itself.
+
+ResearchOps check:
+Can this idea help a future reader understand which data, settings, metrics, and artifacts belonged to one classifier run?
+If yes, it belongs in the Week 12 mental model.
+If no, leave it out until the project needs it.
 
 ## What problem this week solves
 
-Week 12 solves the project problem behind **Experiment Tracking**.
-Before this chapter, ResearchOps has a gap.
-The gap may be a missing feature, a missing boundary, a missing safety check, or a missing way to communicate with users.
-This chapter closes that gap with a focused milestone.
-Do not treat the milestone as a checklist only.
-Treat it as proof that the idea belongs in the system.
-- The concept `Experiment tracking concepts: params, metrics, artifacts, runs` helps solve part of this gap.
-- The concept ``ExperimentRepository` protocol and SQLite implementation` helps solve part of this gap.
-- The concept `Model versioning: linking a saved model artifact to a run` helps solve part of this gap.
-- The concept `Reproducibility requirements: recording random seeds, data splits` helps solve part of this gap.
-- The concept ``ExperimentService` orchestration` helps solve part of this gap.
+### Memory loss
+
+A terminal score disappears when the terminal scrolls away.
+A notebook note may not say which code path produced the result.
+An overwritten model file destroys the previous artifact.
+These are ordinary ML project failures.
+Experiment tracking prevents them by creating durable records.
+
+ResearchOps check:
+Can this idea help a future reader understand which data, settings, metrics, and artifacts belonged to one classifier run?
+If yes, it belongs in the Week 12 mental model.
+If no, leave it out until the project needs it.
+
+### Comparison
+
+Research requires comparing attempts.
+If one run uses `max_features=5000` and another uses `max_features=10000`, the comparison only makes sense if both settings are recorded.
+The metrics alone do not tell the full story.
+The parameter difference explains what changed.
+A comparison command should make that difference visible or easy to inspect.
+
+ResearchOps check:
+Can this idea help a future reader understand which data, settings, metrics, and artifacts belonged to one classifier run?
+If yes, it belongs in the Week 12 mental model.
+If no, leave it out until the project needs it.
+
+### Lineage
+
+Lineage means the chain from data to run to artifact.
+A model file should not be anonymous.
+The run record should say which dataset reference and parameters produced it.
+The artifact filename should usually include the run ID.
+That way a saved file can be traced back to its evidence.
+
+ResearchOps check:
+Can this idea help a future reader understand which data, settings, metrics, and artifacts belonged to one classifier run?
+If yes, it belongs in the Week 12 mental model.
+If no, leave it out until the project needs it.
+
+### Reproducibility
+
+Reproducibility means reducing mystery.
+It does not promise that every decimal will match on every machine.
+It does require enough recorded information to rerun or audit the attempt.
+For this chapter, record parameters, dataset reference, random seed, metrics, status, and artifact path.
+Without those fields, future debugging becomes guesswork.
+
+ResearchOps check:
+Can this idea help a future reader understand which data, settings, metrics, and artifacts belonged to one classifier run?
+If yes, it belongs in the Week 12 mental model.
+If no, leave it out until the project needs it.
 
 ## Beginner mental model
 
-Use a simple four-part model: input, owner, transformation, proof.
-Input means the concrete thing entering the system.
-Owner means the file, object, or function responsible for the decision.
-Transformation means the useful change from raw data to meaningful result.
-Proof means the test or command that confirms the result.
-- Ask: what is the input for **Experiment Tracking**?
-- Ask: what is the owner for **Experiment Tracking**?
-- Ask: what is the transformation for **Experiment Tracking**?
-- Ask: what is the proof for **Experiment Tracking**?
-If you cannot answer those four questions, do not add more code yet.
+### Lab notebook
+
+Think of the tracker as a lab notebook for the classifier.
+The dataset is the ingredient collection.
+The parameters are recipe choices.
+The metrics are measured outcomes.
+The artifact is the saved result.
+
+ResearchOps check:
+Can this idea help a future reader understand which data, settings, metrics, and artifacts belonged to one classifier run?
+If yes, it belongs in the Week 12 mental model.
+If no, leave it out until the project needs it.
+
+### Before and after
+
+Every run has a before side and an after side.
+Before training, you know experiment name, dataset reference, seed, and parameters.
+After evaluation, you know metrics.
+After saving files, you know artifact paths.
+After errors, you know status and error message.
+
+ResearchOps check:
+Can this idea help a future reader understand which data, settings, metrics, and artifacts belonged to one classifier run?
+If yes, it belongs in the Week 12 mental model.
+If no, leave it out until the project needs it.
+
+### Right amount
+
+Tracking does not mean saving every object in memory.
+It means saving the information needed to understand and repeat the run.
+Too little information makes the record useless.
+Too much information makes the record noisy.
+The useful middle is params, metrics, artifacts, and reproducibility metadata.
+
+ResearchOps check:
+Can this idea help a future reader understand which data, settings, metrics, and artifacts belonged to one classifier run?
+If yes, it belongs in the Week 12 mental model.
+If no, leave it out until the project needs it.
+
+### Future reader
+
+Design every field for a future reader.
+The future reader might be you tomorrow.
+They might be a teammate.
+They might be a mentor reviewing your project.
+If they can explain the run from the record, the tracker is doing its job.
+
+ResearchOps check:
+Can this idea help a future reader understand which data, settings, metrics, and artifacts belonged to one classifier run?
+If yes, it belongs in the Week 12 mental model.
+If no, leave it out until the project needs it.
 
 ## Core vocabulary
 
-| Term | Simple meaning | Why it matters here |
-|------|----------------|---------------------|
-| Experiment tracking concepts | Experiment tracking concepts: params, metrics, artifacts, runs | This term names one job in the Week 12 milestone. |
-| ExperimentRepository` protocol and SQLite implementation | `ExperimentRepository` protocol and SQLite implementation | This term names one job in the Week 12 milestone. |
-| Model versioning | Model versioning: linking a saved model artifact to a run | This term names one job in the Week 12 milestone. |
-| Reproducibility requirements | Reproducibility requirements: recording random seeds, data splits | This term names one job in the Week 12 milestone. |
-| ExperimentService` orchestration | `ExperimentService` orchestration | This term names one job in the Week 12 milestone. |
-| Boundary | A line between responsibilities | It keeps the chapter understandable for a beginner. |
-| Failure path | What happens when the happy path is not available | It keeps the chapter understandable for a beginner. |
-| Validation | Evidence that the system still works | It keeps the chapter understandable for a beginner. |
-| Responsibility | The one job a file or function owns | It keeps the chapter understandable for a beginner. |
+| Term | Simple meaning | ResearchOps example |
+|---|---|---|
+| Experiment | Named group of related runs | `topic-classifier-baseline` |
+| Run | One training attempt | `run-20240915-103042-a3f8` |
+| Parameter | Choice before training | `max_features=8000` |
+| Metric | Measurement after evaluation | `f1_macro=0.84` |
+| Artifact | File produced by a run | saved `.joblib` model |
+| Metadata | Context for auditing | dataset reference and seed |
+
+The table is not decoration.
+Use these words consistently in code, tests, and CLI output.
+Consistent language prevents design mistakes.
+If a value is chosen before training, call it a parameter.
+If a value is measured after evaluation, call it a metric.
+
+### Experiment
+
+An experiment is a named investigation.
+It groups related runs under a shared goal.
+For example, `topic-classifier-baseline` can hold several attempts to improve the Week 11 classifier.
+The name should describe the investigation, not the final winner.
+A good name makes `experiment list` easier to scan.
+
+ResearchOps check:
+Can this idea help a future reader understand which data, settings, metrics, and artifacts belonged to one classifier run?
+If yes, it belongs in the Week 12 mental model.
+If no, leave it out until the project needs it.
+
+### Run
+
+A run is one execution of training or evaluation.
+It has one run ID and one timestamp.
+It should point to the artifacts it produced.
+It should keep the metrics from that exact attempt.
+Do not merge multiple training attempts into one run record.
+
+ResearchOps check:
+Can this idea help a future reader understand which data, settings, metrics, and artifacts belonged to one classifier run?
+If yes, it belongs in the Week 12 mental model.
+If no, leave it out until the project needs it.
+
+### Parameter
+
+A parameter is chosen before training.
+Examples include `max_features`, `C`, `test_size`, and `random_seed`.
+Parameters explain what you changed.
+They belong in the run record even if the result is bad.
+Bad results with known parameters are still useful evidence.
+
+ResearchOps check:
+Can this idea help a future reader understand which data, settings, metrics, and artifacts belonged to one classifier run?
+If yes, it belongs in the Week 12 mental model.
+If no, leave it out until the project needs it.
+
+### Metric
+
+A metric is measured after evaluation.
+Examples include `accuracy`, `precision_macro`, `recall_macro`, and `f1_macro`.
+Macro F1 is especially useful when topic labels are imbalanced.
+Metrics explain what happened.
+They should use stable names across runs.
+
+ResearchOps check:
+Can this idea help a future reader understand which data, settings, metrics, and artifacts belonged to one classifier run?
+If yes, it belongs in the Week 12 mental model.
+If no, leave it out until the project needs it.
+
+### Artifact
+
+An artifact is a file produced by the run.
+The saved classifier model is an artifact.
+A predictions file can also be an artifact.
+The run record should store artifact paths, not binary model bytes.
+The artifact filename should include the run ID to avoid overwrites.
+
+ResearchOps check:
+Can this idea help a future reader understand which data, settings, metrics, and artifacts belonged to one classifier run?
+If yes, it belongs in the Week 12 mental model.
+If no, leave it out until the project needs it.
+
+### Metadata
+
+Metadata is context.
+Dataset reference, code version, seed, status, and error message are metadata.
+Metadata answers questions that metrics alone cannot answer.
+It helps decide whether two runs are fairly comparable.
+It is the difference between a score and an auditable result.
+
+ResearchOps check:
+Can this idea help a future reader understand which data, settings, metrics, and artifacts belonged to one classifier run?
+If yes, it belongs in the Week 12 mental model.
+If no, leave it out until the project needs it.
 
 ## Concept explanations from first principles
 
-Read each concept as if you have never heard the term before.
-Do not skip the plain meaning.
-### Concept 1: Experiment tracking concepts: params, metrics, artifacts, runs
-- **Plain meaning:** This is a named tool for solving one part of the chapter problem.
-- **Why it exists:** Real projects become confusing when this concern is unnamed.
-- **ResearchOps use:** In Week 12, it supports the milestone: `researchops experiment list` shows all training runs with params and metrics. `researchops experiment compare` shows which run had the best F1.
-- **Input question:** What data, command, file, request, or state reaches this concept?
-- **Output question:** What value, saved record, response, log, or state change should come out?
-- **Failure question:** What can be missing, malformed, slow, duplicated, stale, or invalid?
-- **Test question:** Which test would catch the mistake before a user sees it?
-- **Beginner trap:** Memorizing the word without tracing it in the project.
-- **Recovery move:** Use one concrete example and follow it through the files.
-- **Mastery signal:** You can explain the concept without saying "magic" or "it just works".
+### Run records
 
-### Concept 2: `ExperimentRepository` protocol and SQLite implementation
-- **Plain meaning:** This is a named tool for solving one part of the chapter problem.
-- **Why it exists:** Real projects become confusing when this concern is unnamed.
-- **ResearchOps use:** In Week 12, it supports the milestone: `researchops experiment list` shows all training runs with params and metrics. `researchops experiment compare` shows which run had the best F1.
-- **Input question:** What data, command, file, request, or state reaches this concept?
-- **Output question:** What value, saved record, response, log, or state change should come out?
-- **Failure question:** What can be missing, malformed, slow, duplicated, stale, or invalid?
-- **Test question:** Which test would catch the mistake before a user sees it?
-- **Beginner trap:** Memorizing the word without tracing it in the project.
-- **Recovery move:** Use one concrete example and follow it through the files.
-- **Mastery signal:** You can explain the concept without saying "magic" or "it just works".
+A run record is structured memory.
+It is not just a log line.
+It has stable keys and values.
+Stable shape matters because old records should remain readable after small code changes.
+A dataclass can make that shape explicit.
 
-### Concept 3: Model versioning: linking a saved model artifact to a run
-- **Plain meaning:** This is a named tool for solving one part of the chapter problem.
-- **Why it exists:** Real projects become confusing when this concern is unnamed.
-- **ResearchOps use:** In Week 12, it supports the milestone: `researchops experiment list` shows all training runs with params and metrics. `researchops experiment compare` shows which run had the best F1.
-- **Input question:** What data, command, file, request, or state reaches this concept?
-- **Output question:** What value, saved record, response, log, or state change should come out?
-- **Failure question:** What can be missing, malformed, slow, duplicated, stale, or invalid?
-- **Test question:** Which test would catch the mistake before a user sees it?
-- **Beginner trap:** Memorizing the word without tracing it in the project.
-- **Recovery move:** Use one concrete example and follow it through the files.
-- **Mastery signal:** You can explain the concept without saying "magic" or "it just works".
+ResearchOps check:
+Can this idea help a future reader understand which data, settings, metrics, and artifacts belonged to one classifier run?
+If yes, it belongs in the Week 12 mental model.
+If no, leave it out until the project needs it.
 
-### Concept 4: Reproducibility requirements: recording random seeds, data splits
-- **Plain meaning:** This is a named tool for solving one part of the chapter problem.
-- **Why it exists:** Real projects become confusing when this concern is unnamed.
-- **ResearchOps use:** In Week 12, it supports the milestone: `researchops experiment list` shows all training runs with params and metrics. `researchops experiment compare` shows which run had the best F1.
-- **Input question:** What data, command, file, request, or state reaches this concept?
-- **Output question:** What value, saved record, response, log, or state change should come out?
-- **Failure question:** What can be missing, malformed, slow, duplicated, stale, or invalid?
-- **Test question:** Which test would catch the mistake before a user sees it?
-- **Beginner trap:** Memorizing the word without tracing it in the project.
-- **Recovery move:** Use one concrete example and follow it through the files.
-- **Mastery signal:** You can explain the concept without saying "magic" or "it just works".
+### JSON storage
 
-### Concept 5: `ExperimentService` orchestration
-- **Plain meaning:** This is a named tool for solving one part of the chapter problem.
-- **Why it exists:** Real projects become confusing when this concern is unnamed.
-- **ResearchOps use:** In Week 12, it supports the milestone: `researchops experiment list` shows all training runs with params and metrics. `researchops experiment compare` shows which run had the best F1.
-- **Input question:** What data, command, file, request, or state reaches this concept?
-- **Output question:** What value, saved record, response, log, or state change should come out?
-- **Failure question:** What can be missing, malformed, slow, duplicated, stale, or invalid?
-- **Test question:** Which test would catch the mistake before a user sees it?
-- **Beginner trap:** Memorizing the word without tracing it in the project.
-- **Recovery move:** Use one concrete example and follow it through the files.
-- **Mastery signal:** You can explain the concept without saying "magic" or "it just works".
+JSON is text that maps naturally to Python dictionaries.
+It is easy to open and inspect.
+One file per run is simple for beginners.
+The weakness is that listing and filtering many runs means reading many files.
+That weakness is acceptable for the first local tracker.
+
+ResearchOps check:
+Can this idea help a future reader understand which data, settings, metrics, and artifacts belonged to one classifier run?
+If yes, it belongs in the Week 12 mental model.
+If no, leave it out until the project needs it.
+
+### SQLite storage
+
+SQLite stores records in tables.
+It is better when queries become important.
+A simple table can keep run ID, experiment name, timestamp, status, dataset reference, and JSON text for params, metrics, and artifacts.
+This avoids over-normalizing too early.
+The repository protocol can hide whether JSON or SQLite is used.
+
+ResearchOps check:
+Can this idea help a future reader understand which data, settings, metrics, and artifacts belonged to one classifier run?
+If yes, it belongs in the Week 12 mental model.
+If no, leave it out until the project needs it.
+
+### Artifact separation
+
+Model artifacts can be large and binary.
+JSON metadata should stay readable.
+Therefore store a path to the artifact rather than the artifact itself.
+The display command can warn if the path no longer exists.
+A missing artifact does not mean the record is invalid; it means lineage is broken.
+
+ResearchOps check:
+Can this idea help a future reader understand which data, settings, metrics, and artifacts belonged to one classifier run?
+If yes, it belongs in the Week 12 mental model.
+If no, leave it out until the project needs it.
+
+### Failed runs
+
+A failed run is still an experiment result.
+It tells you that a certain configuration did not work.
+If training fails after run creation, save status `failed` and an error message when possible.
+This prevents repeated attempts that fail the same way.
+Failure records are part of research honesty.
+
+ResearchOps check:
+Can this idea help a future reader understand which data, settings, metrics, and artifacts belonged to one classifier run?
+If yes, it belongs in the Week 12 mental model.
+If no, leave it out until the project needs it.
 
 ## ResearchOps-specific application
 
-The chapter belongs to these project locations:
-- `src/researchops/storage/experiment_repository.py`
-- `src/researchops/services/experiment_service.py`
-- `src/researchops/cli/commands/experiments.py`
-- `src/researchops/storage/schema.sql` — experiment tables
-Study those files in this order:
-1. Find the user-facing entry point.
-2. Find the service or core concept that owns the meaning.
-3. Find the infrastructure only when outside resources are needed.
-4. Find the tests that prove the behavior.
-5. Find the validation command that a learner runs manually.
-The goal is to know why each file exists.
-If two files seem to own the same decision, stop and clarify the boundary.
+### Classifier run
+
+A ResearchOps classifier run starts with labeled paper data.
+It chooses text-processing and model parameters.
+It trains the Week 11 topic classifier.
+It evaluates predictions against labels.
+It saves a model artifact and records the result.
+
+ResearchOps check:
+Can this idea help a future reader understand which data, settings, metrics, and artifacts belonged to one classifier run?
+If yes, it belongs in the Week 12 mental model.
+If no, leave it out until the project needs it.
+
+### Useful fields
+
+A practical record includes `run_id`, `experiment_name`, `timestamp`, `params`, `metrics`, `artifacts`, `dataset_ref`, `status`, and `error_message`.
+The `params` dictionary might hold `max_features`, `C`, `test_size`, and `random_seed`.
+The `metrics` dictionary might hold `accuracy` and `f1_macro`.
+The `artifacts` dictionary might hold a `model` path.
+The `dataset_ref` might be a version label or stable hash.
+
+ResearchOps check:
+Can this idea help a future reader understand which data, settings, metrics, and artifacts belonged to one classifier run?
+If yes, it belongs in the Week 12 mental model.
+If no, leave it out until the project needs it.
+
+### CLI behavior
+
+`researchops experiment list` should read existing records.
+It should not train a model.
+`researchops experiment show RUN_ID` should display one record clearly.
+`researchops experiment compare A B` should show metrics side by side.
+Those commands make past work discoverable.
+
+ResearchOps check:
+Can this idea help a future reader understand which data, settings, metrics, and artifacts belonged to one classifier run?
+If yes, it belongs in the Week 12 mental model.
+If no, leave it out until the project needs it.
+
+### Service flow
+
+The CLI wires dependencies.
+The service creates or receives a run object.
+The training code produces metrics and artifacts.
+The repository saves the final record.
+Each layer keeps one job.
+
+ResearchOps check:
+Can this idea help a future reader understand which data, settings, metrics, and artifacts belonged to one classifier run?
+If yes, it belongs in the Week 12 mental model.
+If no, leave it out until the project needs it.
 
 ## Code examples with line-by-line explanation
 
 ```python
-run = ExperimentRun(
-    params={"model": "tfidf-logistic-regression"},
-    metrics={"f1": 0.82},
-    artifact_path=Path("models/topic.joblib"),
-)
-repository.save(run)
-```
-
-Line-by-line explanation:
-- Line 1: `run = ExperimentRun(` — This stores a clear intermediate value for the next step.
-- Line 2: `params={"model": "tfidf-logistic-regression"},` — This stores a clear intermediate value for the next step.
-- Line 3: `metrics={"f1": 0.82},` — This stores a clear intermediate value for the next step.
-- Line 4: `artifact_path=Path("models/topic.joblib"),` — This stores a clear intermediate value for the next step.
-- Line 5: `)` — This performs one small visible step in the workflow.
-- Line 6: `repository.save(run)` — This performs one small visible step in the workflow.
-
-How to use this example:
-- Name the input.
-- Name the output.
-- Predict the result before running anything.
-- Connect the shape to the real ResearchOps file.
-- Write one sentence about why each line belongs.
-
-## Common beginner mistakes
-
-- **Mistake:** Pasting code before knowing the owner of the behavior.
-  **Why it hurts:** it hides the mental model and makes debugging harder.
-  **Better move:** make one small behavior clear, then prove it.
-- **Mistake:** Changing many files at once.
-  **Why it hurts:** it hides the mental model and makes debugging harder.
-  **Better move:** make one small behavior clear, then prove it.
-- **Mistake:** Skipping the failure path.
-  **Why it hurts:** it hides the mental model and makes debugging harder.
-  **Better move:** make one small behavior clear, then prove it.
-- **Mistake:** Reading only the happy path test.
-  **Why it hurts:** it hides the mental model and makes debugging harder.
-  **Better move:** make one small behavior clear, then prove it.
-- **Mistake:** Ignoring the validation command.
-  **Why it hurts:** it hides the mental model and makes debugging harder.
-  **Better move:** make one small behavior clear, then prove it.
-- **Mistake:** Using vague names.
-  **Why it hurts:** it hides the mental model and makes debugging harder.
-  **Better move:** make one small behavior clear, then prove it.
-- **Mistake:** Putting business rules in the user interface layer.
-  **Why it hurts:** it hides the mental model and makes debugging harder.
-  **Better move:** make one small behavior clear, then prove it.
-- **Mistake:** Treating logs, errors, and tests as decoration.
-  **Why it hurts:** it hides the mental model and makes debugging harder.
-  **Better move:** make one small behavior clear, then prove it.
-- **Mistake:** Optimizing before correctness is visible.
-  **Why it hurts:** it hides the mental model and makes debugging harder.
-  **Better move:** make one small behavior clear, then prove it.
-- **Mistake:** Building future-week features early.
-  **Why it hurts:** it hides the mental model and makes debugging harder.
-  **Better move:** make one small behavior clear, then prove it.
-
-## Debugging guidance
-
-- Copy the exact failing command.
-- Read the first useful error line.
-- Read the final error line.
-- Classify the failure as import, input, state, file, database, network, model, or expectation.
-- Reproduce it with the smallest command.
-- Inspect the value closest to the failure.
-- Fix the cause, not only the symptom.
-- Run the narrowest test.
-- Run the chapter validation command.
-- Write down what the error was teaching.
-Debugging questions:
-- What did I expect?
-- What happened?
-- Which value first became wrong?
-- Which layer created that value?
-- Which test should catch this next time?
-
-## Design tradeoffs
-
-- **Simple first version:** Easy to understand, but not the final production shape.
-- **Clear layers:** More files, but less confusion as features grow.
-- **Explicit errors:** More code, but failures become teachable.
-- **Small unit tests:** Fast feedback, but less end-to-end confidence.
-- **Integration tests:** Real wiring, but slower and more setup.
-- **Configuration:** Flexible behavior, but defaults must be clear.
-The right question is not "What is the fanciest design?"
-The right question is "What design teaches the responsibility clearly and can grow next week?"
-
-## Testing implications
-
-Tests for this chapter:
-- `tests/unit/test_experiment_service.py` — log, list, compare with fake repo
-- `tests/integration/test_experiment_repository.py`
-Validation commands:
-```bash
-researchops experiment list
-researchops experiment compare
-pytest tests/unit/test_experiment_service.py -v
-```
-- Arrange the data.
-- Act on the system.
-- Assert the visible promise.
-- Check one failure path.
-- Keep unit tests fast.
-- Use integration tests only when real wiring matters.
-
-## Architecture implications
-
-ResearchOps stays understandable when dependencies point inward.
-```text
-CLI / API / Worker -> Services -> Core
-Infrastructure implements core-facing contracts and is wired at the outside.
-```
-- Does the UI layer avoid business logic?
-- Does the service layer own workflow decisions?
-- Does core avoid infrastructure imports?
-- Does infrastructure do outside-world work?
-- Do tests use fakes when possible?
-Architecture is not ceremony.
-Architecture is named responsibility.
-
-## How this connects to AI engineering / ML research
-
-AI engineering needs more than models.
-It needs reliable data flow, clear interfaces, repeatable experiments, visible failures, and honest evaluation.
-Week 12 contributes by making **experiment tracking** clear enough to trust.
-- Bad data creates bad model behavior.
-- Unclear boundaries make experiments hard to reproduce.
-- Missing tests let regressions change research results silently.
-- Good logs and errors shorten investigation time.
-- Clear documentation lets future users understand the system.
-
-## Mini quizzes
-
-- What problem does Week 12 solve?
-- What is the main input?
-- What is the main output?
-- Which file owns the main responsibility?
-- Which layer should not contain business logic?
-- What is one happy path?
-- What is one failure path?
-- What command proves the chapter works?
-- What should you not build early?
-- How does this prepare the next week?
-
-## Explain-it-aloud prompts
-
-- Explain Experiment Tracking in simple words.
-- Explain the data flow from input to result.
-- Explain the first file you would open.
-- Explain the test that gives confidence.
-- Explain what can break.
-- Explain the tradeoff made in this chapter.
-- Explain what you still find weak.
-
-## What to memorize
-
-- The topic: Experiment Tracking.
-- The milestone: `researchops experiment list` shows all training runs with params and metrics. `researchops experiment compare` shows which run had the best F1.
-- The main project files.
-- The validation command.
-- The boundary rule for the layer you are touching.
-- The habit of testing before moving forward.
-
-## What to understand deeply
-
-- Why this feature belongs now.
-- How data moves through the chapter.
-- Which file owns which decision.
-- How the failure path is handled.
-- Why the tests prove behavior.
-- How this week makes future work safer.
-
-## What not to worry about yet
-
-- Perfect scale.
-- Fancy abstractions.
-- Future-week features.
-- Every option in every library.
-- Premature optimization.
-- Comparing your speed to someone else.
-Focus on the milestone.
-A clear small milestone beats a confusing large one.
-
-## Bridge to next week
-
-Next week is Week 13: **Embeddings and Semantic Search**.
-This week prepares you by giving ResearchOps a clearer piece of behavior before the next milestone: `researchops semantic-search "efficient transformers"` returns papers ranked by vector similarity to the query.
-- Run validation.
-- Explain the main files.
-- Explain one failure.
-- Explain one test.
-- Write down what still feels weak before moving on.
-
-## Guided deepening drills
-
-Use these drills if the chapter still feels abstract.
-- Drill 1: Trace `Experiment tracking concepts: params, metrics, artifacts, runs` from user input to project result.
-- Drill 2: Write one sentence defining `Experiment tracking concepts: params, metrics, artifacts, runs` without copying the notes.
-- Drill 3: Find the file where `Experiment tracking concepts: params, metrics, artifacts, runs` appears or should appear.
-- Drill 4: Name one wrong implementation of `Experiment tracking concepts: params, metrics, artifacts, runs` and why it would hurt.
-- Drill 5: Name one test that would protect `Experiment tracking concepts: params, metrics, artifacts, runs`.
-- Drill 6: Trace ``ExperimentRepository` protocol and SQLite implementation` from user input to project result.
-- Drill 7: Write one sentence defining ``ExperimentRepository` protocol and SQLite implementation` without copying the notes.
-- Drill 8: Find the file where ``ExperimentRepository` protocol and SQLite implementation` appears or should appear.
-- Drill 9: Name one wrong implementation of ``ExperimentRepository` protocol and SQLite implementation` and why it would hurt.
-- Drill 10: Name one test that would protect ``ExperimentRepository` protocol and SQLite implementation`.
-- Drill 11: Trace `Model versioning: linking a saved model artifact to a run` from user input to project result.
-- Drill 12: Write one sentence defining `Model versioning: linking a saved model artifact to a run` without copying the notes.
-- Drill 13: Find the file where `Model versioning: linking a saved model artifact to a run` appears or should appear.
-- Drill 14: Name one wrong implementation of `Model versioning: linking a saved model artifact to a run` and why it would hurt.
-- Drill 15: Name one test that would protect `Model versioning: linking a saved model artifact to a run`.
-- Drill 16: Trace `Reproducibility requirements: recording random seeds, data splits` from user input to project result.
-- Drill 17: Write one sentence defining `Reproducibility requirements: recording random seeds, data splits` without copying the notes.
-- Drill 18: Find the file where `Reproducibility requirements: recording random seeds, data splits` appears or should appear.
-- Drill 19: Name one wrong implementation of `Reproducibility requirements: recording random seeds, data splits` and why it would hurt.
-- Drill 20: Name one test that would protect `Reproducibility requirements: recording random seeds, data splits`.
-- Drill 21: Trace ``ExperimentService` orchestration` from user input to project result.
-- Drill 22: Write one sentence defining ``ExperimentService` orchestration` without copying the notes.
-- Drill 23: Find the file where ``ExperimentService` orchestration` appears or should appear.
-- Drill 24: Name one wrong implementation of ``ExperimentService` orchestration` and why it would hurt.
-- Drill 25: Name one test that would protect ``ExperimentService` orchestration`.
-- Drill 26: Draw the Week 12 data flow in four boxes.
-- Drill 27: Say why `Experiment Tracking` belongs in this month of the curriculum.
-- Drill 28: Rewrite one error message in beginner-friendly language.
-- Drill 29: List the exact assumptions made by the example code.
-- Drill 30: List the exact assumptions checked by the tests.
-- Drill 31: Point to the line where raw input becomes project meaning.
-- Drill 32: Point to the line where the result becomes visible to a user.
-- Drill 33: Explain what would happen if the main file were deleted.
-- Drill 34: Explain what would happen if the main test were deleted.
-- Drill 35: Describe the smallest manual check you can run.
-- Drill 36: Describe the smallest automated check you can run.
-- Drill 37: Name the most likely beginner mistake for this week.
-- Drill 38: Name the safest recovery move for that mistake.
-- Drill 39: Explain what knowledge should be carried into the next chapter.
-- Drill 40: Trace `Experiment tracking concepts: params, metrics, artifacts, runs` from user input to project result.
-- Drill 41: Write one sentence defining `Experiment tracking concepts: params, metrics, artifacts, runs` without copying the notes.
-- Drill 42: Find the file where `Experiment tracking concepts: params, metrics, artifacts, runs` appears or should appear.
-- Drill 43: Name one wrong implementation of `Experiment tracking concepts: params, metrics, artifacts, runs` and why it would hurt.
-- Drill 44: Name one test that would protect `Experiment tracking concepts: params, metrics, artifacts, runs`.
-- Drill 45: Trace ``ExperimentRepository` protocol and SQLite implementation` from user input to project result.
-- Drill 46: Write one sentence defining ``ExperimentRepository` protocol and SQLite implementation` without copying the notes.
-- Drill 47: Find the file where ``ExperimentRepository` protocol and SQLite implementation` appears or should appear.
-- Drill 48: Name one wrong implementation of ``ExperimentRepository` protocol and SQLite implementation` and why it would hurt.
-- Drill 49: Name one test that would protect ``ExperimentRepository` protocol and SQLite implementation`.
-- Drill 50: Trace `Model versioning: linking a saved model artifact to a run` from user input to project result.
-- Drill 51: Write one sentence defining `Model versioning: linking a saved model artifact to a run` without copying the notes.
-- Drill 52: Find the file where `Model versioning: linking a saved model artifact to a run` appears or should appear.
-- Drill 53: Name one wrong implementation of `Model versioning: linking a saved model artifact to a run` and why it would hurt.
-- Drill 54: Name one test that would protect `Model versioning: linking a saved model artifact to a run`.
-- Drill 55: Trace `Reproducibility requirements: recording random seeds, data splits` from user input to project result.
-- Drill 56: Write one sentence defining `Reproducibility requirements: recording random seeds, data splits` without copying the notes.
-- Drill 57: Find the file where `Reproducibility requirements: recording random seeds, data splits` appears or should appear.
-- Drill 58: Name one wrong implementation of `Reproducibility requirements: recording random seeds, data splits` and why it would hurt.
-- Drill 59: Name one test that would protect `Reproducibility requirements: recording random seeds, data splits`.
-- Drill 60: Trace ``ExperimentService` orchestration` from user input to project result.
-- Drill 61: Write one sentence defining ``ExperimentService` orchestration` without copying the notes.
-- Drill 62: Find the file where ``ExperimentService` orchestration` appears or should appear.
-- Drill 63: Name one wrong implementation of ``ExperimentService` orchestration` and why it would hurt.
-- Drill 64: Name one test that would protect ``ExperimentService` orchestration`.
-- Drill 65: Draw the Week 12 data flow in four boxes.
-- Drill 66: Say why `Experiment Tracking` belongs in this month of the curriculum.
-- Drill 67: Rewrite one error message in beginner-friendly language.
-- Drill 68: List the exact assumptions made by the example code.
-- Drill 69: List the exact assumptions checked by the tests.
-- Drill 70: Point to the line where raw input becomes project meaning.
-- Drill 71: Point to the line where the result becomes visible to a user.
-- Drill 72: Explain what would happen if the main file were deleted.
-- Drill 73: Explain what would happen if the main test were deleted.
-- Drill 74: Describe the smallest manual check you can run.
-- Drill 75: Describe the smallest automated check you can run.
-- Drill 76: Name the most likely beginner mistake for this week.
-- Drill 77: Name the safest recovery move for that mistake.
-- Drill 78: Explain what knowledge should be carried into the next chapter.
-- Drill 79: Trace `Experiment tracking concepts: params, metrics, artifacts, runs` from user input to project result.
-- Drill 80: Write one sentence defining `Experiment tracking concepts: params, metrics, artifacts, runs` without copying the notes.
-- Drill 81: Find the file where `Experiment tracking concepts: params, metrics, artifacts, runs` appears or should appear.
-- Drill 82: Name one wrong implementation of `Experiment tracking concepts: params, metrics, artifacts, runs` and why it would hurt.
-- Drill 83: Name one test that would protect `Experiment tracking concepts: params, metrics, artifacts, runs`.
-- Drill 84: Trace ``ExperimentRepository` protocol and SQLite implementation` from user input to project result.
-- Drill 85: Write one sentence defining ``ExperimentRepository` protocol and SQLite implementation` without copying the notes.
-- Drill 86: Find the file where ``ExperimentRepository` protocol and SQLite implementation` appears or should appear.
-- Drill 87: Name one wrong implementation of ``ExperimentRepository` protocol and SQLite implementation` and why it would hurt.
-
-<!-- LEARNING_FORMAT_END -->
-
----
-
-# Existing detailed notes
-## Why training once is not research
-
-After Week 11, you have a trained model. But a single training run immediately raises questions:
-
-- What parameters did I use?
-- What was the F1 score?
-- If I change `max_features` from 5000 to 10000, does it improve?
-- Which model produced the artifact that is currently in production?
-- When was it trained? On which dataset version?
-
-Without experiment tracking, you cannot answer these questions. You are left guessing, checking git log, or running training again hoping to get the same result.
-
-**Experiment tracking** is the discipline of recording everything about every training run — parameters, metrics, artifact paths, dataset references, timestamps — in a structured, queryable form.
-
-This is not optional in real ML work. It is as fundamental as version control for code. The code is versioned in git. The experiments must be versioned in an experiment store.
-
----
-
-## Core vocabulary
-
-**Experiment**: a series of related training runs with a shared goal. "Which vectorizer configuration works best for topic classification?" is an experiment. It may contain dozens of runs.
-
-**Run**: one specific execution of the training pipeline. A run has a unique ID, specific parameters, resulting metrics, and saved artifacts.
-
-**Parameter**: a configuration value that determines how a run behaves. For ResearchOps: `max_features=5000`, `C=1.0`, `test_size=0.2`. Parameters are set before training begins.
-
-**Hyperparameter**: a parameter that is not learned from data but chosen by the engineer. `max_features` and `C` are hyperparameters. The model's logistic regression weights are learned parameters, not hyperparameters.
-
-**Metric**: a numeric measurement of model quality produced after training. `accuracy=0.87`, `f1_macro=0.85`, `recall_nlp=0.91` are metrics.
-
-**Artifact**: a file produced by a training run. The model joblib file, a confusion matrix image, a CSV of predictions — these are artifacts. Each run should link to its own artifacts.
-
-**Dataset version**: a reference to which data was used for training. Could be a file path, a hash, a date, or a query description. Without this, "which data produced this model?" becomes unanswerable.
-
-**Model version**: an identifier for a specific trained model artifact, distinct from all other artifacts. A run ID or timestamp-based filename serves this purpose.
-
-**Reproducibility**: the ability to recreate the conditions of a past run and get a consistent result. Full reproducibility requires: same code, same data, same parameters, same random seed.
-
-**Lineage**: the chain of cause and effect from data to model. "This model artifact was produced by this run, which was trained on this dataset, using this code version."
-
----
-
-## What a run record contains
-
-A minimal run record for ResearchOps:
-
-```json
-{
-  "run_id": "run-20240915-1030",
-  "experiment_name": "tfidf-baseline",
-  "timestamp": "2024-09-15T10:30:42",
-  "params": {
-    "max_features": 5000,
-    "C": 1.0,
-    "test_size": 0.2,
-    "ngram_range": "1,2",
-    "classifier": "LogisticRegression",
-    "random_state": 42
-  },
-  "metrics": {
-    "accuracy": 0.87,
-    "f1_macro": 0.85,
-    "f1_nlp": 0.91,
-    "f1_systems": 0.78,
-    "f1_vision": 0.88,
-    "train_size": 80,
-    "test_size": 20
-  },
-  "artifact_path": "artifacts/models/topic-classifier-run-20240915-1030.joblib",
-  "dataset_ref": "examples/training_data/ (sha256: abc123)"
-}
-```
-
-Every field serves a purpose:
-
-- `run_id` — unique identifier. Essential for referring to a specific run.
-- `experiment_name` — groups related runs.
-- `timestamp` — when the run happened.
-- `params` — exactly what was configured. Without this, you cannot reproduce the run.
-- `metrics` — the outcome. Without this, you cannot compare runs.
-- `artifact_path` — where the model is saved. Without this, the run is useless for deployment.
-- `dataset_ref` — what data was used.
-
----
-
-## Storage design
-
-For ResearchOps, run records are stored as JSON files in `artifacts/experiments/`:
-
-```
-artifacts/
-  experiments/
-    run-20240915-1030.json
-    run-20240915-1145.json
-    run-20240916-0830.json
-  models/
-    topic-classifier-run-20240915-1030.joblib
-    topic-classifier-run-20240915-1145.joblib
-```
-
-Each run gets its own JSON file. Each model artifact has a run-specific name. This means:
-
-- No overwriting.
-- Every artifact is linked to its run.
-- Listing `artifacts/experiments/` shows all historical runs.
-- Comparing two runs is as simple as reading two JSON files.
-
-This is a **file-based experiment store**. It requires no database, no external service, and no extra dependencies. It is suitable for a solo project or a small team. More sophisticated projects use tools like MLflow or Weights & Biases — but those tools implement the same concepts.
-
----
-
-## The ExperimentRun dataclass
-
-```python
-from __future__ import annotations
-
-import json
-import uuid
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
-
+from uuid import uuid4
+import json
 
 @dataclass
 class ExperimentRun:
-    """Records a single ML training run with its parameters and metrics."""
-
     run_id: str
     experiment_name: str
     timestamp: str
-    params: dict[str, str | int | float]
-    metrics: dict[str, float]
-    artifact_path: str
-    dataset_ref: str = ""
+    params: dict[str, object] = field(default_factory=dict)
+    metrics: dict[str, float | str | None] = field(default_factory=dict)
+    artifacts: dict[str, str] = field(default_factory=dict)
+    dataset_ref: str | None = None
+    status: str = "created"
+    error_message: str | None = None
 
     @classmethod
-    def create(cls, experiment_name: str, params: dict) -> ExperimentRun:
-        """Create a new run with a generated ID and current timestamp."""
-        run_id = f"run-{datetime.utcnow().strftime('%Y%m%d-%H%M%S')}-{uuid.uuid4().hex[:6]}"
-        return cls(
-            run_id=run_id,
-            experiment_name=experiment_name,
-            timestamp=datetime.utcnow().isoformat(),
-            params=params,
-            metrics={},
-            artifact_path="",
-        )
+    def create(cls, experiment_name: str, params: dict[str, object], dataset_ref: str | None = None) -> "ExperimentRun":
+        stamp = datetime.now(timezone.utc).strftime("%Y%m%d-%H%M%S")
+        run_id = f"run-{stamp}-{uuid4().hex[:8]}"
+        return cls(run_id=run_id, experiment_name=experiment_name, timestamp=datetime.now(timezone.utc).isoformat(), params=dict(params), dataset_ref=dataset_ref)
 
-    def to_dict(self) -> dict:
-        """Convert to a plain dict for JSON serialization."""
-        return {
-            "run_id": self.run_id,
-            "experiment_name": self.experiment_name,
-            "timestamp": self.timestamp,
-            "params": self.params,
-            "metrics": self.metrics,
-            "artifact_path": self.artifact_path,
-            "dataset_ref": self.dataset_ref,
-        }
+    def to_dict(self) -> dict[str, object]:
+        return {"run_id": self.run_id, "experiment_name": self.experiment_name, "timestamp": self.timestamp, "params": self.params, "metrics": self.metrics, "artifacts": self.artifacts, "dataset_ref": self.dataset_ref, "status": self.status, "error_message": self.error_message}
 ```
 
-Line by line:
-
-`@dataclass` — generates `__init__`, `__repr__`, `__eq__` automatically.
-
-`params: dict[str, str | int | float]` — parameters must be serializable to JSON. Only strings, integers, and floats are allowed. No complex objects.
-
-`metrics: dict[str, float]` — metrics are always floats (fractions, percentages).
-
-`ExperimentRun.create(...)` — factory method that generates a unique run ID and timestamp. This ensures every run is distinguishable.
-
-`run_id = f"run-{datetime.utcnow().strftime('%Y%m%d-%H%M%S')}-{uuid.uuid4().hex[:6]}"` — a run ID looks like `run-20240915-103042-a3f8b2`. Human-readable date plus uniqueness suffix.
-
-`to_dict()` — conversion to plain dict for JSON serialization. `json.dumps` cannot serialize a dataclass directly.
-
----
-
-## The tracker: saving and loading runs
+Line 1: `from dataclasses import dataclass, field`
+This line imports dataclass helpers.
+Line 2: `from datetime import datetime, timezone`
+This line imports UTC time helpers.
+Line 3: `from pathlib import Path`
+This line imports path type for storage functions.
+Line 4: `from uuid import uuid4`
+This line imports UUID fragments for safer IDs.
+Line 5: `import json`
+This line imports JSON for text storage.
+Line 7: `@dataclass`
+This line marks the class as a dataclass.
+Line 8: `class ExperimentRun:`
+This line names the run object.
+Line 9: `    run_id: str`
+This line stores the unique run identifier.
+Line 10: `    experiment_name: str`
+This line stores the experiment group.
+Line 11: `    timestamp: str`
+This line stores creation time as text.
+Line 12: `    params: dict[str, object] = field(default_factory=dict)`
+This line stores choices made before training.
+Line 13: `    metrics: dict[str, float | str | None] = field(default_factory=dict)`
+This line stores measurements or status-like metric values.
+Line 14: `    artifacts: dict[str, str] = field(default_factory=dict)`
+This line stores produced file paths by name.
+Line 15: `    dataset_ref: str | None = None`
+This line stores the data reference when known.
+Line 16: `    status: str = "created"`
+This line records lifecycle state.
+Line 17: `    error_message: str | None = None`
+This line records failure detail when present.
+Line 19: `    @classmethod`
+This line declares a class method constructor.
+Line 20: `    def create(cls, experiment_name: str, params: dict[str, object], dataset_ref: str | None = None) -> "ExperimentRun":`
+This line accepts the experiment name, parameter dictionary, and optional data reference.
+Line 21: `        stamp = datetime.now(timezone.utc).strftime("%Y%m%d-%H%M%S")`
+This line creates a readable timestamp for the ID.
+Line 22: `        run_id = f"run-{stamp}-{uuid4().hex[:8]}"`
+This line adds a random suffix to reduce collisions.
+Line 23: `        return cls(run_id=run_id, experiment_name=experiment_name, timestamp=datetime.now(timezone.utc).isoformat(), params=dict(params), dataset_ref=dataset_ref)`
+This line returns a new run while copying params.
+Line 25: `    def to_dict(self) -> dict[str, object]:`
+This line defines conversion to JSON-friendly data.
+Line 26: `        return {"run_id": self.run_id, "experiment_name": self.experiment_name, "timestamp": self.timestamp, "params": self.params, "metrics": self.metrics, "artifacts": self.artifacts, "dataset_ref": self.dataset_ref, "status": self.status, "error_message": self.error_message}`
+This line returns stable keys that old records can continue to use.
 
 ```python
-def save_run(run: ExperimentRun, output_dir: Path) -> Path:
-    """Write the run record as a JSON file."""
-    output_dir.mkdir(parents=True, exist_ok=True)
-    path = output_dir / f"{run.run_id}.json"
-    path.write_text(
-        json.dumps(run.to_dict(), indent=2, ensure_ascii=False),
-        encoding="utf-8",
-    )
-    return path
-
+def save_run(run: ExperimentRun, experiments_dir: Path) -> Path:
+    experiments_dir.mkdir(parents=True, exist_ok=True)
+    output_path = experiments_dir / f"{run.run_id}.json"
+    output_path.write_text(json.dumps(run.to_dict(), indent=2, sort_keys=True), encoding="utf-8")
+    return output_path
 
 def load_run(run_id: str, experiments_dir: Path) -> ExperimentRun:
-    """Load a run record by ID."""
-    path = experiments_dir / f"{run_id}.json"
-    if not path.exists():
-        raise FileNotFoundError(f"No run record found for {run_id}")
-    data = json.loads(path.read_text(encoding="utf-8"))
-    return ExperimentRun(**data)
-
-
-def list_runs(experiments_dir: Path) -> list[ExperimentRun]:
-    """Return all run records, sorted by timestamp."""
-    runs = []
-    for json_file in sorted(experiments_dir.glob("*.json")):
-        data = json.loads(json_file.read_text(encoding="utf-8"))
-        runs.append(ExperimentRun(**data))
-    return sorted(runs, key=lambda r: r.timestamp)
-
-
-def compare_runs(run_ids: list[str], experiments_dir: Path) -> None:
-    """Print a comparison table for the given run IDs."""
-    runs = [load_run(rid, experiments_dir) for rid in run_ids]
-    all_metrics = sorted({k for r in runs for k in r.metrics})
-
-    header = f"{'Metric':<20}" + "".join(f"{r.run_id:<30}" for r in runs)
-    print(header)
-    print("-" * len(header))
-
-    for metric in all_metrics:
-        row = f"{metric:<20}"
-        for r in runs:
-            value = r.metrics.get(metric, "N/A")
-            row += f"{str(value):<30}"
-        print(row)
+    input_path = experiments_dir / f"{run_id}.json"
+    if not input_path.exists():
+        raise FileNotFoundError(f"No experiment run found for {run_id}")
+    return ExperimentRun.from_dict(json.loads(input_path.read_text(encoding="utf-8")))
 ```
 
-`save_run` — writes the run as indented JSON. `ensure_ascii=False` allows non-ASCII characters in text fields. `parents=True` creates intermediate directories.
+`save_run` creates the directory before writing so first-time use works.
+The output filename uses the run ID so runs do not overwrite each other.
+Indented JSON is easier for learners to inspect manually.
+`load_run` checks for missing records before parsing.
+The missing-run error includes the requested ID so the CLI message is actionable.
+A complete implementation also needs `from_dict`, list, compare, and tests.
 
-`load_run` — deserializes a JSON file back into an `ExperimentRun`. Raises `FileNotFoundError` with a clear message if the run does not exist.
+## Common beginner mistakes
 
-`list_runs` — reads all JSON files in the experiments directory and sorts by timestamp. This gives a history of all runs.
+### Only scores
 
-`compare_runs` — side-by-side comparison table. Each metric is a row; each run is a column. This is the core analysis tool.
+Saving only `f1_macro=0.84` is too thin.
+You cannot tell which parameters produced the value.
+You cannot tell which data was used.
+You cannot locate the model artifact.
+Always store context with the score.
 
----
+ResearchOps check:
+Can this idea help a future reader understand which data, settings, metrics, and artifacts belonged to one classifier run?
+If yes, it belongs in the Week 12 mental model.
+If no, leave it out until the project needs it.
 
-## Integrating tracking into training
+### Overwrites
 
-The training function from Week 11 needs two additions:
+Writing every model to `model.joblib` overwrites history.
+The newest file replaces the previous file.
+The old run record may then point to the wrong model.
+Use filenames that contain the run ID.
+Example: `topic-classifier-run-20240915-103042-a3f8.joblib`.
 
-1. Create a run record at the start.
-2. Fill in metrics and artifact path at the end, then save.
+ResearchOps check:
+Can this idea help a future reader understand which data, settings, metrics, and artifacts belonged to one classifier run?
+If yes, it belongs in the Week 12 mental model.
+If no, leave it out until the project needs it.
 
-```python
-from researchops.experiments.tracker import save_run
-from researchops.experiments.models import ExperimentRun
+### Serialization
 
-def train(
-    data_dir: Path,
-    output_path: Path,
-    experiment_name: str = "tfidf-baseline",
-    max_features: int = 5000,
-    C: float = 1.0,
-) -> ExperimentRun:
-    """Train topic classifier and log the run."""
+JSON cannot save every Python object automatically.
+`Path`, `datetime`, and some numeric library types may fail.
+Convert paths and timestamps to strings.
+Convert metrics to plain Python numbers when needed.
+Test this with a JSON round trip.
 
-    # Create run record early
-    run = ExperimentRun.create(
-        experiment_name=experiment_name,
-        params={
-            "max_features": max_features,
-            "C": C,
-            "test_size": 0.2,
-            "random_state": 42,
-            "classifier": "LogisticRegression",
-        },
-    )
+ResearchOps check:
+Can this idea help a future reader understand which data, settings, metrics, and artifacts belonged to one classifier run?
+If yes, it belongs in the Week 12 mental model.
+If no, leave it out until the project needs it.
 
-    # ... (load data, split, fit pipeline) ...
+### Boundary leaks
 
-    # Record metrics
-    run.metrics = {
-        "accuracy": float(accuracy_score(y_test, predictions)),
-        "f1_macro": float(f1_score(y_test, predictions, average="macro")),
-        "train_size": len(X_train),
-        "test_size": len(X_test),
-    }
+Storage code should not train the classifier.
+CLI code should not compute macro F1.
+Core protocols should not import JSON repositories.
+These leaks make tests harder and changes riskier.
+Keep responsibilities separate even when the project is small.
 
-    # Save artifact with run-specific name
-    artifact_path = output_path.parent / f"topic-classifier-{run.run_id}.joblib"
-    artifact_path.parent.mkdir(parents=True, exist_ok=True)
-    joblib.dump(pipeline, artifact_path)
-    run.artifact_path = str(artifact_path)
+ResearchOps check:
+Can this idea help a future reader understand which data, settings, metrics, and artifacts belonged to one classifier run?
+If yes, it belongs in the Week 12 mental model.
+If no, leave it out until the project needs it.
 
-    # Save run record
-    experiments_dir = output_path.parent.parent / "experiments"
-    save_run(run, experiments_dir)
-    print(f"Run {run.run_id} saved to {experiments_dir}")
+## Debugging guidance
 
-    return run
-```
+### Missing record
 
-Key changes from Week 11:
+If a record is missing, check whether training reached the save call.
+Then check the experiments directory.
+Then check the run ID and filename.
+Then inspect errors from JSON writing.
+A wrong directory is more common than a broken JSON library.
 
-1. Training accepts `experiment_name`, `max_features`, and `C` as parameters instead of hard-coding them. This allows different runs to use different values.
-2. The artifact path includes `run.run_id` in the filename, so different runs produce different artifacts.
-3. `run.artifact_path` is set before saving the run record, so the record always links to its artifact.
-4. The function returns the `ExperimentRun` so callers (CLI, tests) can inspect or display the result.
+ResearchOps check:
+Can this idea help a future reader understand which data, settings, metrics, and artifacts belonged to one classifier run?
+If yes, it belongs in the Week 12 mental model.
+If no, leave it out until the project needs it.
 
----
+### Bad JSON
 
-## CLI commands for experiment tracking
+If loading raises `JSONDecodeError`, open the file.
+The file may be empty, partially written, or manually edited incorrectly.
+Create a smaller reproduction with one run record.
+Validate that `to_dict()` returns JSON-friendly values.
+Add a test that saves and loads the same object.
 
-The problem statement specifies these commands. Here is what each should do:
+ResearchOps check:
+Can this idea help a future reader understand which data, settings, metrics, and artifacts belonged to one classifier run?
+If yes, it belongs in the Week 12 mental model.
+If no, leave it out until the project needs it.
 
-```bash
-# Create a named experiment (optional grouping step)
-researchops experiment create "tfidf-baseline"
-```
+### Wrong comparison
 
-This creates a directory or marker indicating a named experiment is starting. Optional if you include `experiment_name` in every training run.
+If comparison output is blank, inspect metric keys.
+`f1_macro` and `macro_f1` are different strings.
+Choose one name and use it consistently.
+Handle missing values gracefully in display output.
+Do not crash just because one run lacks an optional metric.
 
-```bash
-# Train and log a run
-researchops train-topic-model --experiment tfidf-baseline
-```
+ResearchOps check:
+Can this idea help a future reader understand which data, settings, metrics, and artifacts belonged to one classifier run?
+If yes, it belongs in the Week 12 mental model.
+If no, leave it out until the project needs it.
 
-Calls the training function, logging the run under the `tfidf-baseline` experiment name.
+### Missing artifact
 
-```bash
-# List all runs
-researchops experiment list
-```
+If a record points to a missing artifact, do not pretend the artifact exists.
+Display a warning.
+Check whether training saved the model before assigning the path.
+Check whether cleanup deleted artifacts but not records.
+This is a lineage problem, not necessarily a JSON problem.
 
-Reads all JSON files from `artifacts/experiments/`, prints a summary table:
+ResearchOps check:
+Can this idea help a future reader understand which data, settings, metrics, and artifacts belonged to one classifier run?
+If yes, it belongs in the Week 12 mental model.
+If no, leave it out until the project needs it.
 
-```
-Run ID                     Experiment          Timestamp              F1 Macro
-run-20240915-1030-a3f8b2   tfidf-baseline      2024-09-15 10:30:42   0.85
-run-20240915-1145-c9d2e1   tfidf-baseline      2024-09-15 11:45:03   0.87
-```
+## Design tradeoffs
 
-```bash
-# Show a specific run
-researchops experiment show run-20240915-1030-a3f8b2
-```
+### JSON first
 
-Reads the JSON file for that run ID, prints all params and metrics in a readable format.
+JSON is ideal for first implementation because it is visible.
+A learner can open the run file and read it.
+Tests can create isolated directories easily.
+The cost is slower querying across many runs.
+That cost is acceptable for Week 12.
 
-```bash
-# Compare two or more runs
-researchops experiment compare run-20240915-1030-a3f8b2 run-20240915-1145-c9d2e1
-```
+ResearchOps check:
+Can this idea help a future reader understand which data, settings, metrics, and artifacts belonged to one classifier run?
+If yes, it belongs in the Week 12 mental model.
+If no, leave it out until the project needs it.
 
-Calls `compare_runs` and prints the side-by-side metric table.
+### SQLite later
 
----
+SQLite becomes attractive when run counts grow.
+It can sort, filter, and aggregate with SQL.
+It can enforce uniqueness on run IDs.
+It can store params and metrics as JSON text inside columns.
+It adds schema complexity, so introduce it deliberately.
 
-## Failed runs
+ResearchOps check:
+Can this idea help a future reader understand which data, settings, metrics, and artifacts belonged to one classifier run?
+If yes, it belongs in the Week 12 mental model.
+If no, leave it out until the project needs it.
 
-What if training crashes after saving the artifact but before saving the run record? The artifact exists but no record points to it. It is an orphan.
+### Mutable during run
 
-What if the run record is saved but training crashed before saving the artifact? The record's `artifact_path` points to a file that does not exist.
+It is practical to create a run before training and fill fields later.
+The status may move from `created` to `completed` or `failed`.
+After completion, treat the record as historical evidence.
+Do not silently edit old metrics to make results look better.
+If you need a correction, record it explicitly or create a new run.
 
-Both are real failure modes. Handle them:
+ResearchOps check:
+Can this idea help a future reader understand which data, settings, metrics, and artifacts belonged to one classifier run?
+If yes, it belongs in the Week 12 mental model.
+If no, leave it out until the project needs it.
 
-1. **Always save the run record even on failure** — log what you know: params, timestamp, and an error message in the metrics. A failed run with `"error": "OOMKilled"` is valuable information.
-2. **Validate artifact paths on load** — when displaying a run, check whether `artifact_path` exists on disk and warn if it does not.
+### Best metric
 
----
+A simple best-run function can assume higher is better for accuracy and F1.
+That assumption should be documented.
+It would be wrong for lower-is-better metrics such as loss.
+A future extension can store metric direction.
+Do not build that extension before the project needs it.
 
-## Research notebook vs. experiment tracker
+ResearchOps check:
+Can this idea help a future reader understand which data, settings, metrics, and artifacts belonged to one classifier run?
+If yes, it belongs in the Week 12 mental model.
+If no, leave it out until the project needs it.
 
-A Jupyter notebook is good for exploration: visualizing data, trying code snippets, producing one-off charts. It is a scratchpad.
+## Testing implications
 
-An experiment tracker is good for history: recording what you ran, comparing results, understanding why the current model is the current model.
+### Round trip
 
-| Notebook | Experiment tracker |
-|---|---|
-| Execution order matters | Results are independent of order |
-| State mutates as cells are run | Each run is self-contained |
-| Hard to version | Versioned by run ID and timestamp |
-| Hard to test | Can be tested |
-| Hard to automate | Callable from CLI and CI |
+A run converted to a dictionary and back should preserve fields.
+This test catches missing keys.
+It also catches accidental renames.
+Use realistic params and metrics from the classifier.
+Keep the test small and direct.
 
-Use notebooks for exploration. Use the experiment tracker for production ML work. They complement each other.
+ResearchOps check:
+Can this idea help a future reader understand which data, settings, metrics, and artifacts belonged to one classifier run?
+If yes, it belongs in the Week 12 mental model.
+If no, leave it out until the project needs it.
 
----
+### Filesystem
 
-## Why this supports ML research
+Use `tmp_path` for JSON save and load tests.
+Never rely on a personal artifacts directory.
+Assert the file exists.
+Assert the file contains the run ID.
+Then load it through the public loader.
 
-A portfolio-grade ML project must demonstrate that you can:
+ResearchOps check:
+Can this idea help a future reader understand which data, settings, metrics, and artifacts belonged to one classifier run?
+If yes, it belongs in the Week 12 mental model.
+If no, leave it out until the project needs it.
 
-1. **Train repeatedly** — not just once.
-2. **Improve systematically** — by comparing runs, not guessing.
-3. **Explain past results** — by reading run records.
-4. **Reproduce results** — by re-running with the same params.
+### Listing
 
-Without experiment tracking, "I improved the model" means you changed some numbers and the new model happened to score better. With tracking, it means "I increased `max_features` from 5000 to 10000 and F1 improved from 0.85 to 0.87. Both runs are logged."
+Create records with known timestamps.
+Save them out of order.
+Assert `list_runs` returns them sorted.
+Deterministic output helps users and tests.
+It also makes CLI examples easier to document.
 
-That is the difference between a student project and engineering work.
+ResearchOps check:
+Can this idea help a future reader understand which data, settings, metrics, and artifacts belonged to one classifier run?
+If yes, it belongs in the Week 12 mental model.
+If no, leave it out until the project needs it.
 
----
+### Comparison
 
-## Summary
+Create two runs with one shared metric and one missing metric.
+Assert both run IDs appear.
+Assert the missing value appears as a clear placeholder.
+Assert numeric formatting does not change stored values.
+This test protects real comparison behavior.
 
-| Concept | Meaning |
-|---|---|
-| Experiment | A series of related training runs sharing a goal |
-| Run | One execution of the training pipeline with specific params |
-| Parameter | Configuration value chosen before training |
-| Hyperparameter | Parameter not learned from data, chosen by the engineer |
-| Metric | Numeric measurement of model quality after training |
-| Artifact | File produced by a training run (model, predictions, etc.) |
-| Dataset version | Reference to which data produced this model |
-| Model version | Unique identifier for a specific trained model artifact |
-| Reproducibility | Ability to recreate a past run's conditions and results |
-| Lineage | Chain from data → training run → model artifact |
-| Run record | Structured file (JSON) containing all run metadata |
-| Experiment tracker | System for saving, listing, and comparing run records |
+ResearchOps check:
+Can this idea help a future reader understand which data, settings, metrics, and artifacts belonged to one classifier run?
+If yes, it belongs in the Week 12 mental model.
+If no, leave it out until the project needs it.
+
+### Failure
+
+Simulate a training error.
+Assert a failed run record is saved when possible.
+Assert `status` is `failed`.
+Assert `error_message` is useful.
+This test proves failures are not silently erased.
+
+ResearchOps check:
+Can this idea help a future reader understand which data, settings, metrics, and artifacts belonged to one classifier run?
+If yes, it belongs in the Week 12 mental model.
+If no, leave it out until the project needs it.
+
+## Architecture implications
+
+### Core
+
+Core can hold the `ExperimentRun` model and repository protocol.
+Core should not know about CLI commands.
+Core should not know whether storage is JSON or SQLite.
+Core names the concepts.
+Infrastructure implements persistence.
+
+ResearchOps check:
+Can this idea help a future reader understand which data, settings, metrics, and artifacts belonged to one classifier run?
+If yes, it belongs in the Week 12 mental model.
+If no, leave it out until the project needs it.
+
+### Services
+
+An `ExperimentService` can create runs, record metrics, choose comparisons, and call the repository.
+It should depend on the protocol.
+It should be testable with a fake repository.
+It should not print rich CLI tables directly.
+It should return data the CLI can display.
+
+ResearchOps check:
+Can this idea help a future reader understand which data, settings, metrics, and artifacts belonged to one classifier run?
+If yes, it belongs in the Week 12 mental model.
+If no, leave it out until the project needs it.
+
+### Infrastructure
+
+A JSON repository writes files.
+A SQLite repository writes rows.
+Both can implement the same methods.
+Neither should train models.
+Neither should decide which metric matters for the user.
+
+ResearchOps check:
+Can this idea help a future reader understand which data, settings, metrics, and artifacts belonged to one classifier run?
+If yes, it belongs in the Week 12 mental model.
+If no, leave it out until the project needs it.
+
+### CLI
+
+CLI commands parse arguments and display results.
+They wire concrete repositories to services.
+They should be thin.
+Thin CLI code is easier to test with command runners.
+Business logic belongs below it.
+
+ResearchOps check:
+Can this idea help a future reader understand which data, settings, metrics, and artifacts belonged to one classifier run?
+If yes, it belongs in the Week 12 mental model.
+If no, leave it out until the project needs it.
+
+## How this connects to AI engineering / ML research
+
+### Evidence
+
+ML engineering turns model claims into evidence.
+A run record says what was tried.
+Metrics say what happened.
+Artifacts show what was produced.
+Metadata explains the context.
+
+ResearchOps check:
+Can this idea help a future reader understand which data, settings, metrics, and artifacts belonged to one classifier run?
+If yes, it belongs in the Week 12 mental model.
+If no, leave it out until the project needs it.
+
+### Iteration
+
+Research improves through repeated attempts.
+Repeated attempts need memory.
+The tracker prevents teams from rediscovering the same failed settings.
+It also prevents confusing a lucky run with a reproducible improvement.
+This is true even for a small local classifier.
+
+ResearchOps check:
+Can this idea help a future reader understand which data, settings, metrics, and artifacts belonged to one classifier run?
+If yes, it belongs in the Week 12 mental model.
+If no, leave it out until the project needs it.
+
+### Review
+
+A teammate can inspect records before trusting a model.
+A mentor can ask why macro F1 changed.
+A future employer can see that your project records lineage.
+That makes the project look engineered rather than improvised.
+The tool is small, but the habit is professional.
+
+ResearchOps check:
+Can this idea help a future reader understand which data, settings, metrics, and artifacts belonged to one classifier run?
+If yes, it belongs in the Week 12 mental model.
+If no, leave it out until the project needs it.
+
+## Mini quizzes
+
+### Quiz set
+
+Is `max_features` a parameter or metric?
+Why should the model filename include the run ID?
+What does `dataset_ref` protect you from forgetting?
+What should `load_run` do when the ID does not exist?
+Why can comparing different datasets be misleading?
+
+### More questions
+
+Which layer should know about JSON paths?
+Which layer should format CLI output?
+Why are failed runs useful?
+What values are needed for reproducibility?
+When would SQLite be better than JSON?
+
+## Explain-it-aloud prompts
+
+### Prompts
+
+Explain a run without using the word tracker.
+Explain params versus metrics using Week 11 examples.
+Explain how a run ID links a JSON record to a model artifact.
+Explain why `experiment compare` should not retrain models.
+Explain how you would debug a record with a missing artifact.
+
+### More prompts
+
+Explain why JSON is a good first storage choice.
+Explain what a repository protocol buys you.
+Explain why failed run records are honest.
+Explain how macro F1 helps with imbalanced topics.
+Explain when you are allowed to move to the next week.
+
+## What to memorize
+
+### Memorize
+
+Parameters are chosen before training.
+Metrics are measured after evaluation.
+Artifacts are files produced by a run.
+Metadata is context for audit and reproduction.
+Run IDs must be unique and should appear in artifact filenames.
+
+### Also memorize
+
+JSON needs JSON-friendly values.
+Use `tmp_path` for filesystem tests.
+Services depend on protocols.
+Repositories save and load records.
+Reproducibility needs data, code, parameters, seed, metrics, and artifacts.
+
+## What to understand deeply
+
+### Depth
+
+Experiment tracking is evidence management.
+The tracker supports claims about model quality.
+A stable record shape keeps old results readable.
+Comparison depends on shared context, not metrics alone.
+Reproducibility reduces avoidable mystery.
+
+ResearchOps check:
+Can this idea help a future reader understand which data, settings, metrics, and artifacts belonged to one classifier run?
+If yes, it belongs in the Week 12 mental model.
+If no, leave it out until the project needs it.
+
+### Deeper
+
+Storage should be replaceable without rewriting business behavior.
+Failures are part of the research history.
+Artifact paths can become stale and should be checked.
+Metric naming consistency is a design decision.
+Tests define what historical truth the tracker promises to preserve.
+
+ResearchOps check:
+Can this idea help a future reader understand which data, settings, metrics, and artifacts belonged to one classifier run?
+If yes, it belongs in the Week 12 mental model.
+If no, leave it out until the project needs it.
+
+## What not to worry about yet
+
+### Avoid
+
+Do not add hosted experiment tools.
+Do not add automatic hyperparameter search.
+Do not add web APIs.
+Do not add containers.
+Do not add dashboards.
+
+### Also avoid
+
+Do not record every temporary variable.
+Do not solve distributed training.
+Do not design a large registry too early.
+Do not introduce future-week topics.
+Do not replace understanding with a dependency.
+
+## Bridge to next week
+
+### Bridge
+
+ResearchOps now has memory for classifier experiments.
+Future model work can be compared against saved history.
+Before moving forward, you should be able to open a run record and explain every field.
+You should be able to trace from data reference to run ID to model artifact.
+You should be able to decide whether two runs are fairly comparable.
+
+ResearchOps check:
+Can this idea help a future reader understand which data, settings, metrics, and artifacts belonged to one classifier run?
+If yes, it belongs in the Week 12 mental model.
+If no, leave it out until the project needs it.
+
+### Readiness
+
+You are ready when `list`, `show`, and `compare` make sense without magic.
+You are ready when failed runs feel useful rather than embarrassing.
+You are ready when storage and service boundaries remain clean.
+You are ready when tests protect the record shape.
+You are ready when you can explain the full flow aloud.
+
+ResearchOps check:
+Can this idea help a future reader understand which data, settings, metrics, and artifacts belonged to one classifier run?
+If yes, it belongs in the Week 12 mental model.
+If no, leave it out until the project needs it.
+
 <!-- NAV_BOTTOM_START -->
 ---
 ⬅️ [← README](README.md) · ➡️ [Exercises →](exercises.md)

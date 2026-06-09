@@ -11,140 +11,221 @@
 
 # Exercises - Week 17 RAG Assistant
 
-## Warm-up exercises
+## 1. How to use this workbook
+Use this workbook after reading the notes once.
+Do not try to complete every exercise in one sitting.
+Work in the same order as the sections.
+Each section trains a different muscle.
+Warm-ups build vocabulary.
+Code-reading builds confidence with existing files.
+Implementation tasks build the feature.
+Testing tasks prove behavior.
+Debugging tasks teach failure recovery.
+Written tasks make sure you can explain the system, not only type it.
+- Use fakes for all exercises that mention generators unless the exercise explicitly says manual exploration.
+- Never paste a real API key into source code, notes, tests, or terminal output you plan to save.
+- Keep Week 17 focused on RAG; do not add deployment packaging or future-week features.
+- When an exercise says "explain", write full sentences, not only code comments.
+## 2. Warm-up exercises
+### Define RAG in one sentence
+Task: Write one sentence that includes retrieval, generation, and evidence.
+Acceptance check: you can point to the exact phrase or source that supports your answer.
+### Identify the evidence
+Task: Given a question and three chunks, mark which chunks should be used and why.
+Acceptance check: you can point to the exact phrase or source that supports your answer.
+### Format a context block
+Task: Turn a list of chunk strings into `[1]`, `[2]`, `[3]` labeled text.
+Acceptance check: you can point to the exact phrase or source that supports your answer.
+### Write a fallback message
+Task: Write a user-friendly insufficient-evidence message that does not blame the user.
+Acceptance check: you can point to the exact phrase or source that supports your answer.
+### Choose top-k
+Task: Explain whether top-k should be 2, 5, or 20 for a small first prompt and why.
+Acceptance check: you can point to the exact phrase or source that supports your answer.
+### Spot hallucination risk
+Task: Read a fluent answer and underline every claim not supported by the provided context.
+Acceptance check: you can point to the exact phrase or source that supports your answer.
+## 3. Code-reading exercises
+### Read `src/researchops/services/qa_service.py`
+Task: Identify what is currently a stub and list the decisions the service should own.
+Write down the file path, the relevant function or class name, and one boundary rule it must respect.
+### Read `src/researchops/ai/prompts.py`
+Task: Identify the TODO guidance and rewrite it as three testable prompt requirements.
+Write down the file path, the relevant function or class name, and one boundary rule it must respect.
+### Read `src/researchops/search/vector_search.py`
+Task: Find how semantic search results are represented and what metadata can become a citation.
+Write down the file path, the relevant function or class name, and one boundary rule it must respect.
+### Read `src/researchops/search/chunking.py`
+Task: Explain how chunks are produced and why whole papers should not be placed in every prompt.
+Write down the file path, the relevant function or class name, and one boundary rule it must respect.
+### Read `src/researchops/core/interfaces.py`
+Task: Find the protocols that already exist and decide whether Week 17 needs a new protocol or an injected structural type.
+Write down the file path, the relevant function or class name, and one boundary rule it must respect.
+### Read `src/researchops/cli/main.py`
+Task: Find where a new `ask` command would be registered without putting business logic in the CLI.
+Write down the file path, the relevant function or class name, and one boundary rule it must respect.
+## 4. Implementation exercises
+### Prompt instructions
+Task: In `src/researchops/ai/prompts.py`, define a clear grounding instruction that says answers must use only context and cite sources.
+Done when: the behavior has a narrow test and the file still respects the architecture boundary.
+### Context formatter
+Task: Implement a helper that formats retrieved chunks with stable labels such as `[source: paper-1 chunk-0]`.
+Done when: the behavior has a narrow test and the file still respects the architecture boundary.
+### Prompt builder
+Task: Build a function that combines instructions, context, question, and an `Answer:` marker.
+Done when: the behavior has a narrow test and the file still respects the architecture boundary.
+### Answer object
+Task: Create or use a structured answer object with answer text, citations, and `sufficient_evidence`.
+Done when: the behavior has a narrow test and the file still respects the architecture boundary.
+### Text generator seam
+Task: Define the smallest generator interface needed by `QAService`: a method that accepts a prompt and returns text.
+Done when: the behavior has a narrow test and the file still respects the architecture boundary.
+### QAService happy path
+Task: Make the service retrieve chunks, build a prompt, call the generator, and return citations.
+Done when: the behavior has a narrow test and the file still respects the architecture boundary.
+### QAService no-context path
+Task: Make the service return insufficient evidence without calling the generator when no relevant chunks exist.
+Done when: the behavior has a narrow test and the file still respects the architecture boundary.
+### CLI ask command
+Task: Wire `researchops ask QUESTION` to the service while keeping business logic out of the CLI.
+Done when: the behavior has a narrow test and the file still respects the architecture boundary.
+## 5. Testing exercises
+### Test prompt contains instructions
+Task: Assert that the prompt includes the grounding rule.
+Use `tests/unit/test_qa_service.py` for service behavior unless a CLI-specific assertion is required.
+### Test prompt contains question
+Task: Assert that the original question appears exactly once in the prompt body.
+Use `tests/unit/test_qa_service.py` for service behavior unless a CLI-specific assertion is required.
+### Test prompt contains chunks
+Task: Assert that each fake chunk appears with a label.
+Use `tests/unit/test_qa_service.py` for service behavior unless a CLI-specific assertion is required.
+### Test citations come from metadata
+Task: Assert that returned citations match fake retrieved source IDs and chunk IDs.
+Use `tests/unit/test_qa_service.py` for service behavior unless a CLI-specific assertion is required.
+### Test no-context fallback
+Task: Assert that an empty retrieval returns `sufficient_evidence=False`.
+Use `tests/unit/test_qa_service.py` for service behavior unless a CLI-specific assertion is required.
+### Test generator not called
+Task: Use a fake generator that raises if called during the no-context path.
+Use `tests/unit/test_qa_service.py` for service behavior unless a CLI-specific assertion is required.
+### Test low-score filtering
+Task: Return one high-score and one low-score fake chunk and assert only the high-score chunk is used.
+Use `tests/unit/test_qa_service.py` for service behavior unless a CLI-specific assertion is required.
+### Test CLI formatting lightly
+Task: Use Typer testing only if the command exists; assert the output includes the answer and citation labels.
+Use `tests/unit/test_qa_service.py` for service behavior unless a CLI-specific assertion is required.
+## 6. Debugging exercises
+### Break retrieval
+Task: Make the fake retriever return no chunks and confirm the fallback appears.
+Recovery: restore the correct behavior and write the lesson in one sentence.
+### Break scores
+Task: Set all fake scores below the threshold and confirm generation is skipped.
+Recovery: restore the correct behavior and write the lesson in one sentence.
+### Break prompt context
+Task: Remove chunk text from the prompt builder and watch the prompt test fail.
+Recovery: restore the correct behavior and write the lesson in one sentence.
+### Break citations
+Task: Return the wrong chunk ID and confirm the citation assertion catches it.
+Recovery: restore the correct behavior and write the lesson in one sentence.
+### Break boundary
+Task: Temporarily imagine importing SQLite directly in `QAService`; write why this would harm tests.
+Recovery: restore the correct behavior and write the lesson in one sentence.
+### Break generator determinism
+Task: Make the fake generator return changing text and explain why tests become weaker.
+Recovery: restore the correct behavior and write the lesson in one sentence.
+## 7. Refactoring exercises
+### Extract context formatting
+Task: If prompt building has a long loop, extract a helper and test it directly.
+Check: the refactor should not change visible behavior.
+### Name the threshold
+Task: Replace a magic number like `0.3` with `min_relevance_score`.
+Check: the refactor should not change visible behavior.
+### Separate display from service
+Task: Move any terminal formatting out of the service and into the CLI layer.
+Check: the refactor should not change visible behavior.
+### Separate provider code
+Task: Keep provider-specific model calls out of prompt templates and service tests.
+Check: the refactor should not change visible behavior.
+### Simplify answer data
+Task: Remove fields that are not used by CLI, API, or tests this week.
+Check: the refactor should not change visible behavior.
+## 8. Written explanation exercises
+1. Explain why retrieve-then-generate is safer than generate-then-search.
+2. Explain why a citation must be connected to retrieved metadata, not invented from answer text.
+3. Explain how a fake generator makes tests reliable.
+4. Explain what `sufficient_evidence=False` tells a CLI or API caller.
+5. Explain which file owns prompt wording and why.
+6. Explain how Week 13 semantic search makes Week 17 possible.
+7. Explain how Week 14 entry-point boundaries still matter for `ask`.
+8. Explain why a no-context answer should not call the generator.
+## 9. Stretch exercises
+### Evidence strength
+Task: Add an average score field to the answer object and test the calculation with fake scores.
+Rule: do not make the core Week 17 tests depend on this stretch behavior.
+### Prompt length warning
+Task: Warn or trim when the context block exceeds a simple character budget.
+Rule: do not make the core Week 17 tests depend on this stretch behavior.
+### Citation preview
+Task: Include a short source title with each citation if metadata is available.
+Rule: do not make the core Week 17 tests depend on this stretch behavior.
+### Hybrid retrieval note
+Task: Design, but do not fully implement, how keyword and semantic results might be merged later.
+Rule: do not make the core Week 17 tests depend on this stretch behavior.
+### Manual local generator
+Task: Create an optional local generator class for personal experiments, but keep it out of unit tests.
+Rule: do not make the core Week 17 tests depend on this stretch behavior.
+## 10. Brutal exercises
+### Adversarial document text
+Task: Create a fake chunk that says "ignore previous instructions" and verify the prompt still clearly instructs grounding.
+Deliverable: a short written diagnosis plus any narrow test you would add.
+### Misleading high score
+Task: Return a high-score irrelevant chunk and write how a human would catch the answer through citations.
+Deliverable: a short written diagnosis plus any narrow test you would add.
+### All citations wrong
+Task: Intentionally mismatch citations and chunks, then design the test that should fail.
+Deliverable: a short written diagnosis plus any narrow test you would add.
+### Noisy context
+Task: Pass five overlapping chunks and identify which ones add value and which ones add noise.
+Deliverable: a short written diagnosis plus any narrow test you would add.
+### Provider outage
+Task: Describe how the service should surface generator failure without pretending evidence was insufficient.
+Deliverable: a short written diagnosis plus any narrow test you would add.
+### Boundary defense
+Task: Review the final import graph and explain every import in `QAService`.
+Deliverable: a short written diagnosis plus any narrow test you would add.
+## 11. Mini project task
+Build the first ResearchOps question-answering flow.
+The user should be able to run `researchops ask "What are transformers used for?"` after papers have been indexed.
+The assistant should retrieve top-k semantic chunks, construct a grounded prompt, call a generator through a seam, and display an answer with citations.
+If there is no relevant context, it should display an insufficient-evidence response.
+The service should be testable with fakes.
+The CLI should contain wiring and formatting only.
+Mini project acceptance checklist:
+- `src/researchops/services/qa_service.py` owns orchestration.
+- `src/researchops/ai/prompts.py` owns prompt wording.
+- `researchops ask` is wired without business logic in the CLI.
+- A fake retriever and fake generator can test the happy path.
+- A no-context test proves the generator is skipped.
+- Citations are visible in the returned answer or CLI output.
+## 12. Completion checklist
+- [ ] I can define RAG without using vague language.
+- [ ] I can trace a question through retrieval, prompt construction, generation, and citations.
+- [ ] I can explain where prompt templates live.
+- [ ] I can explain why `QAService` owns orchestration.
+- [ ] I can explain why unit tests use fakes.
+- [ ] I can explain why no-context cases should not call the generator.
+- [ ] I can identify the source metadata behind a citation.
+- [ ] I can run or understand the Week 17 validation commands.
+- [ ] I did not add future-week deployment concepts.
+- [ ] I did not commit secrets or print secret values.
+- [ ] I can explain one happy path and one failure path aloud.
 
-These exercises build individual concepts before you integrate them. Do them in order.
-
-### 1. Build a context block from chunks
-
-Given two chunk strings, produce the numbered context block that would appear in a RAG prompt:
-
-```python
-chunks = [
-    "Attention mechanisms allow each token to attend to all others.",
-    "Self-attention uses query, key, and value projections.",
-]
-# Expected output:
-# [1] Attention mechanisms allow each token to attend to all others.
-# [2] Self-attention uses query, key, and value projections.
-```
-
-Write a function `format_context(chunks: list[str]) -> str` that produces this.
-
-### 2. Write the FakeTextGenerator class
-
-Implement `FakeTextGenerator` so it satisfies the `TextGenerator` protocol. The `generate` method must accept a prompt string and return:
-
-```python
-"This is a test answer based only on the provided context. [source: chunk-1]"
-```
-
-regardless of what the prompt contains. Verify that it has the correct method signature and that calling `generate("any prompt")` returns the expected string.
-
-### 3. Build a prompt from template
-
-Write a `PromptBuilder` class with a `build(question: str, chunks: list[str]) -> str` method. The returned string must contain:
-- The instruction text (`"Answer only from the provided context."`)
-- A numbered context block
-- The question
-
-Test it with one question and two chunks. Print the result and inspect it manually before writing tests.
-
-### 4. Handle empty context
-
-Add a check to `PromptBuilder.build`: if `chunks` is an empty list, return an empty string (or raise `ValueError` — choose one, document it, and test it).
-
-### 5. Build a RagAnswer dataclass
-
-Define a `RagAnswer` dataclass with these fields:
-- `answer: str`
-- `citations: list[str]` (default empty list)
-- `used_chunk_ids: list[str]` (default empty list)
-- `sufficient_evidence: bool` (default `True`)
-
-Construct an example with text and two citations. Construct an example with `sufficient_evidence=False`. Print both and confirm the fields are correct.
-
-### 6. Read an API key from the environment
-
-Write a tiny script that reads `OPENAI_API_KEY` from the environment and prints either `"key found"` or `"key not set"` without printing the key value. Use `os.environ.get`. Run it with the variable unset and then with it set to a dummy value.
-
----
-
-## Project exercises
-
-These are the main deliverables for the week.
-
-### 1. Implement PromptBuilder
-
-In `src/researchops/rag/prompting.py`, implement `PromptBuilder` fully. It must:
-- Accept a question string and a list of chunk strings.
-- Return a correctly structured prompt with instruction, numbered context, and question.
-- Return an empty string (or raise `ValueError`) when `chunks` is empty.
-
-Write unit tests in `tests/unit/test_rag_prompting.py` that verify:
-- The question appears in the output.
-- Each chunk appears with the correct `[N]` label.
-- Changing one chunk changes the output correctly.
-- The empty-chunks case is handled as documented.
-
-### 2. Implement the TextGenerator protocol and FakeTextGenerator
-
-In `src/researchops/rag/assistant.py`, define the `TextGenerator` protocol and the `FakeTextGenerator` class. The protocol must have a `generate(self, prompt: str) -> str` method. `FakeTextGenerator` must satisfy it.
-
-### 3. Implement RagAnswer
-
-In `src/researchops/rag/assistant.py`, implement the `RagAnswer` dataclass with the fields described above.
-
-### 4. Implement RagAssistant
-
-In `src/researchops/rag/assistant.py`, implement `RagAssistant.answer(question: str) -> RagAnswer`. The method must:
-- Call the retriever to get chunks.
-- Filter chunks below a minimum cosine score (default `0.3`).
-- If no chunks pass the filter, return a `RagAnswer` with `sufficient_evidence=False`.
-- Otherwise, build the prompt, call the generator, and return a `RagAnswer` with citations.
-
-### 5. Implement citation formatting
-
-In `src/researchops/rag/citations.py`, implement a function `format_citations(hits: list[SearchHit]) -> list[str]` that returns a list of citation strings like `["paper-7 chunk-2", "paper-12 chunk-5"]`.
-
-### 6. Write integration tests
-
-In `tests/integration/test_rag_answering.py`, write tests for the full `RagAssistant.answer` pipeline using `FakeTextGenerator` and a fake retriever. Tests must verify:
-- An answer object is returned with `sufficient_evidence=True` when chunks are found.
-- Citations contain the expected source IDs.
-- When the fake retriever returns no results, the answer has `sufficient_evidence=False` and the answer text is the insufficient-evidence message.
-
----
-
-## Stretch exercises
-
-### 1. Add evidence strength field
-
-Add an `evidence_strength: float` field to `RagAnswer`, calculated as the average cosine score of the used chunks. Add a test that verifies the score is between 0.0 and 1.0.
-
-### 2. Hybrid retrieval
-
-Before building the prompt, combine keyword search results (from Week 13's keyword path) with semantic search results. Deduplicate and re-rank. Test that the combined result is not longer than `top_k`.
-
-### 3. API route for the assistant
-
-Add a `POST /api/ask` route to the FastAPI app. The request body contains a `question` field. The response returns the `RagAnswer` as JSON. Test it with the fake generator.
-
-### 4. Implement an OllamaGenerator
-
-Create an `OllamaGenerator` class that calls a locally running Ollama instance. Gate it with a check: if the Ollama server is not reachable, skip the test with `pytest.skip`. Do not let this test run in CI.
-
----
-
-## Writing questions
-
-Answer these in your `reflection.md`:
-
-1. In your own words, explain why retrieval must happen before generation. What goes wrong if you skip retrieval?
-2. What is the difference between grounding and hallucination? Give an example of each from your own testing.
-3. Why does the fake generator make tests more reliable than a real generator?
-4. If your RAG system gives a wrong answer, how would you determine whether the problem is in retrieval, prompt construction, or generation?
-5. Why should API keys never be committed to source code? What are the consequences if they are?
+### Extra workbook guardrails
+- [ ] Before implementing, write the happy-path data flow in five arrows.
+- [ ] Before implementing, write the no-context data flow in three arrows.
+- [ ] Before testing, decide which fake records one relevant chunk and which fake records a generator call.
+- [ ] Before manual use, confirm no real secret value is present in source files.
+- [ ] Before moving on, explain why this is a RAG assistant and not plain semantic search.
 <!-- NAV_BOTTOM_START -->
 ---
 ⬅️ [← Notes](notes.md) · ➡️ [Break It →](break_it.md)

@@ -11,63 +11,213 @@
 
 # Exercises - Week 13 Embeddings and Semantic Search
 
-## Beginner
+## 1. How to use this workbook
 
-1. **Manual cosine similarity.** Take two vectors `a = [1.0, 0.0]` and `b = [0.707, 0.707]`. Compute cosine similarity by hand (dot product divided by product of magnitudes). Then write the `cosine_similarity` function from notes.md and confirm your hand calculation matches.
+This workbook turns the chapter into deliberate practice. Work in order unless you already know exactly why you are skipping an exercise.
 
-2. **Chunking a paragraph.** Copy a paragraph of at least 100 words from any source. Call `chunk_text` with `chunk_size=20` and `overlap=5`. Print each chunk on a separate line. Count how many chunks were produced and verify the overlap is correct by checking that the last 5 words of chunk 1 appear at the start of chunk 2.
+For every code exercise, produce three things: the code, at least one test or manual check, and a short explanation of what the result proves.
 
-3. **The FakeEmbeddingModel.** Implement `FakeEmbeddingModel.embed` exactly as shown in notes.md. Call it on three short phrases. Print the three resulting vectors. Explain in a comment why these vectors have different values.
+Use real ResearchOps names: chunks, source ids, search hits, embeddings, cosine scores, and top-k results.
 
-4. **Ranking by similarity.** Create three vectors: one for a query and two for documents. Manually compute cosine similarity between the query and each document. Print them sorted highest first. Do not use any library — write the arithmetic yourself.
+Do not use real sentence-transformers models in unit tests. Use deterministic fake embeddings for fast, offline checks.
 
-5. **Keyword vs semantic mismatch.** List five pairs of phrases where keyword search would fail to recognise relevance but semantic search should succeed. Example: ("dense retrieval", "vector search"). Write them in a comment block with a one-sentence explanation for each pair.
+Do not build Week 14 API routes, async fetchers, or deployment files here. Stay inside Week 13 retrieval work.
 
----
+## 2. Warm-up exercises
 
-## Intermediate
+1. **Vocabulary map.** Write definitions for embedding, vector, dimension, chunk, overlap, cosine similarity, top-k, and cache key. Success: each definition mentions how the term appears in ResearchOps.
 
-1. **Implement `chunk_text` with validation.** Write the `chunk_text` function from notes.md. Add a check at the top: if `overlap >= chunk_size`, raise a `ValueError` with a clear message. Write three tests: one that chunks normally, one that chunks a document shorter than `chunk_size`, and one that raises on bad overlap.
+2. **Keyword failure pairs.** Create ten pairs of phrases where keyword search could miss a relevant paper, such as `dense retrieval` and `vector search`. Success: each pair includes one sentence explaining the shared meaning.
 
-2. **ChunkMetadata dataclass.** Define a `ChunkMetadata` dataclass with fields `source_id: str`, `chunk_index: int`, `start_word: int`, and `chunk_text: str`. Modify `chunk_text` to return `list[ChunkMetadata]` instead of `list[str]`. Track `start_word` correctly through the overlap logic.
+3. **Two-dimensional intuition.** Draw vectors `[1, 0]`, `[0, 1]`, and `[0.7, 0.7]` on paper. Success: you can say which pair should have the highest cosine similarity before calculating.
 
-3. **CachedEmbedder.** Implement the `CachedEmbedder` class from notes.md. Write a test that calls `embed` three times on the same text and confirms the underlying model was called only once. Use a counter or mock to verify call count.
+4. **Chunk boundary rehearsal.** Take a 45-word paragraph and chunk it by hand with `chunk_size=20` and `overlap=5`. Success: the last five words of chunk 1 become the first five words of chunk 2.
 
-4. **Top-k retrieval.** Implement the `search` function from notes.md. Write a unit test that creates 10 fake chunks with known embeddings, runs a query, and asserts the top-3 results are the three most similar chunks. Use `FakeEmbeddingModel` to produce all embeddings.
+5. **Metadata rehearsal.** For three chunks from a paper id `paper-001`, write the expected `source_id`, `chunk_index`, and `start_word`. Success: chunk indexes start at 0.
 
-5. **Empty and edge queries.** Test `search` with:
-   - An empty index (should return an empty list).
-   - `top_k` larger than the index (should return all chunks).
-   - A query whose embedding matches nothing closely (score near 0 for all results).
-   Document the expected behaviour for each case.
+6. **Score ordering rehearsal.** Given scores `0.11`, `0.94`, `0.42`, and `0.94`, write the order in which hits should appear. Success: ties are handled intentionally and higher scores appear before lower scores.
 
----
+7. **Cache-key rehearsal.** Write two cache-key inputs for the same text with model names `fake-small` and `fake-large`. Success: you can explain why those keys must not collide.
 
-## Advanced
+## 3. Code-reading exercises
 
-1. **Sentence-transformers integration.** Install `sentence-transformers`. Implement `SentenceTransformerEmbedder` that wraps `SentenceTransformer("sentence-transformers/all-MiniLM-L6-v2")` and satisfies the `EmbeddingModel` protocol. Run a real embedding on five short phrases. Print their shapes. Verify two semantically similar phrases score higher than two unrelated phrases.
+1. **Read the chunker.** Open `src/researchops/search/chunking.py` once it exists. Mark the lines that validate `chunk_size`, validate `overlap`, create metadata, advance `start`, and stop at the end. Success: you can explain why no infinite loop occurs.
 
-2. **SQLite chunk store.** Design a SQLite table to persist chunks and embeddings. The table should store `source_id`, `chunk_index`, `chunk_text`, and the embedding as a JSON-serialised float list. Implement `insert_chunk` and `load_chunks_for_source`. Write an integration test that inserts five chunks and retrieves them.
+2. **Read vector scoring.** Open `src/researchops/search/vector_search.py`. Find the dot product, magnitude calculation, zero-vector behavior, sort key, and `top_k` slice. Success: you can explain the output order.
 
-3. **Index-and-search pipeline.** Write an end-to-end function that takes a list of `(source_id, full_text)` pairs, chunks each document, embeds each chunk, stores the results, and then accepts a query string and returns the top-5 hits across all documents. Use `FakeEmbeddingModel` for tests and `SentenceTransformerEmbedder` for a manual smoke test.
+3. **Read the embedder boundary.** Open `src/researchops/search/embeddings.py`. Identify where the real model is wrapped and where caching is applied. Success: the service or CLI should not need to know local-model details.
 
-4. **Hybrid scoring.** Write a `hybrid_score` function that combines a keyword relevance score (count of query words in chunk text) with a semantic cosine similarity score. Use a configurable weight `alpha` to blend: `alpha * semantic_score + (1 - alpha) * keyword_score`. Write tests that show how `alpha = 1.0` behaves differently from `alpha = 0.0`.
+4. **Read fake implementations.** Inspect `tests/fakes/`. Find or design the fake embedding model. Success: the fake is deterministic and does not import sentence-transformers.
 
-5. **Evaluate retrieval quality.** Manually create five short documents covering different ML topics. Define five queries that each should retrieve one specific document. Run your pipeline. For each query, report which document ranked first and whether it was the expected one. Write a brief analysis: where did semantic search outperform keywords, and where did it fail?
+5. **Read tests as a specification.** Read `tests/unit/test_chunking.py` and `tests/unit/test_vector_search.py`. Success: write three behavior promises from the test names alone.
 
----
+6. **Read architecture boundaries.** Compare any semantic-search code with `ARCHITECTURE.md`. Success: you can point to the layer that owns model calls and the layer that must not import them.
 
-## Brutal
+7. **Read result objects.** Find the structure used for a search hit. Success: you can identify where score, source id, chunk index, and excerpt are stored.
 
-1. **Chunk size ablation.** Index the same set of five documents with `chunk_size` values of 50, 100, 200, 400. For each configuration, run the same five queries and record which documents appear in the top-3. Does smaller chunk size improve precision or hurt recall? Write a structured report (table or prose) analysing the results. There is no single correct answer — the goal is rigorous observation.
+## 4. Implementation exercises
 
-2. **Persistent embedding cache with TTL.** Extend `CachedEmbedder` to persist to SQLite. Add a time-to-live (TTL) so cached embeddings expire after a configurable number of hours. On lookup, if the cached entry is expired, recompute and update. Write tests that use fake time (mock `datetime.now()`) to verify TTL expiry without sleeping.
+1. **Implement chunk metadata.** Create or update a `TextChunk` dataclass with `source_id`, `chunk_index`, `start_word`, and `text`. Produce: code plus a test that the first chunk for `paper-1` has index `0` and start word `0`.
 
-3. **Implement approximate nearest-neighbour search.** Standard top-k search scans every embedding. For large indexes this is slow. Implement a bucketed index: hash each embedding's highest-dimension component into one of 8 buckets. On query, only search embeddings in the same bucket as the query. Write tests that confirm the bucketed search returns the same top-1 result as the exhaustive search for all test cases. Document cases where it might not.
+2. **Implement chunking validation.** Add checks for positive `chunk_size`, non-negative `overlap`, and `overlap < chunk_size`. Produce: tests for each invalid case and one valid case.
 
-4. **Protocol-safe embedder factory.** Write an `EmbedderFactory` that reads a string configuration value ("fake", "sentence-transformers", "noop") and returns the appropriate embedder, each satisfying the `EmbeddingModel` protocol. Add a configuration setting to `researchops` settings that controls which embedder is constructed. Write tests for all three modes — do not require `sentence-transformers` installed for the "fake" and "noop" tests (use a conditional import guard).
+3. **Implement cosine similarity.** Write the formula from scratch with length checks and zero-vector behavior. Produce: tests for identical vectors, perpendicular vectors, mismatched lengths, and zero vectors.
 
-5. **RAG readiness audit.** Read the Month 5 preview in the syllabus or roadmap. Identify five design decisions you made this week (chunk size, overlap, metadata fields, storage schema, scoring strategy) that will affect Month 5's RAG assistant. For each decision, write: what you chose, why, and what you would need to change if the RAG system required higher precision. Commit this as a short markdown document in `docs/`.
+4. **Implement `SearchHit`.** Define a result object containing `source_id`, `chunk_index`, `text`, and `score`. Produce: a test that every returned hit has non-empty source metadata.
+
+5. **Implement top-k search.** Score every indexed chunk, sort descending, and return `hits[:top_k]`. Produce: a test with known vectors where the expected hit order is obvious.
+
+6. **Implement a deterministic fake embedder.** Put the fake where tests can import it, preferably under `tests/fakes/`. Produce: a test proving the same input returns the same vector twice.
+
+7. **Implement cache behavior.** Wrap an embedder with a cache keyed by model identity and text hash. Produce: a test using a counting fake showing repeated input calls the wrapped model once.
+
+8. **Wire the command behavior conceptually.** Sketch the data flow for `researchops semantic-search "efficient transformers"`. Produce: a short comment or note in your work log, not a committed planning file.
+
+9. **Implement blank-query behavior.** Decide whether blank queries raise a clear error or return no hits. Produce: one test that documents the convention. Hint: validate before embedding so empty input does not become a mysterious zero vector.
+
+10. **Implement score formatting separately.** Write a tiny formatter that displays scores to four decimal places without changing ranking logic. Produce: a sample string and a test or manual check. Success: display code does not recompute similarity.
+
+## 5. Testing exercises
+
+1. **Chunk count tests.** Build inputs of 0 words, 3 words, 10 words, and 25 words. Success: expected chunk counts are documented and asserted.
+
+2. **Overlap tests.** For `chunk_size=5` and `overlap=2`, assert that boundary words repeat exactly. Success: the test fails if `start = end` is used accidentally.
+
+3. **Source preservation tests.** Create chunks for two source ids and search across both. Success: returned hits keep the correct source id.
+
+4. **Sorting tests.** Give three chunks scores you can predict. Success: the highest score appears first and the lowest last.
+
+5. **Top-k edge tests.** Test `top_k=0`, `top_k=1`, `top_k` equal to index size, and `top_k` larger than index size. Success: every behavior is intentional.
+
+6. **Cache tests.** Use a counting fake embedder. Success: two identical requests hit the wrapped fake once; two different texts hit it twice.
+
+7. **No-network test audit.** Search tests for `SentenceTransformer` imports. Success: unit tests do not construct the real model.
+
+8. **Mutation safety test.** If your cache returns lists, mutate a returned vector in a test and call the cache again. Success: cached storage is not corrupted by caller mutation.
+
+9. **Metadata round-trip test.** Build chunks, create indexed embeddings, search, and assert the top hit still references the original source. Success: metadata survives every transformation.
+
+## 6. Debugging exercises
+
+1. **Break vector length checks.** Temporarily remove the length check and compare `[1, 0]` with `[1, 0, 1]`. Produce: a failing test or written explanation showing why silent truncation is dangerous.
+
+2. **Break zero-vector handling.** Force the fake embedder to return `[0, 0, 0]` for empty text. Produce: the observed error or chosen safe behavior.
+
+3. **Break overlap validation.** Set `overlap = chunk_size`. Produce: a description of the loop behavior and the guard that prevents it.
+
+4. **Break sorting direction.** Sort ascending. Produce: a failing test proving the worst hit appears first.
+
+5. **Break metadata propagation.** Drop `source_id` from `SearchHit`. Produce: a failing test showing why traceability matters.
+
+6. **Break cache identity.** Remove the model name from the cache key. Produce: a failing test showing two model names collide for the same text.
+
+7. **Break `top_k`.** Return all hits instead of slicing to `top_k`. Produce: a failing test where five indexed chunks and `top_k=2` return exactly two hits.
+
+## 7. Refactoring exercises
+
+1. **Extract score calculation.** If `search_top_k` becomes crowded, extract a helper that creates one `SearchHit` from a query vector and indexed chunk. Success: tests still pass and names remain beginner-readable.
+
+2. **Clarify cache keys.** Replace ad-hoc string concatenation with a small helper function such as `make_cache_key(model_name, text)`. Success: tests prove model name changes the key.
+
+3. **Separate fake and real code.** Ensure fake embedders live in tests and real local-model wrappers live in `src/researchops/search/embeddings.py`. Success: production modules do not import from tests.
+
+4. **Rename vague variables.** Replace names like `x`, `y`, and `arr` with `query_embedding`, `chunk_embedding`, and `indexed_chunks` where useful. Success: a beginner can read the function aloud.
+
+5. **Extract validation helpers cautiously.** If validation repeats, extract helpers such as `validate_vector_pair`. Success: the helper name teaches the rule and does not hide the simple formula.
+
+6. **Keep dataclasses small.** Review `TextChunk` and `SearchHit`. Success: they carry data, not unrelated workflow behavior.
+
+## 8. Written explanation exercises
+
+1. Explain why semantic search can find related text without exact word overlap.
+
+2. Explain why a 384-dimensional vector can be useful even if you cannot visualize it.
+
+3. Explain why chunk overlap improves boundary behavior.
+
+4. Explain why unit tests should use a deterministic fake embedder.
+
+5. Explain why an embedding cache key should include the model identity.
+
+6. Explain why `source_id` is part of search correctness, not only display formatting.
+
+7. Explain why Week 13 should not implement Week 14 HTTP routes.
+
+8. Explain why two embeddings from different model dimensions cannot be compared safely.
+
+9. Explain why a high cosine score is evidence for ranking but not absolute proof that a result is useful.
+
+10. Explain what you would tell a teammate who wants to put `SentenceTransformer` construction inside a CLI command.
+
+## 9. Stretch exercises
+
+1. **Qualitative retrieval set.** Create five short ML-themed documents and five queries with expected top documents. Produce: a table of query, expected source, actual top source, and notes.
+
+2. **Chunk-size comparison.** Run the same documents with chunk sizes 30, 60, and 120. Produce: observations about precision and context.
+
+3. **Model name cache guard.** Prove that the same text embedded under model names `fake-a` and `fake-b` uses different cache keys. Produce: a unit test.
+
+4. **Stable tie handling.** Create two chunks with equal scores. Decide whether insertion order should be preserved. Produce: a test documenting the behavior.
+
+5. **Readable result formatting.** Design CLI display text for hits showing score, source id, chunk index, and excerpt. Produce: a sample output only; keep ranking logic out of display code.
+
+6. **Known-answer query cards.** Write five query cards: query text, expected source, and reason. Success: a human can review search quality without reading code.
+
+7. **Duplicate chunks.** Add two identical chunks from different sources. Success: both can appear as separate hits because source metadata distinguishes them.
+
+## 10. Brutal exercises
+
+1. **Dimension-mismatch audit.** Find every path where embeddings enter vector search. Add tests ensuring dimension mismatches fail loudly. Success: no silent truncation remains.
+
+2. **Cache mutation trap.** Return a cached list directly, mutate it in caller code, then observe corruption. Fix by returning a copy. Success: a test proves caller mutation does not alter cache storage.
+
+3. **Boundary fuzzing by hand.** Generate many combinations of document length, chunk size, and overlap. Success: no combination duplicates the final chunk unexpectedly or loops forever.
+
+4. **Retrieval regression suite.** Build a tiny fixed corpus and expected top-1 answers using fake embeddings. Success: changing the sort direction or metadata propagation fails tests immediately.
+
+5. **Architecture audit.** Search for `SentenceTransformer` outside `src/researchops/search/` and tests. Success: no service or core module imports the real model class directly.
+
+6. **Explain every failure.** For each failure from `break_it.md`, write the smallest test that catches it. Success: every bug has a clear automated guard or a justified manual check.
+
+7. **Tiny corpus challenge.** With only fake embeddings, design a tiny corpus where the top result is not the longest text. Success: your fake features and scoring prove ranking is not just length sorting.
+
+## 11. Mini project task
+
+Build a tiny semantic search prototype for three stored paper snippets.
+
+Input: three `(source_id, text)` pairs about different research topics.
+
+Step 1: chunk each text with metadata.
+
+Step 2: embed each chunk with a deterministic fake embedder.
+
+Step 3: embed a query with the same fake embedder.
+
+Step 4: run top-k vector search.
+
+Step 5: print each hit as `score | source_id | chunk_index | excerpt`.
+
+Success criteria: the code path preserves metadata, uses cosine similarity, returns sorted hits, and can be tested without internet access.
+
+## 12. Completion checklist
+
+- [ ] I can define embeddings, chunks, cosine similarity, top-k, and cache keys.
+
+- [ ] I implemented or can explain `chunk_text` with validation and metadata.
+
+- [ ] I implemented or can explain cosine similarity with length and zero-vector handling.
+
+- [ ] I can explain why unit tests use fake embeddings.
+
+- [ ] I can explain why every hit needs source metadata.
+
+- [ ] I have tests for chunk boundaries, invalid overlap, vector scoring, and ranking order.
+
+- [ ] I understand the validation command from the syllabus.
+
+- [ ] I did not build API routes, async fetchers, or deployment files for Week 13.
+
+- [ ] I can explain how this retrieval behavior prepares cleanly for Week 14 without copying logic.
 <!-- NAV_BOTTOM_START -->
 ---
 ⬅️ [← Notes](notes.md) · ➡️ [Break It →](break_it.md)

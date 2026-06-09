@@ -11,407 +11,6 @@
 
 # Week 05 Notes — SQLite Storage Layer
 
-<!-- LEARNING_FORMAT_START -->
-# Complete Learning Format — Week 05: SQLite Storage Layer
-
-This guide is the clean learning path for the chapter.
-It uses short sentences.
-It breaks ideas into small pieces.
-It tells you what to focus on and what to ignore for now.
-Read it before the older detailed notes that follow.
-
-## Chapter overview
-
-The chapter title is **Data that survives a restart**.
-The practical milestone is: `researchops papers list` shows papers stored in SQLite. `PaperRepository` protocol implemented by `SqlitePaperRepository`.
-The expected capability is: Can design a SQL schema, implement a repository, write integration tests, and explain the difference between a protocol and its implementation.
-This chapter is one step in the ResearchOps system, not a random lesson.
-The visible feature matters because it proves the idea works.
-The hidden skill matters because it lets you build the next chapter without confusion.
-A complete pass through this chapter means you can read the code, run it, test it, break it, and explain it aloud.
-
-Use this study order:
-- Read the story first without typing.
-- Trace the smallest code example.
-- Find the project file that owns the behavior.
-- Run the validation command.
-- Explain one happy path and one failure path.
-
-## What you already know from previous weeks
-
-- Week 1 taught Python Foundations and Repository Setup; keep its responsibility in mind, but do not rebuild it here.
-- Week 2 taught Files, Paths, Exceptions, and Logging; keep its responsibility in mind, but do not rebuild it here.
-- Week 3 taught OOP, Dataclasses, and Domain Modeling; keep its responsibility in mind, but do not rebuild it here.
-- Week 4 taught CLI and Packaging; keep its responsibility in mind, but do not rebuild it here.
-- You should be able to run the previous validation command before trusting new work.
-- You should be able to point at the main file from the previous week and say what job it owns.
-- If a previous idea feels weak, reread the example and trace one concrete value through it.
-- The safest learning rhythm is: understand one thing, change one thing, test one thing, explain one thing.
-
-## What problem this week solves
-
-Week 5 solves the project problem behind **SQLite Storage Layer**.
-Before this chapter, ResearchOps has a gap.
-The gap may be a missing feature, a missing boundary, a missing safety check, or a missing way to communicate with users.
-This chapter closes that gap with a focused milestone.
-Do not treat the milestone as a checklist only.
-Treat it as proof that the idea belongs in the system.
-- The concept `SQL DDL: `CREATE TABLE`, primary keys, nullable columns` helps solve part of this gap.
-- The concept ``sqlite3` Python standard library: `connect`, `cursor`, `execute`, `fetchall`` helps solve part of this gap.
-- The concept `Context manager connections and transaction control` helps solve part of this gap.
-- The concept `Repository pattern: interface → concrete implementation` helps solve part of this gap.
-- The concept `WAL journal mode for safe writes` helps solve part of this gap.
-- The concept `Integration tests with `tmp_path`` helps solve part of this gap.
-
-## Beginner mental model
-
-Use a simple four-part model: input, owner, transformation, proof.
-Input means the concrete thing entering the system.
-Owner means the file, object, or function responsible for the decision.
-Transformation means the useful change from raw data to meaningful result.
-Proof means the test or command that confirms the result.
-- Ask: what is the input for **SQLite Storage Layer**?
-- Ask: what is the owner for **SQLite Storage Layer**?
-- Ask: what is the transformation for **SQLite Storage Layer**?
-- Ask: what is the proof for **SQLite Storage Layer**?
-If you cannot answer those four questions, do not add more code yet.
-
-## Core vocabulary
-
-| Term | Simple meaning | Why it matters here |
-|------|----------------|---------------------|
-| SQL DDL | SQL DDL: `CREATE TABLE`, primary keys, nullable columns | This term names one job in the Week 5 milestone. |
-| sqlite3` Python standard library | `sqlite3` Python standard library: `connect`, `cursor`, `execute`, `fetchall` | This term names one job in the Week 5 milestone. |
-| Context manager connections and transaction control | Context manager connections and transaction control | This term names one job in the Week 5 milestone. |
-| Repository pattern | Repository pattern: interface → concrete implementation | This term names one job in the Week 5 milestone. |
-| WAL journal mode for safe writes | WAL journal mode for safe writes | This term names one job in the Week 5 milestone. |
-| Integration tests with `tmp_path | Integration tests with `tmp_path` | This term names one job in the Week 5 milestone. |
-| Boundary | A line between responsibilities | It keeps the chapter understandable for a beginner. |
-| Failure path | What happens when the happy path is not available | It keeps the chapter understandable for a beginner. |
-| Validation | Evidence that the system still works | It keeps the chapter understandable for a beginner. |
-| Responsibility | The one job a file or function owns | It keeps the chapter understandable for a beginner. |
-
-## Concept explanations from first principles
-
-Read each concept as if you have never heard the term before.
-Do not skip the plain meaning.
-### Concept 1: SQL DDL: `CREATE TABLE`, primary keys, nullable columns
-- **Plain meaning:** This is a named tool for solving one part of the chapter problem.
-- **Why it exists:** Real projects become confusing when this concern is unnamed.
-- **ResearchOps use:** In Week 5, it supports the milestone: `researchops papers list` shows papers stored in SQLite. `PaperRepository` protocol implemented by `SqlitePaperRepository`.
-- **Input question:** What data, command, file, request, or state reaches this concept?
-- **Output question:** What value, saved record, response, log, or state change should come out?
-- **Failure question:** What can be missing, malformed, slow, duplicated, stale, or invalid?
-- **Test question:** Which test would catch the mistake before a user sees it?
-- **Beginner trap:** Memorizing the word without tracing it in the project.
-- **Recovery move:** Use one concrete example and follow it through the files.
-- **Mastery signal:** You can explain the concept without saying "magic" or "it just works".
-
-### Concept 2: `sqlite3` Python standard library: `connect`, `cursor`, `execute`, `fetchall`
-- **Plain meaning:** This is a named tool for solving one part of the chapter problem.
-- **Why it exists:** Real projects become confusing when this concern is unnamed.
-- **ResearchOps use:** In Week 5, it supports the milestone: `researchops papers list` shows papers stored in SQLite. `PaperRepository` protocol implemented by `SqlitePaperRepository`.
-- **Input question:** What data, command, file, request, or state reaches this concept?
-- **Output question:** What value, saved record, response, log, or state change should come out?
-- **Failure question:** What can be missing, malformed, slow, duplicated, stale, or invalid?
-- **Test question:** Which test would catch the mistake before a user sees it?
-- **Beginner trap:** Memorizing the word without tracing it in the project.
-- **Recovery move:** Use one concrete example and follow it through the files.
-- **Mastery signal:** You can explain the concept without saying "magic" or "it just works".
-
-### Concept 3: Context manager connections and transaction control
-- **Plain meaning:** This is a named tool for solving one part of the chapter problem.
-- **Why it exists:** Real projects become confusing when this concern is unnamed.
-- **ResearchOps use:** In Week 5, it supports the milestone: `researchops papers list` shows papers stored in SQLite. `PaperRepository` protocol implemented by `SqlitePaperRepository`.
-- **Input question:** What data, command, file, request, or state reaches this concept?
-- **Output question:** What value, saved record, response, log, or state change should come out?
-- **Failure question:** What can be missing, malformed, slow, duplicated, stale, or invalid?
-- **Test question:** Which test would catch the mistake before a user sees it?
-- **Beginner trap:** Memorizing the word without tracing it in the project.
-- **Recovery move:** Use one concrete example and follow it through the files.
-- **Mastery signal:** You can explain the concept without saying "magic" or "it just works".
-
-### Concept 4: Repository pattern: interface → concrete implementation
-- **Plain meaning:** This is a named tool for solving one part of the chapter problem.
-- **Why it exists:** Real projects become confusing when this concern is unnamed.
-- **ResearchOps use:** In Week 5, it supports the milestone: `researchops papers list` shows papers stored in SQLite. `PaperRepository` protocol implemented by `SqlitePaperRepository`.
-- **Input question:** What data, command, file, request, or state reaches this concept?
-- **Output question:** What value, saved record, response, log, or state change should come out?
-- **Failure question:** What can be missing, malformed, slow, duplicated, stale, or invalid?
-- **Test question:** Which test would catch the mistake before a user sees it?
-- **Beginner trap:** Memorizing the word without tracing it in the project.
-- **Recovery move:** Use one concrete example and follow it through the files.
-- **Mastery signal:** You can explain the concept without saying "magic" or "it just works".
-
-### Concept 5: WAL journal mode for safe writes
-- **Plain meaning:** This is a named tool for solving one part of the chapter problem.
-- **Why it exists:** Real projects become confusing when this concern is unnamed.
-- **ResearchOps use:** In Week 5, it supports the milestone: `researchops papers list` shows papers stored in SQLite. `PaperRepository` protocol implemented by `SqlitePaperRepository`.
-- **Input question:** What data, command, file, request, or state reaches this concept?
-- **Output question:** What value, saved record, response, log, or state change should come out?
-- **Failure question:** What can be missing, malformed, slow, duplicated, stale, or invalid?
-- **Test question:** Which test would catch the mistake before a user sees it?
-- **Beginner trap:** Memorizing the word without tracing it in the project.
-- **Recovery move:** Use one concrete example and follow it through the files.
-- **Mastery signal:** You can explain the concept without saying "magic" or "it just works".
-
-### Concept 6: Integration tests with `tmp_path`
-- **Plain meaning:** This is a named tool for solving one part of the chapter problem.
-- **Why it exists:** Real projects become confusing when this concern is unnamed.
-- **ResearchOps use:** In Week 5, it supports the milestone: `researchops papers list` shows papers stored in SQLite. `PaperRepository` protocol implemented by `SqlitePaperRepository`.
-- **Input question:** What data, command, file, request, or state reaches this concept?
-- **Output question:** What value, saved record, response, log, or state change should come out?
-- **Failure question:** What can be missing, malformed, slow, duplicated, stale, or invalid?
-- **Test question:** Which test would catch the mistake before a user sees it?
-- **Beginner trap:** Memorizing the word without tracing it in the project.
-- **Recovery move:** Use one concrete example and follow it through the files.
-- **Mastery signal:** You can explain the concept without saying "magic" or "it just works".
-
-## ResearchOps-specific application
-
-The chapter belongs to these project locations:
-- `src/researchops/storage/schema.sql` — DDL for all tables
-- `src/researchops/storage/sqlite_repository.py` — `SqlitePaperRepository`
-- `src/researchops/core/interfaces.py` — `PaperRepository` protocol
-Study those files in this order:
-1. Find the user-facing entry point.
-2. Find the service or core concept that owns the meaning.
-3. Find the infrastructure only when outside resources are needed.
-4. Find the tests that prove the behavior.
-5. Find the validation command that a learner runs manually.
-The goal is to know why each file exists.
-If two files seem to own the same decision, stop and clarify the boundary.
-
-## Code examples with line-by-line explanation
-
-```python
-import sqlite3
-
-with sqlite3.connect(database_path) as connection:
-    connection.execute("CREATE TABLE IF NOT EXISTS papers (id TEXT PRIMARY KEY, title TEXT)")
-    connection.execute("INSERT INTO papers VALUES (?, ?)", (paper_id, title))
-```
-
-Line-by-line explanation:
-- Line 1: `import sqlite3` — This imports a tool before the example can use it.
-- Line 2: `(blank line)` — This blank line separates ideas so the example is easier to read.
-- Line 3: `with sqlite3.connect(database_path) as connection:` — This performs one small visible step in the workflow.
-- Line 4: `connection.execute("CREATE TABLE IF NOT EXISTS papers (id TEXT PRIMARY KEY, title TEXT)")` — This performs one small visible step in the workflow.
-- Line 5: `connection.execute("INSERT INTO papers VALUES (?, ?)", (paper_id, title))` — This performs one small visible step in the workflow.
-
-How to use this example:
-- Name the input.
-- Name the output.
-- Predict the result before running anything.
-- Connect the shape to the real ResearchOps file.
-- Write one sentence about why each line belongs.
-
-## Common beginner mistakes
-
-- **Mistake:** Pasting code before knowing the owner of the behavior.
-  **Why it hurts:** it hides the mental model and makes debugging harder.
-  **Better move:** make one small behavior clear, then prove it.
-- **Mistake:** Changing many files at once.
-  **Why it hurts:** it hides the mental model and makes debugging harder.
-  **Better move:** make one small behavior clear, then prove it.
-- **Mistake:** Skipping the failure path.
-  **Why it hurts:** it hides the mental model and makes debugging harder.
-  **Better move:** make one small behavior clear, then prove it.
-- **Mistake:** Reading only the happy path test.
-  **Why it hurts:** it hides the mental model and makes debugging harder.
-  **Better move:** make one small behavior clear, then prove it.
-- **Mistake:** Ignoring the validation command.
-  **Why it hurts:** it hides the mental model and makes debugging harder.
-  **Better move:** make one small behavior clear, then prove it.
-- **Mistake:** Using vague names.
-  **Why it hurts:** it hides the mental model and makes debugging harder.
-  **Better move:** make one small behavior clear, then prove it.
-- **Mistake:** Putting business rules in the user interface layer.
-  **Why it hurts:** it hides the mental model and makes debugging harder.
-  **Better move:** make one small behavior clear, then prove it.
-- **Mistake:** Treating logs, errors, and tests as decoration.
-  **Why it hurts:** it hides the mental model and makes debugging harder.
-  **Better move:** make one small behavior clear, then prove it.
-- **Mistake:** Optimizing before correctness is visible.
-  **Why it hurts:** it hides the mental model and makes debugging harder.
-  **Better move:** make one small behavior clear, then prove it.
-- **Mistake:** Building future-week features early.
-  **Why it hurts:** it hides the mental model and makes debugging harder.
-  **Better move:** make one small behavior clear, then prove it.
-
-## Debugging guidance
-
-- Copy the exact failing command.
-- Read the first useful error line.
-- Read the final error line.
-- Classify the failure as import, input, state, file, database, network, model, or expectation.
-- Reproduce it with the smallest command.
-- Inspect the value closest to the failure.
-- Fix the cause, not only the symptom.
-- Run the narrowest test.
-- Run the chapter validation command.
-- Write down what the error was teaching.
-Debugging questions:
-- What did I expect?
-- What happened?
-- Which value first became wrong?
-- Which layer created that value?
-- Which test should catch this next time?
-
-## Design tradeoffs
-
-- **Simple first version:** Easy to understand, but not the final production shape.
-- **Clear layers:** More files, but less confusion as features grow.
-- **Explicit errors:** More code, but failures become teachable.
-- **Small unit tests:** Fast feedback, but less end-to-end confidence.
-- **Integration tests:** Real wiring, but slower and more setup.
-- **Configuration:** Flexible behavior, but defaults must be clear.
-The right question is not "What is the fanciest design?"
-The right question is "What design teaches the responsibility clearly and can grow next week?"
-
-## Testing implications
-
-Tests for this chapter:
-- `tests/integration/test_sqlite_repository.py` — save, retrieve, list with real (tmp) DB
-Validation commands:
-```bash
-researchops papers list
-pytest tests/integration/test_sqlite_repository.py -v
-```
-- Arrange the data.
-- Act on the system.
-- Assert the visible promise.
-- Check one failure path.
-- Keep unit tests fast.
-- Use integration tests only when real wiring matters.
-
-## Architecture implications
-
-ResearchOps stays understandable when dependencies point inward.
-```text
-CLI / API / Worker -> Services -> Core
-Infrastructure implements core-facing contracts and is wired at the outside.
-```
-- Does the UI layer avoid business logic?
-- Does the service layer own workflow decisions?
-- Does core avoid infrastructure imports?
-- Does infrastructure do outside-world work?
-- Do tests use fakes when possible?
-Architecture is not ceremony.
-Architecture is named responsibility.
-
-## How this connects to AI engineering / ML research
-
-AI engineering needs more than models.
-It needs reliable data flow, clear interfaces, repeatable experiments, visible failures, and honest evaluation.
-Week 5 contributes by making **sqlite storage layer** clear enough to trust.
-- Bad data creates bad model behavior.
-- Unclear boundaries make experiments hard to reproduce.
-- Missing tests let regressions change research results silently.
-- Good logs and errors shorten investigation time.
-- Clear documentation lets future users understand the system.
-
-## Mini quizzes
-
-- What problem does Week 5 solve?
-- What is the main input?
-- What is the main output?
-- Which file owns the main responsibility?
-- Which layer should not contain business logic?
-- What is one happy path?
-- What is one failure path?
-- What command proves the chapter works?
-- What should you not build early?
-- How does this prepare the next week?
-
-## Explain-it-aloud prompts
-
-- Explain SQLite Storage Layer in simple words.
-- Explain the data flow from input to result.
-- Explain the first file you would open.
-- Explain the test that gives confidence.
-- Explain what can break.
-- Explain the tradeoff made in this chapter.
-- Explain what you still find weak.
-
-## What to memorize
-
-- The topic: SQLite Storage Layer.
-- The milestone: `researchops papers list` shows papers stored in SQLite. `PaperRepository` protocol implemented by `SqlitePaperRepository`.
-- The main project files.
-- The validation command.
-- The boundary rule for the layer you are touching.
-- The habit of testing before moving forward.
-
-## What to understand deeply
-
-- Why this feature belongs now.
-- How data moves through the chapter.
-- Which file owns which decision.
-- How the failure path is handled.
-- Why the tests prove behavior.
-- How this week makes future work safer.
-
-## What not to worry about yet
-
-- Perfect scale.
-- Fancy abstractions.
-- Future-week features.
-- Every option in every library.
-- Premature optimization.
-- Comparing your speed to someone else.
-Focus on the milestone.
-A clear small milestone beats a confusing large one.
-
-## Bridge to next week
-
-Next week is Week 6: **PDF Parsing Pipeline**.
-This week prepares you by giving ResearchOps a clearer piece of behavior before the next milestone: `researchops ingest ./papers` extracts text and metadata from PDFs and stores them. Failed documents are recorded, not silently dropped.
-- Run validation.
-- Explain the main files.
-- Explain one failure.
-- Explain one test.
-- Write down what still feels weak before moving on.
-
-## Guided deepening drills
-
-Use these drills if the chapter still feels abstract.
-- Drill 1: Trace `SQL DDL: `CREATE TABLE`, primary keys, nullable columns` from user input to project result.
-- Drill 2: Write one sentence defining `SQL DDL: `CREATE TABLE`, primary keys, nullable columns` without copying the notes.
-- Drill 3: Find the file where `SQL DDL: `CREATE TABLE`, primary keys, nullable columns` appears or should appear.
-- Drill 4: Name one wrong implementation of `SQL DDL: `CREATE TABLE`, primary keys, nullable columns` and why it would hurt.
-- Drill 5: Name one test that would protect `SQL DDL: `CREATE TABLE`, primary keys, nullable columns`.
-- Drill 6: Trace ``sqlite3` Python standard library: `connect`, `cursor`, `execute`, `fetchall`` from user input to project result.
-- Drill 7: Write one sentence defining ``sqlite3` Python standard library: `connect`, `cursor`, `execute`, `fetchall`` without copying the notes.
-- Drill 8: Find the file where ``sqlite3` Python standard library: `connect`, `cursor`, `execute`, `fetchall`` appears or should appear.
-- Drill 9: Name one wrong implementation of ``sqlite3` Python standard library: `connect`, `cursor`, `execute`, `fetchall`` and why it would hurt.
-- Drill 10: Name one test that would protect ``sqlite3` Python standard library: `connect`, `cursor`, `execute`, `fetchall``.
-- Drill 11: Trace `Context manager connections and transaction control` from user input to project result.
-- Drill 12: Write one sentence defining `Context manager connections and transaction control` without copying the notes.
-- Drill 13: Find the file where `Context manager connections and transaction control` appears or should appear.
-- Drill 14: Name one wrong implementation of `Context manager connections and transaction control` and why it would hurt.
-- Drill 15: Name one test that would protect `Context manager connections and transaction control`.
-- Drill 16: Trace `Repository pattern: interface → concrete implementation` from user input to project result.
-- Drill 17: Write one sentence defining `Repository pattern: interface → concrete implementation` without copying the notes.
-- Drill 18: Find the file where `Repository pattern: interface → concrete implementation` appears or should appear.
-- Drill 19: Name one wrong implementation of `Repository pattern: interface → concrete implementation` and why it would hurt.
-- Drill 20: Name one test that would protect `Repository pattern: interface → concrete implementation`.
-- Drill 21: Trace `WAL journal mode for safe writes` from user input to project result.
-- Drill 22: Write one sentence defining `WAL journal mode for safe writes` without copying the notes.
-- Drill 23: Find the file where `WAL journal mode for safe writes` appears or should appear.
-- Drill 24: Name one wrong implementation of `WAL journal mode for safe writes` and why it would hurt.
-- Drill 25: Name one test that would protect `WAL journal mode for safe writes`.
-- Drill 26: Trace `Integration tests with `tmp_path`` from user input to project result.
-- Drill 27: Write one sentence defining `Integration tests with `tmp_path`` without copying the notes.
-- Drill 28: Find the file where `Integration tests with `tmp_path`` appears or should appear.
-- Drill 29: Name one wrong implementation of `Integration tests with `tmp_path`` and why it would hurt.
-- Drill 30: Name one test that would protect `Integration tests with `tmp_path``.
-
-<!-- LEARNING_FORMAT_END -->
-
----
-
-# Existing detailed notes
 ## 1. Chapter overview
 
 Welcome to Month 2.
@@ -437,7 +36,7 @@ By the end of this week, ResearchOps will have a permanent memory.
 
 ---
 
-## 2. What you already know
+## 2. What you already know from previous weeks
 
 You know how to define dataclasses with typed fields.
 You know how to use `pathlib.Path` for file operations.
@@ -450,7 +49,7 @@ This week adds one new layer on top: a place to put data that survives program r
 
 ---
 
-## 3. The fundamental problem: memory is temporary
+## 3. What problem this week solves
 
 When Python runs a program, variables live in RAM.
 RAM is fast but temporary.
@@ -484,7 +83,13 @@ It protects writes with transactions.
 
 ---
 
-## 4. What is a database?
+## 4. Beginner mental model
+
+Think of SQLite as a durable notebook for ResearchOps. A Python list is like a whiteboard: useful while the program runs, erased when the process ends. A SQLite database is like a notebook: slower than memory, but still there tomorrow.
+
+Use the Week 5 flow: `Paper` object → repository method → SQL row → database file → SQL row → `Paper` object. If you can trace one paper through that path, you understand the center of this chapter.
+
+### What is a database?
 
 A database is an organized, persistent store of structured data.
 
@@ -510,7 +115,7 @@ SQL (Structured Query Language) is the language used to talk to relational datab
 
 ---
 
-## 5. What is SQLite?
+### What is SQLite?
 
 SQLite is a relational database that stores everything in a single file.
 
@@ -543,7 +148,7 @@ For local applications like ResearchOps, SQLite is an excellent default choice.
 
 ---
 
-## 6. Core vocabulary
+## 5. Core vocabulary
 
 ### Table
 
@@ -584,12 +189,12 @@ That `id` is a short SHA-256 hash of the file path, computed in Python (see `Pap
 A foreign key is a column in one table that refers to the primary key of another table.
 It creates a link between tables.
 
-In ResearchOps, `parsed_documents.paper_id` is a foreign key that references `papers.id`.
-This says: every parsed document belongs to a paper.
-If you try to insert a `parsed_documents` row with a `paper_id` that does not exist in `papers`, SQLite will reject it when foreign key enforcement is enabled.
+In ResearchOps, `paper_tags.paper_id` is a foreign key that references `papers.id`.
+This says: every tag row belongs to a paper.
+If you try to insert a `paper_tags` row with a `paper_id` that does not exist in `papers`, SQLite will reject it when foreign key enforcement is enabled.
 
 Foreign keys enforce referential integrity.
-They prevent orphan records (a parsed document with no matching paper).
+They prevent orphan records (a tag row with no matching paper).
 
 ### SQL
 
@@ -646,7 +251,11 @@ This is important for two reasons:
 
 ---
 
-## 7. Designing the ResearchOps schema
+## 6. Concept explanations from first principles
+
+A database exists because RAM is temporary. A schema exists because durable data needs a predictable shape. A transaction exists because half-saved data is worse than no saved data. A repository exists because service and CLI code should not be full of SQL strings.
+
+### Designing the ResearchOps schema
 
 Before writing any code, think about what data you need to store.
 
@@ -770,7 +379,7 @@ This prevents adding the same tag to the same paper twice.
 
 ---
 
-## 8. Connecting to SQLite in Python
+### Connecting to SQLite in Python
 
 Python ships with the `sqlite3` module.
 No extra installation needed.
@@ -808,11 +417,11 @@ Without it, you can insert a `paper_tags` row pointing to a non-existent `paper_
 `conn.execute("PRAGMA journal_mode = WAL")` — WAL stands for Write-Ahead Logging.
 It is SQLite's most reliable journaling mode for concurrent access.
 In WAL mode, readers do not block writers and writers do not block readers.
-This matters when multiple processes or threads might access the database at the same time (which you will do in Week 8).
+This matters when a local tool has readers and writers active at the same time.
 
 ---
 
-## 9. Parameterized queries
+### Parameterized queries
 
 Every time you put data into a SQL statement, use parameterized queries.
 
@@ -870,7 +479,7 @@ SQLite will not do it for you.
 
 ---
 
-## 10. Transactions in practice
+### Transactions in practice
 
 When you use a connection object as a context manager in Python, it manages the transaction for you:
 
@@ -909,7 +518,11 @@ This protects you from corrupt states.
 
 ---
 
-## 11. The repository pattern
+## 7. ResearchOps-specific application
+
+Week 5 belongs to three concrete files: `src/researchops/storage/schema.sql`, `src/researchops/storage/sqlite_repository.py`, and `tests/integration/test_sqlite_repository.py`. The schema defines the durable shape. The repository implements storage operations. The integration tests prove the implementation with a real database file from `tmp_path`.
+
+### The repository pattern
 
 The repository pattern is a design idea that says: all database code should live in one place, and the rest of the application should not know the details.
 
@@ -1006,7 +619,11 @@ This separation ensures that the most important logic — the domain model — s
 
 ---
 
-## 12. Mapping domain models to rows and back
+## 8. Code examples with line-by-line explanation
+
+The following code examples are simplified versions of the real repository patterns. Read each block as object-to-row or row-to-object mapping, not as isolated syntax.
+
+### Mapping domain models to rows and back
 
 When you save a `Paper`, you convert its attributes to SQLite-compatible values.
 When you retrieve a row, you convert it back to a `Paper`.
@@ -1084,20 +701,130 @@ SQLite cannot store a `Path` directly.
 You must convert it to a string with `str()`.
 When you read it back, use `Path(row["source_path"])` to reconstruct the `Path` object.
 
+
 ---
 
-## 13. Writing integration tests
+## 9. Common beginner mistakes
+
+### Forgetting `conn.row_factory = sqlite3.Row`
+
+Without this, every `fetchone()` returns a plain tuple.
+You access columns by index: `row[0]`, `row[1]`, etc.
+If you ever add or reorder a column, every index reference breaks silently.
+Always set `row_factory`.
+
+### Building SQL with f-strings
+
+```python
+# Dangerous
+query = f"SELECT * FROM papers WHERE title = '{user_input}'"
+conn.execute(query)
+```
+
+Use parameterized queries.
+
+### Forgetting to commit
+
+The `sqlite3` module does not auto-commit by default in many usage patterns.
+If you call `conn.execute(...)` but never commit, the data is in memory but not written to disk.
+The next read in the same connection may see it, but a new connection will not.
+Using `with conn:` handles this automatically.
+
+### Storing `Path` objects directly
+
+```python
+conn.execute("INSERT INTO papers (source_path) VALUES (?)", (paper.source_path,))
+```
+
+If `paper.source_path` is a `Path` object, this will likely cause a type adapter warning and store an ambiguous representation.
+Always convert: `str(paper.source_path)`.
+
+### Forgetting `IF NOT EXISTS` in schema creation
+
+If you run schema creation twice (which happens every time `SQLitePaperRepository.__init__` is called), you get an error about the table already existing.
+Use `CREATE TABLE IF NOT EXISTS`.
+
+### Not enabling foreign keys
+
+```python
+conn.execute("PRAGMA foreign_keys = ON")
+```
+
+Without this, SQLite ignores all foreign key constraints.
+Data integrity bugs become invisible.
+Always enable this.
+
+---
+
+### Schema initialization pattern
+
+Your repository should initialize the schema on construction:
+
+```python
+class SQLitePaperRepository:
+    def __init__(self, db_path: Path) -> None:
+        self._db_path = db_path
+        db_path.parent.mkdir(parents=True, exist_ok=True)
+        self._init_schema()
+
+    def _init_schema(self) -> None:
+        schema_path = Path(__file__).parent / "schema.sql"
+        with self._connect() as conn:
+            schema_sql = schema_path.read_text(encoding="utf-8")
+            conn.executescript(schema_sql)
+```
+
+Keeping the schema in a `schema.sql` file (not hardcoded as a Python string) has advantages:
+- You can open it with any SQL editor or viewer.
+- It is version-controlled separately.
+- It is easy to inspect without reading Python.
+
+`executescript()` runs multiple SQL statements separated by semicolons in one call.
+This is different from `execute()`, which runs one statement at a time.
+Use `executescript()` for DDL files.
+
+---
+
+---
+
+## 10. Debugging guidance
+
+When SQLite code fails, identify the layer before changing code. If you see `no such table: papers`, schema initialization did not run against that database file. Check `_init_schema()`, `_load_schema()`, and `executescript()`.
+
+If you see `UNIQUE constraint failed`, SQLite is protecting the domain from duplicate data. For Week 5, inspect `papers.id` and `papers.source_path` before weakening constraints.
+
+If loaded objects have strange field values, inspect the row mapping. `datetime` values must be saved with `isoformat()` and loaded with `datetime.fromisoformat()`. `Path` values must be converted with `str()` before storage and rebuilt with `Path(...)` after loading.
+
+If data disappears between calls, ask whether the transaction committed and whether both calls used the same database path. The repository context manager commits on success, rolls back on exceptions, and closes the connection.
+
+---
+
+## 11. Design tradeoffs
+
+SQLite is the right Week 5 database because it is local, file-backed, and included with Python. It teaches real relational ideas without requiring a server. The tradeoff is that it is not a complete answer for every future deployment, but that future concern should not distract from learning durable local storage now.
+
+The repository pattern adds one extra class, but it keeps SQL in one place. Services can speak in domain verbs such as `save`, `get`, `list_all`, and `exists`; storage code can handle SQL details; tests can choose either a fake repository or a real SQLite repository depending on what they need to prove.
+
+The schema also makes tradeoffs. `paper_tags` uses one row per tag instead of a comma-separated string. That costs an extra table, but it keeps tags queryable and prevents duplicate tag pairs. Timestamps are stored as text because SQLite has no dedicated datetime type; that is safe when the code consistently uses ISO strings.
+
+---
+
+## 12. Testing implications
+
+Storage code needs integration tests because SQL syntax, constraints, commits, rollbacks, and row mapping only become real against SQLite. A fake repository is useful for service tests, but it cannot prove that `schema.sql` works.
+
+### Writing integration tests
 
 Unit tests test one function in isolation with mocks.
 Integration tests test how real components work together.
 For storage code, integration tests are especially important.
 
 An integration test for a repository should:
-1. Create a real (but temporary) database in memory or in `/tmp`.
+1. Create a real database file through pytest’s `tmp_path` fixture.
 2. Call repository methods.
 3. Assert that the data round-trips correctly.
 
-The best approach is an **in-memory SQLite database**:
+The best approach in this project is a **temporary file-backed SQLite database**:
 
 ```python
 import sqlite3
@@ -1177,7 +904,7 @@ This is better than using `:memory:` when your `SQLitePaperRepository` construct
 
 ---
 
-## 14. Temporary test databases
+### Temporary test databases
 
 There are two patterns for test databases.
 
@@ -1189,7 +916,7 @@ def repo(tmp_path):
     return SQLitePaperRepository(tmp_path / "test.db")
 ```
 
-Each test gets its own directory under `/tmp/pytest-*/`.
+Each test gets its own directory managed by pytest.
 Files are isolated between tests.
 The directory is cleaned up after the test run.
 
@@ -1210,88 +937,11 @@ For ResearchOps, `tmp_path` is simpler and works with the standard `SQLitePaperR
 
 ---
 
-## 15. Common mistakes
+## 13. Architecture implications
 
-### Forgetting `conn.row_factory = sqlite3.Row`
+Week 5 makes the dependency direction visible. `core` owns models and exceptions. `storage` owns SQLite. Services and CLI code should ask for repository operations rather than embedding SQL. If SQL appears in command presentation code, the boundary has leaked.
 
-Without this, every `fetchone()` returns a plain tuple.
-You access columns by index: `row[0]`, `row[1]`, etc.
-If you ever add or reorder a column, every index reference breaks silently.
-Always set `row_factory`.
-
-### Building SQL with f-strings
-
-```python
-# Dangerous
-query = f"SELECT * FROM papers WHERE title = '{user_input}'"
-conn.execute(query)
-```
-
-Use parameterized queries.
-
-### Forgetting to commit
-
-The `sqlite3` module does not auto-commit by default in many usage patterns.
-If you call `conn.execute(...)` but never commit, the data is in memory but not written to disk.
-The next read in the same connection may see it, but a new connection will not.
-Using `with conn:` handles this automatically.
-
-### Storing `Path` objects directly
-
-```python
-conn.execute("INSERT INTO papers (source_path) VALUES (?)", (paper.source_path,))
-```
-
-If `paper.source_path` is a `Path` object, this will likely cause a type adapter warning and store an ambiguous representation.
-Always convert: `str(paper.source_path)`.
-
-### Forgetting `IF NOT EXISTS` in schema creation
-
-If you run schema creation twice (which happens every time `SQLitePaperRepository.__init__` is called), you get an error about the table already existing.
-Use `CREATE TABLE IF NOT EXISTS`.
-
-### Not enabling foreign keys
-
-```python
-conn.execute("PRAGMA foreign_keys = ON")
-```
-
-Without this, SQLite ignores all foreign key constraints.
-Data integrity bugs become invisible.
-Always enable this.
-
----
-
-## 16. Schema initialization pattern
-
-Your repository should initialize the schema on construction:
-
-```python
-class SQLitePaperRepository:
-    def __init__(self, db_path: Path) -> None:
-        self._db_path = db_path
-        db_path.parent.mkdir(parents=True, exist_ok=True)
-        self._init_schema()
-
-    def _init_schema(self) -> None:
-        schema_path = Path(__file__).parent / "schema.sql"
-        with self._connect() as conn:
-            schema_sql = schema_path.read_text(encoding="utf-8")
-            conn.executescript(schema_sql)
-```
-
-Keeping the schema in a `schema.sql` file (not hardcoded as a Python string) has advantages:
-- You can open it with any SQL editor or viewer.
-- It is version-controlled separately.
-- It is easy to inspect without reading Python.
-
-`executescript()` runs multiple SQL statements separated by semicolons in one call.
-This is different from `execute()`, which runs one statement at a time.
-Use `executescript()` for DDL files.
-
----
-
-## 17. Connecting directly to Week 3 models
+### Connecting directly to Week 3 models
 
 Every Week 3 model maps cleanly to this week's tables.
 
@@ -1311,9 +961,20 @@ The ingestion service converts it to a `Paper` and stores the `Paper`.
 It is a summary object built from counting successes, failures, and skips.
 You can reconstruct it from the other tables if needed.
 
+
 ---
 
-## 18. Review questions and self-checks
+## 14. How this connects to AI engineering / ML research
+
+AI engineering is not only model training. A research platform must remember which papers were processed, which files failed, and which data produced later search or modeling results. SQLite gives ResearchOps its first reliable memory.
+
+For ML research, this matters because repeatability depends on durable evidence. You can avoid reprocessing the same paper, inspect the corpus before building search, keep failure history, and test data access without relying on ad hoc files. Later AI features are only trustworthy if the underlying paper records are consistent and queryable.
+
+This week does not build later application layers. It prepares the storage foundation those later features will need.
+
+---
+
+## 15. Mini quizzes
 
 **Conceptual questions:**
 
@@ -1374,6 +1035,50 @@ You can reconstruct it from the other tables if needed.
 19. Write a function that takes a `Paper` and a connection and returns `True` if the paper's title already exists (ignoring `id`).
 
 20. Write an integration test that saves three papers, calls `list_all()`, and verifies the order matches creation time.
+
+---
+
+## 16. Explain-it-aloud prompts
+
+1. Explain why a Python list of papers is not enough for ResearchOps.
+2. Explain what SQLite creates when you connect to a `.db` file.
+3. Explain table, row, and column using the `papers` table.
+4. Explain why `id` is a primary key and `source_path` is unique.
+5. Explain why optional metadata can be nullable.
+6. Explain why `paper_tags` is separate from `papers`.
+7. Explain what a transaction protects when saving a paper and tags.
+8. Explain why every SQL value should use a placeholder.
+9. Explain what `_row_to_paper()` does.
+10. Explain why `tmp_path` makes repository tests safe.
+
+---
+
+## 17. What to memorize
+
+Memorize the small set of tools Week 5 uses repeatedly: `CREATE TABLE IF NOT EXISTS`, `PRIMARY KEY`, `NOT NULL`, `UNIQUE`, `REFERENCES`, `?` placeholders, `fetchone()`, `fetchall()`, commit, rollback, `sqlite3.Row`, and `tmp_path`. Do not memorize every SQL keyword. Memorize the vocabulary that lets you read this repository without guessing.
+
+---
+
+## 18. What to understand deeply
+
+Understand that persistence is a design choice, not automatic behavior. Understand that a schema is part of the application contract. Understand that constraints are guardrails. Understand that a repository separates domain language from storage language. Understand that integration tests are necessary when real behavior depends on SQLite.
+
+The deepest Week 5 lesson is that storage is not merely where data goes. Storage is where domain rules meet durable reality.
+
+---
+
+## 19. What not to worry about yet
+
+Do not spend Week 5 on large database frameworks, server administration, migrations, service layers, or advanced query optimization. Those topics may matter later. Right now, your job is to make one local SQLite repository understandable, reliable, and tested.
+
+---
+
+## 20. Bridge to next week
+
+Week 5 gives ResearchOps durable storage. Next week can build on that by treating stored papers and stored failures as part of a larger ingestion workflow. Instead of only discovering files and printing results, the project can remember what happened.
+
+Carry forward four habits: make persistence decisions explicit, test storage boundaries with real integration tests, keep SQL behind repositories, and explain user-visible behavior without exposing database details. Before moving on, make sure you can save a paper, retrieve it, list it, handle missing and duplicate ids, record a failure, and explain why `tmp_path` makes those tests safe.
+
 <!-- NAV_BOTTOM_START -->
 ---
 ⬅️ [← README](README.md) · ➡️ [Exercises →](exercises.md)

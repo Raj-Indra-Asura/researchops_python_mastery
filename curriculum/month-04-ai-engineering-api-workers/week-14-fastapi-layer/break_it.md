@@ -11,65 +11,247 @@
 
 # Break It - Week 14 FastAPI Layer
 
-## Intentional failure experiments
+## 1. Purpose of failure practice
 
-### 1. Missing required field
-Send a POST request to `/search` without the `query` field. FastAPI returns `422 Unprocessable Entity`. Read the response body. Find the path in `"detail"` that names `query`. Understand this: the `422` is automatic — you wrote zero code to produce it. Pydantic validation happens before your handler is called.
+Break API code on purpose so status codes, validation, dependency wiring, and service delegation become visible instead of mysterious. The goal is to identify which layer owns the fix.
 
-### 2. Wrong type in body
-Send `{"query": 42, "limit": "five"}`. FastAPI will try to coerce `42` to `str` (it succeeds — Pydantic casts it). But `"five"` cannot become `int`. Read the `422` error and find which field failed. Add a validator that rejects numeric queries using `@field_validator`.
+## 2. Failure lab rules
 
-### 3. Returning a raw domain object
-Create a route that returns a domain model object directly instead of a `SearchHitResponse`. Watch FastAPI raise a serialisation error. Understand why: FastAPI cannot serialise arbitrary Python objects. Wrap all returns in Pydantic response models.
+- Break one thing at a time.
+- Predict the status code first.
+- Inspect response JSON.
+- Name the owner layer.
+- Restore the correct code before the next experiment.
+- Do not add future-week systems while debugging.
+- Add or identify the test that would catch the bug.
 
-### 4. Leaking a stack trace
-In a route, raise a raw `Exception("something broke")` without any handler. What does the client receive by default? It receives a 500 response that may include internal details. Add a global exception handler. Verify the response body no longer contains the exception message.
+## 3. Intentional break experiments
 
-### 5. Forgetting to wire a dependency
-Remove `Depends(get_search_service)` from a route parameter. FastAPI will still call the function but `service` will not be injected. Watch the `TypeError` or `NameError`. Learn to read FastAPI's startup validation output — it often catches wiring problems before any request is made.
+### Experiment: Missing required query
 
-### 6. Returning 200 for a 404 case
-Remove the `raise HTTPException(status_code=404)` from the document lookup route. Instead, return an empty dict. Write a test that confirms this is wrong: the status code is 200 but the document is missing. Then fix it. This exercise teaches the habit of using correct status codes rather than always returning 200.
+#### How to cause it
+Call `/papers/search` without `q`.
 
-### 7. Circular dependency
-Create two dependency providers where A calls B and B calls A. FastAPI will raise a recursion error at startup. This is a design smell — split the concerns.
+#### Expected error
+`422 Unprocessable Entity`; route body should not run.
 
-### 8. Large limit value
-Send `{"query": "transformers", "limit": 10000}`. Does your service crash or return gracefully? Add a Pydantic validator that caps `limit` at a maximum value (for example, 50). Write a test that sends `limit=10000` and gets `422`.
+#### How to inspect
+Read `response.json()["detail"]` and find the `q` location.
 
-### 9. Empty query string
-Send `{"query": "", "limit": 5}`. Pydantic accepts it (empty string is a valid `str`). Your service may behave oddly. Add a Pydantic validator that rejects empty strings. Write a test that confirms `422` is returned for an empty query.
+#### How to fix
+Send `q` or intentionally redesign the contract.
 
----
+#### Test that should catch it
+A test calls `/papers/search` and asserts 422.
 
-## Debugging tasks
+#### What this teaches
+Boundary validation protects the service from incomplete input.
 
-- When a test fails with a 422, print `response.json()["detail"]` to read the full validation error path.
-- When a test fails with a 500, add `print(response.text)` to see any debug detail.
-- Run `pytest -k api -v` and inspect each test name to confirm routes are being tested individually.
-- Use `uvicorn --reload` and interact with `http://localhost:8000/docs` to manually test your routes.
+#### Common wrong fixes
+- Returning 200 with empty results.
+- Making service accept `None`.
+- Ignoring the detail body.
 
----
+### Experiment: Wrong limit type
 
-## Edge cases to explore
+#### How to cause it
+Call `/papers/search?q=graphs&limit=five`.
 
-| Case | Expected behaviour |
-|------|-------------------|
-| `limit = 0` | Return empty list (or raise 400 — define your policy) |
-| `limit` negative | Raise 422 via Pydantic validator |
-| `query` with only whitespace | Raise 422 or normalise to empty |
-| JSON body with extra unknown fields | Pydantic ignores by default; consider using `model_config = ConfigDict(extra="forbid")` |
-| Route not found | FastAPI returns 404 with `{"detail": "Not Found"}` automatically |
-| Wrong HTTP method (GET on a POST route) | FastAPI returns 405 Method Not Allowed |
+#### Expected error
+`422` because `five` is not an integer.
 
----
+#### How to inspect
+Inspect detail for `limit`.
 
-## What did you learn?
+#### How to fix
+Use numeric limit and add bounds if needed.
 
-- Which error happened before your handler ran?
-- What was the difference between a Pydantic validation error and a service-layer error?
-- Which status code did you forget to use first?
-- How does a thin route make the handler easier to test in isolation?
+#### Test that should catch it
+A test asserts bad limit gives 422.
+
+#### What this teaches
+Annotations turn raw URL strings into typed Python values.
+
+#### Common wrong fixes
+- Manual parsing in the route.
+- Passing raw strings to service.
+- Catching validation as success.
+
+### Experiment: Business logic in route
+
+#### How to cause it
+Put ranking or SQL directly in the route.
+
+#### Expected error
+Architecture breaks even if response is 200.
+
+#### How to inspect
+Inspect imports and route body for storage/ranking decisions.
+
+#### How to fix
+Move behavior to service or infrastructure.
+
+#### Test that should catch it
+A fake-service delegation test should fail if service is skipped.
+
+#### What this teaches
+Green tests do not excuse wrong ownership.
+
+#### Common wrong fixes
+- Leaving small SQL in route.
+- Duplicating CLI logic.
+- Moving FastAPI into service.
+
+### Experiment: Missing-paper leaks as 500
+
+#### How to cause it
+Remove `PaperNotFoundError` to 404 mapping.
+
+#### Expected error
+Expected missing resource becomes 500 or raw error.
+
+#### How to inspect
+Inspect traceback and service exception.
+
+#### How to fix
+Catch domain error and raise `HTTPException(404)`.
+
+#### Test that should catch it
+Fake service raises missing error; test asserts 404.
+
+#### What this teaches
+Expected domain failures need HTTP translation.
+
+#### Common wrong fixes
+- Catch all exceptions as 404.
+- Return empty dict with 200.
+- Raise HTTPException from service.
+
+### Experiment: Wrong dependency override
+
+#### How to cause it
+Override a provider not used by `Depends`.
+
+#### Expected error
+Real provider runs or fake data missing.
+
+#### How to inspect
+Compare override key to route provider function.
+
+#### How to fix
+Override the exact provider and use fresh app.
+
+#### Test that should catch it
+Fake records call; test asserts it was called.
+
+#### What this teaches
+Overrides are exact function-object replacements.
+
+#### Common wrong fixes
+- Patch class globally.
+- Share stale app overrides.
+- Override a lookalike lambda.
+
+### Experiment: Unserializable return
+
+#### How to cause it
+Return raw custom object or file handle.
+
+#### Expected error
+Serialization or response validation error.
+
+#### How to inspect
+Inspect traceback for non-JSON field.
+
+#### How to fix
+Map domain object to Pydantic response model.
+
+#### Test that should catch it
+Response-shape test asserts public fields.
+
+#### What this teaches
+The API contract must be JSON-compatible.
+
+#### Common wrong fixes
+- Remove response model.
+- Use `str(obj)` everywhere.
+- Expose internals because they serialize.
+
+### Experiment: Route conflict
+
+#### How to cause it
+Let `/papers/{paper_id}` swallow `/papers/search`.
+
+#### Expected error
+Search endpoint behaves like paper lookup.
+
+#### How to inspect
+Use fake call records to see which route ran.
+
+#### How to fix
+Clarify routes and add a regression test.
+
+#### Test that should catch it
+Test `/papers/search?q=x` calls search fake.
+
+#### What this teaches
+Dynamic paths need contract tests.
+
+#### Common wrong fixes
+- Accept search as an ID.
+- Rename blindly.
+- Move path without updating docs.
+
+### Experiment: Unexpected service exception
+
+#### How to cause it
+Fake service raises `RuntimeError`.
+
+#### Expected error
+Client receives 500; safe handler may hide internals.
+
+#### How to inspect
+Inspect body and logs separately.
+
+#### How to fix
+Map expected errors; keep unexpected errors generic.
+
+#### Test that should catch it
+Test forced exception returns safe 500 if handler exists.
+
+#### What this teaches
+Clients need safe errors; maintainers need logs.
+
+#### Common wrong fixes
+- Return raw exception string.
+- Swallow exception.
+- Return 200 with error text.
+
+## 4. Debugging checklist
+
+- [ ] URL and method are correct.
+- [ ] Router is included in app.
+- [ ] Validation detail has been read.
+- [ ] Route body did or did not run.
+- [ ] Dependency override key is exact.
+- [ ] Fake service recorded expected call.
+- [ ] Expected domain errors map to status codes.
+- [ ] Response model exposes only public fields.
+- [ ] No service imports FastAPI.
+- [ ] A focused test catches the failure.
+
+## 5. Reflection after breaking
+
+- Which failure happened before the route ran?
+- Which failure was wrong dependency wiring?
+- Which failure was wrong architecture?
+- Which status code is clearer now?
+- Which response body helped most?
+- Which wrong fix tempted you?
+- Which test would catch the bug fastest?
+- Which fix belonged in API?
+- Which fix belonged in service?
+- What will you inspect first next time?
 <!-- NAV_BOTTOM_START -->
 ---
 ⬅️ [← Exercises](exercises.md) · ➡️ [Validation →](validation.md)
