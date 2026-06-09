@@ -1,4 +1,15 @@
+<!-- NAV_START -->
+---
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 2: Storage, Search, Multiprocessing](../README.md)
 
+**Week 07 — Keyword Search and Data Quality:** [README](README.md) · **Notes** · [Exercises](exercises.md) · [Break It](break_it.md) · [Validation](validation.md) · [Reflection](reflection.md)
+
+⬅️ [← README](README.md) · ➡️ [Exercises →](exercises.md)
+
+---
+<!-- NAV_END -->
+
+# Week 07 Notes — Keyword Search and Data Quality
 
 <!-- LEARNING_FORMAT_START -->
 # Complete Learning Format — Week 07: Keyword Search and Data Quality
@@ -13,7 +24,7 @@ Read it before the older detailed notes that follow.
 
 The chapter title is **Finding signal in stored text**.
 The practical milestone is: `researchops search "transformer attention"` returns ranked results from stored papers.
-The expected capability is: Can implement basic text search with ranking, use fake repositories in unit tests, and explain what a data quality gate is. ---
+The expected capability is: Can implement basic text search with ranking, use fake repositories in unit tests, and explain what a data quality gate is.
 This chapter is one step in the ResearchOps system, not a random lesson.
 The visible feature matters because it proves the idea works.
 The hidden skill matters because it lets you build the next chapter without confusion.
@@ -348,25 +359,42 @@ This week prepares you by giving ResearchOps a clearer piece of behavior before 
 ## Guided deepening drills
 
 Use these drills if the chapter still feels abstract.
+- Drill 1: Trace `In-memory inverted index basics` from user input to project result.
+- Drill 2: Write one sentence defining `In-memory inverted index basics` without copying the notes.
+- Drill 3: Find the file where `In-memory inverted index basics` appears or should appear.
+- Drill 4: Name one wrong implementation of `In-memory inverted index basics` and why it would hurt.
+- Drill 5: Name one test that would protect `In-memory inverted index basics`.
+- Drill 6: Trace `Text normalisation: lowercasing, punctuation stripping, stopwords` from user input to project result.
+- Drill 7: Write one sentence defining `Text normalisation: lowercasing, punctuation stripping, stopwords` without copying the notes.
+- Drill 8: Find the file where `Text normalisation: lowercasing, punctuation stripping, stopwords` appears or should appear.
+- Drill 9: Name one wrong implementation of `Text normalisation: lowercasing, punctuation stripping, stopwords` and why it would hurt.
+- Drill 10: Name one test that would protect `Text normalisation: lowercasing, punctuation stripping, stopwords`.
+- Drill 11: Trace `Basic scoring and ranking` from user input to project result.
+- Drill 12: Write one sentence defining `Basic scoring and ranking` without copying the notes.
+- Drill 13: Find the file where `Basic scoring and ranking` appears or should appear.
+- Drill 14: Name one wrong implementation of `Basic scoring and ranking` and why it would hurt.
+- Drill 15: Name one test that would protect `Basic scoring and ranking`.
+- Drill 16: Trace `Data quality gates: detecting and reporting bad data` from user input to project result.
+- Drill 17: Write one sentence defining `Data quality gates: detecting and reporting bad data` without copying the notes.
+- Drill 18: Find the file where `Data quality gates: detecting and reporting bad data` appears or should appear.
+- Drill 19: Name one wrong implementation of `Data quality gates: detecting and reporting bad data` and why it would hurt.
+- Drill 20: Name one test that would protect `Data quality gates: detecting and reporting bad data`.
+- Drill 21: Trace ``SearchService` and `SearchResult` domain objects` from user input to project result.
+- Drill 22: Write one sentence defining ``SearchService` and `SearchResult` domain objects` without copying the notes.
+- Drill 23: Find the file where ``SearchService` and `SearchResult` domain objects` appears or should appear.
+- Drill 24: Name one wrong implementation of ``SearchService` and `SearchResult` domain objects` and why it would hurt.
+- Drill 25: Name one test that would protect ``SearchService` and `SearchResult` domain objects`.
+- Drill 26: Draw the Week 7 data flow in four boxes.
+- Drill 27: Say why `Keyword Search and Data Quality` belongs in this month of the curriculum.
+- Drill 28: Rewrite one error message in beginner-friendly language.
+- Drill 29: List the exact assumptions made by the example code.
+- Drill 30: List the exact assumptions checked by the tests.
 
 <!-- LEARNING_FORMAT_END -->
 
 ---
 
 # Existing detailed notes
-<!-- NAV_START -->
----
-[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 2: Storage, Search, Multiprocessing](../README.md)
-
-**Week 07 — Keyword Search and Data Quality:** [README](README.md) · **Notes** · [Exercises](exercises.md) · [Break It](break_it.md) · [Validation](validation.md) · [Reflection](reflection.md)
-
-⬅️ [← README](README.md) · ➡️ [Exercises →](exercises.md)
-
----
-<!-- NAV_END -->
-
-# Week 07 Notes — Keyword Search and Data Quality
-
 ## 1. Chapter overview
 
 In Weeks 5 and 6 you built a system that can ingest PDFs and store them in a database.

@@ -24,7 +24,7 @@ Read it before the older detailed notes that follow.
 
 The chapter title is **Teaching the machine to label papers**.
 The practical milestone is: `researchops train-topic-model` trains and saves a classifier. `researchops classify PAPER_ID` returns the predicted topic.
-The expected capability is: Can build a TF-IDF + classifier pipeline, evaluate it with classification_report, persist the model, and wire it to a CLI command. ---
+The expected capability is: Can build a TF-IDF + classifier pipeline, evaluate it with classification_report, persist the model, and wire it to a CLI command.
 This chapter is one step in the ResearchOps system, not a random lesson.
 The visible feature matters because it proves the idea works.
 The hidden skill matters because it lets you build the next chapter without confusion.
@@ -382,13 +382,42 @@ This week prepares you by giving ResearchOps a clearer piece of behavior before 
 ## Guided deepening drills
 
 Use these drills if the chapter still feels abstract.
+- Drill 1: Trace `TF-IDF vectorisation: what term frequency and inverse document frequency mean` from user input to project result.
+- Drill 2: Write one sentence defining `TF-IDF vectorisation: what term frequency and inverse document frequency mean` without copying the notes.
+- Drill 3: Find the file where `TF-IDF vectorisation: what term frequency and inverse document frequency mean` appears or should appear.
+- Drill 4: Name one wrong implementation of `TF-IDF vectorisation: what term frequency and inverse document frequency mean` and why it would hurt.
+- Drill 5: Name one test that would protect `TF-IDF vectorisation: what term frequency and inverse document frequency mean`.
+- Drill 6: Trace `scikit-learn `Pipeline` — chaining transformers and estimators` from user input to project result.
+- Drill 7: Write one sentence defining `scikit-learn `Pipeline` — chaining transformers and estimators` without copying the notes.
+- Drill 8: Find the file where `scikit-learn `Pipeline` — chaining transformers and estimators` appears or should appear.
+- Drill 9: Name one wrong implementation of `scikit-learn `Pipeline` — chaining transformers and estimators` and why it would hurt.
+- Drill 10: Name one test that would protect `scikit-learn `Pipeline` — chaining transformers and estimators`.
+- Drill 11: Trace ``LogisticRegression` as a baseline classifier` from user input to project result.
+- Drill 12: Write one sentence defining ``LogisticRegression` as a baseline classifier` without copying the notes.
+- Drill 13: Find the file where ``LogisticRegression` as a baseline classifier` appears or should appear.
+- Drill 14: Name one wrong implementation of ``LogisticRegression` as a baseline classifier` and why it would hurt.
+- Drill 15: Name one test that would protect ``LogisticRegression` as a baseline classifier`.
+- Drill 16: Trace ``train_test_split`, `classification_report`, precision/recall/F1` from user input to project result.
+- Drill 17: Write one sentence defining ``train_test_split`, `classification_report`, precision/recall/F1` without copying the notes.
+- Drill 18: Find the file where ``train_test_split`, `classification_report`, precision/recall/F1` appears or should appear.
+- Drill 19: Name one wrong implementation of ``train_test_split`, `classification_report`, precision/recall/F1` and why it would hurt.
+- Drill 20: Name one test that would protect ``train_test_split`, `classification_report`, precision/recall/F1`.
+- Drill 21: Trace ``joblib.dump` / `joblib.load` for model persistence` from user input to project result.
+- Drill 22: Write one sentence defining ``joblib.dump` / `joblib.load` for model persistence` without copying the notes.
+- Drill 23: Find the file where ``joblib.dump` / `joblib.load` for model persistence` appears or should appear.
+- Drill 24: Name one wrong implementation of ``joblib.dump` / `joblib.load` for model persistence` and why it would hurt.
+- Drill 25: Name one test that would protect ``joblib.dump` / `joblib.load` for model persistence`.
+- Drill 26: Trace `Exposing training and prediction through CLI` from user input to project result.
+- Drill 27: Write one sentence defining `Exposing training and prediction through CLI` without copying the notes.
+- Drill 28: Find the file where `Exposing training and prediction through CLI` appears or should appear.
+- Drill 29: Name one wrong implementation of `Exposing training and prediction through CLI` and why it would hurt.
+- Drill 30: Name one test that would protect `Exposing training and prediction through CLI`.
 
 <!-- LEARNING_FORMAT_END -->
 
 ---
 
 # Existing detailed notes
-
 ## Why ML appears only after the data pipeline exists
 
 Machine learning needs data. Not just raw data — clean, labeled, accessible data. Before Week 11, ResearchOps built that foundation:

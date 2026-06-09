@@ -24,7 +24,7 @@ Read it before the older detailed notes that follow.
 
 The chapter title is **Work that happens in the background**.
 The practical milestone is: `researchops jobs run` starts a worker that processes jobs from the queue. `researchops jobs list` shows job states.
-The expected capability is: Can implement a state machine, build a polling worker loop, design idempotent job processing, and explain how to recover from worker crashes safely. --- ## Month 5 — RAG, Production, Portfolio ---
+The expected capability is: Can implement a state machine, build a polling worker loop, design idempotent job processing, and explain how to recover from worker crashes safely.
 This chapter is one step in the ResearchOps system, not a random lesson.
 The visible feature matters because it proves the idea works.
 The hidden skill matters because it lets you build the next chapter without confusion.
@@ -565,13 +565,13 @@ Use these drills if the chapter still feels abstract.
 - Drill 186: Name one test that would protect `Persistent job queue in SQLite`.
 - Drill 187: Trace `Worker loop: poll → claim → execute → update state` from user input to project result.
 - Drill 188: Write one sentence defining `Worker loop: poll → claim → execute → update state` without copying the notes.
+- Drill 189: Find the file where `Worker loop: poll → claim → execute → update state` appears or should appear.
 
 <!-- LEARNING_FORMAT_END -->
 
 ---
 
 # Existing detailed notes
-
 ## Why long-running tasks need a job system
 
 When a user triggers an action in a CLI or API, the response must come back quickly. A user waiting 30 seconds for a command to return is a bad experience. An API that keeps a request open for 5 minutes will time out.

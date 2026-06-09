@@ -24,7 +24,7 @@ Read it before the older detailed notes that follow.
 
 The chapter title is **Answers grounded in evidence**.
 The practical milestone is: `researchops ask "What is attention?"` returns a cited answer based on retrieved paper chunks.
-The expected capability is: Can implement a retrieve-then-generate pipeline, write a grounding prompt, detect hallucination risk, and explain why citations matter in an AI assistant. ---
+The expected capability is: Can implement a retrieve-then-generate pipeline, write a grounding prompt, detect hallucination risk, and explain why citations matter in an AI assistant.
 This chapter is one step in the ResearchOps system, not a random lesson.
 The visible feature matters because it proves the idea works.
 The hidden skill matters because it lets you build the next chapter without confusion.
@@ -372,13 +372,42 @@ This week prepares you by giving ResearchOps a clearer piece of behavior before 
 ## Guided deepening drills
 
 Use these drills if the chapter still feels abstract.
+- Drill 1: Trace `Retrieve-then-generate: why generation without retrieval hallucinates` from user input to project result.
+- Drill 2: Write one sentence defining `Retrieve-then-generate: why generation without retrieval hallucinates` without copying the notes.
+- Drill 3: Find the file where `Retrieve-then-generate: why generation without retrieval hallucinates` appears or should appear.
+- Drill 4: Name one wrong implementation of `Retrieve-then-generate: why generation without retrieval hallucinates` and why it would hurt.
+- Drill 5: Name one test that would protect `Retrieve-then-generate: why generation without retrieval hallucinates`.
+- Drill 6: Trace `Chunked retrieval: finding the right text fragments before generating` from user input to project result.
+- Drill 7: Write one sentence defining `Chunked retrieval: finding the right text fragments before generating` without copying the notes.
+- Drill 8: Find the file where `Chunked retrieval: finding the right text fragments before generating` appears or should appear.
+- Drill 9: Name one wrong implementation of `Chunked retrieval: finding the right text fragments before generating` and why it would hurt.
+- Drill 10: Name one test that would protect `Chunked retrieval: finding the right text fragments before generating`.
+- Drill 11: Trace `Prompt engineering: grounding instructions, source citation requirements` from user input to project result.
+- Drill 12: Write one sentence defining `Prompt engineering: grounding instructions, source citation requirements` without copying the notes.
+- Drill 13: Find the file where `Prompt engineering: grounding instructions, source citation requirements` appears or should appear.
+- Drill 14: Name one wrong implementation of `Prompt engineering: grounding instructions, source citation requirements` and why it would hurt.
+- Drill 15: Name one test that would protect `Prompt engineering: grounding instructions, source citation requirements`.
+- Drill 16: Trace `Hallucination detection: what happens when no relevant chunks exist` from user input to project result.
+- Drill 17: Write one sentence defining `Hallucination detection: what happens when no relevant chunks exist` without copying the notes.
+- Drill 18: Find the file where `Hallucination detection: what happens when no relevant chunks exist` appears or should appear.
+- Drill 19: Name one wrong implementation of `Hallucination detection: what happens when no relevant chunks exist` and why it would hurt.
+- Drill 20: Name one test that would protect `Hallucination detection: what happens when no relevant chunks exist`.
+- Drill 21: Trace ``QAService` orchestration: retrieve → prompt → call LLM → return citations` from user input to project result.
+- Drill 22: Write one sentence defining ``QAService` orchestration: retrieve → prompt → call LLM → return citations` without copying the notes.
+- Drill 23: Find the file where ``QAService` orchestration: retrieve → prompt → call LLM → return citations` appears or should appear.
+- Drill 24: Name one wrong implementation of ``QAService` orchestration: retrieve → prompt → call LLM → return citations` and why it would hurt.
+- Drill 25: Name one test that would protect ``QAService` orchestration: retrieve → prompt → call LLM → return citations`.
+- Drill 26: Trace ``ai/prompts.py`: where prompt templates live` from user input to project result.
+- Drill 27: Write one sentence defining ``ai/prompts.py`: where prompt templates live` without copying the notes.
+- Drill 28: Find the file where ``ai/prompts.py`: where prompt templates live` appears or should appear.
+- Drill 29: Name one wrong implementation of ``ai/prompts.py`: where prompt templates live` and why it would hurt.
+- Drill 30: Name one test that would protect ``ai/prompts.py`: where prompt templates live`.
 
 <!-- LEARNING_FORMAT_END -->
 
 ---
 
 # Existing detailed notes
-
 ## What RAG means
 
 RAG stands for Retrieval-Augmented Generation. It is a system architecture that answers questions by first retrieving relevant text from a document collection, then passing that text to a language model to produce an answer.

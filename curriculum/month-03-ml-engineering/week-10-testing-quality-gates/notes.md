@@ -24,7 +24,7 @@ Read it before the older detailed notes that follow.
 
 The chapter title is **Tests that give you confidence**.
 The practical milestone is: Test coverage ≥ 70%. CI fails if coverage drops below threshold. All services tested via fixtures and fakes.
-The expected capability is: Can write `conftest.py` fixtures, use `monkeypatch`, explain test coverage, and configure a minimum threshold in CI. ---
+The expected capability is: Can write `conftest.py` fixtures, use `monkeypatch`, explain test coverage, and configure a minimum threshold in CI.
 This chapter is one step in the ResearchOps system, not a random lesson.
 The visible feature matters because it proves the idea works.
 The hidden skill matters because it lets you build the next chapter without confusion.
@@ -396,13 +396,41 @@ Use these drills if the chapter still feels abstract.
 - Drill 4: Name one wrong implementation of ``pytest` fixture scopes: `function`, `module`, `session`` and why it would hurt.
 - Drill 5: Name one test that would protect ``pytest` fixture scopes: `function`, `module`, `session``.
 - Drill 6: Trace ``tmp_path` for temporary file system fixtures` from user input to project result.
+- Drill 7: Write one sentence defining ``tmp_path` for temporary file system fixtures` without copying the notes.
+- Drill 8: Find the file where ``tmp_path` for temporary file system fixtures` appears or should appear.
+- Drill 9: Name one wrong implementation of ``tmp_path` for temporary file system fixtures` and why it would hurt.
+- Drill 10: Name one test that would protect ``tmp_path` for temporary file system fixtures`.
+- Drill 11: Trace ``monkeypatch` for environment variables and dependency substitution` from user input to project result.
+- Drill 12: Write one sentence defining ``monkeypatch` for environment variables and dependency substitution` without copying the notes.
+- Drill 13: Find the file where ``monkeypatch` for environment variables and dependency substitution` appears or should appear.
+- Drill 14: Name one wrong implementation of ``monkeypatch` for environment variables and dependency substitution` and why it would hurt.
+- Drill 15: Name one test that would protect ``monkeypatch` for environment variables and dependency substitution`.
+- Drill 16: Trace ``conftest.py` for shared fixtures` from user input to project result.
+- Drill 17: Write one sentence defining ``conftest.py` for shared fixtures` without copying the notes.
+- Drill 18: Find the file where ``conftest.py` for shared fixtures` appears or should appear.
+- Drill 19: Name one wrong implementation of ``conftest.py` for shared fixtures` and why it would hurt.
+- Drill 20: Name one test that would protect ``conftest.py` for shared fixtures`.
+- Drill 21: Trace ``pytest-cov` and minimum coverage threshold` from user input to project result.
+- Drill 22: Write one sentence defining ``pytest-cov` and minimum coverage threshold` without copying the notes.
+- Drill 23: Find the file where ``pytest-cov` and minimum coverage threshold` appears or should appear.
+- Drill 24: Name one wrong implementation of ``pytest-cov` and minimum coverage threshold` and why it would hurt.
+- Drill 25: Name one test that would protect ``pytest-cov` and minimum coverage threshold`.
+- Drill 26: Trace `CI failure on coverage regression` from user input to project result.
+- Drill 27: Write one sentence defining `CI failure on coverage regression` without copying the notes.
+- Drill 28: Find the file where `CI failure on coverage regression` appears or should appear.
+- Drill 29: Name one wrong implementation of `CI failure on coverage regression` and why it would hurt.
+- Drill 30: Name one test that would protect `CI failure on coverage regression`.
+- Drill 31: Trace `Parametrised tests with `@pytest.mark.parametrize`` from user input to project result.
+- Drill 32: Write one sentence defining `Parametrised tests with `@pytest.mark.parametrize`` without copying the notes.
+- Drill 33: Find the file where `Parametrised tests with `@pytest.mark.parametrize`` appears or should appear.
+- Drill 34: Name one wrong implementation of `Parametrised tests with `@pytest.mark.parametrize`` and why it would hurt.
+- Drill 35: Name one test that would protect `Parametrised tests with `@pytest.mark.parametrize``.
 
 <!-- LEARNING_FORMAT_END -->
 
 ---
 
 # Existing detailed notes
-
 ## Why tests exist
 
 Before automated tests existed, developers verified their code by running it manually, checking the output, and hoping nothing else broke. That works for a single module in isolation. It collapses when the codebase grows.

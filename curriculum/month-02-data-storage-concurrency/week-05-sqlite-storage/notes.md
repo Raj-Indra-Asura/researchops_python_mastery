@@ -1,4 +1,15 @@
+<!-- NAV_START -->
+---
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 2: Storage, Search, Multiprocessing](../README.md)
 
+**Week 05 — SQLite Storage:** [README](README.md) · **Notes** · [Exercises](exercises.md) · [Break It](break_it.md) · [Validation](validation.md) · [Reflection](reflection.md)
+
+⬅️ [← README](README.md) · ➡️ [Exercises →](exercises.md)
+
+---
+<!-- NAV_END -->
+
+# Week 05 Notes — SQLite Storage Layer
 
 <!-- LEARNING_FORMAT_START -->
 # Complete Learning Format — Week 05: SQLite Storage Layer
@@ -13,7 +24,7 @@ Read it before the older detailed notes that follow.
 
 The chapter title is **Data that survives a restart**.
 The practical milestone is: `researchops papers list` shows papers stored in SQLite. `PaperRepository` protocol implemented by `SqlitePaperRepository`.
-The expected capability is: Can design a SQL schema, implement a repository, write integration tests, and explain the difference between a protocol and its implementation. ---
+The expected capability is: Can design a SQL schema, implement a repository, write integration tests, and explain the difference between a protocol and its implementation.
 This chapter is one step in the ResearchOps system, not a random lesson.
 The visible feature matters because it proves the idea works.
 The hidden skill matters because it lets you build the next chapter without confusion.
@@ -365,25 +376,42 @@ This week prepares you by giving ResearchOps a clearer piece of behavior before 
 ## Guided deepening drills
 
 Use these drills if the chapter still feels abstract.
+- Drill 1: Trace `SQL DDL: `CREATE TABLE`, primary keys, nullable columns` from user input to project result.
+- Drill 2: Write one sentence defining `SQL DDL: `CREATE TABLE`, primary keys, nullable columns` without copying the notes.
+- Drill 3: Find the file where `SQL DDL: `CREATE TABLE`, primary keys, nullable columns` appears or should appear.
+- Drill 4: Name one wrong implementation of `SQL DDL: `CREATE TABLE`, primary keys, nullable columns` and why it would hurt.
+- Drill 5: Name one test that would protect `SQL DDL: `CREATE TABLE`, primary keys, nullable columns`.
+- Drill 6: Trace ``sqlite3` Python standard library: `connect`, `cursor`, `execute`, `fetchall`` from user input to project result.
+- Drill 7: Write one sentence defining ``sqlite3` Python standard library: `connect`, `cursor`, `execute`, `fetchall`` without copying the notes.
+- Drill 8: Find the file where ``sqlite3` Python standard library: `connect`, `cursor`, `execute`, `fetchall`` appears or should appear.
+- Drill 9: Name one wrong implementation of ``sqlite3` Python standard library: `connect`, `cursor`, `execute`, `fetchall`` and why it would hurt.
+- Drill 10: Name one test that would protect ``sqlite3` Python standard library: `connect`, `cursor`, `execute`, `fetchall``.
+- Drill 11: Trace `Context manager connections and transaction control` from user input to project result.
+- Drill 12: Write one sentence defining `Context manager connections and transaction control` without copying the notes.
+- Drill 13: Find the file where `Context manager connections and transaction control` appears or should appear.
+- Drill 14: Name one wrong implementation of `Context manager connections and transaction control` and why it would hurt.
+- Drill 15: Name one test that would protect `Context manager connections and transaction control`.
+- Drill 16: Trace `Repository pattern: interface → concrete implementation` from user input to project result.
+- Drill 17: Write one sentence defining `Repository pattern: interface → concrete implementation` without copying the notes.
+- Drill 18: Find the file where `Repository pattern: interface → concrete implementation` appears or should appear.
+- Drill 19: Name one wrong implementation of `Repository pattern: interface → concrete implementation` and why it would hurt.
+- Drill 20: Name one test that would protect `Repository pattern: interface → concrete implementation`.
+- Drill 21: Trace `WAL journal mode for safe writes` from user input to project result.
+- Drill 22: Write one sentence defining `WAL journal mode for safe writes` without copying the notes.
+- Drill 23: Find the file where `WAL journal mode for safe writes` appears or should appear.
+- Drill 24: Name one wrong implementation of `WAL journal mode for safe writes` and why it would hurt.
+- Drill 25: Name one test that would protect `WAL journal mode for safe writes`.
+- Drill 26: Trace `Integration tests with `tmp_path`` from user input to project result.
+- Drill 27: Write one sentence defining `Integration tests with `tmp_path`` without copying the notes.
+- Drill 28: Find the file where `Integration tests with `tmp_path`` appears or should appear.
+- Drill 29: Name one wrong implementation of `Integration tests with `tmp_path`` and why it would hurt.
+- Drill 30: Name one test that would protect `Integration tests with `tmp_path``.
 
 <!-- LEARNING_FORMAT_END -->
 
 ---
 
 # Existing detailed notes
-<!-- NAV_START -->
----
-[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 2: Storage, Search, Multiprocessing](../README.md)
-
-**Week 05 — SQLite Storage:** [README](README.md) · **Notes** · [Exercises](exercises.md) · [Break It](break_it.md) · [Validation](validation.md) · [Reflection](reflection.md)
-
-⬅️ [← README](README.md) · ➡️ [Exercises →](exercises.md)
-
----
-<!-- NAV_END -->
-
-# Week 05 Notes — SQLite Storage Layer
-
 ## 1. Chapter overview
 
 Welcome to Month 2.

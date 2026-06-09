@@ -1,4 +1,15 @@
+<!-- NAV_START -->
+---
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 5: Production and Portfolio](../README.md)
 
+**Week 20 — Final Hardening and v1 Release:** [README](README.md) · **Notes** · [Exercises](exercises.md) · [Break It](break_it.md) · [Validation](validation.md) · [Reflection](reflection.md)
+
+⬅️ [← README](README.md) · ➡️ [Exercises →](exercises.md)
+
+---
+<!-- NAV_END -->
+
+# Week 20 Notes: Final Hardening and v1.0 Release
 
 <!-- LEARNING_FORMAT_START -->
 # Complete Learning Format — Week 20: Final Hardening and v1.0 Release
@@ -453,25 +464,13 @@ Use these drills if the chapter still feels abstract.
 - Drill 101: Find the file where `Final retrospective: 20 weeks in review` appears or should appear.
 - Drill 102: Name one wrong implementation of `Final retrospective: 20 weeks in review` and why it would hurt.
 - Drill 103: Name one test that would protect `Final retrospective: 20 weeks in review`.
+- Drill 104: Draw the Week 20 data flow in four boxes.
 
 <!-- LEARNING_FORMAT_END -->
 
 ---
 
 # Existing detailed notes
-<!-- NAV_START -->
----
-[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 5: Production and Portfolio](../README.md)
-
-**Week 20 — Final Hardening and v1 Release:** [README](README.md) · **Notes** · [Exercises](exercises.md) · [Break It](break_it.md) · [Validation](validation.md) · [Reflection](reflection.md)
-
-⬅️ [← README](README.md) · ➡️ [Exercises →](exercises.md)
-
----
-<!-- NAV_END -->
-
-# Week 20 Notes: Final Hardening and v1.0 Release
-
 ## What "done" actually means
 
 There is no perfect software. "Done" for a v1.0 release means:

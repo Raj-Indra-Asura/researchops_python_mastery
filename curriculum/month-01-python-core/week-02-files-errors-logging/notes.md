@@ -1,4 +1,15 @@
+<!-- NAV_START -->
+---
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 1: Python Core and Project Foundation](../README.md)
 
+**Week 02 — Files, Errors, Logging:** [README](README.md) · **Notes** · [Exercises](exercises.md) · [Break It](break_it.md) · [Validation](validation.md) · [Reflection](reflection.md)
+
+⬅️ [← README](README.md) · ➡️ [Exercises →](exercises.md)
+
+---
+<!-- NAV_END -->
+
+# Chapter 2 Notes — Files, Errors, and Logging
 
 <!-- LEARNING_FORMAT_START -->
 # Complete Learning Format — Week 02: Files, Paths, Exceptions, and Logging
@@ -13,7 +24,7 @@ Read it before the older detailed notes that follow.
 
 The chapter title is **Errors are information, not failures**.
 The practical milestone is: PDF discovery uses `pathlib` throughout. Custom exceptions wrap file errors. Log messages include level, name, and message.
-The expected capability is: Can define and raise custom exceptions, configure logging, and handle file-not-found errors without crashing. ---
+The expected capability is: Can define and raise custom exceptions, configure logging, and handle file-not-found errors without crashing.
 This chapter is one step in the ResearchOps system, not a random lesson.
 The visible feature matters because it proves the idea works.
 The hidden skill matters because it lets you build the next chapter without confusion.
@@ -363,25 +374,42 @@ This week prepares you by giving ResearchOps a clearer piece of behavior before 
 ## Guided deepening drills
 
 Use these drills if the chapter still feels abstract.
+- Drill 1: Trace ``pathlib.Path` API: `.exists()`, `.glob()`, `.suffix`, `.stat()`` from user input to project result.
+- Drill 2: Write one sentence defining ``pathlib.Path` API: `.exists()`, `.glob()`, `.suffix`, `.stat()`` without copying the notes.
+- Drill 3: Find the file where ``pathlib.Path` API: `.exists()`, `.glob()`, `.suffix`, `.stat()`` appears or should appear.
+- Drill 4: Name one wrong implementation of ``pathlib.Path` API: `.exists()`, `.glob()`, `.suffix`, `.stat()`` and why it would hurt.
+- Drill 5: Name one test that would protect ``pathlib.Path` API: `.exists()`, `.glob()`, `.suffix`, `.stat()``.
+- Drill 6: Trace ``open()` and context managers (`with` statement)` from user input to project result.
+- Drill 7: Write one sentence defining ``open()` and context managers (`with` statement)` without copying the notes.
+- Drill 8: Find the file where ``open()` and context managers (`with` statement)` appears or should appear.
+- Drill 9: Name one wrong implementation of ``open()` and context managers (`with` statement)` and why it would hurt.
+- Drill 10: Name one test that would protect ``open()` and context managers (`with` statement)`.
+- Drill 11: Trace `Custom exception hierarchy (`class ScanError(ResearchOpsError)`)` from user input to project result.
+- Drill 12: Write one sentence defining `Custom exception hierarchy (`class ScanError(ResearchOpsError)`)` without copying the notes.
+- Drill 13: Find the file where `Custom exception hierarchy (`class ScanError(ResearchOpsError)`)` appears or should appear.
+- Drill 14: Name one wrong implementation of `Custom exception hierarchy (`class ScanError(ResearchOpsError)`)` and why it would hurt.
+- Drill 15: Name one test that would protect `Custom exception hierarchy (`class ScanError(ResearchOpsError)`)`.
+- Drill 16: Trace ``try / except / finally`` from user input to project result.
+- Drill 17: Write one sentence defining ``try / except / finally`` without copying the notes.
+- Drill 18: Find the file where ``try / except / finally`` appears or should appear.
+- Drill 19: Name one wrong implementation of ``try / except / finally`` and why it would hurt.
+- Drill 20: Name one test that would protect ``try / except / finally``.
+- Drill 21: Trace ``logging` module: levels, formatters, handlers` from user input to project result.
+- Drill 22: Write one sentence defining ``logging` module: levels, formatters, handlers` without copying the notes.
+- Drill 23: Find the file where ``logging` module: levels, formatters, handlers` appears or should appear.
+- Drill 24: Name one wrong implementation of ``logging` module: levels, formatters, handlers` and why it would hurt.
+- Drill 25: Name one test that would protect ``logging` module: levels, formatters, handlers`.
+- Drill 26: Trace `Structured log output` from user input to project result.
+- Drill 27: Write one sentence defining `Structured log output` without copying the notes.
+- Drill 28: Find the file where `Structured log output` appears or should appear.
+- Drill 29: Name one wrong implementation of `Structured log output` and why it would hurt.
+- Drill 30: Name one test that would protect `Structured log output`.
 
 <!-- LEARNING_FORMAT_END -->
 
 ---
 
 # Existing detailed notes
-<!-- NAV_START -->
----
-[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 1: Python Core and Project Foundation](../README.md)
-
-**Week 02 — Files, Errors, Logging:** [README](README.md) · **Notes** · [Exercises](exercises.md) · [Break It](break_it.md) · [Validation](validation.md) · [Reflection](reflection.md)
-
-⬅️ [← README](README.md) · ➡️ [Exercises →](exercises.md)
-
----
-<!-- NAV_END -->
-
-# Chapter 2 Notes — Files, Errors, and Logging
-
 ## 1. Chapter overview
 Week 2 is about making file-based programs dependable.
 A beginner script often works only when the inputs are perfect.

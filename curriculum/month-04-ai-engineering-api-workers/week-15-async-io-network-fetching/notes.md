@@ -24,7 +24,7 @@ Read it before the older detailed notes that follow.
 
 The chapter title is **Waiting without blocking**.
 The practical milestone is: `researchops fetch-arxiv "transformers"` downloads paper metadata from the arXiv API asynchronously. `researchops fetch-url URL` fetches a single paper.
-The expected capability is: Can write async functions, apply timeouts and retries, avoid blocking the event loop, and test async code with pytest-asyncio. ---
+The expected capability is: Can write async functions, apply timeouts and retries, avoid blocking the event loop, and test async code with pytest-asyncio.
 This chapter is one step in the ResearchOps system, not a random lesson.
 The visible feature matters because it proves the idea works.
 The hidden skill matters because it lets you build the next chapter without confusion.
@@ -510,13 +510,13 @@ Use these drills if the chapter still feels abstract.
 - Drill 135: Find the file where ``asyncio` event loop: one thread, many concurrent waits` appears or should appear.
 - Drill 136: Name one wrong implementation of ``asyncio` event loop: one thread, many concurrent waits` and why it would hurt.
 - Drill 137: Name one test that would protect ``asyncio` event loop: one thread, many concurrent waits`.
+- Drill 138: Trace ``async def` and `await`: what they actually do` from user input to project result.
 
 <!-- LEARNING_FORMAT_END -->
 
 ---
 
 # Existing detailed notes
-
 ## Synchronous vs asynchronous code: the core idea
 
 In synchronous code, statements execute one at a time, in order. Each statement must finish before the next one starts.

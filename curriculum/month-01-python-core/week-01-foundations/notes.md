@@ -24,7 +24,7 @@ Read it before the older detailed notes that follow.
 
 The chapter title is **The project comes alive**.
 The practical milestone is: `researchops scan ./papers` prints discovered PDF paths. Tests pass. Lint is clean.
-The expected capability is: Can set up a Python project from scratch, explain the src layout, run tests with pytest, and run lint with ruff. ---
+The expected capability is: Can set up a Python project from scratch, explain the src layout, run tests with pytest, and run lint with ruff.
 This chapter is one step in the ResearchOps system, not a random lesson.
 The visible feature matters because it proves the idea works.
 The hidden skill matters because it lets you build the next chapter without confusion.
@@ -388,13 +388,47 @@ This week prepares you by giving ResearchOps a clearer piece of behavior before 
 ## Guided deepening drills
 
 Use these drills if the chapter still feels abstract.
+- Drill 1: Trace `Python src-layout and `pyproject.toml`` from user input to project result.
+- Drill 2: Write one sentence defining `Python src-layout and `pyproject.toml`` without copying the notes.
+- Drill 3: Find the file where `Python src-layout and `pyproject.toml`` appears or should appear.
+- Drill 4: Name one wrong implementation of `Python src-layout and `pyproject.toml`` and why it would hurt.
+- Drill 5: Name one test that would protect `Python src-layout and `pyproject.toml``.
+- Drill 6: Trace `Virtual environments and `pip install -e`` from user input to project result.
+- Drill 7: Write one sentence defining `Virtual environments and `pip install -e`` without copying the notes.
+- Drill 8: Find the file where `Virtual environments and `pip install -e`` appears or should appear.
+- Drill 9: Name one wrong implementation of `Virtual environments and `pip install -e`` and why it would hurt.
+- Drill 10: Name one test that would protect `Virtual environments and `pip install -e``.
+- Drill 11: Trace `Functions, collections, comprehensions, modules` from user input to project result.
+- Drill 12: Write one sentence defining `Functions, collections, comprehensions, modules` without copying the notes.
+- Drill 13: Find the file where `Functions, collections, comprehensions, modules` appears or should appear.
+- Drill 14: Name one wrong implementation of `Functions, collections, comprehensions, modules` and why it would hurt.
+- Drill 15: Name one test that would protect `Functions, collections, comprehensions, modules`.
+- Drill 16: Trace ``pathlib.Path` for file discovery` from user input to project result.
+- Drill 17: Write one sentence defining ``pathlib.Path` for file discovery` without copying the notes.
+- Drill 18: Find the file where ``pathlib.Path` for file discovery` appears or should appear.
+- Drill 19: Name one wrong implementation of ``pathlib.Path` for file discovery` and why it would hurt.
+- Drill 20: Name one test that would protect ``pathlib.Path` for file discovery`.
+- Drill 21: Trace `Typer CLI basics: app, command, arguments` from user input to project result.
+- Drill 22: Write one sentence defining `Typer CLI basics: app, command, arguments` without copying the notes.
+- Drill 23: Find the file where `Typer CLI basics: app, command, arguments` appears or should appear.
+- Drill 24: Name one wrong implementation of `Typer CLI basics: app, command, arguments` and why it would hurt.
+- Drill 25: Name one test that would protect `Typer CLI basics: app, command, arguments`.
+- Drill 26: Trace ``pytest` test discovery and first assertions` from user input to project result.
+- Drill 27: Write one sentence defining ``pytest` test discovery and first assertions` without copying the notes.
+- Drill 28: Find the file where ``pytest` test discovery and first assertions` appears or should appear.
+- Drill 29: Name one wrong implementation of ``pytest` test discovery and first assertions` and why it would hurt.
+- Drill 30: Name one test that would protect ``pytest` test discovery and first assertions`.
+- Drill 31: Trace ``ruff` lint checks` from user input to project result.
+- Drill 32: Write one sentence defining ``ruff` lint checks` without copying the notes.
+- Drill 33: Find the file where ``ruff` lint checks` appears or should appear.
+- Drill 34: Name one wrong implementation of ``ruff` lint checks` and why it would hurt.
+- Drill 35: Name one test that would protect ``ruff` lint checks`.
 
 <!-- LEARNING_FORMAT_END -->
 
 ---
 
 # Existing detailed notes
-
 # Chapter 1: Python Foundations and Repository Setup
 
 ## 1. Chapter overview

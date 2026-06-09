@@ -1,4 +1,15 @@
+<!-- NAV_START -->
+---
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 2: Storage, Search, Multiprocessing](../README.md)
 
+**Week 06 — PDF Parsing Pipeline:** [README](README.md) · **Notes** · [Exercises](exercises.md) · [Break It](break_it.md) · [Validation](validation.md) · [Reflection](reflection.md)
+
+⬅️ [← README](README.md) · ➡️ [Exercises →](exercises.md)
+
+---
+<!-- NAV_END -->
+
+# Week 06 Notes — PDF Parsing Pipeline
 
 <!-- LEARNING_FORMAT_START -->
 # Complete Learning Format — Week 06: PDF Parsing Pipeline
@@ -13,7 +24,7 @@ Read it before the older detailed notes that follow.
 
 The chapter title is **Raw bytes become structured knowledge**.
 The practical milestone is: `researchops ingest ./papers` extracts text and metadata from PDFs and stores them. Failed documents are recorded, not silently dropped.
-The expected capability is: Can integrate a third-party library, wire a multi-step pipeline through a service, and handle partial failures without crashing the program. ---
+The expected capability is: Can integrate a third-party library, wire a multi-step pipeline through a service, and handle partial failures without crashing the program.
 This chapter is one step in the ResearchOps system, not a random lesson.
 The visible feature matters because it proves the idea works.
 The hidden skill matters because it lets you build the next chapter without confusion.
@@ -368,25 +379,42 @@ This week prepares you by giving ResearchOps a clearer piece of behavior before 
 ## Guided deepening drills
 
 Use these drills if the chapter still feels abstract.
+- Drill 1: Trace `Third-party library integration (`pypdf`)` from user input to project result.
+- Drill 2: Write one sentence defining `Third-party library integration (`pypdf`)` without copying the notes.
+- Drill 3: Find the file where `Third-party library integration (`pypdf`)` appears or should appear.
+- Drill 4: Name one wrong implementation of `Third-party library integration (`pypdf`)` and why it would hurt.
+- Drill 5: Name one test that would protect `Third-party library integration (`pypdf`)`.
+- Drill 6: Trace `Optional dependencies and graceful import errors` from user input to project result.
+- Drill 7: Write one sentence defining `Optional dependencies and graceful import errors` without copying the notes.
+- Drill 8: Find the file where `Optional dependencies and graceful import errors` appears or should appear.
+- Drill 9: Name one wrong implementation of `Optional dependencies and graceful import errors` and why it would hurt.
+- Drill 10: Name one test that would protect `Optional dependencies and graceful import errors`.
+- Drill 11: Trace `Designing parsers that return domain objects, not strings` from user input to project result.
+- Drill 12: Write one sentence defining `Designing parsers that return domain objects, not strings` without copying the notes.
+- Drill 13: Find the file where `Designing parsers that return domain objects, not strings` appears or should appear.
+- Drill 14: Name one wrong implementation of `Designing parsers that return domain objects, not strings` and why it would hurt.
+- Drill 15: Name one test that would protect `Designing parsers that return domain objects, not strings`.
+- Drill 16: Trace ``IngestionService` orchestration: discover → parse → save` from user input to project result.
+- Drill 17: Write one sentence defining ``IngestionService` orchestration: discover → parse → save` without copying the notes.
+- Drill 18: Find the file where ``IngestionService` orchestration: discover → parse → save` appears or should appear.
+- Drill 19: Name one wrong implementation of ``IngestionService` orchestration: discover → parse → save` and why it would hurt.
+- Drill 20: Name one test that would protect ``IngestionService` orchestration: discover → parse → save`.
+- Drill 21: Trace `Real parsing failures and how to record them` from user input to project result.
+- Drill 22: Write one sentence defining `Real parsing failures and how to record them` without copying the notes.
+- Drill 23: Find the file where `Real parsing failures and how to record them` appears or should appear.
+- Drill 24: Name one wrong implementation of `Real parsing failures and how to record them` and why it would hurt.
+- Drill 25: Name one test that would protect `Real parsing failures and how to record them`.
+- Drill 26: Trace `Integration tests with real PDF fixtures` from user input to project result.
+- Drill 27: Write one sentence defining `Integration tests with real PDF fixtures` without copying the notes.
+- Drill 28: Find the file where `Integration tests with real PDF fixtures` appears or should appear.
+- Drill 29: Name one wrong implementation of `Integration tests with real PDF fixtures` and why it would hurt.
+- Drill 30: Name one test that would protect `Integration tests with real PDF fixtures`.
 
 <!-- LEARNING_FORMAT_END -->
 
 ---
 
 # Existing detailed notes
-<!-- NAV_START -->
----
-[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 2: Storage, Search, Multiprocessing](../README.md)
-
-**Week 06 — PDF Parsing Pipeline:** [README](README.md) · **Notes** · [Exercises](exercises.md) · [Break It](break_it.md) · [Validation](validation.md) · [Reflection](reflection.md)
-
-⬅️ [← README](README.md) · ➡️ [Exercises →](exercises.md)
-
----
-<!-- NAV_END -->
-
-# Week 06 Notes — PDF Parsing Pipeline
-
 ## 1. Chapter overview
 
 In Week 5 you built the storage layer.

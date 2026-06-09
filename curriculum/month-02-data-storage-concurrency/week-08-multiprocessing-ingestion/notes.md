@@ -1,4 +1,15 @@
+<!-- NAV_START -->
+---
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 2: Storage, Search, Multiprocessing](../README.md)
 
+**Week 08 — Multiprocessing Ingestion:** [README](README.md) · **Notes** · [Exercises](exercises.md) · [Break It](break_it.md) · [Validation](validation.md) · [Reflection](reflection.md)
+
+⬅️ [← README](README.md) · ➡️ [Exercises →](exercises.md)
+
+---
+<!-- NAV_END -->
+
+# Week 08 Notes — Multiprocessing Ingestion
 
 <!-- LEARNING_FORMAT_START -->
 # Complete Learning Format — Week 08: Multiprocessing Ingestion
@@ -13,7 +24,7 @@ Read it before the older detailed notes that follow.
 
 The chapter title is **Doing many things at once, safely**.
 The practical milestone is: `researchops ingest ./papers --workers 4` ingests using 4 parallel worker processes.
-The expected capability is: Can explain the GIL, implement CPU-bound parallelism with ProcessPoolExecutor, and handle worker failures without crashing the batch. --- ## Month 3 — Advanced Python and ML Engineering ---
+The expected capability is: Can explain the GIL, implement CPU-bound parallelism with ProcessPoolExecutor, and handle worker failures without crashing the batch.
 This chapter is one step in the ResearchOps system, not a random lesson.
 The visible feature matters because it proves the idea works.
 The hidden skill matters because it lets you build the next chapter without confusion.
@@ -364,25 +375,42 @@ This week prepares you by giving ResearchOps a clearer piece of behavior before 
 ## Guided deepening drills
 
 Use these drills if the chapter still feels abstract.
+- Drill 1: Trace `CPU-bound vs I/O-bound work` from user input to project result.
+- Drill 2: Write one sentence defining `CPU-bound vs I/O-bound work` without copying the notes.
+- Drill 3: Find the file where `CPU-bound vs I/O-bound work` appears or should appear.
+- Drill 4: Name one wrong implementation of `CPU-bound vs I/O-bound work` and why it would hurt.
+- Drill 5: Name one test that would protect `CPU-bound vs I/O-bound work`.
+- Drill 6: Trace `Python GIL and why `ThreadPoolExecutor` does not help for CPU-heavy tasks` from user input to project result.
+- Drill 7: Write one sentence defining `Python GIL and why `ThreadPoolExecutor` does not help for CPU-heavy tasks` without copying the notes.
+- Drill 8: Find the file where `Python GIL and why `ThreadPoolExecutor` does not help for CPU-heavy tasks` appears or should appear.
+- Drill 9: Name one wrong implementation of `Python GIL and why `ThreadPoolExecutor` does not help for CPU-heavy tasks` and why it would hurt.
+- Drill 10: Name one test that would protect `Python GIL and why `ThreadPoolExecutor` does not help for CPU-heavy tasks`.
+- Drill 11: Trace ``concurrent.futures.ProcessPoolExecutor`` from user input to project result.
+- Drill 12: Write one sentence defining ``concurrent.futures.ProcessPoolExecutor`` without copying the notes.
+- Drill 13: Find the file where ``concurrent.futures.ProcessPoolExecutor`` appears or should appear.
+- Drill 14: Name one wrong implementation of ``concurrent.futures.ProcessPoolExecutor`` and why it would hurt.
+- Drill 15: Name one test that would protect ``concurrent.futures.ProcessPoolExecutor``.
+- Drill 16: Trace `Pickling constraints: worker functions must be module-level` from user input to project result.
+- Drill 17: Write one sentence defining `Pickling constraints: worker functions must be module-level` without copying the notes.
+- Drill 18: Find the file where `Pickling constraints: worker functions must be module-level` appears or should appear.
+- Drill 19: Name one wrong implementation of `Pickling constraints: worker functions must be module-level` and why it would hurt.
+- Drill 20: Name one test that would protect `Pickling constraints: worker functions must be module-level`.
+- Drill 21: Trace `Worker failure isolation: one bad PDF must not crash the batch` from user input to project result.
+- Drill 22: Write one sentence defining `Worker failure isolation: one bad PDF must not crash the batch` without copying the notes.
+- Drill 23: Find the file where `Worker failure isolation: one bad PDF must not crash the batch` appears or should appear.
+- Drill 24: Name one wrong implementation of `Worker failure isolation: one bad PDF must not crash the batch` and why it would hurt.
+- Drill 25: Name one test that would protect `Worker failure isolation: one bad PDF must not crash the batch`.
+- Drill 26: Trace `Batch writes after parallel parsing` from user input to project result.
+- Drill 27: Write one sentence defining `Batch writes after parallel parsing` without copying the notes.
+- Drill 28: Find the file where `Batch writes after parallel parsing` appears or should appear.
+- Drill 29: Name one wrong implementation of `Batch writes after parallel parsing` and why it would hurt.
+- Drill 30: Name one test that would protect `Batch writes after parallel parsing`.
 
 <!-- LEARNING_FORMAT_END -->
 
 ---
 
 # Existing detailed notes
-<!-- NAV_START -->
----
-[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 2: Storage, Search, Multiprocessing](../README.md)
-
-**Week 08 — Multiprocessing Ingestion:** [README](README.md) · **Notes** · [Exercises](exercises.md) · [Break It](break_it.md) · [Validation](validation.md) · [Reflection](reflection.md)
-
-⬅️ [← README](README.md) · ➡️ [Exercises →](exercises.md)
-
----
-<!-- NAV_END -->
-
-# Week 08 Notes — Multiprocessing Ingestion
-
 ## 1. Chapter overview
 
 You now have a complete local research library.

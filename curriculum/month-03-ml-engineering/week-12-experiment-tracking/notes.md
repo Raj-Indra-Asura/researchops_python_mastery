@@ -24,7 +24,7 @@ Read it before the older detailed notes that follow.
 
 The chapter title is **Remembering what you tried**.
 The practical milestone is: `researchops experiment list` shows all training runs with params and metrics. `researchops experiment compare` shows which run had the best F1.
-The expected capability is: Can implement a tracking system that persists experiment metadata, retrieve and compare runs, and explain why reproducibility matters in ML. --- ## Month 4 — AI Engineering, API, Async, Workers ---
+The expected capability is: Can implement a tracking system that persists experiment metadata, retrieve and compare runs, and explain why reproducibility matters in ML.
 This chapter is one step in the ResearchOps system, not a random lesson.
 The visible feature matters because it proves the idea works.
 The hidden skill matters because it lets you build the next chapter without confusion.
@@ -453,13 +453,13 @@ Use these drills if the chapter still feels abstract.
 - Drill 84: Trace ``ExperimentRepository` protocol and SQLite implementation` from user input to project result.
 - Drill 85: Write one sentence defining ``ExperimentRepository` protocol and SQLite implementation` without copying the notes.
 - Drill 86: Find the file where ``ExperimentRepository` protocol and SQLite implementation` appears or should appear.
+- Drill 87: Name one wrong implementation of ``ExperimentRepository` protocol and SQLite implementation` and why it would hurt.
 
 <!-- LEARNING_FORMAT_END -->
 
 ---
 
 # Existing detailed notes
-
 ## Why training once is not research
 
 After Week 11, you have a trained model. But a single training run immediately raises questions:

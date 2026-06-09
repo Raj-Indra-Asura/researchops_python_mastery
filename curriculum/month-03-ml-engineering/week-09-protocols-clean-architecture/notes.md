@@ -24,7 +24,7 @@ Read it before the older detailed notes that follow.
 
 The chapter title is **Depending on shapes, not implementations**.
 The practical milestone is: All services depend on protocols from `core/interfaces.py`. No service imports from `storage/`, `parsing/`, or `ml/` directly. Fake repositories in `tests/fakes/` pass protocol `isinstance` checks.
-The expected capability is: Can define a Protocol, implement it in both a real class and a test fake, and explain why services should depend on interfaces rather than concrete implementations. ---
+The expected capability is: Can define a Protocol, implement it in both a real class and a test fake, and explain why services should depend on interfaces rather than concrete implementations.
 This chapter is one step in the ResearchOps system, not a random lesson.
 The visible feature matters because it proves the idea works.
 The hidden skill matters because it lets you build the next chapter without confusion.
@@ -377,13 +377,42 @@ This week prepares you by giving ResearchOps a clearer piece of behavior before 
 ## Guided deepening drills
 
 Use these drills if the chapter still feels abstract.
+- Drill 1: Trace ``typing.Protocol` and structural subtyping` from user input to project result.
+- Drill 2: Write one sentence defining ``typing.Protocol` and structural subtyping` without copying the notes.
+- Drill 3: Find the file where ``typing.Protocol` and structural subtyping` appears or should appear.
+- Drill 4: Name one wrong implementation of ``typing.Protocol` and structural subtyping` and why it would hurt.
+- Drill 5: Name one test that would protect ``typing.Protocol` and structural subtyping`.
+- Drill 6: Trace ``@runtime_checkable` and `isinstance` checks` from user input to project result.
+- Drill 7: Write one sentence defining ``@runtime_checkable` and `isinstance` checks` without copying the notes.
+- Drill 8: Find the file where ``@runtime_checkable` and `isinstance` checks` appears or should appear.
+- Drill 9: Name one wrong implementation of ``@runtime_checkable` and `isinstance` checks` and why it would hurt.
+- Drill 10: Name one test that would protect ``@runtime_checkable` and `isinstance` checks`.
+- Drill 11: Trace `Dependency inversion principle` from user input to project result.
+- Drill 12: Write one sentence defining `Dependency inversion principle` without copying the notes.
+- Drill 13: Find the file where `Dependency inversion principle` appears or should appear.
+- Drill 14: Name one wrong implementation of `Dependency inversion principle` and why it would hurt.
+- Drill 15: Name one test that would protect `Dependency inversion principle`.
+- Drill 16: Trace `Import boundary rules: services import protocols, not concrete classes` from user input to project result.
+- Drill 17: Write one sentence defining `Import boundary rules: services import protocols, not concrete classes` without copying the notes.
+- Drill 18: Find the file where `Import boundary rules: services import protocols, not concrete classes` appears or should appear.
+- Drill 19: Name one wrong implementation of `Import boundary rules: services import protocols, not concrete classes` and why it would hurt.
+- Drill 20: Name one test that would protect `Import boundary rules: services import protocols, not concrete classes`.
+- Drill 21: Trace `Detecting import violations with `grep` or `import-linter`` from user input to project result.
+- Drill 22: Write one sentence defining `Detecting import violations with `grep` or `import-linter`` without copying the notes.
+- Drill 23: Find the file where `Detecting import violations with `grep` or `import-linter`` appears or should appear.
+- Drill 24: Name one wrong implementation of `Detecting import violations with `grep` or `import-linter`` and why it would hurt.
+- Drill 25: Name one test that would protect `Detecting import violations with `grep` or `import-linter``.
+- Drill 26: Trace `Fake repositories implementing core protocols` from user input to project result.
+- Drill 27: Write one sentence defining `Fake repositories implementing core protocols` without copying the notes.
+- Drill 28: Find the file where `Fake repositories implementing core protocols` appears or should appear.
+- Drill 29: Name one wrong implementation of `Fake repositories implementing core protocols` and why it would hurt.
+- Drill 30: Name one test that would protect `Fake repositories implementing core protocols`.
 
 <!-- LEARNING_FORMAT_END -->
 
 ---
 
 # Existing detailed notes
-
 ## Why Month 2 code starts to hurt
 
 You have built something real. ResearchOps can ingest PDFs, parse them, store them in SQLite, and search them. That is a genuine achievement. But now a problem is developing underneath the surface.

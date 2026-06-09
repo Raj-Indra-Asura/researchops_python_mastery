@@ -24,7 +24,7 @@ Read it before the older detailed notes that follow.
 
 The chapter title is **Shipping the whole system**.
 The practical milestone is: `docker-compose up` starts the API and worker. `curl http://localhost:8000/health` responds.
-The expected capability is: Can write a Dockerfile, compose multi-service applications, manage environment configuration with pydantic-settings, and explain layer caching. ---
+The expected capability is: Can write a Dockerfile, compose multi-service applications, manage environment configuration with pydantic-settings, and explain layer caching.
 This chapter is one step in the ResearchOps system, not a random lesson.
 The visible feature matters because it proves the idea works.
 The hidden skill matters because it lets you build the next chapter without confusion.
@@ -393,13 +393,28 @@ Use these drills if the chapter still feels abstract.
 - Drill 12: Write one sentence defining ``docker-compose.yml`: API and worker as separate services` without copying the notes.
 - Drill 13: Find the file where ``docker-compose.yml`: API and worker as separate services` appears or should appear.
 - Drill 14: Name one wrong implementation of ``docker-compose.yml`: API and worker as separate services` and why it would hurt.
+- Drill 15: Name one test that would protect ``docker-compose.yml`: API and worker as separate services`.
+- Drill 16: Trace `Volume mounts for the SQLite database` from user input to project result.
+- Drill 17: Write one sentence defining `Volume mounts for the SQLite database` without copying the notes.
+- Drill 18: Find the file where `Volume mounts for the SQLite database` appears or should appear.
+- Drill 19: Name one wrong implementation of `Volume mounts for the SQLite database` and why it would hurt.
+- Drill 20: Name one test that would protect `Volume mounts for the SQLite database`.
+- Drill 21: Trace `Environment variable management: `.env`, `pydantic-settings`` from user input to project result.
+- Drill 22: Write one sentence defining `Environment variable management: `.env`, `pydantic-settings`` without copying the notes.
+- Drill 23: Find the file where `Environment variable management: `.env`, `pydantic-settings`` appears or should appear.
+- Drill 24: Name one wrong implementation of `Environment variable management: `.env`, `pydantic-settings`` and why it would hurt.
+- Drill 25: Name one test that would protect `Environment variable management: `.env`, `pydantic-settings``.
+- Drill 26: Trace `Testing the full stack in containers` from user input to project result.
+- Drill 27: Write one sentence defining `Testing the full stack in containers` without copying the notes.
+- Drill 28: Find the file where `Testing the full stack in containers` appears or should appear.
+- Drill 29: Name one wrong implementation of `Testing the full stack in containers` and why it would hurt.
+- Drill 30: Name one test that would protect `Testing the full stack in containers`.
 
 <!-- LEARNING_FORMAT_END -->
 
 ---
 
 # Existing detailed notes
-
 ## Why packaging matters
 
 You have built a working Python application. It runs on your machine. But "works on my machine" is not a product. It is a promise that is broken the moment anyone else tries to run it.

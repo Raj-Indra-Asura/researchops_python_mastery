@@ -24,7 +24,7 @@ Read it before the older detailed notes that follow.
 
 The chapter title is **Meaning as a vector**.
 The practical milestone is: `researchops semantic-search "efficient transformers"` returns papers ranked by vector similarity to the query.
-The expected capability is: Can explain what an embedding is, implement cosine similarity search, chunk text for a retrieval pipeline, and explain why caching matters. ---
+The expected capability is: Can explain what an embedding is, implement cosine similarity search, chunk text for a retrieval pipeline, and explain why caching matters.
 This chapter is one step in the ResearchOps system, not a random lesson.
 The visible feature matters because it proves the idea works.
 The hidden skill matters because it lets you build the next chapter without confusion.
@@ -497,13 +497,13 @@ Use these drills if the chapter still feels abstract.
 - Drill 117: Name one wrong implementation of `Retrieval evaluation: does the top result make sense?` and why it would hurt.
 - Drill 118: Name one test that would protect `Retrieval evaluation: does the top result make sense?`.
 - Drill 119: Draw the Week 13 data flow in four boxes.
+- Drill 120: Say why `Embeddings and Semantic Search` belongs in this month of the curriculum.
 
 <!-- LEARNING_FORMAT_END -->
 
 ---
 
 # Existing detailed notes
-
 ## Why keyword search is not enough
 
 Keyword search finds documents that contain the words you typed. That sounds useful, and it often is. But it has a hard limit: it matches letters, not ideas.

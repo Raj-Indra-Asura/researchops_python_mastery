@@ -1,4 +1,15 @@
+<!-- NAV_START -->
+---
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 1: Python Core and Project Foundation](../README.md)
 
+**Week 03 — OOP and Domain Modeling:** [README](README.md) · **Notes** · [Exercises](exercises.md) · [Break It](break_it.md) · [Validation](validation.md) · [Reflection](reflection.md)
+
+⬅️ [← README](README.md) · ➡️ [Exercises →](exercises.md)
+
+---
+<!-- NAV_END -->
+
+# Week 03 Notes - OOP and Domain Modeling
 
 <!-- LEARNING_FORMAT_START -->
 # Complete Learning Format — Week 03: OOP, Dataclasses, and Domain Modeling
@@ -13,7 +24,7 @@ Read it before the older detailed notes that follow.
 
 The chapter title is **Naming the things in our world**.
 The practical milestone is: `Paper`, `ParsedDocument`, `IngestionResult`, `FailedDocument`, `SearchResult` are defined, type-annotated, and tested.
-The expected capability is: Can model a real-world problem domain with dataclasses, explain immutability, and write unit tests for data models. ---
+The expected capability is: Can model a real-world problem domain with dataclasses, explain immutability, and write unit tests for data models.
 This chapter is one step in the ResearchOps system, not a random lesson.
 The visible feature matters because it proves the idea works.
 The hidden skill matters because it lets you build the next chapter without confusion.
@@ -366,24 +377,42 @@ This week prepares you by giving ResearchOps a clearer piece of behavior before 
 ## Guided deepening drills
 
 Use these drills if the chapter still feels abstract.
+- Drill 1: Trace `Classes, `__init__`, instance methods` from user input to project result.
+- Drill 2: Write one sentence defining `Classes, `__init__`, instance methods` without copying the notes.
+- Drill 3: Find the file where `Classes, `__init__`, instance methods` appears or should appear.
+- Drill 4: Name one wrong implementation of `Classes, `__init__`, instance methods` and why it would hurt.
+- Drill 5: Name one test that would protect `Classes, `__init__`, instance methods`.
+- Drill 6: Trace ``@dataclass` and `frozen=True`` from user input to project result.
+- Drill 7: Write one sentence defining ``@dataclass` and `frozen=True`` without copying the notes.
+- Drill 8: Find the file where ``@dataclass` and `frozen=True`` appears or should appear.
+- Drill 9: Name one wrong implementation of ``@dataclass` and `frozen=True`` and why it would hurt.
+- Drill 10: Name one test that would protect ``@dataclass` and `frozen=True``.
+- Drill 11: Trace `Type hints: `str`, `int`, `list[T]`, `Optional[T]`` from user input to project result.
+- Drill 12: Write one sentence defining `Type hints: `str`, `int`, `list[T]`, `Optional[T]`` without copying the notes.
+- Drill 13: Find the file where `Type hints: `str`, `int`, `list[T]`, `Optional[T]`` appears or should appear.
+- Drill 14: Name one wrong implementation of `Type hints: `str`, `int`, `list[T]`, `Optional[T]`` and why it would hurt.
+- Drill 15: Name one test that would protect `Type hints: `str`, `int`, `list[T]`, `Optional[T]``.
+- Drill 16: Trace `Value objects (`PaperId`, `Query`)` from user input to project result.
+- Drill 17: Write one sentence defining `Value objects (`PaperId`, `Query`)` without copying the notes.
+- Drill 18: Find the file where `Value objects (`PaperId`, `Query`)` appears or should appear.
+- Drill 19: Name one wrong implementation of `Value objects (`PaperId`, `Query`)` and why it would hurt.
+- Drill 20: Name one test that would protect `Value objects (`PaperId`, `Query`)`.
+- Drill 21: Trace `Domain models vs. data bags` from user input to project result.
+- Drill 22: Write one sentence defining `Domain models vs. data bags` without copying the notes.
+- Drill 23: Find the file where `Domain models vs. data bags` appears or should appear.
+- Drill 24: Name one wrong implementation of `Domain models vs. data bags` and why it would hurt.
+- Drill 25: Name one test that would protect `Domain models vs. data bags`.
+- Drill 26: Trace `Immutability and why it matters` from user input to project result.
+- Drill 27: Write one sentence defining `Immutability and why it matters` without copying the notes.
+- Drill 28: Find the file where `Immutability and why it matters` appears or should appear.
+- Drill 29: Name one wrong implementation of `Immutability and why it matters` and why it would hurt.
+- Drill 30: Name one test that would protect `Immutability and why it matters`.
 
 <!-- LEARNING_FORMAT_END -->
 
 ---
 
 # Existing detailed notes
-<!-- NAV_START -->
----
-[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 1: Python Core and Project Foundation](../README.md)
-
-**Week 03 — OOP and Domain Modeling:** [README](README.md) · **Notes** · [Exercises](exercises.md) · [Break It](break_it.md) · [Validation](validation.md) · [Reflection](reflection.md)
-
-⬅️ [← README](README.md) · ➡️ [Exercises →](exercises.md)
-
----
-<!-- NAV_END -->
-
-# Week 03 Notes - OOP and Domain Modeling
 ## 1. Chapter overview
 Week 3 is where the codebase stops feeling like a collection of utility functions and starts feeling like a system.
 In Week 1, you learned how to set up the project and run Python code reliably.

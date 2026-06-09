@@ -24,7 +24,7 @@ Read it before the older detailed notes that follow.
 
 The chapter title is **Software that users can install and run**.
 The practical milestone is: `pip install -e .` produces a working `researchops` command with sub-command groups: `scan`, `papers`, `search`. CLI tests use `CliRunner`.
-The expected capability is: Can install a Python package with an entry point, write CLI tests with CliRunner, and explain how `pyproject.toml` wires a command to a function. --- ## Month 2 — Storage, Search, Multiprocessing ---
+The expected capability is: Can install a Python package with an entry point, write CLI tests with CliRunner, and explain how `pyproject.toml` wires a command to a function.
 This chapter is one step in the ResearchOps system, not a random lesson.
 The visible feature matters because it proves the idea works.
 The hidden skill matters because it lets you build the next chapter without confusion.
@@ -382,13 +382,42 @@ This week prepares you by giving ResearchOps a clearer piece of behavior before 
 ## Guided deepening drills
 
 Use these drills if the chapter still feels abstract.
+- Drill 1: Trace ``[project.scripts]` entry points in `pyproject.toml`` from user input to project result.
+- Drill 2: Write one sentence defining ``[project.scripts]` entry points in `pyproject.toml`` without copying the notes.
+- Drill 3: Find the file where ``[project.scripts]` entry points in `pyproject.toml`` appears or should appear.
+- Drill 4: Name one wrong implementation of ``[project.scripts]` entry points in `pyproject.toml`` and why it would hurt.
+- Drill 5: Name one test that would protect ``[project.scripts]` entry points in `pyproject.toml``.
+- Drill 6: Trace `Typer sub-apps and command groups` from user input to project result.
+- Drill 7: Write one sentence defining `Typer sub-apps and command groups` without copying the notes.
+- Drill 8: Find the file where `Typer sub-apps and command groups` appears or should appear.
+- Drill 9: Name one wrong implementation of `Typer sub-apps and command groups` and why it would hurt.
+- Drill 10: Name one test that would protect `Typer sub-apps and command groups`.
+- Drill 11: Trace ``typer.testing.CliRunner` for CLI tests` from user input to project result.
+- Drill 12: Write one sentence defining ``typer.testing.CliRunner` for CLI tests` without copying the notes.
+- Drill 13: Find the file where ``typer.testing.CliRunner` for CLI tests` appears or should appear.
+- Drill 14: Name one wrong implementation of ``typer.testing.CliRunner` for CLI tests` and why it would hurt.
+- Drill 15: Name one test that would protect ``typer.testing.CliRunner` for CLI tests`.
+- Drill 16: Trace `Optional dependency groups `[project.optional-dependencies]`` from user input to project result.
+- Drill 17: Write one sentence defining `Optional dependency groups `[project.optional-dependencies]`` without copying the notes.
+- Drill 18: Find the file where `Optional dependency groups `[project.optional-dependencies]`` appears or should appear.
+- Drill 19: Name one wrong implementation of `Optional dependency groups `[project.optional-dependencies]`` and why it would hurt.
+- Drill 20: Name one test that would protect `Optional dependency groups `[project.optional-dependencies]``.
+- Drill 21: Trace `Editable installs and import paths` from user input to project result.
+- Drill 22: Write one sentence defining `Editable installs and import paths` without copying the notes.
+- Drill 23: Find the file where `Editable installs and import paths` appears or should appear.
+- Drill 24: Name one wrong implementation of `Editable installs and import paths` and why it would hurt.
+- Drill 25: Name one test that would protect `Editable installs and import paths`.
+- Drill 26: Trace `Shell completion` from user input to project result.
+- Drill 27: Write one sentence defining `Shell completion` without copying the notes.
+- Drill 28: Find the file where `Shell completion` appears or should appear.
+- Drill 29: Name one wrong implementation of `Shell completion` and why it would hurt.
+- Drill 30: Name one test that would protect `Shell completion`.
 
 <!-- LEARNING_FORMAT_END -->
 
 ---
 
 # Existing detailed notes
-
 ## Chapter overview
 Week 4 is the Month 1 culmination.
 You are no longer only writing Python code that works inside files.

@@ -24,7 +24,7 @@ Read it before the older detailed notes that follow.
 
 The chapter title is **Your work, available over HTTP**.
 The practical milestone is: `GET /papers`, `GET /papers/{id}`, `GET /papers/search?q=QUERY`, `GET /health` work and return correct JSON.
-The expected capability is: Can define REST endpoints with FastAPI, inject dependencies, validate responses with Pydantic, and test the API without running a real server. ---
+The expected capability is: Can define REST endpoints with FastAPI, inject dependencies, validate responses with Pydantic, and test the API without running a real server.
 This chapter is one step in the ResearchOps system, not a random lesson.
 The visible feature matters because it proves the idea works.
 The hidden skill matters because it lets you build the next chapter without confusion.
@@ -564,13 +564,13 @@ Use these drills if the chapter still feels abstract.
 - Drill 181: Name one test that would protect `FastAPI app factory pattern`.
 - Drill 182: Trace `Route handlers that delegate to services (no business logic in routes)` from user input to project result.
 - Drill 183: Write one sentence defining `Route handlers that delegate to services (no business logic in routes)` without copying the notes.
+- Drill 184: Find the file where `Route handlers that delegate to services (no business logic in routes)` appears or should appear.
 
 <!-- LEARNING_FORMAT_END -->
 
 ---
 
 # Existing detailed notes
-
 ## What a web API is
 
 An API is a way for one program to talk to another. A web API uses HTTP — the same protocol a web browser uses — so that any program, on any machine, can communicate with your application over a network.

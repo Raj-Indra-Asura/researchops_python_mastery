@@ -1,4 +1,15 @@
+<!-- NAV_START -->
+---
+[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 5: Production and Portfolio](../README.md)
 
+**Week 19 — Documentation and Portfolio Polish:** [README](README.md) · **Notes** · [Exercises](exercises.md) · [Break It](break_it.md) · [Validation](validation.md) · [Reflection](reflection.md)
+
+⬅️ [← README](README.md) · ➡️ [Exercises →](exercises.md)
+
+---
+<!-- NAV_END -->
+
+# Week 19 Notes: Documentation and Portfolio Polish
 
 <!-- LEARNING_FORMAT_START -->
 # Complete Learning Format — Week 19: Documentation and Portfolio Polish
@@ -13,7 +24,7 @@ Read it before the older detailed notes that follow.
 
 The chapter title is **Making your work legible to others**.
 The practical milestone is: README is portfolio-quality. Architecture document explains every design decision. A demo script exists.
-The expected capability is: Can write a clear architecture document, create a Mermaid diagram, write a README a hiring manager would find compelling. ---
+The expected capability is: Can write a clear architecture document, create a Mermaid diagram, write a README a hiring manager would find compelling.
 This chapter is one step in the ResearchOps system, not a random lesson.
 The visible feature matters because it proves the idea works.
 The hidden skill matters because it lets you build the next chapter without confusion.
@@ -375,25 +386,20 @@ Use these drills if the chapter still feels abstract.
 - Drill 20: Name one test that would protect `Demo script: a 5-minute walkthrough of the complete system`.
 - Drill 21: Trace `Docs-as-code: keeping documentation in sync with behaviour` from user input to project result.
 - Drill 22: Write one sentence defining `Docs-as-code: keeping documentation in sync with behaviour` without copying the notes.
+- Drill 23: Find the file where `Docs-as-code: keeping documentation in sync with behaviour` appears or should appear.
+- Drill 24: Name one wrong implementation of `Docs-as-code: keeping documentation in sync with behaviour` and why it would hurt.
+- Drill 25: Name one test that would protect `Docs-as-code: keeping documentation in sync with behaviour`.
+- Drill 26: Draw the Week 19 data flow in four boxes.
+- Drill 27: Say why `Documentation and Portfolio Polish` belongs in this month of the curriculum.
+- Drill 28: Rewrite one error message in beginner-friendly language.
+- Drill 29: List the exact assumptions made by the example code.
+- Drill 30: List the exact assumptions checked by the tests.
 
 <!-- LEARNING_FORMAT_END -->
 
 ---
 
 # Existing detailed notes
-<!-- NAV_START -->
----
-[🏠 Home](../../../README.md) · [🗺 Roadmap](../../../ROADMAP.md) · [📋 Syllabus](../../../SYLLABUS.md) · [🗂 Curriculum Map](../../NAVIGATION.md) · [📅 Month 5: Production and Portfolio](../README.md)
-
-**Week 19 — Documentation and Portfolio Polish:** [README](README.md) · **Notes** · [Exercises](exercises.md) · [Break It](break_it.md) · [Validation](validation.md) · [Reflection](reflection.md)
-
-⬅️ [← README](README.md) · ➡️ [Exercises →](exercises.md)
-
----
-<!-- NAV_END -->
-
-# Week 19 Notes: Documentation and Portfolio Polish
-
 ## Why documentation matters
 
 A project without documentation is a project only you can use today and only you can understand six months from now.
