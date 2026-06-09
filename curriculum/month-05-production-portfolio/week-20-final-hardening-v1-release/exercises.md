@@ -11,154 +11,190 @@
 
 # Week 20 Exercises: Final Hardening and v1.0 Release
 
+## How to use this workbook
+Use this workbook as a release rehearsal, not as a reading quiz. Do not start a new feature. For each exercise, produce evidence: a command result, a file diff, a written decision, or a checklist mark backed by observation.
+
 ## Warm-up exercises
+1. Define shippable in five bullet points.
+2. Explain why v1.0 is not the same as perfect.
+3. Sort ten desired improvements into release blocker, v1.1, future idea, or reject.
+4. Write the difference between MAJOR, MINOR, and PATCH without looking.
 
-### 1. Define "done" in your own words
+**Evidence requirement:** write down what you inspected, what you expected, what happened, and what decision you made.
+**Release discipline rule:** if the exercise tempts you to add a feature, stop and classify it as v1.1 or later.
+**ResearchOps anchor:** connect the exercise to at least one real module, command, test, or documentation file in this repository.
+- Drill 1: perform the exercise on a concrete ResearchOps workflow and record the smallest useful proof.
+- Drill 2: perform the exercise on a concrete ResearchOps workflow and record the smallest useful proof.
+- Drill 3: perform the exercise on a concrete ResearchOps workflow and record the smallest useful proof.
+- Drill 4: perform the exercise on a concrete ResearchOps workflow and record the smallest useful proof.
+- Drill 5: perform the exercise on a concrete ResearchOps workflow and record the smallest useful proof.
+- Drill 6: perform the exercise on a concrete ResearchOps workflow and record the smallest useful proof.
+- Drill 7: perform the exercise on a concrete ResearchOps workflow and record the smallest useful proof.
 
-Write a definition of "done" for a software project in your own words. Include:
-- What conditions must be true before you call it done.
-- What "done" does not require.
-- How you would know if someone else's project is done.
+## Code-reading exercises
+1. Read `pyproject.toml` and identify the package name, version, scripts, and optional dependencies.
+2. Read `src/researchops/__init__.py` and confirm version exposure.
+3. Read CLI registration and identify where business logic is delegated.
+4. Read one service and list its protocol dependencies.
+5. Read one integration test and explain what real infrastructure it touches.
 
-Then compare your definition to the one in notes.md. Where does it differ?
+**Evidence requirement:** write down what you inspected, what you expected, what happened, and what decision you made.
+**Release discipline rule:** if the exercise tempts you to add a feature, stop and classify it as v1.1 or later.
+**ResearchOps anchor:** connect the exercise to at least one real module, command, test, or documentation file in this repository.
+- Drill 1: perform the exercise on a concrete ResearchOps workflow and record the smallest useful proof.
+- Drill 2: perform the exercise on a concrete ResearchOps workflow and record the smallest useful proof.
+- Drill 3: perform the exercise on a concrete ResearchOps workflow and record the smallest useful proof.
+- Drill 4: perform the exercise on a concrete ResearchOps workflow and record the smallest useful proof.
+- Drill 5: perform the exercise on a concrete ResearchOps workflow and record the smallest useful proof.
+- Drill 6: perform the exercise on a concrete ResearchOps workflow and record the smallest useful proof.
+- Drill 7: perform the exercise on a concrete ResearchOps workflow and record the smallest useful proof.
 
-### 2. Scope inventory
+## Implementation exercises
+1. Update version references only if the checklist says they are wrong.
+2. Draft a `[1.0.0]` changelog entry with Added, Changed, Fixed, Documentation, and Known limitations.
+3. Update roadmap status without inventing completed work.
+4. Improve one unclear error message discovered during validation.
+5. Improve one demo instruction that a fresh user would misunderstand.
 
-List 10 things you wanted to add to ResearchOps but did not. For each item, decide:
-- v1.1 candidate: would make the project meaningfully better without changing its core purpose.
-- Future idea: interesting but out of scope.
-- Never: you would not actually build this.
+**Evidence requirement:** write down what you inspected, what you expected, what happened, and what decision you made.
+**Release discipline rule:** if the exercise tempts you to add a feature, stop and classify it as v1.1 or later.
+**ResearchOps anchor:** connect the exercise to at least one real module, command, test, or documentation file in this repository.
+- Drill 1: perform the exercise on a concrete ResearchOps workflow and record the smallest useful proof.
+- Drill 2: perform the exercise on a concrete ResearchOps workflow and record the smallest useful proof.
+- Drill 3: perform the exercise on a concrete ResearchOps workflow and record the smallest useful proof.
+- Drill 4: perform the exercise on a concrete ResearchOps workflow and record the smallest useful proof.
+- Drill 5: perform the exercise on a concrete ResearchOps workflow and record the smallest useful proof.
+- Drill 6: perform the exercise on a concrete ResearchOps workflow and record the smallest useful proof.
+- Drill 7: perform the exercise on a concrete ResearchOps workflow and record the smallest useful proof.
 
-Resist the urge to add any of them to v1.0.0. Document the v1.1 candidates in `ROADMAP.md`.
+## Testing exercises
+1. Map each checklist test command to the behavior it proves.
+2. Identify one unit test, one integration test, and one E2E test that matter for v1.0.
+3. For a failing test, write the expected behavior before editing code.
+4. Add or adjust tests only for release-blocking behavior, not new features.
+5. Record any manual check that cannot reasonably be automated yet.
 
-### 3. Explain semantic versioning
+**Evidence requirement:** write down what you inspected, what you expected, what happened, and what decision you made.
+**Release discipline rule:** if the exercise tempts you to add a feature, stop and classify it as v1.1 or later.
+**ResearchOps anchor:** connect the exercise to at least one real module, command, test, or documentation file in this repository.
+- Drill 1: perform the exercise on a concrete ResearchOps workflow and record the smallest useful proof.
+- Drill 2: perform the exercise on a concrete ResearchOps workflow and record the smallest useful proof.
+- Drill 3: perform the exercise on a concrete ResearchOps workflow and record the smallest useful proof.
+- Drill 4: perform the exercise on a concrete ResearchOps workflow and record the smallest useful proof.
+- Drill 5: perform the exercise on a concrete ResearchOps workflow and record the smallest useful proof.
+- Drill 6: perform the exercise on a concrete ResearchOps workflow and record the smallest useful proof.
+- Drill 7: perform the exercise on a concrete ResearchOps workflow and record the smallest useful proof.
 
-Write a paragraph explaining MAJOR.MINOR.PATCH versioning without referencing the notes. Then:
-- What version would you assign if you fixed a bug in the search ranking? (→ PATCH)
-- What version would you assign if you added streaming API responses? (→ MINOR)
-- What version would you assign if you renamed the `researchops search` command to `researchops find` (breaking change)? (→ MAJOR)
+## Debugging exercises
+1. Pick a failing or fragile workflow and trace it layer by layer.
+2. For a CLI error, inspect command registration before service logic.
+3. For a storage error, inspect schema assumptions and test fixtures.
+4. For an API error, compare status code, response body, and service exception.
+5. For worker errors, draw state transitions before editing.
 
----
+**Evidence requirement:** write down what you inspected, what you expected, what happened, and what decision you made.
+**Release discipline rule:** if the exercise tempts you to add a feature, stop and classify it as v1.1 or later.
+**ResearchOps anchor:** connect the exercise to at least one real module, command, test, or documentation file in this repository.
+- Drill 1: perform the exercise on a concrete ResearchOps workflow and record the smallest useful proof.
+- Drill 2: perform the exercise on a concrete ResearchOps workflow and record the smallest useful proof.
+- Drill 3: perform the exercise on a concrete ResearchOps workflow and record the smallest useful proof.
+- Drill 4: perform the exercise on a concrete ResearchOps workflow and record the smallest useful proof.
+- Drill 5: perform the exercise on a concrete ResearchOps workflow and record the smallest useful proof.
+- Drill 6: perform the exercise on a concrete ResearchOps workflow and record the smallest useful proof.
+- Drill 7: perform the exercise on a concrete ResearchOps workflow and record the smallest useful proof.
 
-## Project exercises
+## Refactoring exercises
+1. Remove duplicated release wording if two docs contradict each other.
+2. Move business logic out of CLI/API only if the release audit finds it there.
+3. Rename unclear local variables only when it improves hardening readability.
+4. Do not perform broad refactors that are not required for v1.0 evidence.
 
-### 1. Run the full pre-release checklist
+**Evidence requirement:** write down what you inspected, what you expected, what happened, and what decision you made.
+**Release discipline rule:** if the exercise tempts you to add a feature, stop and classify it as v1.1 or later.
+**ResearchOps anchor:** connect the exercise to at least one real module, command, test, or documentation file in this repository.
+- Drill 1: perform the exercise on a concrete ResearchOps workflow and record the smallest useful proof.
+- Drill 2: perform the exercise on a concrete ResearchOps workflow and record the smallest useful proof.
+- Drill 3: perform the exercise on a concrete ResearchOps workflow and record the smallest useful proof.
+- Drill 4: perform the exercise on a concrete ResearchOps workflow and record the smallest useful proof.
+- Drill 5: perform the exercise on a concrete ResearchOps workflow and record the smallest useful proof.
+- Drill 6: perform the exercise on a concrete ResearchOps workflow and record the smallest useful proof.
+- Drill 7: perform the exercise on a concrete ResearchOps workflow and record the smallest useful proof.
 
-Copy the checklist from notes.md into a temporary file. Work through every item. Fix anything that fails. Do not mark an item complete unless you have actually run the command and seen the expected output.
+## Written explanation exercises
+1. Write a two-minute explanation of ResearchOps v1.0.
+2. Write an interviewer answer for why the architecture uses protocols.
+3. Write a known-limitations paragraph that is honest but not apologetic.
+4. Write release notes for a user who has never seen the repo.
+5. Write a retrospective on the most important engineering habit you learned.
 
-Pay special attention to:
-- Starting from a **fresh clone** for the final validation.
-- Verifying the Docker build works.
-- Confirming that the demo script produces correct output.
-
-### 2. Complete CHANGELOG.md
-
-Write or update `CHANGELOG.md` to include a `[1.0.0]` section with today's date. List:
-- All major features added across Weeks 17–20.
-- Any significant changes made to previous features.
-- Any bugs fixed during Week 20 hardening.
-
-The changelog must be written for a user, not a developer. Do not list commit messages. Describe what the user can now do that they could not do before.
-
-### 3. Bump the version to 1.0.0
-
-Update the version in both required places:
-
-```bash
-# In pyproject.toml
-version = "1.0.0"
-
-# In src/researchops/__init__.py
-__version__ = "1.0.0"
-```
-
-Verify they match:
-
-```bash
-python -c "import researchops; print(researchops.__version__)"
-# Expected: 1.0.0
-```
-
-Also verify that `pyproject.toml` shows `1.0.0`:
-
-```bash
-grep '^version' pyproject.toml
-# Expected: version = "1.0.0"
-```
-
-### 4. Run the demo script end to end
-
-Follow `docs/demo.md` exactly, in order, from a fresh clone. If any command does not produce the expected output:
-- Fix the command in the code if the code is wrong.
-- Fix the expected output in the script if the output changed.
-- Fix the environment documentation if a setup step is missing.
-
-Do not adjust the expected output to match wrong behaviour. Fix the behaviour.
-
-### 5. Create the v1.0.0 git tag
-
-After all other checklist items pass:
-
-```bash
-git add .
-git commit -m "v1.0.0: final release"
-git tag -a v1.0.0 -m "ResearchOps v1.0.0 — 20-week build complete"
-git push
-git push --tags
-```
-
-Verify on GitHub that the tag exists and that the repository shows `v1.0.0` in the Releases or Tags section.
-
-### 6. Write the final reflection.md
-
-In `curriculum/month-05-production-portfolio/week-20-final-hardening-v1-release/reflection.md`, complete the final reflection. Answer every question in the template honestly.
-
-The quality of this reflection is not judged by how good the project is. It is judged by how honestly you engage with what you learned.
-
----
+**Evidence requirement:** write down what you inspected, what you expected, what happened, and what decision you made.
+**Release discipline rule:** if the exercise tempts you to add a feature, stop and classify it as v1.1 or later.
+**ResearchOps anchor:** connect the exercise to at least one real module, command, test, or documentation file in this repository.
+- Drill 1: perform the exercise on a concrete ResearchOps workflow and record the smallest useful proof.
+- Drill 2: perform the exercise on a concrete ResearchOps workflow and record the smallest useful proof.
+- Drill 3: perform the exercise on a concrete ResearchOps workflow and record the smallest useful proof.
+- Drill 4: perform the exercise on a concrete ResearchOps workflow and record the smallest useful proof.
+- Drill 5: perform the exercise on a concrete ResearchOps workflow and record the smallest useful proof.
+- Drill 6: perform the exercise on a concrete ResearchOps workflow and record the smallest useful proof.
+- Drill 7: perform the exercise on a concrete ResearchOps workflow and record the smallest useful proof.
 
 ## Stretch exercises
+1. Perform a fresh-clone mental walkthrough and list every assumption.
+2. Create a release-risk table with likelihood, impact, owner, and mitigation.
+3. Compare local install, editable install, wheel build, and Docker run paths.
+4. Review docs for private paths, secrets, stale commands, and overclaims.
 
-### 1. Create a GitHub Release
+**Evidence requirement:** write down what you inspected, what you expected, what happened, and what decision you made.
+**Release discipline rule:** if the exercise tempts you to add a feature, stop and classify it as v1.1 or later.
+**ResearchOps anchor:** connect the exercise to at least one real module, command, test, or documentation file in this repository.
+- Drill 1: perform the exercise on a concrete ResearchOps workflow and record the smallest useful proof.
+- Drill 2: perform the exercise on a concrete ResearchOps workflow and record the smallest useful proof.
+- Drill 3: perform the exercise on a concrete ResearchOps workflow and record the smallest useful proof.
+- Drill 4: perform the exercise on a concrete ResearchOps workflow and record the smallest useful proof.
+- Drill 5: perform the exercise on a concrete ResearchOps workflow and record the smallest useful proof.
+- Drill 6: perform the exercise on a concrete ResearchOps workflow and record the smallest useful proof.
+- Drill 7: perform the exercise on a concrete ResearchOps workflow and record the smallest useful proof.
 
-On GitHub:
-1. Go to Releases → Draft a new release.
-2. Choose the `v1.0.0` tag.
-3. Write release notes using the template from notes.md.
-4. Publish the release.
+## Brutal exercises
+1. Pretend an interviewer gives you five minutes and no context: demo the project story on paper.
+2. Pretend a user reports “search is broken”: write the first ten diagnostic questions.
+3. Pretend CI fails only on Linux: list possible environment differences.
+4. Pretend v1.0 shipped with a broken tag: write the recovery plan without rewriting history.
 
-A published GitHub Release is more compelling in a portfolio than a bare git tag.
+**Evidence requirement:** write down what you inspected, what you expected, what happened, and what decision you made.
+**Release discipline rule:** if the exercise tempts you to add a feature, stop and classify it as v1.1 or later.
+**ResearchOps anchor:** connect the exercise to at least one real module, command, test, or documentation file in this repository.
+- Drill 1: perform the exercise on a concrete ResearchOps workflow and record the smallest useful proof.
+- Drill 2: perform the exercise on a concrete ResearchOps workflow and record the smallest useful proof.
+- Drill 3: perform the exercise on a concrete ResearchOps workflow and record the smallest useful proof.
+- Drill 4: perform the exercise on a concrete ResearchOps workflow and record the smallest useful proof.
+- Drill 5: perform the exercise on a concrete ResearchOps workflow and record the smallest useful proof.
+- Drill 6: perform the exercise on a concrete ResearchOps workflow and record the smallest useful proof.
+- Drill 7: perform the exercise on a concrete ResearchOps workflow and record the smallest useful proof.
 
-### 2. Write a LinkedIn post
+## Mini project task
+Prepare the v1.0 release candidate packet: completed checklist, changelog section, version consistency notes, demo proof, known limitations, and v1.1 candidate list. The packet should let a maintainer decide whether to tag.
 
-Write a draft LinkedIn post (you do not need to publish it) announcing the completion of ResearchOps v1.0.0. Include:
-- What the project is (one sentence).
-- What you learned (two to three specific things).
-- A link to the repository.
-- One thing you would build next.
+**Evidence requirement:** write down what you inspected, what you expected, what happened, and what decision you made.
+**Release discipline rule:** if the exercise tempts you to add a feature, stop and classify it as v1.1 or later.
+**ResearchOps anchor:** connect the exercise to at least one real module, command, test, or documentation file in this repository.
+- Drill 1: perform the exercise on a concrete ResearchOps workflow and record the smallest useful proof.
+- Drill 2: perform the exercise on a concrete ResearchOps workflow and record the smallest useful proof.
+- Drill 3: perform the exercise on a concrete ResearchOps workflow and record the smallest useful proof.
+- Drill 4: perform the exercise on a concrete ResearchOps workflow and record the smallest useful proof.
+- Drill 5: perform the exercise on a concrete ResearchOps workflow and record the smallest useful proof.
+- Drill 6: perform the exercise on a concrete ResearchOps workflow and record the smallest useful proof.
+- Drill 7: perform the exercise on a concrete ResearchOps workflow and record the smallest useful proof.
 
-Keep it under 300 words. If you cannot describe the project and what you learned in 300 words, you do not yet understand it well enough to present it.
+## Completion checklist
+- [ ] I did not add unplanned features.
+- [ ] I can explain every checklist item.
+- [ ] I know which tests prove which workflows.
+- [ ] I audited errors, security, performance, packaging, docs, and demo steps.
+- [ ] I wrote honest known limitations.
+- [ ] I can explain ResearchOps v1.0 aloud.
+- [ ] I know what belongs in v1.1 instead of v1.0.
 
-### 3. Update ROADMAP.md
-
-Rewrite `ROADMAP.md` to clearly show:
-- All 20 weeks marked as ✅ complete.
-- A v1.1 section with the concrete features you would build next.
-- A v2.0 section with longer-horizon ideas.
-
-This is the document you hand to someone who asks "where is this project going?"
-
----
-
-## Writing questions
-
-Answer these in your final `reflection.md`:
-
-1. What is the single most important technical decision you made in 20 weeks? Why was it important?
-2. How is your understanding of Python different now compared to when you started? Be specific: name three things you understand now that you did not before.
-3. What would you tell someone starting this curriculum? What would save them the most time?
-4. Rate your confidence (1–10) in each area at the end of Week 20: Python fundamentals, clean architecture, testing, SQL/storage, ML engineering, async I/O, API development, Docker, AI engineering (embeddings, RAG).
-5. What will you build next?
 <!-- NAV_BOTTOM_START -->
 ---
 ⬅️ [← Notes](notes.md) · ➡️ [Break It →](break_it.md)

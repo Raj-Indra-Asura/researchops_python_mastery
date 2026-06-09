@@ -8,175 +8,170 @@
 
 ---
 <!-- NAV_END -->
-
 # Exercises - Week 18 Docker and Environment Configuration
+
+## How to use this workbook
+
+- Work in order unless a mentor tells you otherwise.
+- Write commands in your own terminal notes, but do not commit scratch files.
+- For every exercise, identify the file changed, the command that proves it, and the failure you would expect if it were wrong.
+- Do not use real secrets.
+- Do not write examples under forbidden temporary locations; keep practice files in an ignored local practice folder if needed.
+
+Practice detail 1: apply this section to the real ResearchOps API, worker, settings module, Dockerfile, and SQLite data path; write the expected command and the expected failure if it is wrong.
+Practice detail 2: apply this section to the real ResearchOps API, worker, settings module, Dockerfile, and SQLite data path; write the expected command and the expected failure if it is wrong.
+Practice detail 3: apply this section to the real ResearchOps API, worker, settings module, Dockerfile, and SQLite data path; write the expected command and the expected failure if it is wrong.
+Practice detail 4: apply this section to the real ResearchOps API, worker, settings module, Dockerfile, and SQLite data path; write the expected command and the expected failure if it is wrong.
+Practice detail 5: apply this section to the real ResearchOps API, worker, settings module, Dockerfile, and SQLite data path; write the expected command and the expected failure if it is wrong.
 
 ## Warm-up exercises
 
-### 1. Write a minimal Dockerfile for a Python command
+- Define image, container, layer, volume, build context, and environment variable in one sentence each.
+- Sketch a Dockerfile with only `FROM`, `WORKDIR`, `COPY`, `RUN`, and `CMD`.
+- Explain why Docker arrives in Week 18 rather than Week 2.
+- Write a safe `.env.example` with placeholders for database URL, log level, and data directory.
+- List five files that belong in `.dockerignore` and explain each choice.
 
-Create a file called `Dockerfile.minimal` (in `/tmp`, not in the repo root) that:
-- Starts from `python:3.11-slim`
-- Sets `WORKDIR /app`
-- Copies a single `hello.py` file
-- Runs `python hello.py` as the default command
+Practice detail 1: apply this section to the real ResearchOps API, worker, settings module, Dockerfile, and SQLite data path; write the expected command and the expected failure if it is wrong.
+Practice detail 2: apply this section to the real ResearchOps API, worker, settings module, Dockerfile, and SQLite data path; write the expected command and the expected failure if it is wrong.
+Practice detail 3: apply this section to the real ResearchOps API, worker, settings module, Dockerfile, and SQLite data path; write the expected command and the expected failure if it is wrong.
+Practice detail 4: apply this section to the real ResearchOps API, worker, settings module, Dockerfile, and SQLite data path; write the expected command and the expected failure if it is wrong.
+Practice detail 5: apply this section to the real ResearchOps API, worker, settings module, Dockerfile, and SQLite data path; write the expected command and the expected failure if it is wrong.
 
-`hello.py` should print `"Hello from Docker!"`. Build and run it. Confirm the output.
+## Code-reading exercises
 
-### 2. Identify which layer is rebuilt
+- Read the planned Dockerfile and mark which lines run at build time and which define runtime behavior.
+- Read `src/researchops/config/settings.py` and identify defaults, env names, and types.
+- Read the compose file and name each service, command, port, and volume.
+- Find where the API app is created and explain why Docker should not add business logic there.
+- Find the worker command and explain why it should share settings with the API.
 
-Given this Dockerfile order:
+Practice detail 1: apply this section to the real ResearchOps API, worker, settings module, Dockerfile, and SQLite data path; write the expected command and the expected failure if it is wrong.
+Practice detail 2: apply this section to the real ResearchOps API, worker, settings module, Dockerfile, and SQLite data path; write the expected command and the expected failure if it is wrong.
+Practice detail 3: apply this section to the real ResearchOps API, worker, settings module, Dockerfile, and SQLite data path; write the expected command and the expected failure if it is wrong.
+Practice detail 4: apply this section to the real ResearchOps API, worker, settings module, Dockerfile, and SQLite data path; write the expected command and the expected failure if it is wrong.
+Practice detail 5: apply this section to the real ResearchOps API, worker, settings module, Dockerfile, and SQLite data path; write the expected command and the expected failure if it is wrong.
 
-```dockerfile
-FROM python:3.11-slim
-COPY src ./src
-COPY pyproject.toml ./
-RUN pip install -e .
-CMD ["myapp", "--help"]
-```
+## Implementation exercises
 
-If you change one line in `src/myapp/cli.py`, which lines get re-executed on the next build? Draw the dependency chain from the changed file upward. Then reorder the Dockerfile so that the `pip install` layer is not invalidated by source code changes.
+- Create or refine `src/researchops/config/settings.py` so one `AppSettings` object owns database URL, log level, and data directory.
+- Add `.env.example` with safe placeholder values and comments.
+- Write a Dockerfile that installs ResearchOps and exposes a safe default command.
+- Write a compose file with `api` and `worker` services sharing the same data volume.
+- Ensure the API command binds to `0.0.0.0` and port `8000`.
+- Ensure the worker command uses the existing job runner path rather than inventing a new worker.
 
-### 3. Read an env var with a default
+Practice detail 1: apply this section to the real ResearchOps API, worker, settings module, Dockerfile, and SQLite data path; write the expected command and the expected failure if it is wrong.
+Practice detail 2: apply this section to the real ResearchOps API, worker, settings module, Dockerfile, and SQLite data path; write the expected command and the expected failure if it is wrong.
+Practice detail 3: apply this section to the real ResearchOps API, worker, settings module, Dockerfile, and SQLite data path; write the expected command and the expected failure if it is wrong.
+Practice detail 4: apply this section to the real ResearchOps API, worker, settings module, Dockerfile, and SQLite data path; write the expected command and the expected failure if it is wrong.
+Practice detail 5: apply this section to the real ResearchOps API, worker, settings module, Dockerfile, and SQLite data path; write the expected command and the expected failure if it is wrong.
 
-Write a Python snippet that reads `LOG_LEVEL` from the environment with a default of `"INFO"` and prints it. Run it without setting the variable, then with `LOG_LEVEL=DEBUG python snippet.py`. Confirm the default and the override both work.
+## Testing exercises
 
-### 4. Write a Settings class with pydantic-settings
+- Test settings defaults with no environment variables.
+- Test an environment override for database URL.
+- Test log level override and confirm cached settings do not leak between tests.
+- Test that `.env.example` contains no obvious real secret values.
+- Manually validate that `curl http://localhost:8000/health` reaches the API after Compose starts.
 
-Define a `Settings` class that reads three variables:
-- `DATABASE_URL` (default: `"sqlite:///data/researchops.db"`)
-- `LOG_LEVEL` (default: `"INFO"`)
-- `OPENAI_API_KEY` (default: `""`)
+Practice detail 1: apply this section to the real ResearchOps API, worker, settings module, Dockerfile, and SQLite data path; write the expected command and the expected failure if it is wrong.
+Practice detail 2: apply this section to the real ResearchOps API, worker, settings module, Dockerfile, and SQLite data path; write the expected command and the expected failure if it is wrong.
+Practice detail 3: apply this section to the real ResearchOps API, worker, settings module, Dockerfile, and SQLite data path; write the expected command and the expected failure if it is wrong.
+Practice detail 4: apply this section to the real ResearchOps API, worker, settings module, Dockerfile, and SQLite data path; write the expected command and the expected failure if it is wrong.
+Practice detail 5: apply this section to the real ResearchOps API, worker, settings module, Dockerfile, and SQLite data path; write the expected command and the expected failure if it is wrong.
 
-Instantiate it and print the values. Override `LOG_LEVEL` via the environment. Confirm the override is applied.
+## Debugging exercises
 
-### 5. Write a .env.example file
+- Break the API host by binding to `127.0.0.1`; observe the host curl failure; fix it.
+- Remove the volume mount; explain where data would go; restore it.
+- Misspell `RESEARCHOPS_DATABASE_URL`; prove the default is used; fix the variable name.
+- Copy `.env` into the image intentionally in a throwaway branch; explain why that is unsafe; remove the risk with `.dockerignore`.
+- Change source code and predict which Docker layers rebuild.
 
-Write a `.env.example` for ResearchOps. Include all three variables from exercise 4 with placeholder values. Add a comment above each variable explaining what it does. Do not include any real secret values.
+Practice detail 1: apply this section to the real ResearchOps API, worker, settings module, Dockerfile, and SQLite data path; write the expected command and the expected failure if it is wrong.
+Practice detail 2: apply this section to the real ResearchOps API, worker, settings module, Dockerfile, and SQLite data path; write the expected command and the expected failure if it is wrong.
+Practice detail 3: apply this section to the real ResearchOps API, worker, settings module, Dockerfile, and SQLite data path; write the expected command and the expected failure if it is wrong.
+Practice detail 4: apply this section to the real ResearchOps API, worker, settings module, Dockerfile, and SQLite data path; write the expected command and the expected failure if it is wrong.
+Practice detail 5: apply this section to the real ResearchOps API, worker, settings module, Dockerfile, and SQLite data path; write the expected command and the expected failure if it is wrong.
 
-### 6. Add entries to .dockerignore
+## Refactoring exercises
 
-List five things that should appear in `.dockerignore` for a Python project. Explain why each one should be excluded from the build context.
+- Replace scattered `os.environ` reads with imports from the config settings module.
+- Move Docker-specific paths out of CLI command bodies and into settings defaults or env values.
+- Ensure API and worker wiring both request settings in the same style.
+- Keep services dependent on protocols rather than concrete Docker paths.
 
----
+Practice detail 1: apply this section to the real ResearchOps API, worker, settings module, Dockerfile, and SQLite data path; write the expected command and the expected failure if it is wrong.
+Practice detail 2: apply this section to the real ResearchOps API, worker, settings module, Dockerfile, and SQLite data path; write the expected command and the expected failure if it is wrong.
+Practice detail 3: apply this section to the real ResearchOps API, worker, settings module, Dockerfile, and SQLite data path; write the expected command and the expected failure if it is wrong.
+Practice detail 4: apply this section to the real ResearchOps API, worker, settings module, Dockerfile, and SQLite data path; write the expected command and the expected failure if it is wrong.
+Practice detail 5: apply this section to the real ResearchOps API, worker, settings module, Dockerfile, and SQLite data path; write the expected command and the expected failure if it is wrong.
 
-## Project exercises
+## Written explanation exercises
 
-### 1. Write the Dockerfile
+- Explain image versus container using a ResearchOps example.
+- Explain build-time versus runtime configuration.
+- Explain why `.env.example` is committed and `.env` is not.
+- Explain why the SQLite database needs a mounted volume.
+- Explain how Compose lets API and worker share the same image but run different commands.
 
-In the repo root, create a `Dockerfile` (or update the existing one) that:
-- Starts from `python:3.11-slim`.
-- Sets `WORKDIR /app`.
-- Copies `pyproject.toml` and `README.md` first.
-- Installs the package with `pip install --no-cache-dir -e ".[api]"`.
-- Copies `src/` after installation.
-- Sets `CMD ["researchops", "--help"]`.
-
-Build it: `docker build -t researchops:local .`
-
-Run the default command: `docker run researchops:local`
-
-Confirm you see the CLI help output.
-
-### 2. Write the docker-compose.yml
-
-Create or update `docker-compose.yml` with the three services from notes.md:
-- `app`: runs `researchops --help`
-- `api`: runs uvicorn on port 8000
-- `worker`: runs `researchops jobs run`
-
-All services must use `env_file: .env` and mount `./data:/app/data`.
-
-Start the API: `docker compose up api`
-
-Test it: `curl http://localhost:8000/docs`
-
-### 3. Implement Settings with pydantic-settings
-
-In `src/researchops/settings.py`, implement a `Settings` class using `pydantic-settings`. It should read at minimum:
-- `DATABASE_URL`
-- `LOG_LEVEL`
-- `OPENAI_API_KEY`
-- `EMBEDDING_MODEL`
-
-Use a singleton pattern or a `get_settings()` function so the settings are instantiated once.
-
-### 4. Write settings tests
-
-In `tests/unit/test_settings.py`, write tests that:
-- Verify the default values are correct.
-- Use `monkeypatch.setenv` to override `LOG_LEVEL` and verify the override is applied.
-- Use `monkeypatch.setenv` to override `DATABASE_URL` and verify it.
-- Verify that the `OPENAI_API_KEY` default is empty string (not `None`).
-
-Run `pytest tests/unit/test_settings.py -v` and confirm all pass.
-
-### 5. Update .env.example
-
-Update `.env.example` in the repo root to document every variable in the `Settings` class. Add a comment for each variable explaining what it configures. Confirm the file is committed but `.env` is not.
-
-### 6. Add .dockerignore
-
-Create `.dockerignore` with at least these entries:
-```
-.git
-.venv
-venv
-__pycache__
-*.pyc
-*.pyo
-.pytest_cache
-.ruff_cache
-data/
-.env
-```
-
-Rebuild the image and confirm it builds successfully. Check whether the build is faster now that Docker is not sending unused files.
-
----
+Practice detail 1: apply this section to the real ResearchOps API, worker, settings module, Dockerfile, and SQLite data path; write the expected command and the expected failure if it is wrong.
+Practice detail 2: apply this section to the real ResearchOps API, worker, settings module, Dockerfile, and SQLite data path; write the expected command and the expected failure if it is wrong.
+Practice detail 3: apply this section to the real ResearchOps API, worker, settings module, Dockerfile, and SQLite data path; write the expected command and the expected failure if it is wrong.
+Practice detail 4: apply this section to the real ResearchOps API, worker, settings module, Dockerfile, and SQLite data path; write the expected command and the expected failure if it is wrong.
+Practice detail 5: apply this section to the real ResearchOps API, worker, settings module, Dockerfile, and SQLite data path; write the expected command and the expected failure if it is wrong.
 
 ## Stretch exercises
 
-### 1. Add a separate compose service for the worker
+- Add a lightweight healthcheck to the API service if curl or an equivalent tool is available in the image.
+- Add a non-root user to the Dockerfile and explain what file permissions must still work.
+- Add a `docker compose logs` debugging checklist for API and worker.
+- Make the data directory configurable without changing compose service commands.
 
-Extend `docker-compose.yml` to define the `worker` service distinctly from `app`. Give `worker` a `restart: unless-stopped` policy so it restarts automatically if it crashes. Start just the worker: `docker compose up worker -d`. Check its logs: `docker compose logs worker`.
+Practice detail 1: apply this section to the real ResearchOps API, worker, settings module, Dockerfile, and SQLite data path; write the expected command and the expected failure if it is wrong.
+Practice detail 2: apply this section to the real ResearchOps API, worker, settings module, Dockerfile, and SQLite data path; write the expected command and the expected failure if it is wrong.
+Practice detail 3: apply this section to the real ResearchOps API, worker, settings module, Dockerfile, and SQLite data path; write the expected command and the expected failure if it is wrong.
+Practice detail 4: apply this section to the real ResearchOps API, worker, settings module, Dockerfile, and SQLite data path; write the expected command and the expected failure if it is wrong.
+Practice detail 5: apply this section to the real ResearchOps API, worker, settings module, Dockerfile, and SQLite data path; write the expected command and the expected failure if it is wrong.
 
-### 2. Add a non-root user
+## Brutal exercises
 
-In the `Dockerfile`, after installing dependencies but before copying source code, add:
+- Start from a clean clone mindset and write the exact setup steps another learner needs.
+- Simulate a broken environment variable and write the shortest diagnosis path.
+- Explain every line of Dockerfile, compose, settings, and `.env.example` without saying “this is obvious.”
+- Prove no secrets are present in committed config templates.
+- Explain why Docker does not change the architecture dependency direction.
 
-```dockerfile
-RUN adduser --disabled-password --gecos "" appuser
-USER appuser
-```
+Practice detail 1: apply this section to the real ResearchOps API, worker, settings module, Dockerfile, and SQLite data path; write the expected command and the expected failure if it is wrong.
+Practice detail 2: apply this section to the real ResearchOps API, worker, settings module, Dockerfile, and SQLite data path; write the expected command and the expected failure if it is wrong.
+Practice detail 3: apply this section to the real ResearchOps API, worker, settings module, Dockerfile, and SQLite data path; write the expected command and the expected failure if it is wrong.
+Practice detail 4: apply this section to the real ResearchOps API, worker, settings module, Dockerfile, and SQLite data path; write the expected command and the expected failure if it is wrong.
+Practice detail 5: apply this section to the real ResearchOps API, worker, settings module, Dockerfile, and SQLite data path; write the expected command and the expected failure if it is wrong.
 
-This runs the process as a non-root user inside the container, which is a security best practice. Rebuild and confirm the app still starts correctly.
+## Mini project task
 
-### 3. Health check
+- Deliver a local containerized ResearchOps stack.
+- The stack must have one application image, two runtime services, shared persistent data, documented environment variables, and a health check path.
+- Write a short operator note in your own words describing how to build, start, inspect logs, and stop the stack.
+- Do not add future portfolio or release material.
 
-Add a health check to the `api` service in `docker-compose.yml`:
+Practice detail 1: apply this section to the real ResearchOps API, worker, settings module, Dockerfile, and SQLite data path; write the expected command and the expected failure if it is wrong.
+Practice detail 2: apply this section to the real ResearchOps API, worker, settings module, Dockerfile, and SQLite data path; write the expected command and the expected failure if it is wrong.
+Practice detail 3: apply this section to the real ResearchOps API, worker, settings module, Dockerfile, and SQLite data path; write the expected command and the expected failure if it is wrong.
+Practice detail 4: apply this section to the real ResearchOps API, worker, settings module, Dockerfile, and SQLite data path; write the expected command and the expected failure if it is wrong.
+Practice detail 5: apply this section to the real ResearchOps API, worker, settings module, Dockerfile, and SQLite data path; write the expected command and the expected failure if it is wrong.
 
-```yaml
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
-      interval: 10s
-      timeout: 5s
-      retries: 3
-```
+## Completion checklist
 
-Add a `/health` endpoint to the FastAPI app that returns `{"status": "ok"}`. Confirm `docker compose ps` shows the api service as healthy.
-
----
-
-## Writing questions
-
-Answer these in your `reflection.md`:
-
-1. In your own words, explain the difference between an image and a container. Use an analogy.
-2. Why does layer order matter in a Dockerfile? Give an example of a bad order and explain what goes wrong.
-3. What is the difference between build-time configuration and run-time configuration? Give one example of each.
-4. Why should secrets never be set using `ENV` in a Dockerfile?
-5. What would happen to the ResearchOps database if you ran the API container without a volume mount, added 10 papers, then stopped and restarted the container?
+- I can build the image.
+- I can start API and worker with Compose.
+- I can reach `/health` from the host.
+- I can explain the database volume.
+- I can explain every committed environment variable.
+- I did not commit `.env` or any real secret.
+- I updated settings tests with defaults and overrides.
+- I can explain why Docker begins this week and not earlier.
 <!-- NAV_BOTTOM_START -->
 ---
 ⬅️ [← Notes](notes.md) · ➡️ [Break It →](break_it.md)

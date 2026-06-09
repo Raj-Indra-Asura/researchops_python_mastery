@@ -11,865 +11,589 @@
 
 # Week 20 Notes: Final Hardening and v1.0 Release
 
-<!-- LEARNING_FORMAT_START -->
-# Complete Learning Format — Week 20: Final Hardening and v1.0 Release
-
-This guide is the clean learning path for the chapter.
-It uses short sentences.
-It breaks ideas into small pieces.
-It tells you what to focus on and what to ignore for now.
-Read it before the older detailed notes that follow.
-
 ## Chapter overview
-
-The chapter title is **Finishing is a skill**.
-The practical milestone is: `v1.0.0` is tagged. CI is green. Every ROADMAP.md row is ✅. A demo exists. The project is portfolio-ready.
-The expected capability is: Can apply semantic versioning, write a changelog, create a git tag, and explain what v1.0 means for a software project.
-This chapter is one step in the ResearchOps system, not a random lesson.
-The visible feature matters because it proves the idea works.
-The hidden skill matters because it lets you build the next chapter without confusion.
-A complete pass through this chapter means you can read the code, run it, test it, break it, and explain it aloud.
-
-Use this study order:
-- Read the story first without typing.
-- Trace the smallest code example.
-- Find the project file that owns the behavior.
-- Run the validation command.
-- Explain one happy path and one failure path.
+Week 20 is the final hardening and v1.0 release chapter.
+The goal is not to make ResearchOps bigger.
+The goal is to make ResearchOps shippable.
+Shippable means a careful reader can clone the repository, install the package, run the CLI, run the API or worker pieces that exist, execute the tests, read the documentation, and understand what is supported.
+In earlier weeks you learned how to build pieces.
+This week teaches the professional skill of proving that the pieces belong together.
+You will use `RELEASE_CHECKLIST.md` as the source of truth for release readiness.
+You will audit tests, errors, documentation, security assumptions, version numbers, changelog entries, and demo steps.
+You will practice saying no to new features even when they sound exciting.
+A v1.0 release is a promise about the current system, not a promise that the system is perfect forever.
+ResearchOps v1.0 means the portfolio version is coherent, explainable, and safe to demonstrate.
+The final artifact is a release candidate that could become `v1.0.0` after every checklist item is verified.
 
 ## What you already know from previous weeks
-
-- Week 16 taught Local Worker and Job System; keep its responsibility in mind, but do not rebuild it here.
-- Week 17 taught RAG Assistant; keep its responsibility in mind, but do not rebuild it here.
-- Week 18 taught Docker and Environment Configuration; keep its responsibility in mind, but do not rebuild it here.
-- Week 19 taught Documentation and Portfolio Polish; keep its responsibility in mind, but do not rebuild it here.
-- You should be able to run the previous validation command before trusting new work.
-- You should be able to point at the main file from the previous week and say what job it owns.
-- If a previous idea feels weak, reread the example and trace one concrete value through it.
-- The safest learning rhythm is: understand one thing, change one thing, test one thing, explain one thing.
+Week 1 gave you the project skeleton, `src/` layout, `pyproject.toml`, pytest, Ruff, and the first `researchops scan` command.
+Week 2 taught that errors are information, so hardening starts by checking whether failures are clear instead of mysterious.
+Week 3 gave ResearchOps domain models such as papers, parsed documents, ingestion results, and search results.
+Week 4 turned the project into installable software with command entry points and CLI tests.
+Week 5 added SQLite persistence, which means release validation must check schema behavior and real database integration.
+Week 6 added PDF parsing, which means final tests must include bad files, missing files, and realistic paper text.
+Week 7 added keyword search and data quality gates, so v1.0 must prove search is predictable and empty results are handled cleanly.
+Week 8 added multiprocessing ingestion, so final hardening must watch for CPU-heavy work and worker failure paths.
+Week 9 introduced protocols and clean architecture, so the release audit must check import direction and dependency inversion.
+Week 10 made tests a quality gate, so v1.0 cannot rely on manual confidence alone.
+Week 11 added classical ML topic classification, which needs documented limitations and reproducible behavior.
+Week 12 added experiment tracking, so release notes must explain what is recorded and why it matters.
+Week 13 added embeddings and semantic search, which means performance, deterministic tests, and dependency size all matter.
+Week 14 added FastAPI, so release validation includes HTTP behavior, status codes, and service delegation.
+Week 15 added async I/O and network fetching, so final review must separate I/O-bound work from CPU-bound work.
+Week 16 added a local worker job system, so release readiness includes job state transitions and retry/error behavior.
+Week 17 added a RAG assistant, so release notes must be honest about retrieval context, prompt construction, and hallucination limits.
+Week 18 added Docker and environment configuration, so v1.0 must be runnable outside your personal shell.
+Week 19 polished documentation and portfolio presentation, so Week 20 checks whether that story matches the actual code.
 
 ## What problem this week solves
-
-Week 20 solves the project problem behind **Final Hardening and v1.0 Release**.
-Before this chapter, ResearchOps has a gap.
-The gap may be a missing feature, a missing boundary, a missing safety check, or a missing way to communicate with users.
-This chapter closes that gap with a focused milestone.
-Do not treat the milestone as a checklist only.
-Treat it as proof that the idea belongs in the system.
-- The concept `Semantic versioning: MAJOR.MINOR.PATCH and what each number means` helps solve part of this gap.
-- The concept `Release checklist discipline: scope control, no new features before release` helps solve part of this gap.
-- The concept `Changelog writing: what changed, for whom, and why` helps solve part of this gap.
-- The concept `Git tagging: `git tag -a v1.0.0 -m "..."`` helps solve part of this gap.
-- The concept `Final retrospective: 20 weeks in review` helps solve part of this gap.
+The problem is release risk.
+Release risk appears when a project works only on the author's machine.
+Release risk appears when a command is documented but no longer exists.
+Release risk appears when a test suite passes while an important manual workflow is broken.
+Release risk appears when errors expose confusing tracebacks instead of actionable messages.
+Release risk appears when a version number says one thing and the changelog says another.
+Release risk appears when a demo depends on hidden local files.
+This week converts scattered confidence into evidence.
+The evidence comes from commands, tests, checklists, manual walkthroughs, architecture checks, and written release notes.
+By the end of the week, you should be able to answer: what exactly is included in v1.0, what is excluded, how to run it, how to test it, and what you would improve next.
 
 ## Beginner mental model
-
-Use a simple four-part model: input, owner, transformation, proof.
-Input means the concrete thing entering the system.
-Owner means the file, object, or function responsible for the decision.
-Transformation means the useful change from raw data to meaningful result.
-Proof means the test or command that confirms the result.
-- Ask: what is the input for **Final Hardening and v1.0 Release**?
-- Ask: what is the owner for **Final Hardening and v1.0 Release**?
-- Ask: what is the transformation for **Final Hardening and v1.0 Release**?
-- Ask: what is the proof for **Final Hardening and v1.0 Release**?
-If you cannot answer those four questions, do not add more code yet.
+Think of a release like packing a research instrument for another lab.
+The instrument may work perfectly on your bench.
+That is not enough.
+Another person needs instructions, labels, calibration steps, safety notes, and a way to tell whether the instrument is functioning.
+ResearchOps v1.0 is the packed instrument.
+The code is the instrument.
+The tests are calibration checks.
+The CLI help text is the label on the buttons.
+The README is the quick-start card.
+The changelog is the history of modifications.
+The release checklist is the packing list.
+The git tag is the sealed box label that says exactly which version was shipped.
+If one of those pieces is missing, the project may still be interesting, but it is not release-ready.
 
 ## Core vocabulary
-
-| Term | Simple meaning | Why it matters here |
-|------|----------------|---------------------|
-| Semantic versioning | Semantic versioning: MAJOR.MINOR.PATCH and what each number means | This term names one job in the Week 20 milestone. |
-| Release checklist discipline | Release checklist discipline: scope control, no new features before release | This term names one job in the Week 20 milestone. |
-| Changelog writing | Changelog writing: what changed, for whom, and why | This term names one job in the Week 20 milestone. |
-| Git tagging | Git tagging: `git tag -a v1.0.0 -m "..."` | This term names one job in the Week 20 milestone. |
-| Final retrospective | Final retrospective: 20 weeks in review | This term names one job in the Week 20 milestone. |
-| Boundary | A line between responsibilities | It keeps the chapter understandable for a beginner. |
-| Failure path | What happens when the happy path is not available | It keeps the chapter understandable for a beginner. |
-| Validation | Evidence that the system still works | It keeps the chapter understandable for a beginner. |
-| Responsibility | The one job a file or function owns | It keeps the chapter understandable for a beginner. |
+**Release candidate:** a version you believe could ship if final checks pass.
+**v1.0.0:** the first stable public version of the project.
+**Semantic versioning:** a version format written as MAJOR.MINOR.PATCH.
+**MAJOR:** the number that changes when users must change how they use the software.
+**MINOR:** the number that changes when new backward-compatible capability is added.
+**PATCH:** the number that changes when a backward-compatible bug fix is made.
+**Changelog:** a human-readable history of important changes.
+**Release notes:** the short explanation attached to a specific release.
+**Regression:** something that used to work but now fails.
+**Smoke test:** a quick command that proves the most basic path still works.
+**End-to-end test:** a test that exercises a complete user workflow across multiple layers.
+**Hardening:** improving reliability, clarity, safety, and edge-case behavior without expanding scope.
+**Scope freeze:** the rule that no new features enter the release candidate.
+**Known limitation:** an honest statement about behavior the project does not support yet.
+**Distribution:** the way a user installs or runs the project, such as editable install, wheel, Docker image, or source clone.
+**Artifact:** a produced thing from a release process, such as a tag, wheel, container image, changelog, or demo script.
+**Security review:** a deliberate check for secrets, unsafe defaults, over-broad file access, and risky dependency behavior.
+**Performance review:** a deliberate check that common workflows are fast enough and heavy work is in the correct layer.
+**Definition of done:** the exact conditions that must be true before work is considered complete.
 
 ## Concept explanations from first principles
-
-Read each concept as if you have never heard the term before.
-Do not skip the plain meaning.
-### Concept 1: Semantic versioning: MAJOR.MINOR.PATCH and what each number means
-- **Plain meaning:** This is a named tool for solving one part of the chapter problem.
-- **Why it exists:** Real projects become confusing when this concern is unnamed.
-- **ResearchOps use:** In Week 20, it supports the milestone: `v1.0.0` is tagged. CI is green. Every ROADMAP.md row is ✅. A demo exists. The project is portfolio-ready.
-- **Input question:** What data, command, file, request, or state reaches this concept?
-- **Output question:** What value, saved record, response, log, or state change should come out?
-- **Failure question:** What can be missing, malformed, slow, duplicated, stale, or invalid?
-- **Test question:** Which test would catch the mistake before a user sees it?
-- **Beginner trap:** Memorizing the word without tracing it in the project.
-- **Recovery move:** Use one concrete example and follow it through the files.
-- **Mastery signal:** You can explain the concept without saying "magic" or "it just works".
-
-### Concept 2: Release checklist discipline: scope control, no new features before release
-- **Plain meaning:** This is a named tool for solving one part of the chapter problem.
-- **Why it exists:** Real projects become confusing when this concern is unnamed.
-- **ResearchOps use:** In Week 20, it supports the milestone: `v1.0.0` is tagged. CI is green. Every ROADMAP.md row is ✅. A demo exists. The project is portfolio-ready.
-- **Input question:** What data, command, file, request, or state reaches this concept?
-- **Output question:** What value, saved record, response, log, or state change should come out?
-- **Failure question:** What can be missing, malformed, slow, duplicated, stale, or invalid?
-- **Test question:** Which test would catch the mistake before a user sees it?
-- **Beginner trap:** Memorizing the word without tracing it in the project.
-- **Recovery move:** Use one concrete example and follow it through the files.
-- **Mastery signal:** You can explain the concept without saying "magic" or "it just works".
-
-### Concept 3: Changelog writing: what changed, for whom, and why
-- **Plain meaning:** This is a named tool for solving one part of the chapter problem.
-- **Why it exists:** Real projects become confusing when this concern is unnamed.
-- **ResearchOps use:** In Week 20, it supports the milestone: `v1.0.0` is tagged. CI is green. Every ROADMAP.md row is ✅. A demo exists. The project is portfolio-ready.
-- **Input question:** What data, command, file, request, or state reaches this concept?
-- **Output question:** What value, saved record, response, log, or state change should come out?
-- **Failure question:** What can be missing, malformed, slow, duplicated, stale, or invalid?
-- **Test question:** Which test would catch the mistake before a user sees it?
-- **Beginner trap:** Memorizing the word without tracing it in the project.
-- **Recovery move:** Use one concrete example and follow it through the files.
-- **Mastery signal:** You can explain the concept without saying "magic" or "it just works".
-
-### Concept 4: Git tagging: `git tag -a v1.0.0 -m "..."`
-- **Plain meaning:** This is a named tool for solving one part of the chapter problem.
-- **Why it exists:** Real projects become confusing when this concern is unnamed.
-- **ResearchOps use:** In Week 20, it supports the milestone: `v1.0.0` is tagged. CI is green. Every ROADMAP.md row is ✅. A demo exists. The project is portfolio-ready.
-- **Input question:** What data, command, file, request, or state reaches this concept?
-- **Output question:** What value, saved record, response, log, or state change should come out?
-- **Failure question:** What can be missing, malformed, slow, duplicated, stale, or invalid?
-- **Test question:** Which test would catch the mistake before a user sees it?
-- **Beginner trap:** Memorizing the word without tracing it in the project.
-- **Recovery move:** Use one concrete example and follow it through the files.
-- **Mastery signal:** You can explain the concept without saying "magic" or "it just works".
-
-### Concept 5: Final retrospective: 20 weeks in review
-- **Plain meaning:** This is a named tool for solving one part of the chapter problem.
-- **Why it exists:** Real projects become confusing when this concern is unnamed.
-- **ResearchOps use:** In Week 20, it supports the milestone: `v1.0.0` is tagged. CI is green. Every ROADMAP.md row is ✅. A demo exists. The project is portfolio-ready.
-- **Input question:** What data, command, file, request, or state reaches this concept?
-- **Output question:** What value, saved record, response, log, or state change should come out?
-- **Failure question:** What can be missing, malformed, slow, duplicated, stale, or invalid?
-- **Test question:** Which test would catch the mistake before a user sees it?
-- **Beginner trap:** Memorizing the word without tracing it in the project.
-- **Recovery move:** Use one concrete example and follow it through the files.
-- **Mastery signal:** You can explain the concept without saying "magic" or "it just works".
+### 1. A release is a communication event, not only a technical event.
+When you tag `v1.0.0`, you are communicating to future users and future you.
+You are saying: this exact commit is meaningful.
+You are saying: the documented commands were checked.
+You are saying: known limitations are written down instead of hidden.
+You are saying: if a future change breaks behavior, we can compare it against this stable point.
+Beginners often think a release is something that happens after the real work.
+In production work, release preparation is part of the real work.
+Poor release preparation creates support cost later.
+Good release preparation reduces confusion for users, reviewers, collaborators, and interviewers.
+### 2. Semantic versioning is a contract about change.
+`1.0.0` has three numbers.
+The first number is MAJOR.
+The second number is MINOR.
+The third number is PATCH.
+If ResearchOps changes `researchops search` so existing scripts must be rewritten, that is a MAJOR change.
+If ResearchOps adds `researchops export` while existing commands keep working, that is a MINOR change.
+If ResearchOps fixes a crash when a PDF has no text, that is a PATCH change.
+The exact version number is less important than the honesty behind it.
+For this curriculum, v1.0.0 means the capstone portfolio version is stable enough to present.
+### 3. A changelog is not a git log.
+A git log records commits.
+A changelog explains user-visible changes.
+`fix stuff` is not a useful changelog entry.
+`Fixed ingestion error reporting for unreadable PDFs so failed files appear in the ingestion result instead of crashing the run` is useful.
+A good changelog groups changes by release.
+A good changelog uses categories such as Added, Changed, Fixed, Documentation, and Known limitations.
+A good changelog helps a reader understand the story without reading every commit.
+### 4. A release checklist prevents emotional decision-making.
+Near the end of a project, you may feel tired.
+You may also feel tempted to polish forever.
+A checklist protects you from both problems.
+If a checklist item fails, you fix or document it.
+If a new idea is not on the checklist, it waits for v1.1.
+`RELEASE_CHECKLIST.md` is therefore a discipline tool.
+It turns vague confidence into observable facts.
+### 5. Hardening is different from feature development.
+Feature development asks: what new capability can the system perform?
+Hardening asks: can the existing capability survive realistic use?
+Feature development adds surface area.
+Hardening reduces surprise.
+Feature development often creates new tests.
+Hardening often strengthens existing tests, error messages, docs, and boundaries.
+In Week 20, adding a new ML model is not hardening.
+Checking that the current model has clear limitations is hardening.
+Adding a new API endpoint is not hardening.
+Checking that current endpoints return useful errors is hardening.
+### 6. End-to-end testing follows the user story.
+A unit test checks one small unit in isolation.
+An integration test checks two or more real pieces together.
+An end-to-end test checks a complete user path.
+For ResearchOps, an end-to-end path might be: install package, scan sample papers, ingest documents, search, ask a question, and review output.
+End-to-end tests are valuable because they catch wiring mistakes.
+End-to-end tests are expensive because failures can come from many layers.
+The v1.0 mindset uses both: unit tests for precise confidence and end-to-end tests for workflow confidence.
+### 7. Security review starts with boring questions.
+Does the repository contain secrets?
+Does configuration encourage hard-coded credentials?
+Do examples accidentally include private paths?
+Do commands write outside intended project or data directories?
+Does the API expose debug tracebacks in normal user-facing responses?
+Do dependencies match what the curriculum intentionally introduced?
+Boring security questions matter because most release mistakes are ordinary oversights.
+### 8. Performance review starts with the common path.
+Do not optimize imaginary workloads first.
+Check the workflows the learner and demo will actually run.
+For ResearchOps, those workflows include scanning paper directories, parsing sample PDFs, storing records, keyword search, semantic search, API calls, worker jobs, and RAG answer construction.
+If common paths are slow, ask whether the algorithm is wasteful, whether CPU work is in a process pool, whether I/O is blocking an async path, or whether a test fixture is too large.
+Performance hardening does not require perfect speed.
+It requires that performance is acceptable and limitations are honest.
+### Release checklist walkthrough
+- Check 1: verify the release checklist walkthrough item with an actual command, file inspection, or documented manual observation before marking it complete.
+- Check 2: verify the release checklist walkthrough item with an actual command, file inspection, or documented manual observation before marking it complete.
+- Check 3: verify the release checklist walkthrough item with an actual command, file inspection, or documented manual observation before marking it complete.
+- Check 4: verify the release checklist walkthrough item with an actual command, file inspection, or documented manual observation before marking it complete.
+- Check 5: verify the release checklist walkthrough item with an actual command, file inspection, or documented manual observation before marking it complete.
+- Check 6: verify the release checklist walkthrough item with an actual command, file inspection, or documented manual observation before marking it complete.
+- Check 7: verify the release checklist walkthrough item with an actual command, file inspection, or documented manual observation before marking it complete.
+- Check 8: verify the release checklist walkthrough item with an actual command, file inspection, or documented manual observation before marking it complete.
+- Check 9: verify the release checklist walkthrough item with an actual command, file inspection, or documented manual observation before marking it complete.
+- Check 10: verify the release checklist walkthrough item with an actual command, file inspection, or documented manual observation before marking it complete.
+- Check 11: verify the release checklist walkthrough item with an actual command, file inspection, or documented manual observation before marking it complete.
+- Check 12: verify the release checklist walkthrough item with an actual command, file inspection, or documented manual observation before marking it complete.
+- Check 13: verify the release checklist walkthrough item with an actual command, file inspection, or documented manual observation before marking it complete.
+- Check 14: verify the release checklist walkthrough item with an actual command, file inspection, or documented manual observation before marking it complete.
+- Check 15: verify the release checklist walkthrough item with an actual command, file inspection, or documented manual observation before marking it complete.
+### Error-handling audit checklist
+- Check 1: verify the error-handling audit checklist item with an actual command, file inspection, or documented manual observation before marking it complete.
+- Check 2: verify the error-handling audit checklist item with an actual command, file inspection, or documented manual observation before marking it complete.
+- Check 3: verify the error-handling audit checklist item with an actual command, file inspection, or documented manual observation before marking it complete.
+- Check 4: verify the error-handling audit checklist item with an actual command, file inspection, or documented manual observation before marking it complete.
+- Check 5: verify the error-handling audit checklist item with an actual command, file inspection, or documented manual observation before marking it complete.
+- Check 6: verify the error-handling audit checklist item with an actual command, file inspection, or documented manual observation before marking it complete.
+- Check 7: verify the error-handling audit checklist item with an actual command, file inspection, or documented manual observation before marking it complete.
+- Check 8: verify the error-handling audit checklist item with an actual command, file inspection, or documented manual observation before marking it complete.
+- Check 9: verify the error-handling audit checklist item with an actual command, file inspection, or documented manual observation before marking it complete.
+- Check 10: verify the error-handling audit checklist item with an actual command, file inspection, or documented manual observation before marking it complete.
+- Check 11: verify the error-handling audit checklist item with an actual command, file inspection, or documented manual observation before marking it complete.
+- Check 12: verify the error-handling audit checklist item with an actual command, file inspection, or documented manual observation before marking it complete.
+- Check 13: verify the error-handling audit checklist item with an actual command, file inspection, or documented manual observation before marking it complete.
+- Check 14: verify the error-handling audit checklist item with an actual command, file inspection, or documented manual observation before marking it complete.
+- Check 15: verify the error-handling audit checklist item with an actual command, file inspection, or documented manual observation before marking it complete.
+### Performance and edge-case audit
+- Check 1: verify the performance and edge-case audit item with an actual command, file inspection, or documented manual observation before marking it complete.
+- Check 2: verify the performance and edge-case audit item with an actual command, file inspection, or documented manual observation before marking it complete.
+- Check 3: verify the performance and edge-case audit item with an actual command, file inspection, or documented manual observation before marking it complete.
+- Check 4: verify the performance and edge-case audit item with an actual command, file inspection, or documented manual observation before marking it complete.
+- Check 5: verify the performance and edge-case audit item with an actual command, file inspection, or documented manual observation before marking it complete.
+- Check 6: verify the performance and edge-case audit item with an actual command, file inspection, or documented manual observation before marking it complete.
+- Check 7: verify the performance and edge-case audit item with an actual command, file inspection, or documented manual observation before marking it complete.
+- Check 8: verify the performance and edge-case audit item with an actual command, file inspection, or documented manual observation before marking it complete.
+- Check 9: verify the performance and edge-case audit item with an actual command, file inspection, or documented manual observation before marking it complete.
+- Check 10: verify the performance and edge-case audit item with an actual command, file inspection, or documented manual observation before marking it complete.
+- Check 11: verify the performance and edge-case audit item with an actual command, file inspection, or documented manual observation before marking it complete.
+- Check 12: verify the performance and edge-case audit item with an actual command, file inspection, or documented manual observation before marking it complete.
+- Check 13: verify the performance and edge-case audit item with an actual command, file inspection, or documented manual observation before marking it complete.
+- Check 14: verify the performance and edge-case audit item with an actual command, file inspection, or documented manual observation before marking it complete.
+- Check 15: verify the performance and edge-case audit item with an actual command, file inspection, or documented manual observation before marking it complete.
+### Security review checklist
+- Check 1: verify the security review checklist item with an actual command, file inspection, or documented manual observation before marking it complete.
+- Check 2: verify the security review checklist item with an actual command, file inspection, or documented manual observation before marking it complete.
+- Check 3: verify the security review checklist item with an actual command, file inspection, or documented manual observation before marking it complete.
+- Check 4: verify the security review checklist item with an actual command, file inspection, or documented manual observation before marking it complete.
+- Check 5: verify the security review checklist item with an actual command, file inspection, or documented manual observation before marking it complete.
+- Check 6: verify the security review checklist item with an actual command, file inspection, or documented manual observation before marking it complete.
+- Check 7: verify the security review checklist item with an actual command, file inspection, or documented manual observation before marking it complete.
+- Check 8: verify the security review checklist item with an actual command, file inspection, or documented manual observation before marking it complete.
+- Check 9: verify the security review checklist item with an actual command, file inspection, or documented manual observation before marking it complete.
+- Check 10: verify the security review checklist item with an actual command, file inspection, or documented manual observation before marking it complete.
+- Check 11: verify the security review checklist item with an actual command, file inspection, or documented manual observation before marking it complete.
+- Check 12: verify the security review checklist item with an actual command, file inspection, or documented manual observation before marking it complete.
+- Check 13: verify the security review checklist item with an actual command, file inspection, or documented manual observation before marking it complete.
+- Check 14: verify the security review checklist item with an actual command, file inspection, or documented manual observation before marking it complete.
+- Check 15: verify the security review checklist item with an actual command, file inspection, or documented manual observation before marking it complete.
+### Packaging and distribution checklist
+- Check 1: verify the packaging and distribution checklist item with an actual command, file inspection, or documented manual observation before marking it complete.
+- Check 2: verify the packaging and distribution checklist item with an actual command, file inspection, or documented manual observation before marking it complete.
+- Check 3: verify the packaging and distribution checklist item with an actual command, file inspection, or documented manual observation before marking it complete.
+- Check 4: verify the packaging and distribution checklist item with an actual command, file inspection, or documented manual observation before marking it complete.
+- Check 5: verify the packaging and distribution checklist item with an actual command, file inspection, or documented manual observation before marking it complete.
+- Check 6: verify the packaging and distribution checklist item with an actual command, file inspection, or documented manual observation before marking it complete.
+- Check 7: verify the packaging and distribution checklist item with an actual command, file inspection, or documented manual observation before marking it complete.
+- Check 8: verify the packaging and distribution checklist item with an actual command, file inspection, or documented manual observation before marking it complete.
+- Check 9: verify the packaging and distribution checklist item with an actual command, file inspection, or documented manual observation before marking it complete.
+- Check 10: verify the packaging and distribution checklist item with an actual command, file inspection, or documented manual observation before marking it complete.
+- Check 11: verify the packaging and distribution checklist item with an actual command, file inspection, or documented manual observation before marking it complete.
+- Check 12: verify the packaging and distribution checklist item with an actual command, file inspection, or documented manual observation before marking it complete.
+- Check 13: verify the packaging and distribution checklist item with an actual command, file inspection, or documented manual observation before marking it complete.
+- Check 14: verify the packaging and distribution checklist item with an actual command, file inspection, or documented manual observation before marking it complete.
+- Check 15: verify the packaging and distribution checklist item with an actual command, file inspection, or documented manual observation before marking it complete.
+### CHANGELOG finalization checklist
+- Check 1: verify the changelog finalization checklist item with an actual command, file inspection, or documented manual observation before marking it complete.
+- Check 2: verify the changelog finalization checklist item with an actual command, file inspection, or documented manual observation before marking it complete.
+- Check 3: verify the changelog finalization checklist item with an actual command, file inspection, or documented manual observation before marking it complete.
+- Check 4: verify the changelog finalization checklist item with an actual command, file inspection, or documented manual observation before marking it complete.
+- Check 5: verify the changelog finalization checklist item with an actual command, file inspection, or documented manual observation before marking it complete.
+- Check 6: verify the changelog finalization checklist item with an actual command, file inspection, or documented manual observation before marking it complete.
+- Check 7: verify the changelog finalization checklist item with an actual command, file inspection, or documented manual observation before marking it complete.
+- Check 8: verify the changelog finalization checklist item with an actual command, file inspection, or documented manual observation before marking it complete.
+- Check 9: verify the changelog finalization checklist item with an actual command, file inspection, or documented manual observation before marking it complete.
+- Check 10: verify the changelog finalization checklist item with an actual command, file inspection, or documented manual observation before marking it complete.
+- Check 11: verify the changelog finalization checklist item with an actual command, file inspection, or documented manual observation before marking it complete.
+- Check 12: verify the changelog finalization checklist item with an actual command, file inspection, or documented manual observation before marking it complete.
+- Check 13: verify the changelog finalization checklist item with an actual command, file inspection, or documented manual observation before marking it complete.
+- Check 14: verify the changelog finalization checklist item with an actual command, file inspection, or documented manual observation before marking it complete.
+- Check 15: verify the changelog finalization checklist item with an actual command, file inspection, or documented manual observation before marking it complete.
+### Definition of shippable for ResearchOps
+- Check 1: verify the definition of shippable for researchops item with an actual command, file inspection, or documented manual observation before marking it complete.
+- Check 2: verify the definition of shippable for researchops item with an actual command, file inspection, or documented manual observation before marking it complete.
+- Check 3: verify the definition of shippable for researchops item with an actual command, file inspection, or documented manual observation before marking it complete.
+- Check 4: verify the definition of shippable for researchops item with an actual command, file inspection, or documented manual observation before marking it complete.
+- Check 5: verify the definition of shippable for researchops item with an actual command, file inspection, or documented manual observation before marking it complete.
+- Check 6: verify the definition of shippable for researchops item with an actual command, file inspection, or documented manual observation before marking it complete.
+- Check 7: verify the definition of shippable for researchops item with an actual command, file inspection, or documented manual observation before marking it complete.
+- Check 8: verify the definition of shippable for researchops item with an actual command, file inspection, or documented manual observation before marking it complete.
+- Check 9: verify the definition of shippable for researchops item with an actual command, file inspection, or documented manual observation before marking it complete.
+- Check 10: verify the definition of shippable for researchops item with an actual command, file inspection, or documented manual observation before marking it complete.
+- Check 11: verify the definition of shippable for researchops item with an actual command, file inspection, or documented manual observation before marking it complete.
+- Check 12: verify the definition of shippable for researchops item with an actual command, file inspection, or documented manual observation before marking it complete.
+- Check 13: verify the definition of shippable for researchops item with an actual command, file inspection, or documented manual observation before marking it complete.
+- Check 14: verify the definition of shippable for researchops item with an actual command, file inspection, or documented manual observation before marking it complete.
+- Check 15: verify the definition of shippable for researchops item with an actual command, file inspection, or documented manual observation before marking it complete.
 
 ## ResearchOps-specific application
-
-The chapter belongs to these project locations:
-- `CHANGELOG.md` — complete version history
-- `ROADMAP.md` — all weeks marked ✅
-- `pyproject.toml` — version bumped to `1.0.0`
-- `src/researchops/__init__.py` — `__version__ = "1.0.0"`
-Study those files in this order:
-1. Find the user-facing entry point.
-2. Find the service or core concept that owns the meaning.
-3. Find the infrastructure only when outside resources are needed.
-4. Find the tests that prove the behavior.
-5. Find the validation command that a learner runs manually.
-The goal is to know why each file exists.
-If two files seem to own the same decision, stop and clarify the boundary.
+ResearchOps processes research papers through a modular monolith.
+The final release must respect that architecture.
+The CLI and API are delivery layers.
+They should wire services, not contain business rules.
+Services coordinate use cases.
+Services should depend on protocols from `core/interfaces.py`.
+Infrastructure modules such as storage, parsing, search, ML, and workers implement those protocols.
+The final audit should follow real ResearchOps workflows:
+- Can a learner discover PDFs with the CLI?
+- Can a parsed paper be saved and retrieved?
+- Can keyword search return understandable results?
+- Can semantic search use embeddings without hiding dependency assumptions?
+- Can classifier and experiment features explain what they did?
+- Can the API expose service behavior without duplicating business logic?
+- Can worker jobs transition through states predictably?
+- Can RAG assemble retrieved context and prompt text in a way that can be tested?
+- Can Docker and environment files run without relying on private machine state?
+- Can the portfolio documentation explain the project in five minutes?
+The release is not only about whether each feature exists.
+It is about whether the features form one coherent system.
+- Workflow audit: `scan sample papers` must have a clear command, expected result, failure behavior, and documentation pointer.
+- Workflow audit: `ingest parsed documents` must have a clear command, expected result, failure behavior, and documentation pointer.
+- Workflow audit: `run keyword search` must have a clear command, expected result, failure behavior, and documentation pointer.
+- Workflow audit: `run semantic search` must have a clear command, expected result, failure behavior, and documentation pointer.
+- Workflow audit: `classify a topic` must have a clear command, expected result, failure behavior, and documentation pointer.
+- Workflow audit: `record an experiment` must have a clear command, expected result, failure behavior, and documentation pointer.
+- Workflow audit: `serve API request` must have a clear command, expected result, failure behavior, and documentation pointer.
+- Workflow audit: `process worker job` must have a clear command, expected result, failure behavior, and documentation pointer.
+- Workflow audit: `draft RAG answer` must have a clear command, expected result, failure behavior, and documentation pointer.
+- Workflow audit: `run Docker demo` must have a clear command, expected result, failure behavior, and documentation pointer.
 
 ## Code examples with line-by-line explanation
-
+### Example 1: version consistency check
 ```python
-def is_major_release(version: str) -> bool:
-    major, minor, patch = version.split(".")
-    return int(major) >= 1 and int(minor) == 0 and int(patch) == 0
+from pathlib import Path
+
+package_init = Path("src/researchops/__init__.py")
+pyproject = Path("pyproject.toml")
+
+init_text = package_init.read_text()
+project_text = pyproject.read_text()
+
+expected = "1.0.0"
+
+assert f'__version__ = "{expected}"' in init_text
+assert f'version = "{expected}"' in project_text
 ```
+Line 1 imports `Path`, the beginner-friendly object for filesystem paths.
+Line 3 points to the package initialization file where Python code usually exposes `__version__`.
+Line 4 points to `pyproject.toml`, the packaging metadata file.
+Line 6 reads the package file into a string.
+Line 7 reads the project metadata into a string.
+Line 9 stores the release version once so the check does not repeat a magic value.
+Line 11 asserts that `src/researchops/__init__.py` advertises the same version.
+Line 12 asserts that `pyproject.toml` advertises the same version.
+This is a release-hardening example because mismatched versions confuse users and release tools.
+### Example 2: release checklist command runner
+```python
+import subprocess
 
-Line-by-line explanation:
-- Line 1: `def is_major_release(version: str) -> bool:` — This names a reusable action and shows what information it receives.
-- Line 2: `major, minor, patch = version.split(".")` — This stores a clear intermediate value for the next step.
-- Line 3: `return int(major) >= 1 and int(minor) == 0 and int(patch) == 0` — This produces the result or performs the declared setup step.
+commands = [
+    ["researchops", "--help"],
+    ["pytest", "-q"],
+    ["ruff", "check", "src", "tests"],
+]
 
-How to use this example:
-- Name the input.
-- Name the output.
-- Predict the result before running anything.
-- Connect the shape to the real ResearchOps file.
-- Write one sentence about why each line belongs.
-
-## Common beginner mistakes
-
-- **Mistake:** Pasting code before knowing the owner of the behavior.
-  **Why it hurts:** it hides the mental model and makes debugging harder.
-  **Better move:** make one small behavior clear, then prove it.
-- **Mistake:** Changing many files at once.
-  **Why it hurts:** it hides the mental model and makes debugging harder.
-  **Better move:** make one small behavior clear, then prove it.
-- **Mistake:** Skipping the failure path.
-  **Why it hurts:** it hides the mental model and makes debugging harder.
-  **Better move:** make one small behavior clear, then prove it.
-- **Mistake:** Reading only the happy path test.
-  **Why it hurts:** it hides the mental model and makes debugging harder.
-  **Better move:** make one small behavior clear, then prove it.
-- **Mistake:** Ignoring the validation command.
-  **Why it hurts:** it hides the mental model and makes debugging harder.
-  **Better move:** make one small behavior clear, then prove it.
-- **Mistake:** Using vague names.
-  **Why it hurts:** it hides the mental model and makes debugging harder.
-  **Better move:** make one small behavior clear, then prove it.
-- **Mistake:** Putting business rules in the user interface layer.
-  **Why it hurts:** it hides the mental model and makes debugging harder.
-  **Better move:** make one small behavior clear, then prove it.
-- **Mistake:** Treating logs, errors, and tests as decoration.
-  **Why it hurts:** it hides the mental model and makes debugging harder.
-  **Better move:** make one small behavior clear, then prove it.
-- **Mistake:** Optimizing before correctness is visible.
-  **Why it hurts:** it hides the mental model and makes debugging harder.
-  **Better move:** make one small behavior clear, then prove it.
-- **Mistake:** Building future-week features early.
-  **Why it hurts:** it hides the mental model and makes debugging harder.
-  **Better move:** make one small behavior clear, then prove it.
-
-## Debugging guidance
-
-- Copy the exact failing command.
-- Read the first useful error line.
-- Read the final error line.
-- Classify the failure as import, input, state, file, database, network, model, or expectation.
-- Reproduce it with the smallest command.
-- Inspect the value closest to the failure.
-- Fix the cause, not only the symptom.
-- Run the narrowest test.
-- Run the chapter validation command.
-- Write down what the error was teaching.
-Debugging questions:
-- What did I expect?
-- What happened?
-- Which value first became wrong?
-- Which layer created that value?
-- Which test should catch this next time?
-
-## Design tradeoffs
-
-- **Simple first version:** Easy to understand, but not the final production shape.
-- **Clear layers:** More files, but less confusion as features grow.
-- **Explicit errors:** More code, but failures become teachable.
-- **Small unit tests:** Fast feedback, but less end-to-end confidence.
-- **Integration tests:** Real wiring, but slower and more setup.
-- **Configuration:** Flexible behavior, but defaults must be clear.
-The right question is not "What is the fanciest design?"
-The right question is "What design teaches the responsibility clearly and can grow next week?"
-
-## Testing implications
-
-Tests for this chapter:
-- All existing tests pass (no regressions introduced)
-- End-to-end: `researchops --help`, full pipeline commands
-Validation commands:
-```bash
-pytest --cov=researchops --cov-report=term-missing -q
-ruff check src tests
-researchops --help
-git tag v1.0.0
+for command in commands:
+    completed = subprocess.run(command, check=False)
+    if completed.returncode != 0:
+        raise SystemExit(f"Release check failed: {command}")
 ```
-- Arrange the data.
-- Act on the system.
-- Assert the visible promise.
-- Check one failure path.
-- Keep unit tests fast.
-- Use integration tests only when real wiring matters.
-
-## Architecture implications
-
-ResearchOps stays understandable when dependencies point inward.
-```text
-CLI / API / Worker -> Services -> Core
-Infrastructure implements core-facing contracts and is wired at the outside.
-```
-- Does the UI layer avoid business logic?
-- Does the service layer own workflow decisions?
-- Does core avoid infrastructure imports?
-- Does infrastructure do outside-world work?
-- Do tests use fakes when possible?
-Architecture is not ceremony.
-Architecture is named responsibility.
-
-## How this connects to AI engineering / ML research
-
-AI engineering needs more than models.
-It needs reliable data flow, clear interfaces, repeatable experiments, visible failures, and honest evaluation.
-Week 20 contributes by making **final hardening and v1.0 release** clear enough to trust.
-- Bad data creates bad model behavior.
-- Unclear boundaries make experiments hard to reproduce.
-- Missing tests let regressions change research results silently.
-- Good logs and errors shorten investigation time.
-- Clear documentation lets future users understand the system.
-
-## Mini quizzes
-
-- What problem does Week 20 solve?
-- What is the main input?
-- What is the main output?
-- Which file owns the main responsibility?
-- Which layer should not contain business logic?
-- What is one happy path?
-- What is one failure path?
-- What command proves the chapter works?
-- What should you not build early?
-- How does this prepare the next week?
-
-## Explain-it-aloud prompts
-
-- Explain Final Hardening and v1.0 Release in simple words.
-- Explain the data flow from input to result.
-- Explain the first file you would open.
-- Explain the test that gives confidence.
-- Explain what can break.
-- Explain the tradeoff made in this chapter.
-- Explain what you still find weak.
-
-## What to memorize
-
-- The topic: Final Hardening and v1.0 Release.
-- The milestone: `v1.0.0` is tagged. CI is green. Every ROADMAP.md row is ✅. A demo exists. The project is portfolio-ready.
-- The main project files.
-- The validation command.
-- The boundary rule for the layer you are touching.
-- The habit of testing before moving forward.
-
-## What to understand deeply
-
-- Why this feature belongs now.
-- How data moves through the chapter.
-- Which file owns which decision.
-- How the failure path is handled.
-- Why the tests prove behavior.
-- How this week makes future work safer.
-
-## What not to worry about yet
-
-- Perfect scale.
-- Fancy abstractions.
-- Future-week features.
-- Every option in every library.
-- Premature optimization.
-- Comparing your speed to someone else.
-Focus on the milestone.
-A clear small milestone beats a confusing large one.
-
-## Bridge to next week
-
-This is the final week, so the bridge is into maintenance, presentation, and responsible extension after v1.0.
-- Run validation.
-- Explain the main files.
-- Explain one failure.
-- Explain one test.
-- Write down what still feels weak before moving on.
-
-## Guided deepening drills
-
-Use these drills if the chapter still feels abstract.
-- Drill 1: Trace `Semantic versioning: MAJOR.MINOR.PATCH and what each number means` from user input to project result.
-- Drill 2: Write one sentence defining `Semantic versioning: MAJOR.MINOR.PATCH and what each number means` without copying the notes.
-- Drill 3: Find the file where `Semantic versioning: MAJOR.MINOR.PATCH and what each number means` appears or should appear.
-- Drill 4: Name one wrong implementation of `Semantic versioning: MAJOR.MINOR.PATCH and what each number means` and why it would hurt.
-- Drill 5: Name one test that would protect `Semantic versioning: MAJOR.MINOR.PATCH and what each number means`.
-- Drill 6: Trace `Release checklist discipline: scope control, no new features before release` from user input to project result.
-- Drill 7: Write one sentence defining `Release checklist discipline: scope control, no new features before release` without copying the notes.
-- Drill 8: Find the file where `Release checklist discipline: scope control, no new features before release` appears or should appear.
-- Drill 9: Name one wrong implementation of `Release checklist discipline: scope control, no new features before release` and why it would hurt.
-- Drill 10: Name one test that would protect `Release checklist discipline: scope control, no new features before release`.
-- Drill 11: Trace `Changelog writing: what changed, for whom, and why` from user input to project result.
-- Drill 12: Write one sentence defining `Changelog writing: what changed, for whom, and why` without copying the notes.
-- Drill 13: Find the file where `Changelog writing: what changed, for whom, and why` appears or should appear.
-- Drill 14: Name one wrong implementation of `Changelog writing: what changed, for whom, and why` and why it would hurt.
-- Drill 15: Name one test that would protect `Changelog writing: what changed, for whom, and why`.
-- Drill 16: Trace `Git tagging: `git tag -a v1.0.0 -m "..."`` from user input to project result.
-- Drill 17: Write one sentence defining `Git tagging: `git tag -a v1.0.0 -m "..."`` without copying the notes.
-- Drill 18: Find the file where `Git tagging: `git tag -a v1.0.0 -m "..."`` appears or should appear.
-- Drill 19: Name one wrong implementation of `Git tagging: `git tag -a v1.0.0 -m "..."`` and why it would hurt.
-- Drill 20: Name one test that would protect `Git tagging: `git tag -a v1.0.0 -m "..."``.
-- Drill 21: Trace `Final retrospective: 20 weeks in review` from user input to project result.
-- Drill 22: Write one sentence defining `Final retrospective: 20 weeks in review` without copying the notes.
-- Drill 23: Find the file where `Final retrospective: 20 weeks in review` appears or should appear.
-- Drill 24: Name one wrong implementation of `Final retrospective: 20 weeks in review` and why it would hurt.
-- Drill 25: Name one test that would protect `Final retrospective: 20 weeks in review`.
-- Drill 26: Draw the Week 20 data flow in four boxes.
-- Drill 27: Say why `Final Hardening and v1.0 Release` belongs in this month of the curriculum.
-- Drill 28: Rewrite one error message in beginner-friendly language.
-- Drill 29: List the exact assumptions made by the example code.
-- Drill 30: List the exact assumptions checked by the tests.
-- Drill 31: Point to the line where raw input becomes project meaning.
-- Drill 32: Point to the line where the result becomes visible to a user.
-- Drill 33: Explain what would happen if the main file were deleted.
-- Drill 34: Explain what would happen if the main test were deleted.
-- Drill 35: Describe the smallest manual check you can run.
-- Drill 36: Describe the smallest automated check you can run.
-- Drill 37: Name the most likely beginner mistake for this week.
-- Drill 38: Name the safest recovery move for that mistake.
-- Drill 39: Explain what knowledge should be carried into the next chapter.
-- Drill 40: Trace `Semantic versioning: MAJOR.MINOR.PATCH and what each number means` from user input to project result.
-- Drill 41: Write one sentence defining `Semantic versioning: MAJOR.MINOR.PATCH and what each number means` without copying the notes.
-- Drill 42: Find the file where `Semantic versioning: MAJOR.MINOR.PATCH and what each number means` appears or should appear.
-- Drill 43: Name one wrong implementation of `Semantic versioning: MAJOR.MINOR.PATCH and what each number means` and why it would hurt.
-- Drill 44: Name one test that would protect `Semantic versioning: MAJOR.MINOR.PATCH and what each number means`.
-- Drill 45: Trace `Release checklist discipline: scope control, no new features before release` from user input to project result.
-- Drill 46: Write one sentence defining `Release checklist discipline: scope control, no new features before release` without copying the notes.
-- Drill 47: Find the file where `Release checklist discipline: scope control, no new features before release` appears or should appear.
-- Drill 48: Name one wrong implementation of `Release checklist discipline: scope control, no new features before release` and why it would hurt.
-- Drill 49: Name one test that would protect `Release checklist discipline: scope control, no new features before release`.
-- Drill 50: Trace `Changelog writing: what changed, for whom, and why` from user input to project result.
-- Drill 51: Write one sentence defining `Changelog writing: what changed, for whom, and why` without copying the notes.
-- Drill 52: Find the file where `Changelog writing: what changed, for whom, and why` appears or should appear.
-- Drill 53: Name one wrong implementation of `Changelog writing: what changed, for whom, and why` and why it would hurt.
-- Drill 54: Name one test that would protect `Changelog writing: what changed, for whom, and why`.
-- Drill 55: Trace `Git tagging: `git tag -a v1.0.0 -m "..."`` from user input to project result.
-- Drill 56: Write one sentence defining `Git tagging: `git tag -a v1.0.0 -m "..."`` without copying the notes.
-- Drill 57: Find the file where `Git tagging: `git tag -a v1.0.0 -m "..."`` appears or should appear.
-- Drill 58: Name one wrong implementation of `Git tagging: `git tag -a v1.0.0 -m "..."`` and why it would hurt.
-- Drill 59: Name one test that would protect `Git tagging: `git tag -a v1.0.0 -m "..."``.
-- Drill 60: Trace `Final retrospective: 20 weeks in review` from user input to project result.
-- Drill 61: Write one sentence defining `Final retrospective: 20 weeks in review` without copying the notes.
-- Drill 62: Find the file where `Final retrospective: 20 weeks in review` appears or should appear.
-- Drill 63: Name one wrong implementation of `Final retrospective: 20 weeks in review` and why it would hurt.
-- Drill 64: Name one test that would protect `Final retrospective: 20 weeks in review`.
-- Drill 65: Draw the Week 20 data flow in four boxes.
-- Drill 66: Say why `Final Hardening and v1.0 Release` belongs in this month of the curriculum.
-- Drill 67: Rewrite one error message in beginner-friendly language.
-- Drill 68: List the exact assumptions made by the example code.
-- Drill 69: List the exact assumptions checked by the tests.
-- Drill 70: Point to the line where raw input becomes project meaning.
-- Drill 71: Point to the line where the result becomes visible to a user.
-- Drill 72: Explain what would happen if the main file were deleted.
-- Drill 73: Explain what would happen if the main test were deleted.
-- Drill 74: Describe the smallest manual check you can run.
-- Drill 75: Describe the smallest automated check you can run.
-- Drill 76: Name the most likely beginner mistake for this week.
-- Drill 77: Name the safest recovery move for that mistake.
-- Drill 78: Explain what knowledge should be carried into the next chapter.
-- Drill 79: Trace `Semantic versioning: MAJOR.MINOR.PATCH and what each number means` from user input to project result.
-- Drill 80: Write one sentence defining `Semantic versioning: MAJOR.MINOR.PATCH and what each number means` without copying the notes.
-- Drill 81: Find the file where `Semantic versioning: MAJOR.MINOR.PATCH and what each number means` appears or should appear.
-- Drill 82: Name one wrong implementation of `Semantic versioning: MAJOR.MINOR.PATCH and what each number means` and why it would hurt.
-- Drill 83: Name one test that would protect `Semantic versioning: MAJOR.MINOR.PATCH and what each number means`.
-- Drill 84: Trace `Release checklist discipline: scope control, no new features before release` from user input to project result.
-- Drill 85: Write one sentence defining `Release checklist discipline: scope control, no new features before release` without copying the notes.
-- Drill 86: Find the file where `Release checklist discipline: scope control, no new features before release` appears or should appear.
-- Drill 87: Name one wrong implementation of `Release checklist discipline: scope control, no new features before release` and why it would hurt.
-- Drill 88: Name one test that would protect `Release checklist discipline: scope control, no new features before release`.
-- Drill 89: Trace `Changelog writing: what changed, for whom, and why` from user input to project result.
-- Drill 90: Write one sentence defining `Changelog writing: what changed, for whom, and why` without copying the notes.
-- Drill 91: Find the file where `Changelog writing: what changed, for whom, and why` appears or should appear.
-- Drill 92: Name one wrong implementation of `Changelog writing: what changed, for whom, and why` and why it would hurt.
-- Drill 93: Name one test that would protect `Changelog writing: what changed, for whom, and why`.
-- Drill 94: Trace `Git tagging: `git tag -a v1.0.0 -m "..."`` from user input to project result.
-- Drill 95: Write one sentence defining `Git tagging: `git tag -a v1.0.0 -m "..."`` without copying the notes.
-- Drill 96: Find the file where `Git tagging: `git tag -a v1.0.0 -m "..."`` appears or should appear.
-- Drill 97: Name one wrong implementation of `Git tagging: `git tag -a v1.0.0 -m "..."`` and why it would hurt.
-- Drill 98: Name one test that would protect `Git tagging: `git tag -a v1.0.0 -m "..."``.
-- Drill 99: Trace `Final retrospective: 20 weeks in review` from user input to project result.
-- Drill 100: Write one sentence defining `Final retrospective: 20 weeks in review` without copying the notes.
-- Drill 101: Find the file where `Final retrospective: 20 weeks in review` appears or should appear.
-- Drill 102: Name one wrong implementation of `Final retrospective: 20 weeks in review` and why it would hurt.
-- Drill 103: Name one test that would protect `Final retrospective: 20 weeks in review`.
-- Drill 104: Draw the Week 20 data flow in four boxes.
-
-<!-- LEARNING_FORMAT_END -->
-
----
-
-# Existing detailed notes
-## What "done" actually means
-
-There is no perfect software. "Done" for a v1.0 release means:
-
-1. The stated requirements are met.
-2. The tests pass.
-3. The documentation is accurate.
-4. The project can be demonstrated end-to-end.
-5. You can talk about it confidently.
-
-None of these say "all possible features are built" or "all edge cases are handled". Software is never complete. "Done" is a decision, not a state.
-
-The most common failure mode for side projects is **infinite polish**. This is the loop where you never release because there is always one more thing to fix or add. Breaking this loop requires explicitly deciding that the current state is version 1.0 and committing to that decision.
-
-The discipline of finishing is as important as the discipline of building. Employers care whether you can ship, not just whether you can code.
-
----
-
-## Why not to add features forever
-
-Every new feature added to an unreleased project:
-- Increases the scope of what must be tested before release.
-- Introduces new bugs that delay release further.
-- Makes the codebase harder to understand in an interview.
-- Dilutes your portfolio story (if it does five things adequately, it does none of them memorably).
-
-The right time to stop adding features to v1.0 is when the core feature set is complete and working. All future features belong in v1.1 or later.
-
-Before finalising v1.0, write down everything you want to add. Then move every item to a `ROADMAP.md` entry labelled v1.1 or later. This is not giving up. It is scope management, which is a professional skill.
-
----
-
-## Release
-
-A **release** is a named, versioned snapshot of your software that has been tested and documented. It is a statement: "This version, at this point in time, is intentionally made available."
-
-For an open-source project on GitHub, a release consists of:
-1. A version number (e.g., `1.0.0`).
-2. A git tag pointing to the release commit.
-3. A GitHub Release (on the Releases page) with release notes.
-4. An updated changelog.
-
-The act of creating a release forces you to:
-- Verify the version number is correct everywhere.
-- Write release notes that explain what changed.
-- Confirm the tests pass one final time.
-- Make a public statement that this version works.
-
----
-
-## Version
-
-A **version number** is a label that identifies a specific state of the software. The standard format is `MAJOR.MINOR.PATCH`, known as **semantic versioning** (SemVer).
-
-- **MAJOR**: incremented when you make a breaking change. Existing users must update their code to use the new version.
-- **MINOR**: incremented when you add new functionality in a backward-compatible way. Existing users do not need to change anything.
-- **PATCH**: incremented when you fix bugs without adding new functionality. Always backward-compatible.
-
-For v1.0.0:
-- This is the first intentional public release.
-- There is no previous version to break compatibility with.
-- All previous versions were development versions (0.x.x).
-
-Version numbers must be consistent across three places:
-1. `pyproject.toml`: `version = "1.0.0"`
-2. `src/researchops/__init__.py`: `__version__ = "1.0.0"`
-3. `CHANGELOG.md`: `[1.0.0] — YYYY-MM-DD`
-
-If any of these are out of sync, the release is incomplete.
-
----
-
-## Changelog
-
-A **changelog** is a human-readable file that lists what changed between versions. It is written for users, not for Git.
-
-The standard format (keepachangelog.com):
-
+Line 1 imports Python's standard subprocess module for running external commands.
+Line 3 creates a list of commands.
+Line 4 checks that the installed CLI exposes help text.
+Line 5 runs the test suite quietly.
+Line 6 runs Ruff against source and test code.
+Line 9 loops over each command.
+Line 10 runs the command and records its exit status.
+Line 11 checks whether the command failed.
+Line 12 exits with a message that names the failed command.
+This example teaches automation, but the curriculum validation file should remain the main source of exact commands.
+### Example 3: honest changelog entry
 ```markdown
-# Changelog
-
-All notable changes to this project will be documented in this file.
-
-## [Unreleased]
-
-## [1.0.0] — 2026-06-09
+## [1.0.0] - 2026-06-09
 
 ### Added
-- RAG assistant with grounded Q&A and citations (Week 17)
-- Docker packaging and environment configuration (Week 18)
-- Complete documentation and portfolio polish (Week 19)
-- v1.0.0 release with pre-release checklist (Week 20)
-
-### Changed
-- Settings module refactored to use pydantic-settings
+- Portfolio-ready ResearchOps workflow from paper discovery through RAG answer drafting.
+- Release checklist covering tests, lint, documentation, versioning, and demo readiness.
 
 ### Fixed
-- Vector index returns insufficient-evidence response when no relevant chunks found
-
-## [0.9.0] — 2026-05-12
-
-### Added
-- FastAPI REST layer (Week 14)
-- Async ingestion pipeline (Week 15)
-- Background job runner (Week 16)
-```
-
-The changelog should not duplicate commit messages. Commit messages are for developers. The changelog is for users. Describe what changed from the user's perspective, not how you implemented it.
-
----
-
-## Release notes
-
-**Release notes** are a summary of the changes in a specific release, written for the GitHub Releases page. They are shorter than the full changelog and focus on the most important changes.
-
-Template:
-
-```markdown
-## ResearchOps v1.0.0
-
-This is the first production-ready release of ResearchOps.
-
-### What's included
-
-- **RAG assistant**: ask questions about your research papers and receive
-  grounded answers with citations.
-- **Docker packaging**: run the app, API, and worker in containers with
-  docker compose.
-- **Complete documentation**: README, architecture diagrams, demo script,
-  and retrospective.
-
-### How to install
-
-\```bash
-pip install researchops==1.0.0
-\```
-
-Or clone the repository:
-
-\```bash
-git clone https://github.com/YOUR_USERNAME/researchops_python_mastery.git
-cd researchops_python_mastery
-pip install -e ".[all]"
-\```
+- Clarified final validation steps so release commands match the documented CLI.
 
 ### Known limitations
-
-See README.md for the full list of known limitations.
+- Local-first demo data is intentionally small and does not prove large-scale production throughput.
 ```
-
----
-
-## Regression testing
-
-A **regression** is a bug that was fixed in a previous version but reappears in a later version. The name comes from the idea of going backward (regressing) in quality.
-
-**Regression testing** is running the full test suite before a release to ensure that previously working behaviour still works.
-
-For v1.0.0, run:
-
+Line 1 names the release and date.
+Line 3 starts the Added category.
+Line 4 describes a user-visible capability, not an internal commit.
+Line 5 describes the release process artifact.
+Line 7 starts the Fixed category.
+Line 8 explains the user benefit of the fix.
+Line 10 starts Known limitations.
+Line 11 is honest about scale without apologizing for the project.
+### Example 4: annotated tag command
 ```bash
-pytest --cov=researchops --cov-report=term-missing -q
-ruff check src tests
+git tag -a v1.0.0 -m "ResearchOps v1.0.0"
+git show v1.0.0 --no-patch
 ```
+Line 1 creates an annotated tag named `v1.0.0`.
+`-a` means annotated, so the tag stores its own metadata and message.
+`-m` supplies the message without opening an editor.
+Line 2 shows the tag without printing the full patch.
+This confirms the tag points to the intended commit.
+In this assignment you are learning the command; do not create the tag until the release checklist is actually complete.
+
+## Common beginner mistakes
+1. Adding a feature during release week because it feels small.
+2. Marking a checklist item complete without running the command.
+3. Updating `pyproject.toml` but forgetting `src/researchops/__init__.py`.
+4. Writing a changelog that lists commits instead of user-facing changes.
+5. Creating a lightweight tag when the project standard asks for an annotated tag.
+6. Assuming Docker works because local Python works.
+7. Assuming the API works because service unit tests pass.
+8. Assuming services are clean without checking imports.
+9. Leaving private absolute paths in documentation or demo scripts.
+10. Ignoring a flaky test instead of investigating whether it reveals nondeterminism.
+11. Confusing known limitations with excuses.
+12. Writing release notes that overclaim production readiness.
+13. Optimizing rare workloads while common demo commands are slow.
+14. Changing validation commands without updating docs.
+15. Running commands from the wrong directory and trusting the result.
+
+## Debugging guidance
+Start every release bug by naming the failing layer: documentation, packaging, CLI, service, infrastructure, API, worker, search, ML, or environment.
+If a command is missing, inspect `pyproject.toml` entry points and CLI registration before editing service code.
+If imports fail, check editable install status and source layout before changing module names.
+If tests fail only together, look for shared state, database files, global configuration, random seeds, or environment variables.
+If an API endpoint returns the wrong status code, trace from route handler to service method to protocol implementation.
+If worker behavior is confusing, draw the job state transition before changing code.
+If RAG output is weak, separate retrieval failure from prompt construction failure.
+If semantic search behaves strangely, inspect chunking, embedding dimensions, and similarity ranking separately.
+If Docker fails, compare environment variables, installed extras, paths, and exposed commands with local execution.
+If performance is poor, measure the slow step before rewriting architecture.
+If documentation and behavior disagree, decide which is correct, then update the other immediately.
+If a release checklist item is ambiguous, rewrite the checklist item so the next learner can verify it concretely.
+Release debugging habit 1: change one variable at a time, rerun the smallest relevant check, and write down whether the evidence moved closer to the expected behavior.
+Release debugging habit 2: change one variable at a time, rerun the smallest relevant check, and write down whether the evidence moved closer to the expected behavior.
+Release debugging habit 3: change one variable at a time, rerun the smallest relevant check, and write down whether the evidence moved closer to the expected behavior.
+Release debugging habit 4: change one variable at a time, rerun the smallest relevant check, and write down whether the evidence moved closer to the expected behavior.
+Release debugging habit 5: change one variable at a time, rerun the smallest relevant check, and write down whether the evidence moved closer to the expected behavior.
+Release debugging habit 6: change one variable at a time, rerun the smallest relevant check, and write down whether the evidence moved closer to the expected behavior.
+Release debugging habit 7: change one variable at a time, rerun the smallest relevant check, and write down whether the evidence moved closer to the expected behavior.
+Release debugging habit 8: change one variable at a time, rerun the smallest relevant check, and write down whether the evidence moved closer to the expected behavior.
+Release debugging habit 9: change one variable at a time, rerun the smallest relevant check, and write down whether the evidence moved closer to the expected behavior.
+Release debugging habit 10: change one variable at a time, rerun the smallest relevant check, and write down whether the evidence moved closer to the expected behavior.
+Release debugging habit 11: change one variable at a time, rerun the smallest relevant check, and write down whether the evidence moved closer to the expected behavior.
+Release debugging habit 12: change one variable at a time, rerun the smallest relevant check, and write down whether the evidence moved closer to the expected behavior.
+Release debugging habit 13: change one variable at a time, rerun the smallest relevant check, and write down whether the evidence moved closer to the expected behavior.
+Release debugging habit 14: change one variable at a time, rerun the smallest relevant check, and write down whether the evidence moved closer to the expected behavior.
+Release debugging habit 15: change one variable at a time, rerun the smallest relevant check, and write down whether the evidence moved closer to the expected behavior.
+Release debugging habit 16: change one variable at a time, rerun the smallest relevant check, and write down whether the evidence moved closer to the expected behavior.
+Release debugging habit 17: change one variable at a time, rerun the smallest relevant check, and write down whether the evidence moved closer to the expected behavior.
+Release debugging habit 18: change one variable at a time, rerun the smallest relevant check, and write down whether the evidence moved closer to the expected behavior.
+Release debugging habit 19: change one variable at a time, rerun the smallest relevant check, and write down whether the evidence moved closer to the expected behavior.
+Release debugging habit 20: change one variable at a time, rerun the smallest relevant check, and write down whether the evidence moved closer to the expected behavior.
+Release debugging habit 21: change one variable at a time, rerun the smallest relevant check, and write down whether the evidence moved closer to the expected behavior.
+Release debugging habit 22: change one variable at a time, rerun the smallest relevant check, and write down whether the evidence moved closer to the expected behavior.
+Release debugging habit 23: change one variable at a time, rerun the smallest relevant check, and write down whether the evidence moved closer to the expected behavior.
+Release debugging habit 24: change one variable at a time, rerun the smallest relevant check, and write down whether the evidence moved closer to the expected behavior.
+Release debugging habit 25: change one variable at a time, rerun the smallest relevant check, and write down whether the evidence moved closer to the expected behavior.
+Release debugging habit 26: change one variable at a time, rerun the smallest relevant check, and write down whether the evidence moved closer to the expected behavior.
+Release debugging habit 27: change one variable at a time, rerun the smallest relevant check, and write down whether the evidence moved closer to the expected behavior.
+Release debugging habit 28: change one variable at a time, rerun the smallest relevant check, and write down whether the evidence moved closer to the expected behavior.
+Release debugging habit 29: change one variable at a time, rerun the smallest relevant check, and write down whether the evidence moved closer to the expected behavior.
+Release debugging habit 30: change one variable at a time, rerun the smallest relevant check, and write down whether the evidence moved closer to the expected behavior.
+Release debugging habit 31: change one variable at a time, rerun the smallest relevant check, and write down whether the evidence moved closer to the expected behavior.
+Release debugging habit 32: change one variable at a time, rerun the smallest relevant check, and write down whether the evidence moved closer to the expected behavior.
+Release debugging habit 33: change one variable at a time, rerun the smallest relevant check, and write down whether the evidence moved closer to the expected behavior.
+Release debugging habit 34: change one variable at a time, rerun the smallest relevant check, and write down whether the evidence moved closer to the expected behavior.
+Release debugging habit 35: change one variable at a time, rerun the smallest relevant check, and write down whether the evidence moved closer to the expected behavior.
+Release debugging habit 36: change one variable at a time, rerun the smallest relevant check, and write down whether the evidence moved closer to the expected behavior.
+Release debugging habit 37: change one variable at a time, rerun the smallest relevant check, and write down whether the evidence moved closer to the expected behavior.
+Release debugging habit 38: change one variable at a time, rerun the smallest relevant check, and write down whether the evidence moved closer to the expected behavior.
+Release debugging habit 39: change one variable at a time, rerun the smallest relevant check, and write down whether the evidence moved closer to the expected behavior.
+Release debugging habit 40: change one variable at a time, rerun the smallest relevant check, and write down whether the evidence moved closer to the expected behavior.
+
+## Design tradeoffs
+### Scope freeze versus last-minute improvement
+Scope freeze protects reliability.
+A last-minute improvement may be valuable, but it can invalidate tests and documentation.
+For v1.0, prefer deferring new ideas to the roadmap unless they fix a release-blocking defect.
+### Manual checklist versus automated checks
+Automated checks are repeatable and fast.
+Manual checks catch documentation, demo flow, and human comprehension issues.
+Use both.
+### Detailed release notes versus short release notes
+Detailed notes help future maintainers.
+Short notes help busy reviewers.
+A good release uses a concise summary plus links or sections for detail.
+### Honest limitations versus marketing polish
+Overclaiming makes a portfolio weaker because experienced reviewers notice.
+Honest limitations show judgment.
+### Local-first distribution versus cloud deployment
+ResearchOps v1.0 is allowed to be local-first if that is what the project supports.
+A broken cloud story is worse than a clear local story.
+
+## Testing implications
+Final testing should not be random.
+It should map to the release checklist.
+Unit tests prove small decisions.
+Integration tests prove real infrastructure boundaries.
+End-to-end tests prove user workflows.
+CLI tests prove command registration and output behavior.
+API tests prove HTTP contracts.
+Worker tests prove state transitions.
+Search tests prove ranking behavior on known inputs.
+ML tests prove training, prediction, and evaluation paths without requiring huge datasets.
+RAG tests prove retrieval and prompt assembly, not magical answer truth.
+Documentation checks prove commands in the docs still match the code.
+For v1.0, a failing test is either a bug, an outdated test, or an unclear requirement.
+Do not ignore it.
+
+## Architecture implications
+Week 20 is the architecture honesty check.
+`core/` must remain independent of CLI, API, storage, parsing, ML, workers, and search.
+`services/` must use protocols, not concrete infrastructure implementations.
+`cli/` and `api/` should wire dependencies and delegate business behavior.
+Infrastructure modules should implement protocols and keep external details contained.
+CPU-heavy work should not run inside asyncio event loops.
+Docker and packaging should not become excuses to bypass clean architecture.
+If a release fix requires violating dependency direction, pause and find the correct layer.
+Architecture is not decoration in this project.
+It is what makes the 20-week system understandable and testable.
+
+## How this connects to AI engineering / ML research
+AI engineering projects often fail at the handoff point.
+A notebook result may be impressive but not reproducible.
+A demo may work only with one private environment.
+A model may produce outputs without a clear test strategy.
+ResearchOps teaches that AI features need normal software discipline.
+Embeddings need storage and ranking tests.
+RAG needs retrieval checks and prompt transparency.
+Classifiers need experiment tracking and honest metrics.
+Workers need observable job states.
+APIs need stable contracts.
+Releases need versioning and changelogs.
+Final hardening turns an AI-flavored prototype into an engineering artifact.
+
+## Mini quizzes
+1. What does the MAJOR number mean in semantic versioning?
+2. When should ResearchOps use a PATCH release?
+3. Why is a changelog different from a git log?
+4. What is one example of a release-blocking bug?
+5. What is one example of a v1.1 idea that should not enter v1.0?
+6. Why do end-to-end tests not replace unit tests?
+7. Why should known limitations appear in release notes?
+8. What file is the source of release checklist truth?
+9. Why should services depend on protocols?
+10. What does an annotated git tag add compared with an unannotated label?
+
+## Explain-it-aloud prompts
+- Explain what ResearchOps v1.0 includes in two minutes.
+- Explain why Week 20 forbids new features.
+- Explain the difference between hardening and polishing.
+- Explain how you would verify the CLI from a fresh clone.
+- Explain how an API route should delegate to a service.
+- Explain how the release checklist protects future maintainers.
+- Explain one known limitation without sounding defensive.
+- Explain why a portfolio project needs a changelog.
+- Explain what you would do if a final validation command fails.
+- Explain what life after v1.0 should look like.
+
+## What to memorize
+`MAJOR.MINOR.PATCH` is the shape of semantic versioning.
+Breaking change means MAJOR.
+Backward-compatible feature means MINOR.
+Backward-compatible bug fix means PATCH.
+`CHANGELOG.md` explains user-visible changes.
+`RELEASE_CHECKLIST.md` is the release readiness source of truth.
+`git tag -a v1.0.0 -m "ResearchOps v1.0.0"` creates an annotated release tag.
+Never call a release done just because the code looks finished.
+
+## What to understand deeply
+Done is a relationship between code, tests, documentation, packaging, and user expectations.
+A release is a promise about a specific commit.
+Good error handling is part of user experience.
+Good tests are part of design, not paperwork.
+Architecture boundaries make final hardening possible because each layer has a job.
+Honest limitations increase trust.
+Saying no is an engineering skill.
+
+## What not to worry about yet
+Do not worry about building a SaaS platform.
+Do not worry about Kubernetes.
+Do not worry about distributed tracing.
+Do not worry about million-document scale unless the project claims to support it.
+Do not worry about replacing every local component with managed cloud services.
+Do not worry about inventing a perfect release process.
+Do not worry about adding advanced model providers after the scope freeze.
+Your job is to make v1.0 honest, coherent, and demonstrable.
+
+## Where to go from here / continuing the journey
+After v1.0, the next journey is maintenance.
+Maintenance means triaging issues, planning v1.1, protecting tests, and improving documentation when users get confused.
+A strong v1.1 might add one focused capability, not ten random features.
+A strong v1.1 might improve evaluation datasets, export workflows, authentication, deployment documentation, or observability.
+Choose the next step based on evidence from v1.0 users and demos.
+Keep the architecture boundaries that made the capstone understandable.
+Keep writing changelog entries as you work, not only at release time.
+Keep tests close to every behavior change.
+Keep known limitations honest.
+The point of this 20-week curriculum was never only to finish ResearchOps.
+The point was to learn how to build, explain, test, harden, and ship a real Python system.
+Carry that rhythm into every future project.
 
-If any test fails that was passing before, that is a regression. Fix it before releasing. Do not adjust the tests to make them pass if the underlying code is wrong.
-
-The purpose of the test suite is exactly this moment: to give you confidence that v1.0.0 works. If you have been maintaining tests throughout Weeks 1–20, this step is fast and reassuring.
-
----
-
-## Final validation
-
-Final validation is a structured, manual walkthrough of every major feature. It is not a substitute for automated tests, but a complement. Automated tests catch regressions; manual validation catches integration issues that are hard to automate.
-
-Final validation flow for ResearchOps:
-
-```
-1. Start from a fresh clone (no .venv, no data/).
-2. pip install -e ".[all]"
-3. researchops --help                        → shows all commands
-4. researchops ingest ./examples/sample_papers → ingests 3 papers
-5. researchops search "attention mechanism"  → returns ranked results
-6. researchops ask "what is attention?"      → returns answer with citations
-7. uvicorn researchops.api.main:app &        → API starts
-8. curl http://localhost:8000/papers         → returns paper list
-9. docker build -t researchops:local .       → image builds
-10. docker compose up api -d                 → API starts in container
-11. curl http://localhost:8000/papers        → returns paper list
-12. docker compose down                      → containers stop cleanly
-```
-
-Each step has an expected result. If any step fails, fix the code or documentation before tagging the release.
-
----
-
-## Known limitations section
-
-Write a `## Known Limitations` section in the README. This is mandatory for a production-grade project. Not because it makes the project look bad, but because:
-
-1. It shows engineering maturity. Engineers who know their system's limits are trustworthy.
-2. It prevents users from hitting a surprise failure that was known.
-3. It gives you a clear v1.1 roadmap.
-
-Known limitations for ResearchOps v1.0.0 (adapt to your actual state):
-
-- In-memory vector index not persisted: rebuilds on every start.
-- No authentication on the API.
-- PDF parsing may fail on scanned or complex-layout PDFs.
-- Single-user: concurrent writes to SQLite may produce errors.
-- Fake generator is the default: real generation requires Ollama or an API key.
-
----
-
-## Future roadmap
-
-The roadmap distinguishes what you committed to in v1.0.0 from what you plan for future versions. A `ROADMAP.md` file in the repository root should list:
-
-- ✅ Completed features (with week references)
-- 🔜 v1.1 planned features
-- 💡 v2.0 ideas (speculative)
-
-Example v1.1 roadmap items:
-- Persist vector index to SQLite
-- Streaming API endpoint for RAG responses
-- Hybrid search (keyword + semantic) with score fusion
-- Authentication layer for the API
-- OpenAI-compatible provider configuration
-
----
-
-## Retrospective
-
-A **retrospective** is a structured reflection on a completed project. It is not a performance review. It is a learning exercise.
-
-Five honest questions:
-
-1. **What did I build?** Be specific. List every major feature that actually works.
-
-2. **What did I learn that I did not expect to learn?** This is usually something about tradeoffs, not about syntax.
-
-3. **What would I do differently?** Pick one real thing. The best retrospectives are uncomfortable.
-
-4. **What was hardest?** Not what was most complex, but what cost you the most time or caused the most doubt.
-
-5. **What am I most proud of?** At least one thing should make you proud. If nothing does, the retrospective is not done.
-
-6. **What would v1.1 look like?** What would you build next?
-
-The retrospective in `docs/retrospective.md` is for you. Write it honestly. You will read it again in six months and be glad you did.
-
----
-
-## Portfolio handoff
-
-After tagging v1.0.0, the project is portfolio-ready. To hand it off to your portfolio:
-
-1. **Pin the repository** on your GitHub profile.
-2. **Update your LinkedIn** with a description of the project and a link.
-3. **Add it to your CV/resume** in the Projects section with a one-sentence description and a link.
-4. **Prepare the demo** from `docs/demo.md`. Practice it until it takes under two minutes.
-5. **Prepare the verbal story** (two to three minutes): problem, solution, what you learned.
-
-When someone asks "walk me through your portfolio", ResearchOps should be the first thing you mention. You have 20 weeks of work behind it. You can answer every technical question about it. You built every part of it yourself. That is rare and valuable.
-
----
-
-## How to decide if the project is done
-
-Use this decision tree before tagging:
-
-```
-Does pytest pass with 0 failures?
-  No → Fix failing tests first.
-  Yes → continue.
-
-Does ruff check src tests pass with 0 errors?
-  No → Fix lint errors first.
-  Yes → continue.
-
-Does the demo script in docs/demo.md run end-to-end without errors?
-  No → Fix the broken commands or update the expected output.
-  Yes → continue.
-
-Is the README accurate for the current state of the code?
-  No → Update the README.
-  Yes → continue.
-
-Is the CHANGELOG up to date with a [1.0.0] section?
-  No → Write the changelog entry.
-  Yes → continue.
-
-Is the version number 1.0.0 in pyproject.toml and __init__.py?
-  No → Bump the version.
-  Yes → continue.
-
-TAG THE RELEASE.
-```
-
-If you complete this checklist and everything passes, the project is done. Do not add more features. Tag the release.
-
----
-
-## Release checklist (copy to use)
-
-Copy this checklist to your final commit message or a temporary file:
-
-```
-Code quality:
-[ ] pytest passes: 0 failures, 0 errors
-[ ] ruff check src tests: 0 errors
-[ ] No hard-coded paths or credentials in source
-[ ] No .env file committed
-
-Functionality:
-[ ] researchops --help works
-[ ] researchops ingest ./examples/sample_papers works
-[ ] researchops search "query" works
-[ ] researchops ask "question" works
-[ ] FastAPI server starts and responds
-[ ] Docker image builds
-
-Documentation:
-[ ] README is accurate for the current code
-[ ] Quick Start section works from a fresh clone
-[ ] ARCHITECTURE.md matches current code
-[ ] docs/demo.md produces correct output
-[ ] Known limitations section is present and honest
-[ ] Future work section is present
-
-Release:
-[ ] Version is 1.0.0 in pyproject.toml
-[ ] Version is 1.0.0 in src/researchops/__init__.py
-[ ] CHANGELOG.md has [1.0.0] section with today's date
-[ ] git tag -a v1.0.0 -m "ResearchOps v1.0.0" created
-[ ] git push --tags completed
-[ ] GitHub Release created with release notes
-```
-
----
-
-## How to create a git release tag
-
-```bash
-# Commit all changes
-git add .
-git commit -m "v1.0.0: final release"
-
-# Create an annotated tag
-git tag -a v1.0.0 -m "ResearchOps v1.0.0 — 20-week build complete"
-
-# Push the tag to GitHub
-git push origin v1.0.0
-
-# On GitHub: go to Releases → Draft a new release → choose tag v1.0.0
-# Fill in the title and release notes from the template above
-# Click "Publish release"
-```
-
-An **annotated tag** (created with `-a`) stores metadata: the tagger, the date, and a message. It is different from a lightweight tag (created with just `git tag v1.0.0`). For releases, always use annotated tags.
-
----
-
-## What to say in a portfolio interview
-
-**When asked "tell me about this project"**:
-
-Open with the problem, not the technology. "I built a tool that lets researchers search and ask questions about their paper collections using retrieval-augmented generation." Then describe the pipeline briefly. Then mention one specific technical decision you made and why.
-
-**When asked "how does the RAG pipeline work"**:
-
-Walk through the 7 steps. Use the diagram. Emphasise that retrieval quality determines answer quality. Mention the fake generator and why it was the right choice for tests.
-
-**When asked "what would you improve"**:
-
-Use your known limitations list. Choose one that demonstrates systems thinking, not just more features. "I would persist the vector index to SQLite so users do not have to re-index on every startup. The challenge is updating specific chunks without invalidating the whole index."
-
-**When asked "how did you ensure quality"**:
-
-"I wrote unit tests for each component using dependency injection and fakes, so tests run in milliseconds without external dependencies. I added a CI pipeline that runs ruff and pytest on every push. Before the v1.0 release, I ran a final validation checklist end-to-end from a fresh clone."
-
-**When asked "how long did this take"**:
-
-"Twenty weeks, roughly five to ten hours per week. Each week built on the previous one: storage before search, search before RAG, RAG before packaging. The structured progression helped because I was never building on an unstable foundation."
-
----
-
-## Summary
-
-- "Done" is a decision, not a state. Make it explicitly.
-- Infinite polish is the enemy of shipping. List future features in the roadmap and leave them there.
-- A release is a named, tested, documented snapshot. v1.0.0 is the first public commitment.
-- Semantic versioning: MAJOR breaks, MINOR adds, PATCH fixes.
-- A changelog is for users. Commit messages are for developers.
-- Regression testing is running the full test suite before tagging.
-- Final validation is a manual end-to-end walkthrough from a fresh clone.
-- Known limitations demonstrate engineering maturity, not weakness.
-- A retrospective is a gift to future you.
-- Portfolio handoff requires: a working demo, a verbal story, and confidence.
 <!-- NAV_BOTTOM_START -->
 ---
 ⬅️ [← README](README.md) · ➡️ [Exercises →](exercises.md)
