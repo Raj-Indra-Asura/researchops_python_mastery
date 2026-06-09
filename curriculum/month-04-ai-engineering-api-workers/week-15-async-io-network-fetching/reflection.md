@@ -1,35 +1,54 @@
-# Reflection - Week 15 Async I/O and Network Fetching
+# Reflection — Week 15 Async I/O and Network Fetching
 
-## What I built
-- Fetch workflow:
-- Timeout and retry policy:
-- CLI/API surface I added:
+> Fill this in **after** validation passes. Write to your future self, honestly —
+> this is for learning, not for showing off. Answer with prompts only filled by
+> you; a blank or dishonest reflection is a failed week.
 
-## What broke
-- Async bug:
-- Network or timeout issue:
-- How I reproduced it:
+---
 
-## What I misunderstood
-- Coroutine behavior:
-- Retry policy nuance:
-- Why blocking code hurts the event loop:
+## Understanding
 
-## What I fixed
-- Async failure-handling bug:
-- Concurrency bug:
-- Evidence the fetcher is stable:
+- **What did I build?**
 
-## What I need to review
-- `asyncio`:
-- `httpx.AsyncClient`:
-- Async testing:
+- **What did I learn?**
 
-## Confidence score
-- Week 15 confidence (1-10):
-- Why that score:
+- **What broke?**
 
-## Next-week preparation checklist
-- [ ] I can explain async versus multiprocessing.
-- [ ] I know how to represent partial network failures.
-- [ ] I am ready to build a local worker system next week.
+- **What did I misunderstand?**
+
+- **How did I debug it?**
+
+## Testing
+
+- **Which tests caught real problems?**
+
+- **Which tests were missing?**
+
+## Engineering judgement
+
+- **What did I overengineer?**
+
+- **What did I underengineer?**
+
+- **What architecture rule did I protect?**
+
+- **What architecture rule did I almost violate?**
+
+## Mastery checks
+
+- **Can I explain this week's feature aloud, without reading the code?**
+
+- **Can I explain why Week 15 comes after Week 14 (FastAPI Layer)?**
+
+- **What still feels weak?**
+
+- **What should I review before next week?**
+
+## Verdict
+
+- **Confidence score (1–10):**
+
+- **Am I allowed to move forward? Why or why not?**
+  (If you cannot give an honest "yes" with evidence, the answer is no — repeat the
+  weak part before continuing. See this week's `validation.md` do-not-proceed
+  warnings.)
