@@ -1758,9 +1758,8 @@ On macOS/Linux, use `echo $?` instead.
 
 ### Create the scratch validation dataset on Windows
 
-Instead of the heredoc syntax, run the Python setup script directly:
-
-```powershell
+On macOS/Linux, the validation dataset can be created with a heredoc:
+```bash
 python - <<'PY'
 from pathlib import Path
 root = Path('.scratch/week-04-cli/papers')
