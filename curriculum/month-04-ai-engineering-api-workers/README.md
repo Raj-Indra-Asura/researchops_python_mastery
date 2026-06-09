@@ -1,5 +1,11 @@
 # Month 4 — AI Engineering: APIs, Async, and Workers
 
+<!-- NAV:TOP:START -->
+> **You are here:** [🏠 Home](../../README.md) › [🗺️ Roadmap](../../ROADMAP.md) › **Month 4** (AI Engineering, API, Async, Workers)
+>
+> 📘 This is a **book section overview**. Read it, then start the first week: [Week 13 — Embeddings & Semantic Search](./week-13-embeddings-semantic-search/README.md).
+<!-- NAV:TOP:END -->
+
 > **Book section 4 of 5.** This month the engineered ML system becomes an **AI
 > engineering platform.** You add semantic understanding, expose the system over
 > HTTP, fetch data concurrently, and run long jobs in the background.
@@ -173,3 +179,29 @@ git tag month-4-complete
 
 Your repo should now retrieve semantically, serve over HTTP, fetch
 concurrently, and run background jobs — all tested and lint-clean.
+
+<!-- NAV:BOTTOM:START -->
+---
+
+## 🧭 Navigation
+
+**Where am I?** Book section 4 of 5 — **Month 4 — AI Engineering, API, Async, Workers**.
+
+### Weeks in this month
+- [Week 13 — Embeddings & Semantic Search](./week-13-embeddings-semantic-search/README.md)
+- [Week 14 — FastAPI Layer](./week-14-fastapi-layer/README.md)
+- [Week 15 — Async I/O Network Fetching](./week-15-async-io-network-fetching/README.md)
+- [Week 16 — Local Worker & Job System](./week-16-local-worker-job-system/README.md)
+
+### ◀ Previous / Next ▶
+- ◀ **Previous:** [◀ Month 3 overview](../month-03-ml-engineering/README.md)
+- ▶ **Next:** [Month 5 overview ▶](../month-05-production-portfolio/README.md)
+
+### Optional paths
+- ▶️ **Ready to start?** → [Week 13 — Embeddings & Semantic Search](./week-13-embeddings-semantic-search/README.md)
+- 📓 **Finished a week?** → [Write your weekly report](../../docs/weekly-reports/README.md)
+- 🗺️ **Want the full map?** → [Roadmap](../../ROADMAP.md) · [Syllabus](../../SYLLABUS.md)
+
+### Global navigation
+[🏠 Home](../../README.md) · [🗺️ Roadmap](../../ROADMAP.md) · [📚 Syllabus](../../SYLLABUS.md) · [📓 Weekly reports](../../docs/weekly-reports/README.md)
+<!-- NAV:BOTTOM:END -->

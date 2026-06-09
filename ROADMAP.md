@@ -1,5 +1,11 @@
 # ResearchOps — 20-Week Roadmap
 
+<!-- NAV:TOP:START -->
+> **You are here:** [🏠 Home](README.md) › **🗺️ Roadmap** › [📚 Syllabus](SYLLABUS.md)
+>
+> 📘 Part of the ResearchOps book-like learning platform. Front door: [root README](README.md) · Begin: [Week 1](curriculum/month-01-python-core/week-01-foundations/README.md).
+<!-- NAV:TOP:END -->
+
 This document tracks the project milestone for each week. Update the status column as you complete each week.
 
 ## Status Key

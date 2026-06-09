@@ -1,5 +1,11 @@
 # Month 3 — ML Engineering
 
+<!-- NAV:TOP:START -->
+> **You are here:** [🏠 Home](../../README.md) › [🗺️ Roadmap](../../ROADMAP.md) › **Month 3** (ML Engineering)
+>
+> 📘 This is a **book section overview**. Read it, then start the first week: [Week 9 — Protocols & Clean Architecture](./week-09-protocols-clean-architecture/README.md).
+<!-- NAV:TOP:END -->
+
 > **Book section 3 of 5.** This month the working library becomes an *engineered*
 > system. You learn the architecture, testing, and reproducibility discipline
 > that separates a script from software — and you train and track your first real
@@ -175,3 +181,29 @@ git tag month-3-complete
 
 Your repo should now train and compare reproducible ML runs behind a clean,
 tested, CI-gated architecture.
+
+<!-- NAV:BOTTOM:START -->
+---
+
+## 🧭 Navigation
+
+**Where am I?** Book section 3 of 5 — **Month 3 — ML Engineering**.
+
+### Weeks in this month
+- [Week 9 — Protocols & Clean Architecture](./week-09-protocols-clean-architecture/README.md)
+- [Week 10 — Testing & Quality Gates](./week-10-testing-quality-gates/README.md)
+- [Week 11 — Classical ML: Topic Classification](./week-11-classical-ml-topic-classification/README.md)
+- [Week 12 — Experiment Tracking](./week-12-experiment-tracking/README.md)
+
+### ◀ Previous / Next ▶
+- ◀ **Previous:** [◀ Month 2 overview](../month-02-data-storage-concurrency/README.md)
+- ▶ **Next:** [Month 4 overview ▶](../month-04-ai-engineering-api-workers/README.md)
+
+### Optional paths
+- ▶️ **Ready to start?** → [Week 9 — Protocols & Clean Architecture](./week-09-protocols-clean-architecture/README.md)
+- 📓 **Finished a week?** → [Write your weekly report](../../docs/weekly-reports/README.md)
+- 🗺️ **Want the full map?** → [Roadmap](../../ROADMAP.md) · [Syllabus](../../SYLLABUS.md)
+
+### Global navigation
+[🏠 Home](../../README.md) · [🗺️ Roadmap](../../ROADMAP.md) · [📚 Syllabus](../../SYLLABUS.md) · [📓 Weekly reports](../../docs/weekly-reports/README.md)
+<!-- NAV:BOTTOM:END -->

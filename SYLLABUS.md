@@ -1,5 +1,11 @@
 # ResearchOps — Syllabus
 
+<!-- NAV:TOP:START -->
+> **You are here:** [🏠 Home](README.md) › [🗺️ Roadmap](ROADMAP.md) › **📚 Syllabus**
+>
+> 📘 Part of the ResearchOps book-like learning platform. Front door: [root README](README.md) · Begin: [Week 1](curriculum/month-01-python-core/week-01-foundations/README.md).
+<!-- NAV:TOP:END -->
+
 A 20-week Python mastery curriculum. Each entry is one chapter of the book.
 
 ---

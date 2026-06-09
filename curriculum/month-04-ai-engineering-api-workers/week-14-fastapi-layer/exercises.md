@@ -1,5 +1,11 @@
 # Exercises - Week 14 FastAPI Layer
 
+<!-- NAV:TOP:START -->
+> **You are here:** [🏠 Home](../../../README.md) › [🗺️ Roadmap](../../../ROADMAP.md) › [Month 4](../README.md) › [Week 14 — FastAPI Layer](./README.md) › **exercises.md**
+>
+> 📘 *ResearchOps reads like a book.* New here? Begin at the [root README](../../../README.md). Feeling lost? Open the [Roadmap](../../../ROADMAP.md).
+<!-- NAV:TOP:END -->
+
 ## Beginner
 
 1. **Health endpoint.** Create a FastAPI app in `src/researchops/api/main.py`. Add a `GET /health` route that returns `{"status": "ok"}`. Run it with `uvicorn` and open `http://localhost:8000/health` in a browser. Then write a `TestClient` test that asserts the status code is 200 and the body matches.
@@ -53,3 +59,45 @@
 4. **Auth stub.** Add an API key header requirement to all non-health routes: the client must send `X-API-Key: test-key` or the server returns `401 Unauthorized`. Implement this as a FastAPI dependency that reads the header and validates it against a configured key. In tests, pass the correct header. Also write a test that sends a wrong key and asserts `401`.
 
 5. **Load testing baseline.** Use Python's `concurrent.futures.ThreadPoolExecutor` to send 100 requests to the health endpoint from a test. Measure how long they take. Document the result. This is not about optimisation — it is about knowing what baseline performance looks like before you add async workers and caching in later weeks.
+
+<!-- NAV:BOTTOM:START -->
+---
+
+## 🧭 Navigation
+
+**Where am I?** Month 4 — AI Engineering, API, Async, Workers · **Week 14 — FastAPI Layer** · *exercises.md — the workbook* (step 3 of 6 this week).
+
+### ◀ Previous / Next ▶
+- ◀ **Previous:** [notes.md](./notes.md)
+- ▶ **Next:** [break_it.md](./break_it.md)
+
+### Read this week in order
+1. [Week overview (README)](./README.md)
+2. [notes.md](./notes.md)
+3. **➡ [exercises.md](./exercises.md) ← you are here**
+4. [break_it.md](./break_it.md)
+5. [validation.md](./validation.md)
+6. [reflection.md](./reflection.md)
+7. [Write your weekly report](../../../docs/weekly-reports/README.md)
+8. [Next week → Week 15](../../../curriculum/month-04-ai-engineering-api-workers/week-15-async-io-network-fetching/README.md)
+
+### Optional paths — where to go if…
+- 😕 **Confused by the concepts?** → [notes.md](./notes.md)
+- ✍️ **Want hands-on practice?** → [exercises.md](./exercises.md)
+- 💥 **Tests fail / want to understand failure?** → [break_it.md](./break_it.md)
+- ✅ **Think you are done?** → [validation.md](./validation.md)
+- 🪞 **Validation passed?** → [reflection.md](./reflection.md)
+- 📓 **Reflection complete?** → [Write your weekly report](../../../docs/weekly-reports/README.md)
+- 🚀 **Weekly report done?** → [Start Week 15 — Async I/O Network Fetching](../../../curriculum/month-04-ai-engineering-api-workers/week-15-async-io-network-fetching/README.md)
+
+### Stuck? Do this
+1. Re-read this week's [notes.md](./notes.md) slowly.
+2. Reproduce the failure modes in [break_it.md](./break_it.md).
+3. Re-run the [validation checklist](./validation.md).
+4. Zoom out to the [Month 4 overview](../README.md) or the [Roadmap](../../../ROADMAP.md).
+
+### Global navigation
+[🏠 Home](../../../README.md) · [🗺️ Roadmap](../../../ROADMAP.md) · [📚 Syllabus](../../../SYLLABUS.md) · [📦 Month 4 overview](../README.md) · [📄 Week 14 README](./README.md)
+
+*Returning later? The [Roadmap](../../../ROADMAP.md) is always your map back to the main path through all 20 weeks.*
+<!-- NAV:BOTTOM:END -->

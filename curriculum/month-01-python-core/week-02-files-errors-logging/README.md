@@ -1,5 +1,11 @@
 # Chapter 2: Files, Errors, and Logging
 
+<!-- NAV:TOP:START -->
+> **You are here:** [🏠 Home](../../../README.md) › [🗺️ Roadmap](../../../ROADMAP.md) › [Month 1](../README.md) › **Week 2 — Files, Errors, Logging**
+>
+> 📘 *ResearchOps reads like a book.* New here? Begin at the [root README](../../../README.md). Feeling lost? Open the [Roadmap](../../../ROADMAP.md).
+<!-- NAV:TOP:END -->
+
 ## The story of the week
 A ResearchOps user drops 50 PDFs into a folder and runs the scanner.
 Some files are valid.
@@ -180,3 +186,45 @@ Next week teaches you how to model papers cleanly.
 You will move from paths and exceptions into dataclasses, domain models, and richer object design.
 A dependable scanner is the foundation.
 A dependable model layer is what you build on top of it.
+
+<!-- NAV:BOTTOM:START -->
+---
+
+## 🧭 Navigation
+
+**Where am I?** Month 1 — Python Core and Project Foundation · **Week 2 — Files, Errors, Logging** · *Week overview (README)* (step 1 of 6 this week).
+
+### ◀ Previous / Next ▶
+- ◀ **Previous:** [Week 1 weekly report](../../../docs/weekly-reports/README.md)
+- ▶ **Next:** [notes.md](./notes.md)
+
+### Read this week in order
+1. **➡ [Week overview (README)](./README.md) ← you are here**
+2. [notes.md](./notes.md)
+3. [exercises.md](./exercises.md)
+4. [break_it.md](./break_it.md)
+5. [validation.md](./validation.md)
+6. [reflection.md](./reflection.md)
+7. [Write your weekly report](../../../docs/weekly-reports/README.md)
+8. [Next week → Week 3](../../../curriculum/month-01-python-core/week-03-oop-domain-modeling/README.md)
+
+### Optional paths — where to go if…
+- 😕 **Confused by the concepts?** → [notes.md](./notes.md)
+- ✍️ **Want hands-on practice?** → [exercises.md](./exercises.md)
+- 💥 **Tests fail / want to understand failure?** → [break_it.md](./break_it.md)
+- ✅ **Think you are done?** → [validation.md](./validation.md)
+- 🪞 **Validation passed?** → [reflection.md](./reflection.md)
+- 📓 **Reflection complete?** → [Write your weekly report](../../../docs/weekly-reports/README.md)
+- 🚀 **Weekly report done?** → [Start Week 3 — OOP & Domain Modeling](../../../curriculum/month-01-python-core/week-03-oop-domain-modeling/README.md)
+
+### Stuck? Do this
+1. Re-read this week's [notes.md](./notes.md) slowly.
+2. Reproduce the failure modes in [break_it.md](./break_it.md).
+3. Re-run the [validation checklist](./validation.md).
+4. Zoom out to the [Month 1 overview](../README.md) or the [Roadmap](../../../ROADMAP.md).
+
+### Global navigation
+[🏠 Home](../../../README.md) · [🗺️ Roadmap](../../../ROADMAP.md) · [📚 Syllabus](../../../SYLLABUS.md) · [📦 Month 1 overview](../README.md) · [📄 Week 2 README](./README.md)
+
+*Returning later? The [Roadmap](../../../ROADMAP.md) is always your map back to the main path through all 20 weeks.*
+<!-- NAV:BOTTOM:END -->

@@ -1,5 +1,11 @@
 # Exercises - Week 12 Experiment Tracking
 
+<!-- NAV:TOP:START -->
+> **You are here:** [🏠 Home](../../../README.md) › [🗺️ Roadmap](../../../ROADMAP.md) › [Month 3](../README.md) › [Week 12 — Experiment Tracking](./README.md) › **exercises.md**
+>
+> 📘 *ResearchOps reads like a book.* New here? Begin at the [root README](../../../README.md). Feeling lost? Open the [Roadmap](../../../ROADMAP.md).
+<!-- NAV:TOP:END -->
+
 ## Warm-up: Tracking mechanics
 
 **Exercise W12-1: Generate unique run IDs**
@@ -172,3 +178,45 @@ Write a function `find_best_run(experiments_dir: Path, metric: str) -> Experimen
 4. A colleague says: "I don't need experiment tracking — I just look at the last model." What failure scenario would change their mind?
 
 5. Where does file-based experiment tracking (JSON files) break down? When would you need a tool like MLflow or Weights & Biases?
+
+<!-- NAV:BOTTOM:START -->
+---
+
+## 🧭 Navigation
+
+**Where am I?** Month 3 — ML Engineering · **Week 12 — Experiment Tracking** · *exercises.md — the workbook* (step 3 of 6 this week).
+
+### ◀ Previous / Next ▶
+- ◀ **Previous:** [notes.md](./notes.md)
+- ▶ **Next:** [break_it.md](./break_it.md)
+
+### Read this week in order
+1. [Week overview (README)](./README.md)
+2. [notes.md](./notes.md)
+3. **➡ [exercises.md](./exercises.md) ← you are here**
+4. [break_it.md](./break_it.md)
+5. [validation.md](./validation.md)
+6. [reflection.md](./reflection.md)
+7. [Write your weekly report](../../../docs/weekly-reports/README.md)
+8. [Next week → Week 13](../../../curriculum/month-04-ai-engineering-api-workers/week-13-embeddings-semantic-search/README.md)
+
+### Optional paths — where to go if…
+- 😕 **Confused by the concepts?** → [notes.md](./notes.md)
+- ✍️ **Want hands-on practice?** → [exercises.md](./exercises.md)
+- 💥 **Tests fail / want to understand failure?** → [break_it.md](./break_it.md)
+- ✅ **Think you are done?** → [validation.md](./validation.md)
+- 🪞 **Validation passed?** → [reflection.md](./reflection.md)
+- 📓 **Reflection complete?** → [Write your weekly report](../../../docs/weekly-reports/README.md)
+- 🚀 **Weekly report done?** → [Start Week 13 — Embeddings & Semantic Search](../../../curriculum/month-04-ai-engineering-api-workers/week-13-embeddings-semantic-search/README.md)
+
+### Stuck? Do this
+1. Re-read this week's [notes.md](./notes.md) slowly.
+2. Reproduce the failure modes in [break_it.md](./break_it.md).
+3. Re-run the [validation checklist](./validation.md).
+4. Zoom out to the [Month 3 overview](../README.md) or the [Roadmap](../../../ROADMAP.md).
+
+### Global navigation
+[🏠 Home](../../../README.md) · [🗺️ Roadmap](../../../ROADMAP.md) · [📚 Syllabus](../../../SYLLABUS.md) · [📦 Month 3 overview](../README.md) · [📄 Week 12 README](./README.md)
+
+*Returning later? The [Roadmap](../../../ROADMAP.md) is always your map back to the main path through all 20 weeks.*
+<!-- NAV:BOTTOM:END -->

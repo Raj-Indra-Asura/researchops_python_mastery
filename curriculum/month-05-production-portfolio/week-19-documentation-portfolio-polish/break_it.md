@@ -1,5 +1,11 @@
 # Week 19 Break-It: Documentation
 
+<!-- NAV:TOP:START -->
+> **You are here:** [🏠 Home](../../../README.md) › [🗺️ Roadmap](../../../ROADMAP.md) › [Month 5](../README.md) › [Week 19 — Documentation & Portfolio Polish](./README.md) › **break_it.md**
+>
+> 📘 *ResearchOps reads like a book.* New here? Begin at the [root README](../../../README.md). Feeling lost? Open the [Roadmap](../../../ROADMAP.md).
+<!-- NAV:TOP:END -->
+
 ## Why break documentation?
 
 Documentation failures are not compiler errors. They are silent. A user follows your README, hits an error, and gives up. You never find out. Documentation break-it exercises train you to find the failures before your reader does.
@@ -126,3 +132,45 @@ Answer these in your `reflection.md`:
 2. Which section of the README was most confusing to an outside reader?
 3. How many stale or incorrect statements did you find?
 4. What is the one thing you were most wrong about in your initial documentation?
+
+<!-- NAV:BOTTOM:START -->
+---
+
+## 🧭 Navigation
+
+**Where am I?** Month 5 — Production and Portfolio · **Week 19 — Documentation & Portfolio Polish** · *break_it.md — the failure lab* (step 4 of 6 this week).
+
+### ◀ Previous / Next ▶
+- ◀ **Previous:** [exercises.md](./exercises.md)
+- ▶ **Next:** [validation.md](./validation.md)
+
+### Read this week in order
+1. [Week overview (README)](./README.md)
+2. [notes.md](./notes.md)
+3. [exercises.md](./exercises.md)
+4. **➡ [break_it.md](./break_it.md) ← you are here**
+5. [validation.md](./validation.md)
+6. [reflection.md](./reflection.md)
+7. [Write your weekly report](../../../docs/weekly-reports/README.md)
+8. [Next week → Week 20](../../../curriculum/month-05-production-portfolio/week-20-final-hardening-v1-release/README.md)
+
+### Optional paths — where to go if…
+- 😕 **Confused by the concepts?** → [notes.md](./notes.md)
+- ✍️ **Want hands-on practice?** → [exercises.md](./exercises.md)
+- 💥 **Tests fail / want to understand failure?** → [break_it.md](./break_it.md)
+- ✅ **Think you are done?** → [validation.md](./validation.md)
+- 🪞 **Validation passed?** → [reflection.md](./reflection.md)
+- 📓 **Reflection complete?** → [Write your weekly report](../../../docs/weekly-reports/README.md)
+- 🚀 **Weekly report done?** → [Start Week 20 — Final Hardening & v1.0 Release](../../../curriculum/month-05-production-portfolio/week-20-final-hardening-v1-release/README.md)
+
+### Stuck? Do this
+1. Re-read this week's [notes.md](./notes.md) slowly.
+2. Reproduce the failure modes in [break_it.md](./break_it.md).
+3. Re-run the [validation checklist](./validation.md).
+4. Zoom out to the [Month 5 overview](../README.md) or the [Roadmap](../../../ROADMAP.md).
+
+### Global navigation
+[🏠 Home](../../../README.md) · [🗺️ Roadmap](../../../ROADMAP.md) · [📚 Syllabus](../../../SYLLABUS.md) · [📦 Month 5 overview](../README.md) · [📄 Week 19 README](./README.md)
+
+*Returning later? The [Roadmap](../../../ROADMAP.md) is always your map back to the main path through all 20 weeks.*
+<!-- NAV:BOTTOM:END -->

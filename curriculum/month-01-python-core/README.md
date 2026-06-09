@@ -1,5 +1,11 @@
 # Month 1 — Python Core and Project Foundation
 
+<!-- NAV:TOP:START -->
+> **You are here:** [🏠 Home](../../README.md) › [🗺️ Roadmap](../../ROADMAP.md) › **Month 1** (Python Core and Project Foundation)
+>
+> 📘 This is a **book section overview**. Read it, then start the first week: [Week 1 — Foundations](./week-01-foundations/README.md).
+<!-- NAV:TOP:END -->
+
 > **Book section 1 of 5.** This is where ResearchOps comes alive. By the end of
 > the month you will have a small but *real* installable Python tool — and, more
 > importantly, you will understand every part of it.
@@ -167,3 +173,29 @@ git tag month-1-complete
 
 Your repository should now: install cleanly, pass `ruff` and `pytest`, and run
 `researchops scan ./examples/sample_papers` successfully.
+
+<!-- NAV:BOTTOM:START -->
+---
+
+## 🧭 Navigation
+
+**Where am I?** Book section 1 of 5 — **Month 1 — Python Core and Project Foundation**.
+
+### Weeks in this month
+- [Week 1 — Foundations](./week-01-foundations/README.md)
+- [Week 2 — Files, Errors, Logging](./week-02-files-errors-logging/README.md)
+- [Week 3 — OOP & Domain Modeling](./week-03-oop-domain-modeling/README.md)
+- [Week 4 — CLI & Packaging](./week-04-cli-packaging/README.md)
+
+### ◀ Previous / Next ▶
+- ◀ **Previous:** [◀ Root README (Start Here)](../../README.md)
+- ▶ **Next:** [Month 2 overview ▶](../month-02-data-storage-concurrency/README.md)
+
+### Optional paths
+- ▶️ **Ready to start?** → [Week 1 — Foundations](./week-01-foundations/README.md)
+- 📓 **Finished a week?** → [Write your weekly report](../../docs/weekly-reports/README.md)
+- 🗺️ **Want the full map?** → [Roadmap](../../ROADMAP.md) · [Syllabus](../../SYLLABUS.md)
+
+### Global navigation
+[🏠 Home](../../README.md) · [🗺️ Roadmap](../../ROADMAP.md) · [📚 Syllabus](../../SYLLABUS.md) · [📓 Weekly reports](../../docs/weekly-reports/README.md)
+<!-- NAV:BOTTOM:END -->

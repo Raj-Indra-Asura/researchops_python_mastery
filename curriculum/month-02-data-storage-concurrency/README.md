@@ -1,5 +1,11 @@
 # Month 2 — Data Storage and Concurrency
 
+<!-- NAV:TOP:START -->
+> **You are here:** [🏠 Home](../../README.md) › [🗺️ Roadmap](../../ROADMAP.md) › **Month 2** (Data Storage and Concurrency)
+>
+> 📘 This is a **book section overview**. Read it, then start the first week: [Week 5 — SQLite Storage](./week-05-sqlite-storage/README.md).
+<!-- NAV:TOP:END -->
+
 > **Book section 2 of 5.** This month the scanner stops forgetting. You turn a
 > one-shot tool into a **local research library** that ingests papers, stores
 > them, searches them, and parses them in parallel.
@@ -164,3 +170,29 @@ git tag month-2-complete
 
 Your repo should now ingest, store, de-duplicate, search, and parse in parallel —
 all with passing tests and clean lint.
+
+<!-- NAV:BOTTOM:START -->
+---
+
+## 🧭 Navigation
+
+**Where am I?** Book section 2 of 5 — **Month 2 — Data Storage and Concurrency**.
+
+### Weeks in this month
+- [Week 5 — SQLite Storage](./week-05-sqlite-storage/README.md)
+- [Week 6 — PDF Parsing Pipeline](./week-06-pdf-parsing-pipeline/README.md)
+- [Week 7 — Keyword Search & Data Quality](./week-07-keyword-search-data-quality/README.md)
+- [Week 8 — Multiprocessing Ingestion](./week-08-multiprocessing-ingestion/README.md)
+
+### ◀ Previous / Next ▶
+- ◀ **Previous:** [◀ Month 1 overview](../month-01-python-core/README.md)
+- ▶ **Next:** [Month 3 overview ▶](../month-03-ml-engineering/README.md)
+
+### Optional paths
+- ▶️ **Ready to start?** → [Week 5 — SQLite Storage](./week-05-sqlite-storage/README.md)
+- 📓 **Finished a week?** → [Write your weekly report](../../docs/weekly-reports/README.md)
+- 🗺️ **Want the full map?** → [Roadmap](../../ROADMAP.md) · [Syllabus](../../SYLLABUS.md)
+
+### Global navigation
+[🏠 Home](../../README.md) · [🗺️ Roadmap](../../ROADMAP.md) · [📚 Syllabus](../../SYLLABUS.md) · [📓 Weekly reports](../../docs/weekly-reports/README.md)
+<!-- NAV:BOTTOM:END -->

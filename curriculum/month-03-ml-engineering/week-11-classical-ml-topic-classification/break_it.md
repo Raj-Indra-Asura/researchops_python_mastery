@@ -1,5 +1,11 @@
 # Break It — Week 11 Classical ML Topic Classification
 
+<!-- NAV:TOP:START -->
+> **You are here:** [🏠 Home](../../../README.md) › [🗺️ Roadmap](../../../ROADMAP.md) › [Month 3](../README.md) › [Week 11 — Classical ML: Topic Classification](./README.md) › **break_it.md**
+>
+> 📘 *ResearchOps reads like a book.* New here? Begin at the [root README](../../../README.md). Feeling lost? Open the [Roadmap](../../../ROADMAP.md).
+<!-- NAV:TOP:END -->
+
 These experiments reveal how ML pipelines fail in ways that are easy to miss. Each one is designed to produce an instructive failure.
 
 ---
@@ -167,3 +173,45 @@ Add a label `survey` with exactly one training example. What happens during `tra
 3. What would improve the dataset more than switching the model class?
 4. If you had to report the quality of this model to a non-technical stakeholder, what would you say?
 5. What is the one thing you would change about your training dataset before adding more model complexity?
+
+<!-- NAV:BOTTOM:START -->
+---
+
+## 🧭 Navigation
+
+**Where am I?** Month 3 — ML Engineering · **Week 11 — Classical ML: Topic Classification** · *break_it.md — the failure lab* (step 4 of 6 this week).
+
+### ◀ Previous / Next ▶
+- ◀ **Previous:** [exercises.md](./exercises.md)
+- ▶ **Next:** [validation.md](./validation.md)
+
+### Read this week in order
+1. [Week overview (README)](./README.md)
+2. [notes.md](./notes.md)
+3. [exercises.md](./exercises.md)
+4. **➡ [break_it.md](./break_it.md) ← you are here**
+5. [validation.md](./validation.md)
+6. [reflection.md](./reflection.md)
+7. [Write your weekly report](../../../docs/weekly-reports/README.md)
+8. [Next week → Week 12](../../../curriculum/month-03-ml-engineering/week-12-experiment-tracking/README.md)
+
+### Optional paths — where to go if…
+- 😕 **Confused by the concepts?** → [notes.md](./notes.md)
+- ✍️ **Want hands-on practice?** → [exercises.md](./exercises.md)
+- 💥 **Tests fail / want to understand failure?** → [break_it.md](./break_it.md)
+- ✅ **Think you are done?** → [validation.md](./validation.md)
+- 🪞 **Validation passed?** → [reflection.md](./reflection.md)
+- 📓 **Reflection complete?** → [Write your weekly report](../../../docs/weekly-reports/README.md)
+- 🚀 **Weekly report done?** → [Start Week 12 — Experiment Tracking](../../../curriculum/month-03-ml-engineering/week-12-experiment-tracking/README.md)
+
+### Stuck? Do this
+1. Re-read this week's [notes.md](./notes.md) slowly.
+2. Reproduce the failure modes in [break_it.md](./break_it.md).
+3. Re-run the [validation checklist](./validation.md).
+4. Zoom out to the [Month 3 overview](../README.md) or the [Roadmap](../../../ROADMAP.md).
+
+### Global navigation
+[🏠 Home](../../../README.md) · [🗺️ Roadmap](../../../ROADMAP.md) · [📚 Syllabus](../../../SYLLABUS.md) · [📦 Month 3 overview](../README.md) · [📄 Week 11 README](./README.md)
+
+*Returning later? The [Roadmap](../../../ROADMAP.md) is always your map back to the main path through all 20 weeks.*
+<!-- NAV:BOTTOM:END -->

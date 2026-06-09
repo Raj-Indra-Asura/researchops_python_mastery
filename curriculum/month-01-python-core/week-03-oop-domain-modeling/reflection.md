@@ -1,4 +1,10 @@
 # Week 03 Reflection Prompts
+
+<!-- NAV:TOP:START -->
+> **You are here:** [🏠 Home](../../../README.md) › [🗺️ Roadmap](../../../ROADMAP.md) › [Month 1](../README.md) › [Week 3 — OOP & Domain Modeling](./README.md) › **reflection.md**
+>
+> 📘 *ResearchOps reads like a book.* New here? Begin at the [root README](../../../README.md). Feeling lost? Open the [Roadmap](../../../ROADMAP.md).
+<!-- NAV:TOP:END -->
 ## Looking back at the chapter
 - What changed in your understanding of object-oriented programming this week?
 - At the start of the week, what did you think a class was?
@@ -83,3 +89,45 @@
 - What do you want to carry forward from this chapter?
 - What do you want to review once more before starting the next week?
 - Write one sentence that captures the main lesson of Week 3 in your own words.
+
+<!-- NAV:BOTTOM:START -->
+---
+
+## 🧭 Navigation
+
+**Where am I?** Month 1 — Python Core and Project Foundation · **Week 3 — OOP & Domain Modeling** · *reflection.md — the journal* (step 6 of 6 this week).
+
+### ◀ Previous / Next ▶
+- ◀ **Previous:** [validation.md](./validation.md)
+- ▶ **Next:** [Write your Week 3 report](../../../docs/weekly-reports/README.md)
+
+### Read this week in order
+1. [Week overview (README)](./README.md)
+2. [notes.md](./notes.md)
+3. [exercises.md](./exercises.md)
+4. [break_it.md](./break_it.md)
+5. [validation.md](./validation.md)
+6. **➡ [reflection.md](./reflection.md) ← you are here**
+7. [Write your weekly report](../../../docs/weekly-reports/README.md)
+8. [Next week → Week 4](../../../curriculum/month-01-python-core/week-04-cli-packaging/README.md)
+
+### Optional paths — where to go if…
+- 😕 **Confused by the concepts?** → [notes.md](./notes.md)
+- ✍️ **Want hands-on practice?** → [exercises.md](./exercises.md)
+- 💥 **Tests fail / want to understand failure?** → [break_it.md](./break_it.md)
+- ✅ **Think you are done?** → [validation.md](./validation.md)
+- 🪞 **Validation passed?** → [reflection.md](./reflection.md)
+- 📓 **Reflection complete?** → [Write your weekly report](../../../docs/weekly-reports/README.md)
+- 🚀 **Weekly report done?** → [Start Week 4 — CLI & Packaging](../../../curriculum/month-01-python-core/week-04-cli-packaging/README.md)
+
+### Stuck? Do this
+1. Re-read this week's [notes.md](./notes.md) slowly.
+2. Reproduce the failure modes in [break_it.md](./break_it.md).
+3. Re-run the [validation checklist](./validation.md).
+4. Zoom out to the [Month 1 overview](../README.md) or the [Roadmap](../../../ROADMAP.md).
+
+### Global navigation
+[🏠 Home](../../../README.md) · [🗺️ Roadmap](../../../ROADMAP.md) · [📚 Syllabus](../../../SYLLABUS.md) · [📦 Month 1 overview](../README.md) · [📄 Week 3 README](./README.md)
+
+*Returning later? The [Roadmap](../../../ROADMAP.md) is always your map back to the main path through all 20 weeks.*
+<!-- NAV:BOTTOM:END -->

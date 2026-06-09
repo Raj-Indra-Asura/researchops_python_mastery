@@ -8,7 +8,28 @@
 
 This is not a tutorial. It is a **20-week structured programme** that teaches professional Python engineering by having you build a real, working software system from scratch — one week at a time.
 
-Read this file first. Then open `curriculum/month-01-python-core/week-01-foundations/README.md` and begin Week 1.
+**If this is your first time here, follow this path in order:**
+
+1. Read this README (you are here).
+2. Read [ROADMAP.md](ROADMAP.md) — the 20-week milestone map you return to whenever you feel lost.
+3. Read [SYLLABUS.md](SYLLABUS.md) — the full table of contents for all 20 chapters.
+4. Start Month 1: [Python Core and Project Foundation](curriculum/month-01-python-core/README.md).
+5. Start Week 1: [Week 1 — Foundations](curriculum/month-01-python-core/week-01-foundations/README.md).
+
+This repository is wired like an interactive book. **Every** curriculum file
+tells you where you are, what to read next, which optional path to take, where to
+go if you are stuck, and how to get back to this front door. You can never get
+lost: when in doubt, return to the [Roadmap](ROADMAP.md).
+
+### How navigation works in this book
+
+Every weekly file gives you three layers of links so you always know what to do next:
+
+- **Global navigation** — back to this README, the [Roadmap](ROADMAP.md), the [Syllabus](SYLLABUS.md), the current month, and the current week.
+- **Sequential navigation** — explicit *Previous*/*Next* links that move you through each week in order: `README → notes → exercises → break_it → validation → reflection → weekly report → next week`.
+- **Optional paths** — "where to go if you are confused / want practice / tests fail / think you are done / are stuck".
+
+Read this file first. Then open [Week 1 — Foundations](curriculum/month-01-python-core/week-01-foundations/README.md) and begin.
 
 ---
 

@@ -1,5 +1,11 @@
 # Notes - Week 15 Async I/O and Network Fetching
 
+<!-- NAV:TOP:START -->
+> **You are here:** [🏠 Home](../../../README.md) › [🗺️ Roadmap](../../../ROADMAP.md) › [Month 4](../README.md) › [Week 15 — Async I/O Network Fetching](./README.md) › **notes.md**
+>
+> 📘 *ResearchOps reads like a book.* New here? Begin at the [root README](../../../README.md). Feeling lost? Open the [Roadmap](../../../ROADMAP.md).
+<!-- NAV:TOP:END -->
+
 ## Synchronous vs asynchronous code: the core idea
 
 In synchronous code, statements execute one at a time, in order. Each statement must finish before the next one starts.
@@ -353,3 +359,45 @@ This returns one `FetchResult` per URL. Successes have `content`. Failures have 
 - Use semaphores to cap concurrent requests and protect remote services.
 - Use `FakeHttpClient` in tests — never real network access.
 - Return structured batch results that capture partial failures.
+
+<!-- NAV:BOTTOM:START -->
+---
+
+## 🧭 Navigation
+
+**Where am I?** Month 4 — AI Engineering, API, Async, Workers · **Week 15 — Async I/O Network Fetching** · *notes.md — the textbook chapter* (step 2 of 6 this week).
+
+### ◀ Previous / Next ▶
+- ◀ **Previous:** [README](./README.md)
+- ▶ **Next:** [exercises.md](./exercises.md)
+
+### Read this week in order
+1. [Week overview (README)](./README.md)
+2. **➡ [notes.md](./notes.md) ← you are here**
+3. [exercises.md](./exercises.md)
+4. [break_it.md](./break_it.md)
+5. [validation.md](./validation.md)
+6. [reflection.md](./reflection.md)
+7. [Write your weekly report](../../../docs/weekly-reports/README.md)
+8. [Next week → Week 16](../../../curriculum/month-04-ai-engineering-api-workers/week-16-local-worker-job-system/README.md)
+
+### Optional paths — where to go if…
+- 😕 **Confused by the concepts?** → [notes.md](./notes.md)
+- ✍️ **Want hands-on practice?** → [exercises.md](./exercises.md)
+- 💥 **Tests fail / want to understand failure?** → [break_it.md](./break_it.md)
+- ✅ **Think you are done?** → [validation.md](./validation.md)
+- 🪞 **Validation passed?** → [reflection.md](./reflection.md)
+- 📓 **Reflection complete?** → [Write your weekly report](../../../docs/weekly-reports/README.md)
+- 🚀 **Weekly report done?** → [Start Week 16 — Local Worker & Job System](../../../curriculum/month-04-ai-engineering-api-workers/week-16-local-worker-job-system/README.md)
+
+### Stuck? Do this
+1. Re-read this week's [notes.md](./notes.md) slowly.
+2. Reproduce the failure modes in [break_it.md](./break_it.md).
+3. Re-run the [validation checklist](./validation.md).
+4. Zoom out to the [Month 4 overview](../README.md) or the [Roadmap](../../../ROADMAP.md).
+
+### Global navigation
+[🏠 Home](../../../README.md) · [🗺️ Roadmap](../../../ROADMAP.md) · [📚 Syllabus](../../../SYLLABUS.md) · [📦 Month 4 overview](../README.md) · [📄 Week 15 README](./README.md)
+
+*Returning later? The [Roadmap](../../../ROADMAP.md) is always your map back to the main path through all 20 weeks.*
+<!-- NAV:BOTTOM:END -->

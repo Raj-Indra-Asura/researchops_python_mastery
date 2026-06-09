@@ -1,5 +1,11 @@
 # Exercises - Week 13 Embeddings and Semantic Search
 
+<!-- NAV:TOP:START -->
+> **You are here:** [🏠 Home](../../../README.md) › [🗺️ Roadmap](../../../ROADMAP.md) › [Month 4](../README.md) › [Week 13 — Embeddings & Semantic Search](./README.md) › **exercises.md**
+>
+> 📘 *ResearchOps reads like a book.* New here? Begin at the [root README](../../../README.md). Feeling lost? Open the [Roadmap](../../../ROADMAP.md).
+<!-- NAV:TOP:END -->
+
 ## Beginner
 
 1. **Manual cosine similarity.** Take two vectors `a = [1.0, 0.0]` and `b = [0.707, 0.707]`. Compute cosine similarity by hand (dot product divided by product of magnitudes). Then write the `cosine_similarity` function from notes.md and confirm your hand calculation matches.
@@ -57,3 +63,45 @@
 4. **Protocol-safe embedder factory.** Write an `EmbedderFactory` that reads a string configuration value ("fake", "sentence-transformers", "noop") and returns the appropriate embedder, each satisfying the `EmbeddingModel` protocol. Add a configuration setting to `researchops` settings that controls which embedder is constructed. Write tests for all three modes — do not require `sentence-transformers` installed for the "fake" and "noop" tests (use a conditional import guard).
 
 5. **RAG readiness audit.** Read the Month 5 preview in the syllabus or roadmap. Identify five design decisions you made this week (chunk size, overlap, metadata fields, storage schema, scoring strategy) that will affect Month 5's RAG assistant. For each decision, write: what you chose, why, and what you would need to change if the RAG system required higher precision. Commit this as a short markdown document in `docs/`.
+
+<!-- NAV:BOTTOM:START -->
+---
+
+## 🧭 Navigation
+
+**Where am I?** Month 4 — AI Engineering, API, Async, Workers · **Week 13 — Embeddings & Semantic Search** · *exercises.md — the workbook* (step 3 of 6 this week).
+
+### ◀ Previous / Next ▶
+- ◀ **Previous:** [notes.md](./notes.md)
+- ▶ **Next:** [break_it.md](./break_it.md)
+
+### Read this week in order
+1. [Week overview (README)](./README.md)
+2. [notes.md](./notes.md)
+3. **➡ [exercises.md](./exercises.md) ← you are here**
+4. [break_it.md](./break_it.md)
+5. [validation.md](./validation.md)
+6. [reflection.md](./reflection.md)
+7. [Write your weekly report](../../../docs/weekly-reports/README.md)
+8. [Next week → Week 14](../../../curriculum/month-04-ai-engineering-api-workers/week-14-fastapi-layer/README.md)
+
+### Optional paths — where to go if…
+- 😕 **Confused by the concepts?** → [notes.md](./notes.md)
+- ✍️ **Want hands-on practice?** → [exercises.md](./exercises.md)
+- 💥 **Tests fail / want to understand failure?** → [break_it.md](./break_it.md)
+- ✅ **Think you are done?** → [validation.md](./validation.md)
+- 🪞 **Validation passed?** → [reflection.md](./reflection.md)
+- 📓 **Reflection complete?** → [Write your weekly report](../../../docs/weekly-reports/README.md)
+- 🚀 **Weekly report done?** → [Start Week 14 — FastAPI Layer](../../../curriculum/month-04-ai-engineering-api-workers/week-14-fastapi-layer/README.md)
+
+### Stuck? Do this
+1. Re-read this week's [notes.md](./notes.md) slowly.
+2. Reproduce the failure modes in [break_it.md](./break_it.md).
+3. Re-run the [validation checklist](./validation.md).
+4. Zoom out to the [Month 4 overview](../README.md) or the [Roadmap](../../../ROADMAP.md).
+
+### Global navigation
+[🏠 Home](../../../README.md) · [🗺️ Roadmap](../../../ROADMAP.md) · [📚 Syllabus](../../../SYLLABUS.md) · [📦 Month 4 overview](../README.md) · [📄 Week 13 README](./README.md)
+
+*Returning later? The [Roadmap](../../../ROADMAP.md) is always your map back to the main path through all 20 weeks.*
+<!-- NAV:BOTTOM:END -->

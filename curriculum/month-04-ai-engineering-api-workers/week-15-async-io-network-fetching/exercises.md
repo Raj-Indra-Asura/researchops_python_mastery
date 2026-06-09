@@ -1,5 +1,11 @@
 # Exercises - Week 15 Async I/O and Network Fetching
 
+<!-- NAV:TOP:START -->
+> **You are here:** [🏠 Home](../../../README.md) › [🗺️ Roadmap](../../../ROADMAP.md) › [Month 4](../README.md) › [Week 15 — Async I/O Network Fetching](./README.md) › **exercises.md**
+>
+> 📘 *ResearchOps reads like a book.* New here? Begin at the [root README](../../../README.md). Feeling lost? Open the [Roadmap](../../../ROADMAP.md).
+<!-- NAV:TOP:END -->
+
 ## Beginner
 
 1. **Your first coroutine.** Write an `async def greet(name: str) -> str` that waits 1 second with `await asyncio.sleep(1)` and returns `f"Hello, {name}"`. Run it with `asyncio.run(greet("Alice"))`. Then write a second async function `greet_two` that awaits `greet("Alice")` and `greet("Bob")` sequentially. Time it. Then rewrite `greet_two` using `asyncio.gather`. Time it again. Note the difference.
@@ -65,3 +71,45 @@
 4. **Benchmark concurrency levels.** Write a benchmarking script that runs `fetch_batch` with 20 fake URLs (each with 100ms simulated delay) at semaphore limits of 1, 2, 5, 10, and 20. Measure elapsed time for each. Print a table. Identify where increasing the limit stops helping. This is the point where the simulated I/O cost per request matches the total concurrency capacity.
 
 5. **Async dependency in FastAPI.** Modify the Week 14 `POST /search` route to call an async search service instead of a synchronous one. Use FastAPI's async route syntax (`async def search(...)`). Write a test that confirms the route still works. Then write a test that deliberately puts a `time.sleep(2)` inside an async route handler and observes that it blocks all other requests (hint: use concurrent `TestClient` calls). This is the "blocking event loop" bug in an API context.
+
+<!-- NAV:BOTTOM:START -->
+---
+
+## 🧭 Navigation
+
+**Where am I?** Month 4 — AI Engineering, API, Async, Workers · **Week 15 — Async I/O Network Fetching** · *exercises.md — the workbook* (step 3 of 6 this week).
+
+### ◀ Previous / Next ▶
+- ◀ **Previous:** [notes.md](./notes.md)
+- ▶ **Next:** [break_it.md](./break_it.md)
+
+### Read this week in order
+1. [Week overview (README)](./README.md)
+2. [notes.md](./notes.md)
+3. **➡ [exercises.md](./exercises.md) ← you are here**
+4. [break_it.md](./break_it.md)
+5. [validation.md](./validation.md)
+6. [reflection.md](./reflection.md)
+7. [Write your weekly report](../../../docs/weekly-reports/README.md)
+8. [Next week → Week 16](../../../curriculum/month-04-ai-engineering-api-workers/week-16-local-worker-job-system/README.md)
+
+### Optional paths — where to go if…
+- 😕 **Confused by the concepts?** → [notes.md](./notes.md)
+- ✍️ **Want hands-on practice?** → [exercises.md](./exercises.md)
+- 💥 **Tests fail / want to understand failure?** → [break_it.md](./break_it.md)
+- ✅ **Think you are done?** → [validation.md](./validation.md)
+- 🪞 **Validation passed?** → [reflection.md](./reflection.md)
+- 📓 **Reflection complete?** → [Write your weekly report](../../../docs/weekly-reports/README.md)
+- 🚀 **Weekly report done?** → [Start Week 16 — Local Worker & Job System](../../../curriculum/month-04-ai-engineering-api-workers/week-16-local-worker-job-system/README.md)
+
+### Stuck? Do this
+1. Re-read this week's [notes.md](./notes.md) slowly.
+2. Reproduce the failure modes in [break_it.md](./break_it.md).
+3. Re-run the [validation checklist](./validation.md).
+4. Zoom out to the [Month 4 overview](../README.md) or the [Roadmap](../../../ROADMAP.md).
+
+### Global navigation
+[🏠 Home](../../../README.md) · [🗺️ Roadmap](../../../ROADMAP.md) · [📚 Syllabus](../../../SYLLABUS.md) · [📦 Month 4 overview](../README.md) · [📄 Week 15 README](./README.md)
+
+*Returning later? The [Roadmap](../../../ROADMAP.md) is always your map back to the main path through all 20 weeks.*
+<!-- NAV:BOTTOM:END -->

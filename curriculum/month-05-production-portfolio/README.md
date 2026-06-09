@@ -1,5 +1,11 @@
 # Month 5 — Production and Portfolio
 
+<!-- NAV:TOP:START -->
+> **You are here:** [🏠 Home](../../README.md) › [🗺️ Roadmap](../../ROADMAP.md) › **Month 5** (Production and Portfolio)
+>
+> 📘 This is a **book section overview**. Read it, then start the first week: [Week 17 — RAG Assistant](./week-17-rag-assistant/README.md).
+<!-- NAV:TOP:END -->
+
 > **Book section 5 of 5.** The final month. You turn a working AI platform into a
 > **credible, presentable portfolio project**: grounded RAG answers, containers,
 > documentation, a demo, and a real release.
@@ -185,3 +191,29 @@ git tag -a v1.0.0 -m "ResearchOps v1.0.0"
 Your repository should now present as a complete, runnable, documented,
 portfolio-grade AI engineering project — and you should be able to tell its story
 with confidence.
+
+<!-- NAV:BOTTOM:START -->
+---
+
+## 🧭 Navigation
+
+**Where am I?** Book section 5 of 5 — **Month 5 — Production and Portfolio**.
+
+### Weeks in this month
+- [Week 17 — RAG Assistant](./week-17-rag-assistant/README.md)
+- [Week 18 — Docker & Environment Config](./week-18-docker-environment-config/README.md)
+- [Week 19 — Documentation & Portfolio Polish](./week-19-documentation-portfolio-polish/README.md)
+- [Week 20 — Final Hardening & v1.0 Release](./week-20-final-hardening-v1-release/README.md)
+
+### ◀ Previous / Next ▶
+- ◀ **Previous:** [◀ Month 4 overview](../month-04-ai-engineering-api-workers/README.md)
+- ▶ **Next:** [Release Checklist ▶](../../RELEASE_CHECKLIST.md)
+
+### Optional paths
+- ▶️ **Ready to start?** → [Week 17 — RAG Assistant](./week-17-rag-assistant/README.md)
+- 📓 **Finished a week?** → [Write your weekly report](../../docs/weekly-reports/README.md)
+- 🗺️ **Want the full map?** → [Roadmap](../../ROADMAP.md) · [Syllabus](../../SYLLABUS.md)
+
+### Global navigation
+[🏠 Home](../../README.md) · [🗺️ Roadmap](../../ROADMAP.md) · [📚 Syllabus](../../SYLLABUS.md) · [📓 Weekly reports](../../docs/weekly-reports/README.md)
+<!-- NAV:BOTTOM:END -->

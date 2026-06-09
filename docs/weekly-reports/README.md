@@ -1,5 +1,11 @@
 # Weekly Reports
 
+<!-- NAV:TOP:START -->
+> **You are here:** [🏠 Home](../../README.md) › [🗺️ Roadmap](../../ROADMAP.md) › **Weekly reports** (your lab notebook)
+>
+> 📓 You arrive here after finishing a week's `reflection.md`. Write the report, then move to the next week's README.
+<!-- NAV:TOP:END -->
+
 This folder is your **lab notebook** for the 20-week ResearchOps journey. At the
 end of every week you write one short, honest report about what actually
 happened — what you built, what broke, and whether you truly understand it.
@@ -179,3 +185,19 @@ These reports are written to your future self, not to an audience.
 - A low confidence score is **useful information**, not a failure. It tells you
   exactly what to review.
 - Do not polish away the mistakes — the mistakes are where the learning lives.
+
+<!-- NAV:BOTTOM:START -->
+---
+
+## 🧭 Navigation
+
+**Where am I?** The weekly-report hub — step 7 of every week's loop (after `reflection.md`, before the next week).
+
+### Optional paths
+- ⤴️ **Just finished a reflection?** Write that week's report using the template above.
+- ▶️ **Report written?** Open the next week's `README.md` from the [Roadmap](../../ROADMAP.md).
+- 🧭 **Not sure which week you are on?** Check the [Roadmap](../../ROADMAP.md) status column.
+
+### Global navigation
+[🏠 Home](../../README.md) · [🗺️ Roadmap](../../ROADMAP.md) · [📚 Syllabus](../../SYLLABUS.md) · [▶️ Start Week 1](../../curriculum/month-01-python-core/week-01-foundations/README.md)
+<!-- NAV:BOTTOM:END -->
