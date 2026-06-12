@@ -11,7 +11,7 @@
 
 # Notes - Week 14 FastAPI Layer
 
-## 1. Chapter overview
+## Chapter overview
 
 Week 14 gives ResearchOps an HTTP front door.
 Before this week, the main entry point is the CLI.
@@ -36,7 +36,7 @@ Study order:
 6. Read the tests.
 7. Explain why the route delegates instead of deciding.
 
-## 2. What you already know from previous weeks
+## What you already know from previous weeks
 
 - Week 1 taught project scaffold, core models, and a CLI shell.
 - Week 2 taught path handling, exceptions, and logging.
@@ -59,7 +59,7 @@ Core should not import API schemas.
 Routes should not import parser internals or SQL cursor logic.
 Tests should use fakes when real storage would distract from the API contract.
 
-## 3. What problem this week solves
+## What problem this week solves
 
 The project needs a way for non-CLI clients to read paper data.
 A browser, script, notebook, or future frontend cannot conveniently import CLI commands.
@@ -76,7 +76,7 @@ The API has to be tested without a live server.
 - `GET /papers/{id}` proves identity lookup and 404 mapping work.
 - `GET /papers/search?q=...` proves query input and search delegation work.
 
-## 4. Beginner mental model
+## Beginner mental model
 
 Think of the API as a reception desk.
 The client asks the desk for something.
@@ -94,7 +94,7 @@ Every endpoint can be traced with five boxes: request, validation, dependency, s
 - Service call: the route asks the service for the result.
 - Response: the route maps the result or error to status code and JSON.
 
-## 5. Core vocabulary
+## Core vocabulary
 
 | Term | Simple meaning | ResearchOps meaning |
 |---|---|---|
@@ -117,7 +117,7 @@ Every endpoint can be traced with five boxes: request, validation, dependency, s
 | TestClient | In-memory API test client | Calls app without uvicorn |
 | OpenAPI | API documentation format | Generated from FastAPI metadata |
 
-## 6. Concept explanations from first principles
+## Concept explanations from first principles
 
 ### HTTP request and response
 
@@ -199,7 +199,7 @@ Every endpoint can be traced with five boxes: request, validation, dependency, s
 - Use fake services for deterministic tests.
 - Dependency overrides prove routes delegate.
 
-## 7. ResearchOps-specific application
+## ResearchOps-specific application
 
 ResearchOps stores, parses, classifies, experiments with, and searches research papers.
 The API should expose paper-oriented operations, not storage internals.
@@ -238,7 +238,7 @@ Suggested file roles:
 - `api/routes/health.py`: health endpoint.
 - `api/routes/papers.py`: paper and search endpoints.
 
-## 8. Code examples with line-by-line explanation
+## Code examples with line-by-line explanation
 
 ### App factory
 
@@ -658,7 +658,7 @@ The endpoint can remain a normal synchronous route if it calls synchronous servi
 - Name the expected JSON shape. Focus: 405 method failure.
 - Name the test assertion that proves the behavior. Focus: 405 method failure.
 
-## 9. Common beginner mistakes
+## Common beginner mistakes
 
 - Mistake: Putting search ranking in the route. Recovery: identify the owner of the behavior and move it to the correct layer.
 - Mistake: Importing FastAPI inside services. Recovery: identify the owner of the behavior and move it to the correct layer.
@@ -673,7 +673,7 @@ The endpoint can remain a normal synchronous route if it calls synchronous servi
 - Mistake: Adding Docker or workers early. Recovery: identify the owner of the behavior and move it to the correct layer.
 - Mistake: Making routes async just because FastAPI supports async. Recovery: identify the owner of the behavior and move it to the correct layer.
 
-## 10. Debugging guidance
+## Debugging guidance
 
 - If you see 404: Check path, method, router inclusion, and prefix.
 - If you see 405: Path exists but HTTP method is wrong.
@@ -688,7 +688,7 @@ The endpoint can remain a normal synchronous route if it calls synchronous servi
 4. Fix the owner layer only.
 5. Add or update the focused test.
 
-## 11. Design tradeoffs
+## Design tradeoffs
 
 - global app vs factory: use factory for clean tests and module app for uvicorn.
 - one file vs routers: start simple, split when scanning gets hard.
@@ -698,7 +698,7 @@ The endpoint can remain a normal synchronous route if it calls synchronous servi
 - manual dict vs Pydantic: Pydantic is clearer for public contracts.
 - provider per request vs lifecycle: simple providers teach the boundary first.
 
-## 12. Testing implications
+## Testing implications
 
 - Test: health returns 200 and ok JSON.
 - Test: list papers returns fake data.
@@ -714,7 +714,7 @@ Arrange: create app, install fake dependency, create client.
 Act: send one request.
 Assert: status code, JSON body, and important fake-service call details.
 
-## 13. Architecture implications
+## Architecture implications
 
 Allowed: API imports services, core, config, and concrete infrastructure for wiring.
 Forbidden: services importing FastAPI.
@@ -729,7 +729,7 @@ Concrete infrastructure implements core protocols and is selected by entry point
 - database file path wiring: entry point/config.
 - CLI/API shared behavior: service.
 
-## 14. How this connects to AI engineering / ML research
+## How this connects to AI engineering / ML research
 
 AI engineering needs reliable interfaces around model and data capabilities.
 A search engine hidden behind a script is hard to reuse.
@@ -739,7 +739,7 @@ Accurate failures prevent silent data mistakes.
 This week adds access, not new model intelligence.
 That restraint is part of engineering maturity.
 
-## 15. Mini quizzes
+## Mini quizzes
 
 1. What is an HTTP method?
 2. What is a path parameter?
@@ -762,7 +762,7 @@ That restraint is part of engineering maturity.
 19. What is serialization?
 20. What prepares Week 15?
 
-## 16. Explain-it-aloud prompts
+## Explain-it-aloud prompts
 
 - Explain request to response for `/health`.
 - Explain request to response for `/papers/{id}`.
@@ -775,7 +775,7 @@ That restraint is part of engineering maturity.
 - Explain how CLI and API stay consistent.
 - Explain what future topics are intentionally excluded.
 
-## 17. What to memorize
+## What to memorize
 
 - `FastAPI()` creates the app.
 - `@app.get` registers a GET endpoint.
@@ -788,7 +788,7 @@ That restraint is part of engineering maturity.
 - `200`, `404`, `422`, `500` have distinct meanings.
 - Routes are adapters over services.
 
-## 18. What to understand deeply
+## What to understand deeply
 
 - HTTP is a boundary, not the application itself.
 - Validation at the edge protects services.
@@ -801,7 +801,7 @@ That restraint is part of engineering maturity.
 - Clean architecture makes new entry points cheap.
 - Deferring future-week concepts keeps the curriculum teachable.
 
-## 19. What not to worry about yet
+## What not to worry about yet
 
 - Do not worry about Docker deployment yet.
 - Do not worry about background workers yet.
@@ -814,7 +814,7 @@ That restraint is part of engineering maturity.
 - Do not worry about model optimization yet.
 - Do not worry about every FastAPI feature yet.
 
-## 20. Bridge to next week
+## Bridge to next week
 
 Week 15 adds async I/O network fetching.
 Week 14 prepares for it by giving the project a clean HTTP boundary.

@@ -36,7 +36,7 @@ If they are represented as explicit domain models, the code becomes more honest.
 The key idea of this chapter is simple.
 The code should speak the language of the problem domain.
 That is what domain modeling means.
-## 2. What you already know from Weeks 1 and 2
+## 2. What you already know from previous weeks
 You already know how to create and activate a virtual environment.
 You already know how to install dependencies.
 You already know how to run a Python file or a test command.
@@ -186,7 +186,7 @@ Composition means building an object out of other objects.
 Inheritance means one class extends another class.
 It creates an `is-a` relationship.
 This week mostly favors composition instead.
-## 6. First principles: what is a class?
+## 6. Concept explanations from first principles
 A class is a tool for giving shape and behavior to data.
 It is not required for every problem.
 It is useful when the same idea appears repeatedly in your code.
@@ -624,7 +624,7 @@ This is shorter and easier to read while still being stable.
 A shorter hash increases collision risk compared with the full digest, but for this learning-stage project and path-derived IDs it is a reasonable tradeoff.
 The deeper lesson is not the exact hash length.
 The deeper lesson is that an identifier can be derived from value in a reproducible way.
-## 26. ResearchOps pipeline in domain terms
+## 7. ResearchOps-specific application
 Let us describe the ingestion flow using domain language.
 A user points ResearchOps at a directory.
 The system discovers candidate PDF paths.
@@ -669,7 +669,7 @@ Here is the Week 3 cast of characters.
 `Tag` represents a normalized label.
 Together, these types give the codebase a shared vocabulary.
 That is the big win.
-## 29. Code deep dive: `PaperId`
+## 8. Code examples with line-by-line explanation
 Here is the chapter version we are studying.
 ```python
 @dataclass(frozen=True)
@@ -1247,7 +1247,7 @@ These tests check two essential things.
 First, normalization happens automatically.
 Second, invalid final values are rejected.
 That is exactly what a value-object test suite should do.
-## 53. Common beginner mistake 1: treating classes as only OOP ceremony
+## 9. Common beginner mistakes
 Some beginners learn classes as syntax with little purpose.
 That leads to two bad extremes.
 One extreme is `I will put everything in classes.`
@@ -1300,7 +1300,7 @@ If runtime validation matters, you must add it explicitly or use a tool designed
 ## 62. Reading tests as design documentation
 Read tests like prose, not just as green-or-red gates.
 A well-named test tells you what behavior matters and what regression it prevents.
-## 63. Debugging guidance: start with the model question
+## 10. Debugging guidance
 When a model feels wrong, ask what real concept it represents, what stage it belongs to, and what invariant may be broken.
 Those questions usually guide you faster than random edits.
 ## 64. Debugging guidance: inspect generated dataclass behavior
@@ -1315,7 +1315,7 @@ Representation bugs are often smaller and more local than data bugs.
 ## 67. Debugging guidance: follow the boundary
 Ask where the invalid state first entered the system.
 If bad input crossed the boundary, the value object or parser may need to reject it earlier.
-## 68. Design tradeoff: dataclass versus plain class
+## 11. Design tradeoffs
 Dataclasses are ideal here because the models are mostly data plus a little behavior.
 Use a manual class only when initialization or behavior becomes complex enough to need the extra control.
 ## 69. Design tradeoff: dataclass versus Pydantic
@@ -1327,13 +1327,13 @@ Keep entities and run-aggregation models mutable when their state naturally grow
 ## 71. Design tradeoff: dict versus class
 Use a dict for temporary or loose transport data.
 Use a class when the concept is central, stable, and worth naming precisely.
-## 72. Testing implications of domain models
+## 12. Testing implications
 Named models create cleaner tests because you can construct meaningful objects directly and assert against their behavior.
 Dataclass representations also make failures easier to read.
 ## 73. Tests should verify behavior
 The best tests check meaning, not just construction.
 That is why Week 3 tests focus on `word_count()`, `is_empty()`, stable IDs, normalized tags, and computed properties.
-## 74. Architecture implications of Week 3
+## 13. Architecture implications
 The architecture rule for this course is strict.
 `core/` must not import from `cli/`, `api/`, `storage/`, `ml/`, `workers/`, or `search/`.
 This is not because the course loves arbitrary rules.
@@ -1347,7 +1347,7 @@ The core depends only on the standard library and other core concepts.
 ## 75. Why this matters for future service design
 Later service objects should accept and return core models, not infrastructure details.
 That only works if the domain language is clear now.
-## 76. Connection to ML and AI
+## 14. How this connects to AI engineering / ML research
 Machine learning does not reduce the need for good domain models.
 It increases it, because predictions, feature rows, embeddings, and evaluation outputs all benefit from typed structures and stable identifiers.
 ## 77. ML-specific example: feature rows
@@ -1400,7 +1400,7 @@ A structured `FailedDocument` preserves more meaning than a bare log line.
 That makes debugging, reporting, and future APIs better.
 ## 93. The deeper lesson of Week 3
 This week is really teaching you to identify the nouns of the system, decide which rules belong on them, and keep those rules close to the data they describe.
-## 94. Mini quiz 1
+## 15. Mini quizzes
 Question:
 What problem does `field(default_factory=list)` solve?
 Answer:
@@ -1440,7 +1440,7 @@ Question:
 What is the purpose of overriding `__str__` on `PaperId`?
 Answer:
 To return the raw identifier string for clean user-facing output instead of the default dataclass representation.
-## 102. Explain-it-aloud prompt 1
+## 16. Explain-it-aloud prompts
 Explain to an imaginary beginner why classes are not just `fancy dicts`.
 Do not mention inheritance.
 Focus on naming, invariants, and behavior.
@@ -1486,7 +1486,7 @@ Do not worry yet about highly optimized hash collision analysis.
 Those topics have their place.
 They are not the main lesson of Week 3.
 The main lesson is modeling meaning clearly.
-## 110. Bridge to Week 4
+## 20. Bridge to next week
 Week 4 moves toward packaging and CLI structure.
 That means you will soon care more about how the program is assembled and invoked.
 But the CLI can only be clean if the domain nouns underneath it are clean.

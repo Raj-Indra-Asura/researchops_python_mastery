@@ -11,6 +11,27 @@
 
 # Break It — Week 08 Multiprocessing Ingestion
 
+## Purpose of failure practice
+
+Week 8 failures are about safe parallelism. Multiprocessing can make PDF ingestion faster, but it also introduces new failure modes: objects that cannot be pickled, worker crashes, invalid worker counts, confusing result order, and unsafe database writes from child processes. These are not style problems; they can corrupt your mental model of what ran and what was saved.
+
+These labs help you separate speed from correctness. You will deliberately break worker boundaries, observe the error messages, and return to the safe ResearchOps design: workers parse, the parent process records results.
+
+## Failure lab rules
+
+1. Start with one worker before increasing the worker count.
+2. Keep worker functions at module level so pickling behavior is realistic.
+3. Pass only simple, serializable values across the process boundary.
+4. Never pass SQLite connections, repository instances, or open file handles to workers.
+5. Verify logical results before comparing timings.
+6. When a worker fails, confirm the parent process can still record the failure and continue.
+
+---
+
+## Intentional break experiments
+
+Work through the scenarios below one at a time. Each one asks you to cause a failure, inspect what happened, fix it, and name the test or check that should catch it in ResearchOps.
+
 ---
 
 ## Scenario 1 — Pass a database connection to a worker
@@ -332,7 +353,18 @@ for future in as_completed(futures):
 
 ---
 
-## What did you learn?
+## Debugging checklist
+
+- [ ] Is the worker function defined at module level?
+- [ ] Are all worker arguments picklable simple values?
+- [ ] Is the worker count positive and reasonable for the number of files?
+- [ ] Does the parent process catch worker exceptions and turn them into failures?
+- [ ] Are repository saves happening only in the parent process?
+- [ ] Does a one-worker run produce the same successes, failures, and skips as the sequential path?
+- [ ] Are timing measurements separated from correctness tests?
+- [ ] Did you inspect the first real exception instead of only the final summary?
+
+## Reflection after breaking
 
 1. What was the most surprising behavior you discovered about `ProcessPoolExecutor`?
 2. Which error message was most helpful for diagnosing a pickling problem?

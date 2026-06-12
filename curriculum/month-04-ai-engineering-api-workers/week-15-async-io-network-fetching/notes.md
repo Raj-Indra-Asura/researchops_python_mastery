@@ -16,7 +16,7 @@ Every section below belongs to the main learning path for Week 15.
 The theme is simple: ResearchOps should wait on many network requests without freezing the rest of the program.
 The boundary is equally important: async helps network and other I/O waits, not CPU-heavy parsing or ML computation.
 
-## 1. Chapter overview
+## Chapter overview
 
 Week 15 teaches async I/O through a concrete ResearchOps problem: fetching paper metadata and paper files from the network.
 The learner has already built local modeling, storage, search, and an API surface; now the system must talk to remote services responsibly.
@@ -54,7 +54,7 @@ Study this chapter in this order:
 7. Write fake-client tests so the learning remains deterministic and offline.
 8. Explain why CPU-bound parsing still goes through ProcessPoolExecutor instead of async def.
 
-## 2. What you already know from previous weeks
+## What you already know from previous weeks
 
 Week 1 gave you the project scaffold and the habit of separating source code from tests.
 Week 2 introduced files, paths, exceptions, and logging, which matter because network code must report failures clearly.
@@ -81,7 +81,7 @@ The most important previous-week connection is this:
 
 Keep those two responsibilities separate for the rest of the chapter.
 
-## 3. What problem this week solves
+## What problem this week solves
 
 ResearchOps needs paper information before it can classify, store, search, or summarize papers.
 Some paper information lives in local files, but much of it lives behind URLs.
@@ -110,7 +110,7 @@ A good Week 15 fetcher should answer these questions for every URL:
 - Did we respect the concurrency limit?
 - Did we leave network resources open?
 
-## 4. Beginner mental model
+## Beginner mental model
 
 Imagine one librarian at a desk.
 The librarian receives ten requests for papers stored in ten different archive rooms.
@@ -136,7 +136,7 @@ Use this four-question checklist whenever async feels mysterious:
 - What other coroutine can run while this one waits?
 - What happens if the awaited operation never finishes?
 
-## 5. Core vocabulary
+## Core vocabulary
 
 - **I/O-bound:** Work whose time is mostly spent waiting for input or output, such as network responses, disk reads, or database replies.
 - **CPU-bound:** Work whose time is mostly spent using the processor, such as PDF parsing, image processing, compression, or large numeric loops.
@@ -158,7 +158,7 @@ Use this four-question checklist whenever async feels mysterious:
 Vocabulary is useful only when tied to behavior.
 If you cannot draw where the event loop waits and resumes, reread the mental model before writing more code.
 
-## 6. Concept explanations from first principles
+## Concept explanations from first principles
 
 ### Synchronous waiting
 
@@ -220,7 +220,7 @@ If a PDF parser consumes three seconds of CPU, putting it in async def still con
 The correct ResearchOps boundary is to fetch bytes asynchronously, then hand CPU-heavy parsing to the Week 8 ProcessPoolExecutor.
 After parsing completes, async code may resume for I/O steps such as writing a response or fetching another URL.
 
-## 7. ResearchOps-specific application
+## ResearchOps-specific application
 
 In ResearchOps, async fetching belongs in infrastructure code that knows how to communicate with external HTTP services.
 A fetch module may expose functions such as fetch_text, fetch_bytes, fetch_many, or fetch_arxiv_metadata.
@@ -246,7 +246,7 @@ A simple Week 15 ownership map looks like this:
 - `infrastructure` or a fetch-specific module owns `httpx.AsyncClient` usage.
 - `tests/` use fake clients and do not make real HTTP requests.
 
-## 8. Code examples with line-by-line explanation
+## Code examples with line-by-line explanation
 
 ### Example 1: the smallest coroutine
 
@@ -626,7 +626,7 @@ Line-by-line explanation:
 - Line 19 records the URL.
 - Line 20 returns the next fake response without touching the network.
 
-## 9. Common beginner mistakes
+## Common beginner mistakes
 
 ### Mistake: Forgetting await
 Calling fetch_bytes(client, url) without await creates a coroutine object and does not run the request.
@@ -688,7 +688,7 @@ Real services make tests flaky and slow; use fake clients.
 How to notice it: write a tiny timing test, inspect warnings, or assert the fake client call count.
 How to fix it: make the wait explicit, use the async library, or preserve structured failure information.
 
-## 10. Debugging guidance
+## Debugging guidance
 
 - Debug async code by making scheduling visible.
 - Print or log when each URL starts, when it receives a response, and when it returns a result.
@@ -714,7 +714,7 @@ A useful debug log format is:
 
 The exact timestamps do not matter; the overlap does.
 
-## 11. Design tradeoffs
+## Design tradeoffs
 
 - **One shared AsyncClient versus one client per request:** A shared client reuses connections and centralizes timeout settings. A client per request is simpler but wasteful and easier to leak.
 - **Return exceptions versus structured results:** Exceptions are natural for one failing operation. Structured results are better for batches where partial success matters.
@@ -727,7 +727,7 @@ The exact timestamps do not matter; the overlap does.
 
 Tradeoffs should be written down near configuration defaults because future maintainers need to know why a limit exists.
 
-## 12. Testing implications
+## Testing implications
 
 - Async tests should be deterministic.
 - Deterministic means the test result does not depend on a live website, current network speed, or a public API being available.
@@ -759,7 +759,7 @@ The test awaits the function under test because the function is async.
 The fake client makes the test fast and offline.
 The assertions check behavior, content, and interaction count.
 
-## 13. Architecture implications
+## Architecture implications
 
 - Async fetching is an infrastructure concern because it talks to external systems.
 - Core models should remain unaware of httpx.
@@ -785,7 +785,7 @@ CLI/API edge
         -> Week 8 ProcessPoolExecutor for CPU parsing
 ```
 
-## 14. How this connects to AI engineering / ML research
+## How this connects to AI engineering / ML research
 
 - AI engineering systems often spend surprising amounts of time moving data before any model runs.
 - Paper metadata must be fetched before it can be cleaned.
@@ -800,7 +800,7 @@ CLI/API edge
 - The async skill you learn here generalizes to API calls, metadata enrichment, object storage reads, and remote evaluation services.
 - The boundary skill you learn here is just as important: keep CPU-heavy ML work out of the event loop.
 
-## 15. Mini quizzes
+## Mini quizzes
 
 1. **Question:** What does calling an async function return before it is awaited?
    **Answer:** A coroutine object.
@@ -823,7 +823,7 @@ CLI/API edge
 10. **Question:** Why should unit tests avoid real network calls?
    **Answer:** Real network calls are slow, flaky, and depend on external services.
 
-## 16. Explain-it-aloud prompts
+## Explain-it-aloud prompts
 
 - Explain the difference between concurrency and parallelism using the librarian story.
 - Explain what happens when Python reaches `await client.get(url)`.
@@ -838,7 +838,7 @@ CLI/API edge
 - Explain why PDF parsing belongs in ProcessPoolExecutor even when fetching is async.
 - Explain how you would test retry logic without waiting real seconds.
 
-## 17. What to memorize
+## What to memorize
 
 - `async def` defines a coroutine function.
 - Calling a coroutine function returns a coroutine object.
@@ -854,7 +854,7 @@ CLI/API edge
 - Do not use `time.sleep(...)` inside async code.
 - CPU-bound parsing goes to ProcessPoolExecutor, not the event loop.
 
-## 18. What to understand deeply
+## What to understand deeply
 
 - Understand that async is cooperative.
 - A coroutine must reach await before another coroutine can run on the event loop thread.
@@ -872,7 +872,7 @@ For example, if five tasks each await `asyncio.sleep(1)` inside gather, you shou
 If five tasks each call `time.sleep(1)` inside async def, you should predict about five seconds total.
 If a batch uses `Semaphore(2)` and has six one-second requests, you should predict about three waves and roughly three seconds total.
 
-## 19. What not to worry about yet
+## What not to worry about yet
 
 - Do not build a background worker or job queue system in this chapter.
 - Do not build a RAG pipeline in this chapter.
@@ -885,7 +885,7 @@ If a batch uses `Semaphore(2)` and has six one-second requests, you should predi
 - Do not add heavy dependencies to solve simple HTTP behavior.
 - Do not worry about distributed rate limiting; a local semaphore is enough for Week 15.
 
-## 20. Bridge to next week
+## Bridge to next week
 
 Week 15 gives ResearchOps the ability to fetch remote data without wasting time on sequential network waits.
 It also gives the project safety rules: timeouts, retries, rate limits, structured results, and CPU-bound boundaries.

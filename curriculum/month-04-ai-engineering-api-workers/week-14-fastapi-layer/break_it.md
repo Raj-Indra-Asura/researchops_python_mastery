@@ -11,11 +11,11 @@
 
 # Break It - Week 14 FastAPI Layer
 
-## 1. Purpose of failure practice
+## Purpose of failure practice
 
 Break API code on purpose so status codes, validation, dependency wiring, and service delegation become visible instead of mysterious. The goal is to identify which layer owns the fix.
 
-## 2. Failure lab rules
+## Failure lab rules
 
 - Break one thing at a time.
 - Predict the status code first.
@@ -25,7 +25,7 @@ Break API code on purpose so status codes, validation, dependency wiring, and se
 - Do not add future-week systems while debugging.
 - Add or identify the test that would catch the bug.
 
-## 3. Intentional break experiments
+## Intentional break experiments
 
 ### Experiment: Missing required query
 
@@ -227,7 +227,7 @@ Clients need safe errors; maintainers need logs.
 - Swallow exception.
 - Return 200 with error text.
 
-## 4. Debugging checklist
+## Debugging checklist
 
 - [ ] URL and method are correct.
 - [ ] Router is included in app.
@@ -240,7 +240,7 @@ Clients need safe errors; maintainers need logs.
 - [ ] No service imports FastAPI.
 - [ ] A focused test catches the failure.
 
-## 5. Reflection after breaking
+## Reflection after breaking
 
 - Which failure happened before the route ran?
 - Which failure was wrong dependency wiring?

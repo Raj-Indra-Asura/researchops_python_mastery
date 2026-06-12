@@ -11,7 +11,7 @@
 
 # Notes - Week 13 Embeddings and Semantic Search
 
-## 1. Chapter overview
+## Chapter overview
 
 The chapter title is **Meaning as a vector**.
 
@@ -71,7 +71,7 @@ Study sequence for the week:
 5. Read `embeddings.py` after you understand the fake embedder and cache.
 6. Run the validation commands only when the code is ready; this documentation task does not require running them.
 
-## 2. What you already know from previous weeks
+## What you already know from previous weeks
 
 Week 13 is not the first time ResearchOps has searched, stored, tested, or modeled text.
 
@@ -108,7 +108,7 @@ If any previous idea feels weak, pause and review it before adding semantic sear
 
 Semantic search has more moving parts than keyword search, so unclear boundaries become painful quickly.
 
-## 3. What problem this week solves
+## What problem this week solves
 
 ResearchOps already has keyword search in the project plan.
 
@@ -142,7 +142,7 @@ A hit without source metadata is like a library search result with no shelf loca
 
 It may be interesting, but it is not actionable.
 
-## 4. Beginner mental model
+## Beginner mental model
 
 Think of semantic search as building a meaning map for your paper library.
 
@@ -193,7 +193,7 @@ An embedding bug is different from a ranking bug.
 
 A ranking bug is different from a display bug.
 
-## 5. Core vocabulary
+## Core vocabulary
 
 | Term | Plain meaning | Why it matters here |
 |---|---|---|
@@ -218,7 +218,7 @@ A ranking bug is different from a display bug.
 | cache key | The value used to identify cached data. | A hash of model name plus text is safer than text alone when models can change. |
 | retrieval evaluation | Checking whether returned results make sense for known queries. | It catches failures that arithmetic tests cannot fully capture. |
 
-## 6. Concept explanations from first principles
+## Concept explanations from first principles
 
 ### 6.1 What embeddings are: a dense numeric representation of meaning
 
@@ -366,7 +366,7 @@ When results are poor, inspect chunk size, overlap, model choice, query wording,
 
 Do not hide bad retrieval behind a passing unit test.
 
-## 7. ResearchOps-specific application
+## ResearchOps-specific application
 
 In ResearchOps, semantic search is not a standalone notebook experiment.
 
@@ -411,7 +411,7 @@ ResearchOps is a research tool, so traceability matters.
 
 When the system says a passage is relevant, the learner should be able to inspect the source paper.
 
-## 8. Code examples with line-by-line explanation
+## Code examples with line-by-line explanation
 
 ### Cosine similarity with validation
 
@@ -652,7 +652,7 @@ Line-by-line explanation:
 - `hits.sort(...)` orders results from highest score to lowest score.
 - `return hits[:top_k]` returns only the requested number of best hits.
 
-## 9. Common beginner mistakes
+## Common beginner mistakes
 
 ### Mistake: Embedding the whole paper as one vector
 
@@ -714,7 +714,7 @@ Line-by-line explanation:
 
 **Fix:** Keep ranking in `src/researchops/search/vector_search.py` or a service that depends on interfaces.
 
-## 10. Debugging guidance
+## Debugging guidance
 
 Debug semantic search by locating the first wrong value in the pipeline.
 
@@ -752,7 +752,7 @@ Remove temporary prints after the failing behavior is understood.
 
 A good permanent test is better than a permanent debug print.
 
-## 11. Design tradeoffs
+## Design tradeoffs
 
 | Choice | Benefit | Cost | Week 13 guidance |
 |---|---|---|---|
@@ -767,7 +767,7 @@ A good permanent test is better than a permanent debug print.
 | Linear scan top-k | Easy to understand and test. | Slow for very large indexes. | Acceptable for the learning milestone. |
 | Embedding cache | Saves repeated model calls. | Can become stale if keys ignore model identity. | Use clear keys and tests. |
 
-## 12. Testing implications
+## Testing implications
 
 Testing semantic search requires separating deterministic behavior from model quality.
 
@@ -806,7 +806,7 @@ That kind of test is slow, fragile, and unfair to a fresh development machine.
 
 A useful test name tells the behavior, such as `test_search_returns_highest_cosine_score_first`.
 
-## 13. Architecture implications
+## Architecture implications
 
 The architecture rule for Week 13 is simple: keep dependencies pointing inward.
 
@@ -839,7 +839,7 @@ For Week 13, ask these boundary questions during review:
 - Does `search/embeddings.py` hide local-model details behind a small embedder interface?
 - Does `search/vector_search.py` know about vectors and hits, not terminal display formatting?
 
-## 14. How this connects to AI engineering / ML research
+## How this connects to AI engineering / ML research
 
 AI engineering is not only model training.
 
@@ -873,7 +873,7 @@ The model supplies vectors.
 
 The software supplies chunking, caching, ranking, metadata, tests, and debugging discipline.
 
-## 15. Mini quizzes
+## Mini quizzes
 
 1. **Question:** What is an embedding?
    **Answer:** A dense numeric vector that represents the meaning of a piece of text.
@@ -911,7 +911,7 @@ The software supplies chunking, caching, ranking, metadata, tests, and debugging
 12. **Question:** What is retrieval evaluation?
    **Answer:** Checking whether known queries return sensible, traceable top results.
 
-## 16. Explain-it-aloud prompts
+## Explain-it-aloud prompts
 
 - Explain why `efficient transformers` might fail in keyword search but succeed in semantic search.
 - Explain what happens to one paper from raw text to chunk metadata.
@@ -926,7 +926,7 @@ The software supplies chunking, caching, ranking, metadata, tests, and debugging
 - Explain which code belongs in `search/` and which code belongs in `cli/`.
 - Explain what Week 13 gives Week 14 before the API layer appears.
 
-## 17. What to memorize
+## What to memorize
 
 - The Week 13 milestone: `researchops semantic-search "efficient transformers"` returns papers ranked by vector similarity.
 - The main files: `search/chunking.py`, `search/embeddings.py`, `search/vector_search.py`, and `core/interfaces.py`.
@@ -937,7 +937,7 @@ The software supplies chunking, caching, ranking, metadata, tests, and debugging
 - The ranking rule: higher cosine similarity sorts earlier.
 - The validation command from the syllabus: `pytest tests/unit/test_chunking.py tests/unit/test_vector_search.py -v`.
 
-## 18. What to understand deeply
+## What to understand deeply
 
 - Embedding vectors are useful because similar meanings should produce similar numeric directions.
 - Chunking is not busywork; it controls retrieval precision and source traceability.
@@ -947,7 +947,7 @@ The software supplies chunking, caching, ranking, metadata, tests, and debugging
 - Search quality must be inspected with realistic paper snippets, not only formula tests.
 - Architecture boundaries keep the model implementation replaceable and the command layer thin.
 
-## 19. What not to worry about yet
+## What not to worry about yet
 
 - Do not worry about specialized vector databases this week; a clear top-k scan is enough for the milestone.
 - Do not worry about web request handling; Week 14 introduces the API layer.
@@ -958,7 +958,7 @@ The software supplies chunking, caching, ranking, metadata, tests, and debugging
 - Do not compare every possible embedding model; start with one local model and one fake test embedder.
 - Do not add unrequested dependencies beyond what the curriculum already expects.
 
-## 20. Bridge to next week
+## Bridge to next week
 
 Next week is Week 14: **FastAPI Layer**.
 

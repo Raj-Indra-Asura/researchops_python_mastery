@@ -11,6 +11,27 @@
 
 # Break It — Week 06 PDF Parsing Pipeline
 
+## Purpose of failure practice
+
+Week 6 failures are about making ingestion trustworthy when real PDFs are messy. A user may give ResearchOps a corrupt file, a scanned PDF with no embedded text, a directory that does not exist, or a duplicate paper. The platform should not pretend those cases are successes, and it should not crash the whole batch when one file fails.
+
+These labs teach you to inspect parser errors, convert them into useful `FailedDocument` records, and keep successful papers moving through the pipeline. A good ingestion system is not one that never sees errors; it is one that preserves enough information to recover from them.
+
+## Failure lab rules
+
+1. Use small fixture files or files created inside a pytest `tmp_path` fixture for experiments.
+2. Break one pipeline stage at a time: discovery, parsing, metadata extraction, cleaning, saving, or failure recording.
+3. Capture the exact exception type before wrapping it in a ResearchOps error.
+4. After a failed parse, verify that successful files in the same run still succeed.
+5. After a recorded failure, inspect `FailedDocument.error_type`, `error_message`, and `source_path`.
+6. Do not add Week 8 parallel workers or later features while debugging Week 6.
+
+---
+
+## Intentional break experiments
+
+Work through the scenarios below one at a time. Each one asks you to cause a failure, inspect what happened, fix it, and name the test or check that should catch it in ResearchOps.
+
 ---
 
 ## Scenario 1 — A file that is not a PDF
@@ -216,7 +237,18 @@ What Python tools support timeouts on function calls?
 
 ---
 
-## What did you learn?
+## Debugging checklist
+
+- [ ] Does the path exist, and does it have a `.pdf` suffix?
+- [ ] Does `pypdf.PdfReader` fail before page extraction starts?
+- [ ] Does any page return `None` from `extract_text()`?
+- [ ] Does the joined text become empty after extraction or cleaning?
+- [ ] Does metadata contain `Title` or `Author`, or is the fallback being used?
+- [ ] Does `IngestionService` record a `FailedDocument` instead of stopping the batch?
+- [ ] Does the fake parser in the test match the path discovered by `find_pdfs`?
+- [ ] After the fix, can one good PDF and one bad PDF be processed in the same run?
+
+## Reflection after breaking
 
 1. Which failure case was hardest to handle gracefully?
 2. What information in `FailedDocument` was most useful for debugging?

@@ -26,7 +26,7 @@ It is a chain of small decisions.
 Those decisions live in code structure, decorators, output formatting, packaging metadata, and tests.
 If you understand the chain, you can build more commands with confidence.
 
-## What you already know from Weeks 1 to 3
+## What you already know from previous weeks
 You already know how to work inside a repository.
 You already know how to read and write Python modules.
 You already know how to think about paths and files with `pathlib`.
@@ -191,7 +191,7 @@ Examples here include `dev`, `storage`, `parsing`, `ml`, and `api`.
 This lets the project stay modular.
 Not every user needs every capability at install time.
 
-## First principles
+## Concept explanations from first principles
 ### What is a CLI
 A CLI is not just a way to avoid GUIs.
 A CLI is a contract built from commands, arguments, options, text output, and exit codes.
@@ -553,7 +553,7 @@ If scanning finds PDFs, the command formats a Rich table and prints a final coun
 That is the entire interaction chain.
 A strong CLI is simply a well-designed version of that chain.
 
-## Full annotated `src/researchops/cli/main.py`
+## Code examples with line-by-line explanation
 Here is the code for the main CLI entry point.
 Study it as a whole before reading the line-by-line commentary.
 
@@ -1488,7 +1488,7 @@ The CLI should not:
 - become the only interface where core behavior exists,
 - hide architecture boundaries for convenience.
 
-## How this connects to ML and AI work
+## How this connects to AI engineering / ML research
 This week may feel like terminal plumbing.
 It is much more than that.
 Many serious ML and AI workflows are CLI-driven.
@@ -1822,7 +1822,7 @@ Entry points in `pyproject.toml` connect shell commands to Python objects.
 Thin handlers protect architecture and reuse.
 ResearchOps uses all of these ideas to deliver `researchops scan`.
 
-## Bridge to next week and Month 2
+## Bridge to next week
 Month 1 ends with a usable tool.
 That is a big achievement.
 You now have a project that can be installed, invoked, and tested through a public interface.

@@ -41,6 +41,9 @@ Structure problems often fail before your “real logic” even runs.
 
 ---
 
+## Intentional break experiments
+Each experiment below is a controlled break. Change one assumption, predict the failure, run the smallest relevant command, inspect the output, restore the code, and identify the test that should catch the problem.
+
 ## Experiment 1 — Break the editable install assumption
 
 ### How to cause it

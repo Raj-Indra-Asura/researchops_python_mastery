@@ -11,7 +11,7 @@
 
 # Exercises - Week 13 Embeddings and Semantic Search
 
-## 1. How to use this workbook
+## How to use this workbook
 
 This workbook turns the chapter into deliberate practice. Work in order unless you already know exactly why you are skipping an exercise.
 
@@ -23,7 +23,7 @@ Do not use real sentence-transformers models in unit tests. Use deterministic fa
 
 Do not build Week 14 API routes, async fetchers, or deployment files here. Stay inside Week 13 retrieval work.
 
-## 2. Warm-up exercises
+## Warm-up exercises
 
 1. **Vocabulary map.** Write definitions for embedding, vector, dimension, chunk, overlap, cosine similarity, top-k, and cache key. Success: each definition mentions how the term appears in ResearchOps.
 
@@ -39,7 +39,7 @@ Do not build Week 14 API routes, async fetchers, or deployment files here. Stay 
 
 7. **Cache-key rehearsal.** Write two cache-key inputs for the same text with model names `fake-small` and `fake-large`. Success: you can explain why those keys must not collide.
 
-## 3. Code-reading exercises
+## Code-reading exercises
 
 1. **Read the chunker.** Open `src/researchops/search/chunking.py` once it exists. Mark the lines that validate `chunk_size`, validate `overlap`, create metadata, advance `start`, and stop at the end. Success: you can explain why no infinite loop occurs.
 
@@ -55,7 +55,7 @@ Do not build Week 14 API routes, async fetchers, or deployment files here. Stay 
 
 7. **Read result objects.** Find the structure used for a search hit. Success: you can identify where score, source id, chunk index, and excerpt are stored.
 
-## 4. Implementation exercises
+## Implementation exercises
 
 1. **Implement chunk metadata.** Create or update a `TextChunk` dataclass with `source_id`, `chunk_index`, `start_word`, and `text`. Produce: code plus a test that the first chunk for `paper-1` has index `0` and start word `0`.
 
@@ -77,7 +77,7 @@ Do not build Week 14 API routes, async fetchers, or deployment files here. Stay 
 
 10. **Implement score formatting separately.** Write a tiny formatter that displays scores to four decimal places without changing ranking logic. Produce: a sample string and a test or manual check. Success: display code does not recompute similarity.
 
-## 5. Testing exercises
+## Testing exercises
 
 1. **Chunk count tests.** Build inputs of 0 words, 3 words, 10 words, and 25 words. Success: expected chunk counts are documented and asserted.
 
@@ -97,7 +97,7 @@ Do not build Week 14 API routes, async fetchers, or deployment files here. Stay 
 
 9. **Metadata round-trip test.** Build chunks, create indexed embeddings, search, and assert the top hit still references the original source. Success: metadata survives every transformation.
 
-## 6. Debugging exercises
+## Debugging exercises
 
 1. **Break vector length checks.** Temporarily remove the length check and compare `[1, 0]` with `[1, 0, 1]`. Produce: a failing test or written explanation showing why silent truncation is dangerous.
 
@@ -113,7 +113,7 @@ Do not build Week 14 API routes, async fetchers, or deployment files here. Stay 
 
 7. **Break `top_k`.** Return all hits instead of slicing to `top_k`. Produce: a failing test where five indexed chunks and `top_k=2` return exactly two hits.
 
-## 7. Refactoring exercises
+## Refactoring exercises
 
 1. **Extract score calculation.** If `search_top_k` becomes crowded, extract a helper that creates one `SearchHit` from a query vector and indexed chunk. Success: tests still pass and names remain beginner-readable.
 
@@ -127,7 +127,7 @@ Do not build Week 14 API routes, async fetchers, or deployment files here. Stay 
 
 6. **Keep dataclasses small.** Review `TextChunk` and `SearchHit`. Success: they carry data, not unrelated workflow behavior.
 
-## 8. Written explanation exercises
+## Written explanation exercises
 
 1. Explain why semantic search can find related text without exact word overlap.
 
@@ -149,7 +149,7 @@ Do not build Week 14 API routes, async fetchers, or deployment files here. Stay 
 
 10. Explain what you would tell a teammate who wants to put `SentenceTransformer` construction inside a CLI command.
 
-## 9. Stretch exercises
+## Stretch exercises
 
 1. **Qualitative retrieval set.** Create five short ML-themed documents and five queries with expected top documents. Produce: a table of query, expected source, actual top source, and notes.
 
@@ -165,7 +165,7 @@ Do not build Week 14 API routes, async fetchers, or deployment files here. Stay 
 
 7. **Duplicate chunks.** Add two identical chunks from different sources. Success: both can appear as separate hits because source metadata distinguishes them.
 
-## 10. Brutal exercises
+## Brutal exercises
 
 1. **Dimension-mismatch audit.** Find every path where embeddings enter vector search. Add tests ensuring dimension mismatches fail loudly. Success: no silent truncation remains.
 
@@ -181,7 +181,7 @@ Do not build Week 14 API routes, async fetchers, or deployment files here. Stay 
 
 7. **Tiny corpus challenge.** With only fake embeddings, design a tiny corpus where the top result is not the longest text. Success: your fake features and scoring prove ranking is not just length sorting.
 
-## 11. Mini project task
+## Mini project task
 
 Build a tiny semantic search prototype for three stored paper snippets.
 
@@ -199,7 +199,7 @@ Step 5: print each hit as `score | source_id | chunk_index | excerpt`.
 
 Success criteria: the code path preserves metadata, uses cosine similarity, returns sorted hits, and can be tested without internet access.
 
-## 12. Completion checklist
+## Completion checklist
 
 - [ ] I can define embeddings, chunks, cosine similarity, top-k, and cache keys.
 

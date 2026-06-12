@@ -10,6 +10,8 @@
 <!-- NAV_END -->
 
 # Break It — Failure Lab for Chapter 2
+## Purpose of failure practice
+Failure practice teaches you to recognize broken filesystem, exception, and logging behavior before those failures appear in a real ResearchOps run. A beginner often sees an error message and immediately guesses; this lab trains you to inspect the path, exception type, exit code, and test that describes the intended behavior. Treat each break as a controlled experiment, not as vandalism.
 
 This lab is where you stop treating failures as surprises.
 Each experiment asks you to predict behavior, cause a controlled failure, inspect the result, and explain what the code is teaching you.
@@ -18,7 +20,7 @@ Good debugging starts before the command runs.
 
 ---
 
-## Lab rules
+## Failure lab rules
 - Work in a disposable branch or revert your changes after each experiment.
 - Break one thing at a time.
 - Record the exact command you ran.
@@ -26,6 +28,9 @@ Good debugging starts before the command runs.
 - End each experiment by restoring the original code.
 
 ---
+
+## Intentional break experiments
+Each experiment below follows the same pattern: cause one small break, observe the expected error, inspect the exact line involved, fix the break, identify the test that should catch it, and write down the lesson. Do not combine multiple experiments, because combined failures teach confusion instead of diagnosis.
 
 ## Experiment 1 — Delete the directory and trigger `NotADirectoryError`
 ### Goal
@@ -532,7 +537,16 @@ Bad hierarchy placement creates silent confusion for callers.
 
 ---
 
-## Debrief questions
+## Debugging checklist
+- Did you reproduce the failure with one command?
+- Did you identify whether the symptom came from `Path`, an exception class, logging, or Typer exit behavior?
+- Did you read the failing test before changing code?
+- Did you undo the intentional break before moving on?
+- Did you rerun the smallest relevant test before running the full suite?
+
+---
+
+## Reflection after breaking
 After all experiments, answer these in writing:
 
 1. Which failure taught you the most about API contracts?

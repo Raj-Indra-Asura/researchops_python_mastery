@@ -361,7 +361,7 @@ def test_setting_uses_environment(monkeypatch: pytest.MonkeyPatch) -> None:
 - In researchops-specific application, **integration tests** means integration tests prove real boundaries such as SQLite repository behavior with tmp_path isolation; apply it only when it proves a real ResearchOps responsibility.
 - In researchops-specific application, **E2E smoke tests** means E2E smoke tests prove the installed CLI starts without trying to test every branch; apply it only when it proves a real ResearchOps responsibility.
 
-## 8. Code examples with line-by-line explanation
+## Code examples with line-by-line explanation
 - In code examples with line-by-line explanation, **pytest discovery** means pytest finds files named like tests, then functions named like tests, and treats uncaught exceptions as failures; apply it only when it proves a real ResearchOps responsibility.
 - In code examples with line-by-line explanation, **fixtures** means pytest fixtures are named setup functions requested by test parameters instead of called directly; apply it only when it proves a real ResearchOps responsibility.
 - In code examples with line-by-line explanation, **fixture scope** means fixture scope controls how long a returned setup object lives before pytest creates a new one; apply it only when it proves a real ResearchOps responsibility.

@@ -14,7 +14,7 @@
 This workbook turns the chapter into practice. Keep the navigation blocks unchanged and work through the sections in order.
 Do not add future-week systems here: no worker queue, no RAG pipeline, and no Docker setup.
 
-## 1. How to use this workbook
+## How to use this workbook
 
 **Working rhythm:** read the task, predict the behavior, write the smallest code, run the smallest check, then explain what changed.
 **Evidence to collect:** keep timing numbers, fake-client call counts, and structured result examples in your scratch notes so your explanation is based on observations.
@@ -27,7 +27,7 @@ Do not add future-week systems here: no worker queue, no RAG pipeline, and no Do
 5. Keep PDF parsing CPU-bound and route it through the Week 8 ProcessPoolExecutor pattern when the exercise crosses from fetching to parsing.
 6. If an exercise feels too large, reduce it to one URL, one fake response, and one assertion first.
 
-## 2. Warm-up exercises
+## Warm-up exercises
 
 For every timing exercise, write down your prediction before running the program. If the prediction is wrong, explain whether the mistake was caused by sequential awaits, a blocking call, or an incorrect semaphore limit.
 For every small coroutine, identify the first line that actually runs and the first line that can yield control back to the event loop.
@@ -42,21 +42,22 @@ After each warm-up, rewrite the result in plain English: "This took about X seco
 7. Inside an async function, compare `await asyncio.sleep(0.2)` with `time.sleep(0.2)` by running five tasks concurrently.
 8. Create an `asyncio.Semaphore(2)` and prove with printed start/end messages that only two protected sections run at once.
 
-## 3. Code-reading exercises
+## Code-reading exercises
 
 Annotate code with three labels: `starts work`, `waits cooperatively`, and `blocks the event loop`. This makes hidden scheduling behavior visible.
 When reading retry code, draw a two-column table: failure type on the left and retry decision on the right.
 When reading batch code, trace one successful URL and one failing URL from input list to final result object.
 
-1. Read a small `fetch_bytes(client, url)` function. Mark the exact line where control can return to the event loop.
-2. Read a function that constructs `httpx.AsyncClient` inside a loop. Explain why this wastes connection pooling.
-3. Read a retry loop that catches every `Exception`. Identify which exceptions or statuses should not be retried.
-4. Read a batch fetcher using `asyncio.gather`. Explain why result order matches input order.
-5. Read a fake async client. Identify which methods and attributes are required only because production code uses them.
-6. Read code that calls `asyncio.run` inside an async test. Explain the error you expect.
-7. Read code that parses PDF bytes directly after download in the coroutine. Point to the event-loop blocking risk.
+1. **Read the Week 15 service stub.** Open `src/researchops/services/fetch_service.py`. Identify the TODO, the `httpx.AsyncClient` hint, and the warning against CPU-bound parsing. Success: you can state the service's responsibility in one sentence.
+2. **Plan `fetch_bytes(client, url)`.** In `src/researchops/services/fetch_service.py`, mark where `await client.get(url)` should happen and where response bytes should be returned. Success: you can point to the exact future line where control can return to the event loop.
+3. **Audit for CPU-heavy work.** In the same file, search for parsing, embedding, or `ProcessPoolExecutor` references. Success: fetch code may hand bytes to a boundary later, but it must not parse PDFs or compute embeddings inside the coroutine.
+4. **Read service neighbors.** Compare `fetch_service.py` with `src/researchops/services/ingestion_service.py` and `src/researchops/services/search_service.py`. Success: you can explain why fetching, ingestion, and search remain separate services.
+5. **Read fake-ready shapes.** Sketch the minimum fake async client that production code would need: an async `get`, a response object with `status_code`, `content`, `headers`, and `raise_for_status`. Success: tests can avoid the live internet.
+6. **Read retry policy examples.** Inspect any retry loop you write and classify timeout, connection error, `404`, `429`, and `503`. Success: permanent errors are not retried like temporary failures.
+7. **Read batch behavior.** For a planned `asyncio.gather` call, trace URL index 0 and URL index 1 through success and failure. Success: result order remains tied to input order even when completion order differs.
+8. **Read async test boundaries.** Look for accidental `asyncio.run` inside async tests and accidental `time.sleep` inside coroutines. Success: test code and service code both cooperate with the event loop.
 
-## 4. Implementation exercises
+## Implementation exercises
 
 Implementation standard: each helper should have one clear responsibility. Do not combine URL parsing, HTTP fetching, PDF parsing, and storage in one function.
 Configuration standard: timeout, concurrency limit, and max attempts should be visible parameters or named constants, not unexplained magic numbers buried in a loop.
@@ -73,7 +74,7 @@ Architecture standard: if your implementation needs CPU-heavy parsing, pass byte
 8. Implement a metadata fetch function that builds query parameters for a paper search endpoint and returns response text or bytes without parsing future-week features.
 9. Implement a PDF download helper that returns bytes and refuses to parse the PDF in the event loop.
 
-## 5. Testing exercises
+## Testing exercises
 
 Testing standard: a unit test should not require DNS, Wi-Fi, a public API, or the current date. If it does, replace the dependency with a fake.
 Timing standard: avoid real multi-second sleeps in tests. Use tiny sleeps for scheduling demonstrations or monkeypatch the sleep function for retry backoff.
@@ -91,7 +92,7 @@ Failure standard: every retry test should include the final failed result path, 
 9. Test semaphore behavior with a fake client that records maximum in-flight calls.
 10. Test 429 with `Retry-After: 2` by monkeypatching sleep and asserting the requested delay.
 
-## 6. Debugging exercises
+## Debugging exercises
 
 Debugging method: first reproduce the bug with one URL, then with three URLs, then with a larger batch. This prevents concurrency noise from hiding the root cause.
 Logging method: include URL, attempt number, status code, and elapsed time in temporary debug output.
@@ -105,7 +106,7 @@ Cleanup method: after the bug is understood, remove noisy prints or convert them
 6. Make a retry loop catch 404 as retryable. Use call counts to prove the bug.
 7. Catch and swallow `asyncio.CancelledError` in a toy coroutine. Explain why cancellation contracts matter.
 
-## 7. Refactoring exercises
+## Refactoring exercises
 
 Refactoring rule: keep behavior covered by a test before changing structure. Async refactors can accidentally change scheduling behavior while still returning the same final value.
 Refactoring rule: move resource ownership outward. A batch-level client is easier to close than many request-level clients.
@@ -119,7 +120,7 @@ Refactoring rule: name policy decisions. `is_retryable_status` is easier to revi
 6. Refactor real sleeps in retry tests into an injectable sleep function or monkeypatched `asyncio.sleep`.
 7. Refactor CPU-bound parsing out of an async function and into a ProcessPoolExecutor handoff.
 
-## 8. Written explanation exercises
+## Written explanation exercises
 
 Write these explanations without using the words "magic" or "just". If an explanation depends on those words, it probably skips the mechanism.
 Use one ResearchOps example in each answer, such as fetching arXiv metadata, downloading a PDF, or handing PDF bytes to the parser.
@@ -134,7 +135,7 @@ End each explanation with one rule you would apply in code review.
 7. Explain why fake-client tests are better than live-network unit tests.
 8. Explain where `asyncio.run` belongs in a CLI program and where it does not belong.
 
-## 9. Stretch exercises
+## Stretch exercises
 
 Stretch work should still be beginner-readable. Prefer small helper functions and explicit names over compact clever code.
 When adding jitter or size limits, make the source of randomness or the size threshold injectable so tests stay deterministic.
@@ -148,7 +149,7 @@ When benchmarking, compare the measured result to a rough expected number of wav
 6. Add a maximum response-size guard for PDF downloads so a fake huge response can be rejected safely.
 7. Add cancellation handling that re-raises `asyncio.CancelledError` after cleanup.
 
-## 10. Brutal exercises
+## Brutal exercises
 
 Brutal tasks are integration-style practice, but they must still respect this week's boundary. Fetching can be async; CPU parsing must be offloaded.
 Write the happy path last if the failure paths are confusing. A robust batch fetcher is mostly defined by how it behaves when some URLs fail.
@@ -162,7 +163,7 @@ Keep the return shape stable. A caller should not need one code path for all-suc
 6. Write a cancellation test where pending tasks are cancelled and completed results remain inspectable.
 7. Write a CLI-facing summary formatter that prints one line per URL and a final success/failure count.
 
-## 11. Mini project task
+## Mini project task
 
 Mini project acceptance criteria: one shared client, explicit timeout, bounded concurrency, retry policy, structured results, fake tests, and no event-loop PDF parsing.
 Mini project review question: can another learner change the concurrency limit without reading the entire implementation?
@@ -177,7 +178,7 @@ Mini project review question: can another learner tell which failures are perman
 7. It should include fake-client unit tests for success, timeout, 404, 429, empty input, and one bad URL among good URLs.
 8. It should include a short written explanation of the event-loop boundary and the ProcessPoolExecutor boundary.
 
-## 12. Completion checklist
+## Completion checklist
 
 Final proof: choose one exercise from warm-up, one from implementation, one from testing, and one from debugging, then explain how they connect.
 Final proof: describe one bug that would make the program too slow, one bug that would make it impolite to a remote service, and one bug that would make failures invisible.

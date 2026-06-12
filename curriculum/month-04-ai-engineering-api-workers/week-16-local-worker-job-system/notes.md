@@ -14,7 +14,7 @@
 This is one unified chapter. There is no short version followed by a second older version.
 Read it as a textbook chapter, then use the workbook, failure lab, validation checklist, and reflection prompts.
 
-## 1. Chapter overview
+## Chapter overview
 Week 16 teaches ResearchOps how to do work after the user has already asked for it.
 The central idea is a local background job system.
 A background job system lets the CLI or API accept a request quickly and finish the slow part later.
@@ -60,7 +60,7 @@ It is a loop.
 Reliability is not magic.
 It is a set of explicit decisions about state, retries, idempotency, and shutdown.
 
-## 2. What you already know from previous weeks
+## What you already know from previous weeks
 This chapter builds on the earlier ResearchOps journey instead of starting over.
 Week 1 gave you the repository shape and the first CLI path.
 That matters because job commands still enter through the CLI layer, not through random scripts.
@@ -94,7 +94,7 @@ A helpful review question is: what should happen immediately, and what can happe
 If the answer is "later", a job is probably involved.
 If the answer is "the user must see the result before continuing", a job may not be the right tool.
 
-## 3. What problem this week solves
+## What problem this week solves
 Before a job system, ResearchOps has a timing problem.
 A user can ask the system to ingest a paper or generate embeddings.
 That work may take seconds or minutes.
@@ -120,7 +120,7 @@ Many production systems use background jobs, but beginners often see them as mys
 This chapter removes the mystery by implementing the smallest useful local version.
 The local version teaches the same mental model as larger systems: enqueue, claim, execute, acknowledge, retry, fail, inspect.
 
-## 4. Beginner mental model
+## Beginner mental model
 Imagine a library desk with a tray labeled "to do."
 A librarian places a paper request card into the tray.
 A worker takes the oldest card, writes "in progress" on it, performs the work, then writes "done."
@@ -148,7 +148,7 @@ The word "claim" is especially important.
 Claiming is not just reading a row.
 Claiming is reading and changing ownership in a way that prevents another worker from taking the same job at the same time.
 
-## 5. Core vocabulary
+## Core vocabulary
 - **Job:** A durable record of one piece of work the system should perform.
 - **Queue:** A collection of jobs waiting to be processed, ordered by a rule such as creation time or scheduled time.
 - **Worker:** A process or loop that repeatedly claims jobs and runs handlers.
@@ -173,7 +173,7 @@ Claiming is reading and changing ownership in a way that prevents another worker
 Do not memorize these as isolated flash cards only.
 Connect each word to a row in the job table and to one branch in the worker loop.
 
-## 6. Concept explanations from first principles
+## Concept explanations from first principles
 ### Why persist jobs?
 A list in Python memory disappears when the process exits.
 A SQLite row remains after the process exits.
@@ -239,7 +239,7 @@ A completed job should not become running again unless the user creates a new jo
 Also missing: `failed -> done` is not a normal worker transition.
 A failed job may be manually inspected and requeued, but that should be explicit.
 
-## 7. ResearchOps-specific application
+## ResearchOps-specific application
 ResearchOps processes research papers.
 A paper may enter the system from a local file path, a metadata import, or a fetched URL.
 The user wants a responsive command, not a frozen terminal.
@@ -266,7 +266,7 @@ Do not add LLM prompt templates in this week.
 Do not add Docker orchestration in this week.
 The worker exists so those later features have a safe operational foundation.
 
-## 8. Code examples with line-by-line explanation
+## Code examples with line-by-line explanation
 This section shows a beginner-readable implementation shape.
 The exact project code may differ, but the responsibilities should remain recognizable.
 
@@ -574,7 +574,7 @@ def handle_store_document(payload: dict, connection) -> None:
 This handler is safe to run twice for the same document id.
 That is the practical meaning of idempotency in this chapter.
 
-## 9. Common beginner mistakes
+## Common beginner mistakes
 - **Using `pending`, `queued`, and `waiting` interchangeably:** Pick one vocabulary in the code and tests. This chapter uses `queued` for jobs waiting to be claimed.
 - **Claiming with a plain SELECT:** A plain SELECT only observes a job. It does not reserve it. Two workers can observe the same row.
 - **Forgetting to commit after enqueue:** The job may appear in the current connection but not be durable for another process.
@@ -592,7 +592,7 @@ A good beginner rule is: every state transition deserves a test.
 Another good rule is: every failure class should have a visible row state after the worker handles it.
 If a failure disappears into the terminal output only, the job system is not doing its job.
 
-## 10. Debugging guidance
+## Debugging guidance
 Debug workers by shrinking the problem to one job.
 Do not start by staring at the whole loop.
 First inspect the row.
@@ -627,7 +627,7 @@ For example: `job=abc retry attempts=2 error=database locked`.
 Avoid logging the entire payload if it may contain large text or sensitive metadata.
 Log identifiers and concise error summaries.
 
-## 11. Design tradeoffs
+## Design tradeoffs
 - **SQLite queue versus in-memory queue:** SQLite is slower than a list but survives process exit and can be inspected. In-memory is useful for unit tests but not enough for this milestone.
 - **Polling versus notifications:** Polling is easy to understand and works locally. Notifications are more efficient but add complexity that this chapter does not need.
 - **One worker versus many workers:** One worker is simpler and enough for local learning. Multiple workers require stronger claim tests and careful idempotency.
@@ -643,7 +643,7 @@ There is no perfect queue design.
 There is only a design whose tradeoffs match the project stage.
 For Week 16, clarity, durability, and testability matter more than maximum throughput.
 
-## 12. Testing implications
+## Testing implications
 Worker tests should be layered.
 Start with pure state-transition tests.
 Then test repository methods against a temporary SQLite database controlled by the test.
@@ -677,7 +677,7 @@ If backoff is needed, store `scheduled_at` and pass a fake `now` value to claim 
 Avoid tests that depend on thread timing unless the goal is specifically to test claim safety.
 Thread race tests are useful but should be few and carefully written.
 
-## 13. Architecture implications
+## Architecture implications
 The worker job system must respect the ResearchOps dependency direction.
 `core/` may define models, exceptions, and interfaces.
 `core/` must not import worker code.
@@ -715,7 +715,7 @@ core -> workers -> cli -> api -> storage -> core
 
 That cycle makes the curriculum harder to understand and the project harder to test.
 
-## 14. How this connects to AI engineering / ML research
+## How this connects to AI engineering / ML research
 AI engineering work often includes slow, failure-prone background tasks.
 Embedding a document collection may take time.
 Parsing a PDF may fail on one malformed file while many other files are fine.
@@ -736,7 +736,7 @@ Do not confuse this with Week 17 RAG.
 A worker can prepare documents and embeddings for later retrieval.
 It should not generate LLM answers in this chapter.
 
-## 15. Mini quizzes
+## Mini quizzes
 1. **Question:** Why does the system write a job row before running the handler?
    **Check yourself:** So the request is durable and inspectable even if the worker crashes later.
 2. **Question:** What is the difference between polling and claiming?
@@ -758,7 +758,7 @@ It should not generate LLM answers in this chapter.
 10. **Question:** What does graceful shutdown protect?
    **Check yourself:** It prevents the worker from starting unsafe new work while shutdown is requested.
 
-## 16. Explain-it-aloud prompts
+## Explain-it-aloud prompts
 - Explain the full lifecycle of a job from enqueue to done.
 - Explain why a worker should claim a job before running the handler.
 - Explain why a persisted SQLite queue is safer than an in-memory list for local ResearchOps.
@@ -775,7 +775,7 @@ It should not generate LLM answers in this chapter.
 When you answer these aloud, avoid saying "it just works."
 Name the table, the state, the function, and the failure path.
 
-## 17. What to memorize
+## What to memorize
 - The basic lifecycle: `queued -> running -> done`.
 - The retry lifecycle: `running -> queued` until attempts are exhausted.
 - The final failure lifecycle: `running -> failed`.
@@ -790,7 +790,7 @@ Name the table, the state, the function, and the failure path.
 Memorization is not the same as understanding.
 Memorize these because they are the vocabulary you will use while debugging.
 
-## 18. What to understand deeply
+## What to understand deeply
 Understand why state transitions are the real design, not an implementation detail.
 Understand that a row in `jobs` is both data and operational evidence.
 Understand that retries are dangerous unless handlers are idempotent or carefully guarded.
@@ -806,7 +806,7 @@ The deepest lesson is recovery.
 A happy-path worker is easy.
 A trustworthy worker is designed around what happens when the happy path is interrupted.
 
-## 19. What not to worry about yet
+## What not to worry about yet
 Do not worry about distributed queue brokers such as Redis, RabbitMQ, or cloud queues yet.
 Do not worry about Docker or container orchestration yet.
 Do not worry about Kubernetes workers yet.
@@ -821,7 +821,7 @@ Do not worry about advanced priority queues unless the current milestone already
 The local worker teaches the concepts beneath those future tools.
 If you cannot explain the SQLite version, a cloud version will only hide the confusion behind more services.
 
-## 20. Bridge to next week
+## Bridge to next week
 Week 16 gives ResearchOps a reliable way to prepare work in the background.
 That preparation matters for Week 17.
 Week 17 can build on documents, chunks, embeddings, and indexes that may be produced by worker jobs.

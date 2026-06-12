@@ -11,7 +11,7 @@
 
 # Exercises - Week 12 Experiment Tracking
 
-## 1. How to use this workbook
+## How to use this workbook
 
 ### Read, build, inspect
 
@@ -58,7 +58,7 @@ For every implementation task, identify the parameters, metrics, artifacts, and 
 - The behavior preserves params, metrics, artifacts, or reproducibility metadata.
 - The work does not introduce future-week concepts or unrequested dependencies.
 
-## 2. Warm-up exercises
+## Warm-up exercises
 
 ### W12-W1: Sort fields into tracking categories
 
@@ -120,7 +120,7 @@ Put a `Path` and a `datetime` in a run dictionary. Observe the JSON error. Fix t
 - The behavior preserves params, metrics, artifacts, or reproducibility metadata.
 - The work does not introduce future-week concepts or unrequested dependencies.
 
-## 3. Code-reading exercises
+## Code-reading exercises
 
 ### W12-C1: Read an ExperimentRun dataclass
 
@@ -182,7 +182,19 @@ Given two run records with different metric dictionaries, sketch the expected co
 - The behavior preserves params, metrics, artifacts, or reproducibility metadata.
 - The work does not introduce future-week concepts or unrequested dependencies.
 
-## 4. Implementation exercises
+### W12-C5: Read the experiment protocol
+
+Open `src/researchops/core/interfaces.py` and find `ExperimentRepository`. Write the method names, argument types, and return types in a table. Then explain why the protocol stores `params` as `dict[str, str]` and metrics as `float` values: a JSON or SQLite repository can persist those simple shapes without guessing how to serialize arbitrary Python objects.
+
+### W12-C6: Read the experiment service seam
+
+Open `src/researchops/services/experiment_service.py`. It is currently a Week 12 implementation stub. Write the service responsibilities you expect to add here: creating a run, logging metrics, reading one run, and listing runs. Then write the imports that should be allowed in this service (`researchops.core.interfaces` and core models/exceptions) and the imports that should stay out (`sqlite3`, `joblib`, and concrete storage classes).
+
+### W12-C7: Read the SQLite experiment repository seam
+
+Open `src/researchops/storage/experiment_repository.py`. It names the intended tables: `experiment_runs`, `experiment_params`, and `experiment_metrics`. Sketch what each table should store in plain English, then explain why this file may import SQLite-related code while `src/researchops/services/experiment_service.py` should not.
+
+## Implementation exercises
 
 ### W12-I1: Implement ExperimentRun
 
@@ -259,7 +271,7 @@ Wrap the training flow so a failure can still save a run record with `status="fa
 - The behavior preserves params, metrics, artifacts, or reproducibility metadata.
 - The work does not introduce future-week concepts or unrequested dependencies.
 
-## 5. Testing exercises
+## Testing exercises
 
 ### W12-T1: Test dataclass round trip
 
@@ -351,7 +363,7 @@ Simulate a training error. Assert a failed run record exists and contains a non-
 - The behavior preserves params, metrics, artifacts, or reproducibility metadata.
 - The work does not introduce future-week concepts or unrequested dependencies.
 
-## 6. Debugging exercises
+## Debugging exercises
 
 ### W12-D1: Break JSON serialization
 
@@ -428,7 +440,7 @@ Save records in one directory and list from another. Add configuration or cleare
 - The behavior preserves params, metrics, artifacts, or reproducibility metadata.
 - The work does not introduce future-week concepts or unrequested dependencies.
 
-## 7. Refactoring exercises
+## Refactoring exercises
 
 ### W12-R1: Extract display formatting
 
@@ -490,7 +502,7 @@ Separate run creation, classifier training, metric recording, artifact saving, r
 - The behavior preserves params, metrics, artifacts, or reproducibility metadata.
 - The work does not introduce future-week concepts or unrequested dependencies.
 
-## 8. Written explanation exercises
+## Written explanation exercises
 
 ### W12-X1: Why tracking matters
 
@@ -567,7 +579,7 @@ Explain why a service should depend on a repository protocol rather than directl
 - The behavior preserves params, metrics, artifacts, or reproducibility metadata.
 - The work does not introduce future-week concepts or unrequested dependencies.
 
-## 9. Stretch exercises
+## Stretch exercises
 
 ### W12-S1: Dataset hash
 
@@ -644,7 +656,7 @@ Extend best-run logic so the caller can say whether higher or lower is better. K
 - The behavior preserves params, metrics, artifacts, or reproducibility metadata.
 - The work does not introduce future-week concepts or unrequested dependencies.
 
-## 10. Brutal exercises
+## Brutal exercises
 
 ### W12-B1: Reproduce from a record
 
@@ -706,7 +718,7 @@ Create an old thin run record missing `status` and `artifacts`. Make `from_dict`
 - The behavior preserves params, metrics, artifacts, or reproducibility metadata.
 - The work does not introduce future-week concepts or unrequested dependencies.
 
-## 11. Mini project task
+## Mini project task
 
 ### Build the Week 12 tracker
 
@@ -738,7 +750,7 @@ Records include params, metrics, artifacts, dataset reference, timestamp, status
 - The behavior preserves params, metrics, artifacts, or reproducibility metadata.
 - The work does not introduce future-week concepts or unrequested dependencies.
 
-## 12. Completion checklist
+## Completion checklist
 
 ### Final checklist
 

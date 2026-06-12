@@ -11,7 +11,7 @@
 
 # Exercises - Week 14 FastAPI Layer
 
-## 1. How to use this workbook
+## How to use this workbook
 
 Work in order from warm-up to brutal.
 Keep routes thin and service-driven.
@@ -20,7 +20,7 @@ Every implementation exercise should have a matching test when you are coding.
 Use fakes to keep API unit tests fast.
 Read status codes before reading JSON bodies.
 
-## 2. Warm-up exercises
+## Warm-up exercises
 
 1. **Warm-up 1.** Define method/path/query/status in your own words.
 2. **Warm-up 2.** Draw the `/health` request-response flow.
@@ -30,17 +30,18 @@ Read status codes before reading JSON bodies.
 6. **Warm-up 6.** Write the sentence: API routes may translate HTTP but services own behavior.
 7. **Warm-up 7.** Identify three things not to build this week.
 
-## 3. Code-reading exercises
+## Code-reading exercises
 
-1. **Reading 1.** Read `src/researchops/api/main.py` and identify app factory gaps.
-2. **Reading 2.** Read `src/researchops/services/` and identify services for papers and search.
-3. **Reading 3.** Read `core/interfaces.py` and name relevant protocols.
-4. **Reading 4.** Find CLI wiring that calls a service and compare it to API wiring.
-5. **Reading 5.** Read `tests/fakes/` and choose fakes for API tests.
-6. **Reading 6.** Read this week validation file and list expected endpoints.
-7. **Reading 7.** Find any forbidden import direction before adding code.
+1. **Read the API package boundary.** Open `src/researchops/api/` and list every Python file currently present. Success: you can say which file should create the FastAPI app and which future files, such as routers or dependency providers, would still belong inside the API layer.
+2. **Read `src/researchops/api/main.py`.** Identify the app-factory TODO, the import-order note, and the missing route registration point. Success: you can explain why `create_app()` should wire HTTP concerns without storing business logic.
+3. **Read service code before route code.** Open `src/researchops/services/paper_service.py` and `src/researchops/services/search_service.py`. Mark the methods an API route should call for listing papers, getting one paper, and searching. Success: each planned endpoint delegates to a service instead of inventing behavior in the route.
+4. **Read domain boundaries.** Open `src/researchops/core/interfaces.py` and identify the protocols the services depend on. Success: you can explain why API code may depend on services but services should not import FastAPI.
+5. **Compare CLI wiring to API wiring.** Find a CLI command that calls a service. Write the equivalent API flow as request -> route -> service -> response schema. Success: the API and CLI share behavior through the service layer.
+6. **Read fake implementations.** Inspect `tests/fakes/` and choose or sketch fakes for API tests. Success: an endpoint test can run without a live server, real database, or network.
+7. **Read validation before coding.** Read this week `validation.md` and list the expected endpoints, status codes, and response shapes. Success: you know what `200`, `404`, and `422` should mean before writing route code.
+8. **Search for forbidden imports.** Inspect planned API files for storage imports such as `sqlite3`, repository construction, or raw SQL. Success: route code remains HTTP translation, not persistence.
 
-## 4. Implementation exercises
+## Implementation exercises
 
 1. **Implementation 1.** Implement `create_app() -> FastAPI` and `app = create_app()`.
 2. **Implementation 2.** Add `GET /health`.
@@ -94,7 +95,7 @@ Read status codes before reading JSON bodies.
 9. Confirm the service method name is not invented unnecessarily.
 10. Confirm the route can be tested with a fake.
 
-## 5. Testing exercises
+## Testing exercises
 
 1. **Testing 1.** Test health status and body.
 2. **Testing 2.** Test list papers with a fake service.
@@ -131,7 +132,7 @@ Read status codes before reading JSON bodies.
 - [ ] Clear overrides or discard app.
 - [ ] Do not depend on test order.
 
-## 6. Debugging exercises
+## Debugging exercises
 
 1. **Debugging 1.** Remove `q` and inspect 422 detail.
 2. **Debugging 2.** Use wrong method and inspect 405.
@@ -141,7 +142,7 @@ Read status codes before reading JSON bodies.
 6. **Debugging 6.** Return wrong response type and inspect serialization failure.
 7. **Debugging 7.** Create route conflict and prove which handler runs.
 
-## 7. Refactoring exercises
+## Refactoring exercises
 
 1. **Refactor 1.** Extract `to_paper_response`.
 2. **Refactor 2.** Extract `to_search_response`.
@@ -150,7 +151,7 @@ Read status codes before reading JSON bodies.
 5. **Refactor 5.** Rename vague schemas to `PaperResponse` style names.
 6. **Refactor 6.** Remove duplicate CLI/API decisions by moving them to services.
 
-## 8. Written explanation exercises
+## Written explanation exercises
 
 1. Why should routes not query SQLite directly?
 2. Why are API schemas separate from domain models?
@@ -174,7 +175,7 @@ Read status codes before reading JSON bodies.
 9. Explain how route tests support future refactoring.
 10. Explain why no live server belongs in unit tests.
 
-## 9. Stretch exercises
+## Stretch exercises
 
 1. **Stretch 1.** Add `limit` bounds between 1 and 50.
 2. **Stretch 2.** Inspect `/docs` and identify schema sources.
@@ -183,7 +184,7 @@ Read status codes before reading JSON bodies.
 5. **Stretch 5.** Record fake-service call counts.
 6. **Stretch 6.** Add a generic 500 handler only if the project pattern supports it.
 
-## 10. Brutal exercises
+## Brutal exercises
 
 1. **Brutal 1.** Write a contract table for every endpoint.
 2. **Brutal 2.** Prove every route delegates exactly once to a fake service.
@@ -279,7 +280,7 @@ Work through these without adding future-week systems:
 7. If generated docs show the wrong response shape, which annotation should you inspect first?
 8. If a test passes alone but fails with the suite, what dependency override cleanup problem might exist?
 
-## 11. Mini project task
+## Mini project task
 
 - Build read-only API slice: `/health`, `/papers`, `/papers/{paper_id}`, `/papers/search`.
 - Use FastAPI under `src/researchops/api/`.
@@ -305,7 +306,7 @@ Work through these without adding future-week systems:
 9. Which future-week feature did you avoid adding?
 10. What would you explain to a teammate before they review your API code?
 
-## 12. Completion checklist
+## Completion checklist
 
 - [ ] FastAPI app factory exists.
 - [ ] Health endpoint returns expected JSON.

@@ -25,14 +25,14 @@
 
 # Validation — Week 14 FastAPI Layer
 
-## 1. Pre-validation checklist
+## Pre-validation checklist
 
 - [ ] `.[dev,api,storage]` is installed in an active virtual environment.
 - [ ] Route handlers delegate to services; they contain no business logic.
 - [ ] Services are injected via `Depends`, not constructed inside routes.
 - [ ] The API talks to services, never directly to SQLite.
 
-## 2. Exact commands
+## Commands to run
 
 ```bash
 source .venv/bin/activate
@@ -44,25 +44,36 @@ pytest tests/e2e/test_api.py -v
 pytest -q
 ```
 
-## 3. Expected behavior
+## Expected outputs
 
-- Uvicorn starts and serves the app.
-- `GET /health` returns `200` with JSON.
-- `GET /papers`, `GET /papers/{id}`, `GET /papers/search?q=...` return validated
-  JSON, with correct status codes for missing/invalid input.
+Expected output is partly command text and partly HTTP behavior. Do not continue just because a server starts; the responses and tests must prove the API contract.
 
-## 4. Tests that must pass
+- `source .venv/bin/activate` prints nothing, except possibly a changed shell prompt.
+- `python -m pip install -e ".[dev,api,storage]"` ends successfully. It may reuse installed packages. It must not report missing FastAPI, Pydantic, or storage extras.
+- `ruff check src tests` ends with `All checks passed!`. Route files, schemas, and tests must be lint-clean.
+- `uvicorn researchops.api.main:app --reload` prints startup lines similar to `Uvicorn running on http://127.0.0.1:8000` and `Application startup complete`. Stop it with Ctrl-C only after the health check works.
+- `curl http://localhost:8000/health` prints JSON equivalent to `{"status":"ok"}` and the server logs a `200 OK` request.
+- `pytest tests/e2e/test_api.py -v` shows endpoint tests as `PASSED`: health, list papers, get one paper, missing paper `404`, search, and invalid input `422`.
+- `pytest -q` finishes with a green summary such as `... passed`. No test should require a manually running uvicorn process.
+
+Behavior you should be able to observe after the commands pass:
+
+- `GET /health` returns status `200` and a tiny JSON body.
+- `GET /papers`, `GET /papers/{paper_id}`, and `GET /papers/search?q=...` return response-schema-shaped JSON.
+- Missing resources become `404`; malformed or missing query parameters become `422`; route code delegates to services.
+
+## Tests that must pass
 
 - `tests/e2e/test_api.py` (via `TestClient`, no manual server needed)
 - `pytest -q` (whole suite)
 
-## 5. Manual checks
+## Manual checks
 
 - `curl` each endpoint; confirm response shapes match the Pydantic models.
 - Request a non-existent paper id; confirm a `404`, not a `200` with `null`.
 - Send an invalid query param; confirm a `422` validation error.
 
-## 6. Architecture checks
+## Architecture checks
 
 - No route handler contains search/ranking/persistence logic.
 - No route opens a database connection.
@@ -72,27 +83,30 @@ grep -rn "sqlite3\|\.execute(\|SELECT " src/researchops/api/ --include="*.py"
 # Expected: no output (routes go through services)
 ```
 
-## 7. Documentation checks
+## Documentation checks
 
 - `notes.md` explains the app-factory pattern and `Depends` injection.
 - Each endpoint's request/response contract is documented.
 
-## 8. Do-not-proceed warnings
+## Do-not-proceed warnings
 
 **Do not proceed to Week 15 if:**
 
 - **Route handlers contain business logic** — they must only validate, delegate to
   a service, and shape the response.
 - **The API bypasses services and talks directly to SQLite.**
+- Endpoint tests pass only when uvicorn is already running manually; e2e tests should create the app in-process.
+- API responses expose raw domain objects, debug fields, or Python repr strings instead of Pydantic-shaped JSON.
+- CLI behavior and API behavior disagree because the same business rule was copied into a route.
 
-## 9. Ruthless mentor checkpoint
+## Ruthless mentor checkpoint
 
 - "Read me any route handler. Is there a single line of business logic in it?"
 - "Show me where the service a route uses is *constructed*. It must not be inside
   the route."
 - "Prove the endpoints pass without you manually starting uvicorn."
 
-## 10. Definition of done
+## Definition of done
 
 - [ ] App factory exists; uvicorn serves it.
 - [ ] `/health`, `/papers`, `/papers/{id}`, `/papers/search` work.

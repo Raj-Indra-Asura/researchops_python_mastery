@@ -14,6 +14,27 @@
 Breaking things deliberately is the fastest way to understand constraints, error messages, and edge cases.
 Each scenario here asks you to cause a specific failure, observe what happens, and then fix it.
 
+## Purpose of failure practice
+
+Week 5 failures are about data safety. A storage layer can appear to work during a happy-path demo while still losing rows, saving duplicates, skipping commits, or letting tests leak state into each other. These labs make the invisible parts of SQLite visible: constraints, transactions, rollback behavior, path conversion, and schema initialization.
+
+Break the examples in a small, controlled way first. Then connect the error back to ResearchOps: every bad storage habit could mean a paper disappears, a duplicate is saved, or a failed document cannot be diagnosed later.
+
+## Failure lab rules
+
+1. Change only the smallest piece of code needed to trigger each failure.
+2. Run the scenario in an isolated database path or a pytest `tmp_path` fixture so experiments do not pollute later work.
+3. Write down the exact exception type and the first useful line of the message.
+4. Inspect the database state after the failure whenever the scenario involves a write.
+5. Fix the bug and rerun the test that should have caught it.
+6. Never weaken a schema constraint just to make a failing test pass.
+
+---
+
+## Intentional break experiments
+
+Work through the scenarios below one at a time. Each one asks you to cause a failure, inspect what happened, fix it, and name the test or check that should catch it in ResearchOps.
+
 ---
 
 ## Scenario 1 — The duplicate primary key
@@ -292,7 +313,18 @@ The standard approach for ResearchOps tests is `tmp_path`.
 
 ---
 
-## What did you learn?
+## Debugging checklist
+
+- [ ] Did the failing operation run inside a transaction?
+- [ ] Did `_connect` commit after success and roll back after exceptions?
+- [ ] Is `conn.row_factory = sqlite3.Row` set before reading rows by column name?
+- [ ] Are SQL values passed as parameters instead of formatted into the SQL string?
+- [ ] Did schema initialization run before the first repository method?
+- [ ] Is `PRAGMA foreign_keys = ON` enabled for the connection doing the work?
+- [ ] Is the test using `tmp_path` rather than a shared database file?
+- [ ] After the fix, does the database contain exactly the expected rows?
+
+## Reflection after breaking
 
 After completing these scenarios, answer:
 

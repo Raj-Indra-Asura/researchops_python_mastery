@@ -15,6 +15,21 @@ These experiments are designed to make things fail in instructive ways. Do each 
 
 ---
 
+## Purpose of failure practice
+
+Protocols and architecture boundaries can feel invisible when everything is working. Failure practice makes the invisible contract visible: you remove a method, cross a layer boundary, or change a signature, then watch which tool notices first. In ResearchOps, this protects the learner from building services that accidentally depend on SQLite, PDF parsing, or other concrete infrastructure.
+
+## Failure lab rules
+
+1. Make exactly one intentional break at a time.
+2. Predict the failure before running a command: expected error, expected test failure, or expected architecture violation.
+3. Run the narrowest command first, then the broader gate only after the narrow command teaches you something.
+4. Record how to cause it, the expected error, how to inspect it, how to fix it, the test that should catch it, what it teaches, and one common wrong fix.
+5. Restore the original code before moving to the next experiment.
+6. Never leave a broken protocol, fake, or service import in the repository.
+
+## Intentional break experiments
+
 ## Experiment 1: Remove a required method from a fake
 
 Go to `tests/fakes/fake_repository.py`. Delete the `exists` method from `FakePaperRepository`.
@@ -172,6 +187,19 @@ Now try with an object that has only some of the required methods. What does `is
 
 ---
 
+## Debugging checklist
+
+Use this checklist whenever a Week 9 break behaves differently than expected:
+
+- [ ] Did you break only one protocol, fake, service, or import at a time?
+- [ ] Did you run the smallest relevant command first (`pytest tests/unit/ -q`, `ruff check src tests`, or `mypy src tests`)?
+- [ ] Did you inspect both the protocol in `src/researchops/core/interfaces.py` and the fake in `tests/fakes/fake_repository.py`?
+- [ ] Did you check whether the service imports only protocols/models/exceptions from `core/`?
+- [ ] Did you restore the exact method name, argument list, return type, and exception behavior?
+- [ ] Did you rerun the command that originally failed and confirm it now passes?
+
+---
+
 ## Edge cases to explore
 
 **EC1: Fake repository with duplicate IDs**
@@ -188,7 +216,7 @@ Create one `FakePaperRepository` instance. Inject it into both an `IngestionServ
 
 ---
 
-## What did you learn?
+## Reflection after breaking
 
 After completing all experiments, answer these questions:
 

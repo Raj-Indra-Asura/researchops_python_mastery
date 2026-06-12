@@ -23,7 +23,7 @@ fakes live in `tests/fakes/fake_repository.py`, and services live in
 
 ---
 
-## 1. How to use this workbook
+## How to use this workbook
 
 1. **Work top to bottom.** The sections build on each other. The warm-ups create
    the vocabulary the project exercises assume.
@@ -51,7 +51,7 @@ python /tmp/w9/scratch.py
 
 ---
 
-## 2. Warm-up: identify concrete dependencies
+## Warm-up exercises
 
 A **concrete dependency** is a place where code reaches directly for a specific
 implementation (a class, a library, a file, a connection) instead of asking for a
@@ -78,7 +78,7 @@ a test without changing the caller?")
 
 ---
 
-## 3. Code-reading exercise: inspect the real interfaces
+## Code-reading exercises
 
 Open `src/researchops/core/interfaces.py`. It defines these protocols:
 `DocumentParser`, `PaperRepository`, `FailureRepository`, `SearchEngine`,
@@ -104,7 +104,9 @@ this file imports no `sqlite3`, no `pymupdf`, and nothing from `storage/`.
 
 ---
 
-## 4. Before/after constructor refactor exercise
+## Implementation exercises
+
+### Before/after constructor refactor exercise
 
 Here is a service written the **wrong** way — it builds its own dependencies:
 
@@ -132,7 +134,7 @@ SQLite connection and the parser? (Name the layer and the file.)
 
 ---
 
-## 5. Protocol design exercise
+### Protocol design exercise
 
 The spec for a repository protocol often looks like this minimal shape:
 
@@ -173,7 +175,7 @@ you that nominal inheritance does not?
 
 ---
 
-## 6. Fake repository exercise
+### Fake repository exercise
 
 **Exercise W9-12.** Without looking at `tests/fakes/fake_repository.py`, write
 your own `MyFakePaperRepository` from scratch that satisfies the real
@@ -197,7 +199,7 @@ otherwise tests pass against the fake but the real adapter behaves differently.
 
 ---
 
-## 7. Fake parser exercise
+### Fake parser exercise
 
 **Exercise W9-14.** Study `FakeDocumentParser` in `tests/fakes/`. It is
 *configurable*: you can `set_result(path, doc)` or `set_error(path, exc)`. Write a
@@ -215,7 +217,9 @@ behavior you can only test if the parser can be made to fail on demand.
 
 ---
 
-## 8. Test double exercise
+## Testing exercises
+
+### Test double exercise
 
 The words *stub*, *fake*, and *mock* are not interchangeable.
 
@@ -233,7 +237,7 @@ fakes should still be your default choice most of the time.
 
 ---
 
-## 9. Import-boundary exercise
+### Import-boundary exercise
 
 The architecture rule, as code:
 
@@ -261,7 +265,7 @@ import that is forbidden in `services/` is *correct* here.
 
 ---
 
-## 10. Circular import investigation
+### Circular import investigation
 
 Circular imports usually mean a boundary has been crossed.
 
@@ -281,7 +285,7 @@ one is preferred in this codebase and why.
 
 ---
 
-## 11. Architecture diagram exercise
+### Architecture diagram exercise
 
 **Exercise W9-23.** Draw (on paper or in `docs/diagrams/`) the dependency graph
 for the ingestion feature. Use boxes for modules and arrows for "depends on."
@@ -302,7 +306,7 @@ drawing.
 
 ---
 
-## 12. Service-layer refactor exercise
+### Service-layer refactor exercise
 
 **Exercise W9-25.** Imagine a new `TopicService` that needs to read papers and
 classify them. Sketch its constructor so it depends only on protocols (e.g.
@@ -316,7 +320,7 @@ without training a model?
 
 ---
 
-## 13. Testing exercise using a fake repository
+### Testing exercise using a fake repository
 
 **Exercise W9-27.** Create a scratch test file (you may later promote it to
 `tests/unit/`) named `test_search_service_with_fake.py`. The real
@@ -336,7 +340,9 @@ single clearest signal that this is a true unit test?
 
 ---
 
-## 14. Debugging exercise: protocol mismatch
+## Debugging exercises
+
+### Protocol mismatch
 
 **Exercise W9-29.** Create a class that *looks* like it satisfies
 `PaperRepository` but has a subtly wrong method — e.g. spell `save` as `store`, or
@@ -362,7 +368,9 @@ why does a static type checker like `mypy` catch what `isinstance` misses?
 
 ---
 
-## 15. Refactoring exercise: remove a direct SQLite dependency
+## Refactoring exercises
+
+### Remove a direct SQLite dependency
 
 **Exercise W9-31.** Here is an offending snippet. Refactor it so the service no
 longer imports or constructs SQLite:
@@ -387,7 +395,7 @@ the SQLite construction to the composition root.
 
 ---
 
-## 16. Written explanation prompts
+## Written explanation exercises
 
 Answer each in 3–5 sentences, in your own words.
 
@@ -405,7 +413,7 @@ Answer each in 3–5 sentences, in your own words.
 
 ---
 
-## 17. Stretch exercises
+## Stretch exercises
 
 **Exercise W9-S1 — Clock protocol.** Time-dependent code is hard to test. Define a
 `Clock` protocol with `now() -> datetime`. Write `RealClock` (calls the system
@@ -425,7 +433,7 @@ write a test that creates a run, logs two metrics, and reads them back.
 
 ---
 
-## 18. Brutal exercises
+## Brutal exercises
 
 These are meant to be uncomfortable. Do them without notes.
 
@@ -446,7 +454,7 @@ real cost to needless indirection.
 
 ---
 
-## 19. Mini project task
+## Mini project task
 
 Deliver a complete, self-contained vertical slice that proves you own this week:
 
@@ -467,7 +475,7 @@ contains zero infrastructure imports.
 
 ---
 
-## 20. Completion checklist
+## Completion checklist
 
 Do not advance to Week 10 until every box is honestly true.
 

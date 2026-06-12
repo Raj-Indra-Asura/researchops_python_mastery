@@ -25,11 +25,21 @@
 
 # Validation - Week 09 Protocols and Clean Architecture
 
+## Pre-validation checklist
+
+Before running commands, verify the Week 9 work is in a clean learning state:
+
+- [ ] You have read `src/researchops/core/interfaces.py` and can name each protocol.
+- [ ] Any scratch protocol, fake, or service experiment has been either promoted intentionally or removed.
+- [ ] No service file was left importing `sqlite3`, `researchops.storage`, or concrete parsing adapters.
+- [ ] Unit-test examples use fakes from `tests/fakes/` rather than a real database.
+
+
 ## Philosophy
 
 Validation this week is less about running new code and more about proving that the architecture is sound. The key signal is: unit tests pass using only fakes, with no database created.
 
-## Exact shell commands to run
+## Commands to run
 
 ```bash
 # Activate your environment
@@ -68,6 +78,15 @@ assert isinstance(FakeFailureRepository(), FailureRepository)
 print("All fakes satisfy their protocols.")
 ```
 
+## Tests that must pass
+
+Week 9 is validated by fast fake-based unit tests plus adapter-level integration tests:
+
+- `pytest tests/unit/ -v` must pass without creating a database file in the repository root.
+- `pytest tests/integration/ -v` must pass with real adapters.
+- `pytest -q` must pass after both narrow suites are green.
+- `mypy src tests` should confirm that fakes and services still match the protocol contracts; if local third-party stubs are missing, document the exact stub issue instead of ignoring real protocol errors.
+
 ## Expected outputs
 
 - `ruff check src tests` — exits 0, no errors.
@@ -76,7 +95,16 @@ print("All fakes satisfy their protocols.")
 - `pytest tests/integration/ -v` — all integration tests pass with real SQLite.
 - `pytest -q` — full suite passes. Coverage above configured threshold.
 
-## Architecture verification checklist
+## Manual checks
+
+Open these files and inspect them directly:
+
+- `src/researchops/core/interfaces.py`: protocols import only core models and standard-library typing/path helpers.
+- `tests/fakes/fake_repository.py`: fake method names and exception behavior match the protocols.
+- `src/researchops/services/ingestion_service.py`: constructor arguments are protocols, not concrete repositories or parsers.
+- CLI composition files: concrete adapters are wired at the outside edge, not inside services.
+
+## Architecture checks
 
 Verify manually or by script:
 
@@ -92,7 +120,32 @@ grep -r "import sqlite3\|from researchops.storage\|from researchops.parsing\|fro
 # Expected: no output (zero violations)
 ```
 
-## Completion checklist
+## Documentation checks
+
+- [ ] Notes explain protocols, dependency inversion, and composition roots in beginner language.
+- [ ] Exercises include code-reading, implementation, testing, debugging, refactoring, stretch, and brutal practice.
+- [ ] Break-it labs tell the learner how to restore each intentional architecture break.
+- [ ] Validation commands match the project CLI (`researchops`), pytest, Ruff, and mypy commands used elsewhere in the curriculum.
+
+## Do-not-proceed warnings
+
+Do not advance to Week 10 if any of these are true:
+
+- A service imports `sqlite3`, `researchops.storage`, `researchops.parsing`, or ML libraries directly.
+- A fake silently behaves differently from the real adapter for duplicate saves or missing records.
+- Unit tests require a real database, real PDF, or network access.
+- You cannot explain why changing a protocol method forces fakes, adapters, and services to be rechecked.
+
+## Ruthless mentor checkpoint
+
+Answer these aloud without reading notes:
+
+1. Why is `PaperRepository` in `core/interfaces.py` instead of `storage/sqlite_repository.py`?
+2. What exact damage happens if `IngestionService` constructs `SQLiteRepository` itself?
+3. What does `@runtime_checkable` check, and what does it not check?
+4. Which layer is allowed to wire concrete implementations, and why?
+
+## Definition of done
 
 - [ ] You have read all six protocols in `interfaces.py` and can explain each in your own words.
 - [ ] You can identify the concrete adapter for each protocol.

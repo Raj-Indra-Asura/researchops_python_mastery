@@ -11,7 +11,7 @@
 
 # Break It - Week 04 CLI and Packaging
 
-## Why this lab exists
+## Purpose of failure practice
 Stable systems are easier to understand when you have seen them fail in controlled ways.
 This lab teaches you to recognize the difference between:
 - a packaging failure,
@@ -27,7 +27,7 @@ The point is to train your debugging instincts.
 
 ---
 
-## Safety rules
+## Failure lab rules
 1. Make one breakage at a time.
 2. Record the exact symptom before fixing anything.
 3. Restore the code after each experiment.
@@ -36,6 +36,9 @@ The point is to train your debugging instincts.
 6. Focus on what kind of failure it is, not only the error text.
 
 ---
+
+## Intentional break experiments
+Each experiment changes one CLI or packaging assumption. Record how to cause it, the expected error, how to inspect it, how to fix it, which test should catch it, what it teaches, and which wrong fixes are tempting but unsafe.
 
 ## Experiment 1 - Break the entry point path
 ### Goal
@@ -453,7 +456,7 @@ It protects growth.
 
 ---
 
-## Pattern recognition checklist
+## Debugging checklist
 After finishing the lab, make sure you can identify these failure categories on sight.
 
 - **Packaging failure**: installed command cannot import the configured target.
@@ -467,7 +470,7 @@ After finishing the lab, make sure you can identify these failure categories on 
 
 ---
 
-## Debrief prompts
+## Reflection after breaking
 Write a short paragraph for each.
 
 1. Which breakage felt most confusing at first, and why?
