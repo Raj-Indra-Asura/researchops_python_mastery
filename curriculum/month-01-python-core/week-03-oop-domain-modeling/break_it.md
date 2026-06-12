@@ -10,6 +10,8 @@
 <!-- NAV_END -->
 
 # Week 03 Break It - Failure Lab
+## Purpose of failure practice
+Domain-model failures are valuable because they reveal hidden assumptions about identity, mutability, defaults, and architecture boundaries. This lab asks you to break one modeling rule at a time so you can connect the symptom to the underlying design decision. When you can explain why a dataclass failed, you understand more than the syntax.
 ## How to use this lab
 This lab is for controlled failure.
 You will intentionally break ideas from Week 3 so the design reasons become visible.
@@ -17,11 +19,14 @@ Do not leave the codebase broken.
 Make one experiment at a time, observe the failure, then restore the original code.
 The goal is not chaos.
 The goal is sharper understanding.
-## Safety rules
+## Failure lab rules
 - Work on a throwaway branch or restore changes immediately after each experiment.
 - Run the smallest relevant test after each break.
 - Read the error message fully before fixing anything.
 - Write down what assumption the failure violated.
+## Intentional break experiments
+Each experiment below follows the same pattern: cause one small break, observe the expected error, inspect the exact line involved, fix the break, identify the test that should catch it, and write down the lesson. Do not combine multiple experiments, because combined failures teach confusion instead of diagnosis.
+
 ## Experiment 1 - Shared list bug from `tags: list[str] = []`
 ### Concept under test
 Mutable defaults are shared when created once at class definition time.
@@ -239,7 +244,7 @@ A string is easy now and expensive later.
 You cannot query, sort, or present rich failure data cleanly.
 ### What it teaches
 A failure is domain data, not just a side effect.
-## Debugging checklist for all experiments
+## Debugging checklist
 After any break, ask these questions:
 1. What assumption did the code rely on?
 2. Which test noticed first?
@@ -247,7 +252,7 @@ After any break, ask these questions:
 4. Did the error message point to the real cause or only the symptom?
 5. Would a beginner misread this failure?
 6. What design rule does this reinforce?
-## Reflection prompts after the lab
+## Reflection after breaking
 - Which failure taught you the most?
 - Which failure felt most unfair until you understood it?
 - Which design rule now feels earned rather than arbitrary?

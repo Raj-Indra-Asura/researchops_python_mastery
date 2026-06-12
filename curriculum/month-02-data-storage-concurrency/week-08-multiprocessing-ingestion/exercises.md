@@ -11,9 +11,15 @@
 
 # Exercises — Week 08 Multiprocessing Ingestion
 
+## How to use this workbook
+
+Use this workbook to learn Week 8's main design rule: parse PDFs in worker processes, but keep ResearchOps database writes in the parent process. Work through the small `ProcessPoolExecutor` experiments first so pickling errors, worker counts, and exception handling feel familiar before you connect them to ingestion. Then compare sequential and parallel ingestion for correctness before caring about speed.
+
+Every exercise should preserve the Month 2 architecture. Workers may receive simple values such as file paths and return simple result objects, but they should not receive SQLite connections, repository instances, open files, lambdas, or nested functions. If parallel code seems mysterious, reduce the worker count to one and prove the same logical results occur.
+
 ---
 
-## Easy exercises
+## Warm-up exercises
 
 ### E1 — ProcessPoolExecutor basics
 
@@ -100,7 +106,47 @@ Show that with the internal catch, `list(executor.map(...))` succeeds for all 3 
 
 ---
 
-## Medium exercises
+## Code-reading exercises
+
+### C1 — Read the worker placeholders as architecture signs
+
+Open `src/researchops/workers/process_pool.py` and `src/researchops/workers/job_runner.py`. Answer:
+
+1. Which file is reserved for Week 8 process-pool ingestion work?
+2. Which file is explicitly marked for a later background job runner and should not be implemented for Week 8?
+3. Why is it useful to keep worker-related code under `src/researchops/workers/` instead of hiding it inside a CLI command?
+4. What should the Week 8 worker receive: a repository object, a database connection, or a plain file path? Why?
+5. What should the parent process do after workers return parse results?
+
+This reading is short on purpose. The placeholder files tell you where code belongs and where it does not belong yet.
+
+### C2 — Re-read ingestion with parallel boundaries in mind
+
+Open `src/researchops/services/ingestion_service.py` and answer these Week 8 questions without editing it first:
+
+1. Which part of `_ingest_one` is CPU-heavy enough to move to a worker process?
+2. Which part should stay in the parent process because it writes to the repository?
+3. Where are failures converted into `FailedDocument` objects today?
+4. What information would a worker need to return so the parent can record a failure?
+5. How could you compare a one-worker run with a sequential run for the same directory?
+
+The goal is to split responsibilities without changing the meaning of ingestion.
+
+### C3 — Read the storage connection code before parallel writes
+
+Open `src/researchops/storage/sqlite_repository.py` and focus on `_connect`, `save`, and `record_failure`. Answer:
+
+1. When is a SQLite connection opened and closed?
+2. Why would passing that connection into a worker process be unsafe?
+3. Which method commits or rolls back a transaction?
+4. Why is one parent-side save loop easier to reason about than many workers writing at once?
+5. What test would catch a worker that crashes before the parent records its failure?
+
+This exercise connects Week 8 performance work back to Week 5 data safety.
+
+---
+
+## Implementation exercises
 
 ### M1 — Worker function for ResearchOps
 
@@ -161,7 +207,7 @@ Write a test that:
 
 ---
 
-## Hard exercises
+## Stretch exercises
 
 ### H1 — Equivalence test
 
@@ -416,6 +462,16 @@ Complete the parallel ingestion for ResearchOps:
 9. Write a comment in the code explaining why the database writes happen in the main process.
 
 Deliverable: a parallel ingest command with equivalent correctness to sequential mode.
+## Completion checklist
+
+- [ ] I can explain CPU-bound work, the GIL, and why processes help PDF parsing.
+- [ ] I read `workers/process_pool.py`, `workers/job_runner.py`, `ingestion_service.py`, and `sqlite_repository.py` before designing parallel ingestion.
+- [ ] I can explain why workers must not receive repositories, SQLite connections, lambdas, or nested functions.
+- [ ] I tested that one bad PDF does not crash the whole parallel batch.
+- [ ] I tested that parent-side saving records successes and failures correctly.
+- [ ] I compared single-worker and multi-worker results for logical equivalence.
+- [ ] I measured speed only after correctness tests passed.
+- [ ] `pytest -q` and `ruff check src tests` pass before I mark Week 8 complete.
 <!-- NAV_BOTTOM_START -->
 ---
 ⬅️ [← Notes](notes.md) · ➡️ [Break It →](break_it.md)

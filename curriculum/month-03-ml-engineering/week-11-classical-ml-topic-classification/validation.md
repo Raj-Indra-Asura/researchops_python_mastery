@@ -25,7 +25,17 @@
 
 # Validation - Week 11 Classical ML Topic Classification
 
-## Exact shell commands to run
+## Pre-validation checklist
+
+Before validating the classifier:
+
+- [ ] The ML optional dependencies are installed with `python -m pip install -e ".[dev,ml]"`.
+- [ ] Training data is labeled consistently and each class has enough examples for a meaningful split.
+- [ ] The vectorizer is inside a scikit-learn `Pipeline`, not fitted before the train/test split.
+- [ ] Artifact output directories are created by the training flow before saving.
+
+
+## Commands to run
 
 ```bash
 # Activate your environment
@@ -54,6 +64,15 @@ pytest tests/integration/ -k "training" -v
 pytest -q
 ```
 
+## Tests that must pass
+
+Week 11 must prove both ordinary code quality and ML-specific behavior:
+
+- `ruff check src tests` must pass.
+- Unit tests for data loading, preprocessing helpers, and prediction guards must pass.
+- Integration tests for the training command or training function must pass.
+- `pytest -q` must pass after the classifier artifact can be loaded and used for prediction.
+
 ## Expected outputs
 
 Training command should print:
@@ -77,6 +96,15 @@ Model saved to artifacts/topic_classifier.joblib
 ```
 
 The exact metric values depend on your dataset. What matters is that the report prints, the artifact is saved, and the metrics make sense (not all zeros, not 100%).
+
+## Manual checks
+
+Inspect model behavior, not just command exit codes:
+
+- Read the class-count printout and confirm no class is accidentally empty.
+- Read the classification report and inspect precision, recall, F1, and support for every class.
+- Load the saved `.joblib` artifact and make one prediction on a new abstract-like sentence.
+- Confirm suspiciously perfect scores are explained by tiny data, duplicate examples, or leakage before trusting them.
 
 ## Verifying no leakage
 
@@ -104,7 +132,40 @@ print('Artifact loads and predicts OK')
 "
 ```
 
-## Completion checklist
+## Architecture checks
+
+- ML implementation belongs under `src/researchops/ml/`.
+- Services should depend on core protocols and should not import scikit-learn directly.
+- Core models and interfaces must not import `sklearn`, `numpy`, `pandas`, or joblib.
+- CLI or training entry points may wire data paths, model training, and artifact output, but business decisions should remain testable without the CLI.
+
+## Documentation checks
+
+- [ ] Notes explain TF-IDF, train/test split, Pipeline, LogisticRegression, and metrics from first principles.
+- [ ] Exercises include code reading for `src/researchops/ml/`, implementation, testing, debugging, and dataset-quality work.
+- [ ] Break-it labs warn about leakage, shuffled labels, empty input, imbalance, tiny data, and artifact paths.
+- [ ] Validation tells the learner which metric patterns are suspicious, not only which command should pass.
+
+## Do-not-proceed warnings
+
+Do not advance to Week 12 if any of these are true:
+
+- `TfidfVectorizer` is fitted on all texts before splitting.
+- Metrics are all zeros, all perfect, or based on only one or two test examples and you cannot explain why.
+- The artifact cannot be loaded with joblib and used for prediction.
+- Empty or whitespace-only prediction input produces a confident-looking topic without a clear guard or documented behavior.
+- New ML code breaks existing non-ML tests.
+
+## Ruthless mentor checkpoint
+
+Answer these aloud:
+
+1. Why must raw text be split before TF-IDF fitting?
+2. What does `support` tell you in a classification report?
+3. Why can high accuracy be misleading on an imbalanced paper-topic dataset?
+4. What exactly is stored in the `.joblib` artifact, and how do you prove it still works?
+
+## Definition of done
 
 - [ ] `examples/training_data/` exists with at least 4 JSONL topic files.
 - [ ] Each file has at least 5 examples.

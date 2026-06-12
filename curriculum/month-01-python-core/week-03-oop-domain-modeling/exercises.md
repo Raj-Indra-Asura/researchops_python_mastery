@@ -26,7 +26,7 @@ Before starting, open these files side by side:
 - `tests/unit/test_value_objects.py`
 Keep `notes.md` open.
 Use the validation commands only after you have worked through the ideas.
-## Section 1 - Orientation drills
+## Warm-up exercises
 ### Exercise 1.1 - Name the concepts
 Read every class name in `models.py` and `value_objects.py`.
 For each one, write a one-sentence answer to both questions:
@@ -114,7 +114,7 @@ If two `Tag("machine learning")` objects normalise to the same value, should the
 Why?
 If two `Paper` objects have the same title but different IDs, should they represent the same entity?
 Why or why not?
-## Section 4 - Line-by-line code reading
+## Code-reading exercises
 ### Exercise 4.1 - PaperId reading
 Read `PaperId.from_path()` and explain each operation in order:
 1. `path.resolve()`
@@ -182,7 +182,7 @@ print(PaperId(value="abc123"))
 print(str(PaperId(value="abc123")))
 ```
 Now explain why overriding `__str__` helps in logs, CLI output, and f-strings.
-## Section 7 - Test reading as design reading
+## Testing exercises
 ### Exercise 7.1 - Map each test to behavior
 Open `tests/unit/test_models.py`.
 For every test function, write:
@@ -223,7 +223,7 @@ Which layer should turn that into `ParsedDocument`?
 Which layer should turn `ParsedDocument` into `Paper` or `FailedDocument`?
 Which layer should present the result to a user?
 Use the architecture diagram to justify your answer.
-## Section 9 - Guided REPL practice
+## Implementation exercises
 Run these commands in a Python REPL after installing dev dependencies.
 Read the result before moving on.
 ```python
@@ -287,7 +287,7 @@ print(result.total)
 print(result.success_rate)
 ```
 Explain why the success rate is `0.5` in this example.
-## Section 10 - Short writing prompts
+## Written explanation exercises
 Write 3 to 5 sentences for each prompt.
 ### Exercise 10.1
 Why is naming a software design tool, not just a style choice?
@@ -297,7 +297,7 @@ Why is `IngestionResult` more expressive than returning `(successes, failures, s
 Why is a value object strongest when it becomes impossible to create an invalid one?
 ### Exercise 10.4
 What is the difference between storing data and modeling meaning?
-## Section 11 - Bug-spotting exercises
+## Debugging exercises
 For each snippet, identify the bug before reading the explanation.
 ### Exercise 11.1 - Shared mutable default
 ```python
@@ -371,7 +371,7 @@ Explain why `PaperId.from_path()` uses hashing.
 Explain the difference between `ParsedDocument` and `Paper`.
 ### Exercise 13.5
 Explain why tests are part of the documentation for a model.
-## Section 14 - Stretch challenges
+## Stretch exercises
 These are optional, but powerful.
 ### Exercise 14.1 - Design a new value object on paper
 Invent a `RunId` value object.
@@ -397,7 +397,29 @@ Suppose a service returned this:
 ```
 Rewrite it mentally as a named model.
 Explain why the named version is easier to maintain.
-## Section 15 - Self-check checklist
+## Brutal exercises
+These are intentionally harder because they require you to combine modeling, testing, and architecture judgment. Answer them on paper first.
+
+### Brutal 1 - Redesign a messy tuple return
+Imagine a function returns `("abc123", "Paper Title", "ok", [])`. Design a named dataclass that makes each position explicit. Explain which fields are required, which field names teach the domain, and what bug the named version prevents.
+
+### Brutal 2 - Find the invariant
+Invent a `RunName` value object for a future experiment label, but do not implement future features. State three invalid values, the exact error message you would want, and whether the object should be frozen.
+
+### Brutal 3 - Defend mutability carefully
+Write two paragraphs: one defending why `Paper` may be mutable in this beginner project, and one explaining what could go wrong if every object were mutable. Use `tags`, `created_at`, and `PaperId` in your answer.
+
+## Mini project task
+Write a one-page domain model walkthrough for the current ResearchOps ingestion story.
+
+1. Start with a file path to a PDF.
+2. Explain when it is represented by `ParsedDocument`.
+3. Explain when it becomes `Paper` or `FailedDocument`.
+4. Explain how `IngestionResult.total` and `success_rate` summarize the run.
+5. End by listing three tests that prove the model is trustworthy.
+
+
+## Completion checklist
 Mark each item honestly.
 - [ ] I can define class, instance, attribute, and method.
 - [ ] I can explain when a dict is enough and when a class is better.

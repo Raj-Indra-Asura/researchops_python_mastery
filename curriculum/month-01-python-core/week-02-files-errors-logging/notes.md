@@ -35,7 +35,7 @@ Do not pretend failure will not happen.
 Design the code so that when failure happens, the program remains understandable.
 That is the foundation of maintainable software.
 
-## 2. What you already know
+## 2. What you already know from previous weeks
 From Week 1, you already know how to create a virtual environment.
 You know how to install the project in editable mode.
 You know that the repository uses a `src/` layout.
@@ -151,7 +151,7 @@ In this chapter, pattern matching means matching file names against glob pattern
 It does not mean the newer `match` statement in Python.
 Context matters.
 
-## 6. `pathlib.Path` from first principles
+## 6. Concept explanations from first principles
 ### Why not use plain strings?
 A string like `"papers/report.pdf"` can represent a path.
 But the string itself does not know anything about filesystems.
@@ -839,7 +839,7 @@ A silent encoding assumption could corrupt metadata exports.
 Week 2 is operational hygiene.
 Operational hygiene compounds.
 
-## 22. Full annotated `paths.py`
+## 8. Code examples with line-by-line explanation
 Here is the current file, followed by explanation of each meaningful line.
 
 ```python
@@ -2135,7 +2135,7 @@ That makes it the right place to turn exceptions into colored console messages a
 The lower layer should not import Typer just to decide exit codes.
 That would violate layering.
 
-## 33. How this connects to ML and AI work
+## 14. How this connects to AI engineering / ML research
 At first glance, paths, exceptions, and logging may feel far away from ML.
 They are not.
 ML systems are data pipelines.

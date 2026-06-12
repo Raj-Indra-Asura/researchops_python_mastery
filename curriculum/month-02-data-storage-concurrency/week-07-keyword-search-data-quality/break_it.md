@@ -11,6 +11,27 @@
 
 # Break It — Week 07 Keyword Search and Data Quality
 
+## Purpose of failure practice
+
+Week 7 failures are about search trust. Keyword search can fail quietly: a paper is present, but case differences, punctuation, Unicode artifacts, empty queries, bad scoring, or boilerplate text hide the result from the learner. Data quality checks also fail quietly when duplicate or empty papers look like valid rows.
+
+These labs force you to make those quiet failures visible. When you can explain why a query returned zero results, why a snippet looks wrong, or why a duplicate matters, you are ready to make ResearchOps search useful instead of merely available.
+
+## Failure lab rules
+
+1. Keep the starting paper set tiny so you can calculate scores by hand.
+2. Record the raw query, normalized query, raw paper text, and normalized haystack for each confusing search.
+3. Treat blank query behavior and no-match behavior as different cases.
+4. Do not fix ranking by hard-coding a test result; fix the scoring rule or the normalization rule.
+5. If a data-quality check fails, identify whether the data is bad or the checker is too strict.
+6. Stay in keyword search for Week 7; do not replace these labs with later retrieval techniques.
+
+---
+
+## Intentional break experiments
+
+Work through the scenarios below one at a time. Each one asks you to cause a failure, inspect what happened, fix it, and name the test or check that should catch it in ResearchOps.
+
 ---
 
 ## Scenario 1 — Case mismatch without normalization
@@ -256,7 +277,18 @@ For a research library ID system, it is irrelevant.
 
 ---
 
-## What did you learn?
+## Debugging checklist
+
+- [ ] Is the query blank before or after normalization?
+- [ ] What are the exact normalized query terms?
+- [ ] What is the normalized haystack for the paper you expected to match?
+- [ ] Does punctuation, case, whitespace, or Unicode explain the mismatch?
+- [ ] Is the score zero because the term is absent or because the scorer is wrong?
+- [ ] Are results sorted before the limit is applied?
+- [ ] Does the snippet search use comparable text to the scorer?
+- [ ] Do empty repositories and no-match searches return empty lists without crashing?
+
+## Reflection after breaking
 
 1. Which normalization step made the biggest difference to search quality?
 2. What query produced unexpected results and why?

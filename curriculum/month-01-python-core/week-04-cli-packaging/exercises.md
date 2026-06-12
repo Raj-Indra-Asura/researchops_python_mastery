@@ -25,7 +25,7 @@ The goal is to internalize how a professional CLI layer fits into a larger appli
 
 ---
 
-## Section 1 - Quick recall
+## Warm-up exercises
 Answer these without opening the code first.
 Then verify your answers against `notes.md`.
 
@@ -94,7 +94,7 @@ Fill in the blanks.
 
 ---
 
-## Section 3 - Code reading: root CLI structure
+## Code-reading exercises
 Open `src/researchops/cli/main.py`.
 Read it top to bottom.
 Then answer the questions.
@@ -231,7 +231,7 @@ Your answer should mention all three pieces:
 
 ---
 
-## Section 8 - Testing workbook
+## Testing exercises
 Open `tests/e2e/test_cli.py`.
 Work through the file in order.
 
@@ -278,7 +278,7 @@ For each one, state:
 
 ---
 
-## Section 9 - Hands-on implementation ideas
+## Implementation exercises
 These are optional build exercises if you are actively coding along.
 They are ordered from easiest to harder.
 
@@ -335,7 +335,7 @@ Design question:
 
 ---
 
-## Section 10 - Short writing prompts
+## Written explanation exercises
 Answer in complete sentences.
 
 1. Why is the root CLI app created before sub-apps are attached?
@@ -349,7 +349,7 @@ Answer in complete sentences.
 
 ---
 
-## Section 11 - Common mistake diagnosis
+## Debugging exercises
 For each mistake, write:
 - what the beginner was probably trying to do,
 - what went wrong,
@@ -366,7 +366,7 @@ For each mistake, write:
 
 ---
 
-## Section 12 - Compare interface styles
+## Stretch exercises
 Write a paragraph for each comparison.
 
 1. CLI versus GUI.
@@ -427,7 +427,22 @@ Write a design note explaining:
 
 ---
 
-## Section 15 - Mini project
+## Brutal exercises
+These tasks require careful CLI reasoning. They are still Month 1 tasks: stay with packaging, Typer, tests, and thin command handlers.
+
+### Brutal 1 - Design a non-brittle assertion strategy
+For the Rich table produced by `researchops scan`, list five substrings that are stable enough to assert in tests and five visual details that are too brittle. Explain why table spacing should not be the main contract.
+
+### Brutal 2 - Diagnose three packaging failures
+For each symptom, write the likely cause and first fix: the `researchops` command is missing, the command exists but cannot import `researchops.cli.main`, and the command runs but `scan` is not listed in help.
+
+### Brutal 3 - Keep a new option thin
+Design a `--names-only` option for `scan` on paper. State what belongs in the CLI handler, what should remain in `find_pdfs()`, what tests you would add, and what exit codes should remain unchanged.
+
+
+---
+
+## Mini project task
 Complete this capstone write-up after finishing the chapter.
 
 ### Prompt 1 - Explain the current ResearchOps CLI to a new teammate
@@ -466,7 +481,7 @@ Use these for solo speaking practice or pair review.
 
 ---
 
-## Section 17 - Exit ticket
+## Completion checklist
 Do not leave the week until you can answer these from memory.
 
 1. What exact string installs the `researchops` command?

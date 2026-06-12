@@ -14,7 +14,7 @@
 This workbook is designed to make you practice the local worker and job queue until you can build, test, and explain it without guessing.
 Do not skip the written exercises; background systems fail when engineers cannot explain state transitions clearly.
 
-## 1. How to use this workbook
+## How to use this workbook
 - Work in order unless you already have strong evidence that a later exercise is blocking your project implementation.
 - Use a scratch branch or a small local experiment when the exercise asks you to break behavior.
 - Keep the Week 16 boundary in mind: local SQLite queue, local worker, no Docker, no RAG, no LLM features.
@@ -46,7 +46,7 @@ Keep a small table in your notes while working:
 If you cannot fill in this table, pause before changing code.
 The table forces you to design the state transition instead of discovering it accidentally.
 
-## 2. Warm-up exercises
+## Warm-up exercises
 1. **Draw the state machine.** Draw `queued -> running -> done`, `running -> queued`, and `running -> failed`. Label each arrow with the function that performs it.
 2. **Create job examples by hand.** Write three `Job` examples: a queued ingest job, a running embedding job, and a failed parse job. Fill every field with realistic values.
 3. **Classify failures.** For each failure, decide transient or permanent: invalid JSON, database locked, missing handler, timeout, missing file, malformed PDF.
@@ -56,7 +56,7 @@ The table forces you to design the state transition instead of discovering it ac
 7. **Spot unsafe transitions.** Identify which transitions are unsafe: `queued -> done`, `done -> running`, `running -> queued`, `failed -> running`, `running -> failed`.
 8. **One-loop story.** Write the worker loop in plain English using exactly five verbs: poll, claim, execute, record, stop.
 
-## 3. Code-reading exercises
+## Code-reading exercises
 1. **Find worker files.** Open `src/researchops/workers/`. Identify which file owns the loop, which file owns job models, and which file owns handler registration. If a file does not exist yet, write where it should belong.
 2. **Read repository code.** Find the code that inserts a job row. Write down every column that receives a value and why that value is needed.
 3. **Read claim logic.** Find the code that claims the next job. Does it update the status inside the same transaction or safe database operation? Explain the race it is trying to prevent.
@@ -66,7 +66,7 @@ The table forces you to design the state transition instead of discovering it ac
 7. **Read shutdown behavior.** Find the stop condition for the loop. How does the loop avoid starting new work after shutdown is requested?
 8. **Read CLI output.** Find `jobs list` or the intended CLI command. Which columns are visible to the learner? Which column would you add if debugging was hard?
 
-## 4. Implementation exercises
+## Implementation exercises
 1. **Define the job table.** Create or update the SQLite schema for `jobs` with id, job_type, payload_json, status, attempts, max_attempts, last_error, created_at, updated_at, and scheduled_at.
 2. **Implement enqueue.** Write a repository method that accepts `job_type`, `payload`, and optional `max_attempts`, serializes payload as JSON, inserts a queued row, commits, and returns the job id.
 3. **Implement claim.** Write `claim_next(now)` so it returns the oldest queued job whose scheduled_at is not in the future and marks it running safely.
@@ -78,7 +78,7 @@ The table forces you to design the state transition instead of discovering it ac
 9. **Implement stuck-job rescue.** Add a method that requeues running jobs whose updated_at is older than a timeout. Store an explanatory last_error when rescuing.
 10. **Implement idempotent document handler.** Write a handler that stores or updates a document using a stable document id instead of appending duplicates.
 
-## 5. Testing exercises
+## Testing exercises
 1. **Enqueue test.** Assert a new job is queued, has attempts 0, has no last_error, and stores valid JSON.
 2. **Oldest claim test.** Insert three queued jobs with different created_at values. Assert the oldest eligible job is claimed first.
 3. **Scheduled retry test.** Insert a queued job scheduled in the future and one scheduled in the past. Assert only the past job is claimable.
@@ -98,7 +98,7 @@ The table forces you to design the state transition instead of discovering it ac
 14. **Last error clearing test.** Create a job that fails once and then succeeds after retry. Decide whether success should clear `last_error`, then write a test that locks in that decision.
 15. **Payload preservation test.** Enqueue a payload with multiple keys. Assert the stored JSON can be loaded back into the same dictionary and that handler execution receives the same values.
 
-## 6. Debugging exercises
+## Debugging exercises
 1. **Inspect by SQL.** After enqueueing jobs, run a local SQLite query through the project helper or CLI and record counts by status.
 2. **Trace transitions.** Add temporary logging around state changes. Process three jobs and write the exact transition sequence for each job.
 3. **Find a stuck job.** Manually create a running job with an old updated_at. Use a query to find it, then rescue it.
@@ -108,7 +108,7 @@ The table forces you to design the state transition instead of discovering it ac
 7. **Duplicate output drill.** Temporarily remove idempotent upsert behavior from a handler. Run the same job twice and observe duplicate rows; then restore the upsert.
 8. **Signal drill.** Start the worker, request shutdown, and verify the log shows a clean stop after a safe loop boundary.
 
-## 7. Refactoring exercises
+## Refactoring exercises
 1. **Extract clock.** Replace direct `datetime.now()` calls in worker logic with a clock dependency so tests can control time.
 2. **Extract state constants.** Move status strings into a single enum or literal definition used by repository, worker, and tests.
 3. **Extract row mapper.** Create one `row_to_job` function so all SQLite-to-domain conversion is consistent.
@@ -117,7 +117,7 @@ The table forces you to design the state transition instead of discovering it ac
 6. **Move business code out of worker.** If a handler contains too much ResearchOps domain logic, move that logic into a service and let the handler call the service.
 7. **Simplify CLI formatting.** Move job display formatting into a small helper so command tests can focus on output and repository tests can focus on data.
 
-## 8. Written explanation exercises
+## Written explanation exercises
 1. Explain why enqueueing is a durable promise to do work later.
 2. Explain why a job id is better than making the user stare at a frozen command.
 3. Explain the difference between `queued` and `running`.
@@ -138,7 +138,7 @@ The table forces you to design the state transition instead of discovering it ac
 15. Explain the difference between "the job failed" and "the worker process crashed."
 16. Explain how a local SQLite worker prepares you to understand larger queue systems later without adding those systems now.
 
-## 9. Stretch exercises
+## Stretch exercises
 1. **Status summary command.** Add a command or helper that prints counts grouped by status. Include queued, running, done, and failed even when the count is zero.
 2. **Retry backoff.** Implement exponential backoff using scheduled_at: 1 second, 2 seconds, 4 seconds. Test with fake time, not real sleeping.
 3. **Job detail view.** Add a `jobs show <job_id>` path that displays payload_json and last_error for one job.
@@ -147,7 +147,7 @@ The table forces you to design the state transition instead of discovering it ac
 6. **Metrics object.** Collect jobs_started, jobs_done, jobs_failed, jobs_retried, and loop_iterations during a worker run.
 7. **Concurrent claim smoke test.** Start two worker threads against the same SQLite database and prove a single job is not processed twice.
 
-## 10. Brutal exercises
+## Brutal exercises
 1. **Crash window analysis.** List every point between claim and mark_done where a crash can happen. For each point, write the resulting row state and recovery strategy.
 2. **Idempotency audit.** Pick three potential handlers. For each one, describe exactly what duplicate side effect could happen and how to prevent it.
 3. **Retry policy table.** Create a table of ten exception scenarios and classify each as retry, fail, or rescue later. Justify each classification.
@@ -155,7 +155,7 @@ The table forces you to design the state transition instead of discovering it ac
 5. **No-sleep loop test.** Test the worker loop with a fake sleep function and a stop condition. Assert sleep is called only when no job was available.
 6. **Migration compatibility.** Pretend a previous database lacks scheduled_at. Design a migration that adds the column with a safe default.
 
-## 11. Mini project task
+## Mini project task
 - Build a small local worker milestone for ResearchOps.
 - The mini project must support enqueueing at least one realistic job type, running one worker iteration, running a polling worker loop, listing jobs, and inspecting failures.
 - Use SQLite for persistence.
@@ -167,7 +167,7 @@ The table forces you to design the state transition instead of discovering it ac
 - Do not add LLM provider calls.
 - When finished, you should be able to demo: enqueue job, list queued job, run worker, list done job, show failed job with error.
 
-## 12. Completion checklist
+## Completion checklist
 - [ ] I can draw the Week 16 job state machine from memory.
 - [ ] I can explain why claim must be safer than a plain SELECT.
 - [ ] I implemented or can identify the SQLite jobs table.

@@ -31,8 +31,22 @@ Mark it complete only when the commands work and you can explain *why* they work
 
 ---
 
-## 1. Environment setup
-Run these commands from the repository root.
+## Pre-validation checklist
+Before validating Week 2, confirm these are true.
+
+- [ ] You are in the repository root.
+- [ ] Python 3.11 or newer is active.
+- [ ] You can explain what `Path("examples/sample_papers")` represents.
+- [ ] You have read `src/researchops/utils/paths.py`.
+- [ ] You have read `src/researchops/core/exceptions.py`.
+- [ ] You are ready to inspect both command output and exit codes.
+
+---
+
+## Commands to run
+Run these commands from the repository root, in order.
+
+### 1. Environment setup
 
 ```bash
 python -m pip install -e ".[dev]"
@@ -47,7 +61,7 @@ If installation fails, stop and fix the environment before validating anything e
 
 ---
 
-## 2. Unit tests for path behavior
+### 2. Unit tests for path behavior
 Run:
 
 ```bash
@@ -72,7 +86,7 @@ What this proves:
 
 ---
 
-## 3. Unit tests for exception behavior
+### 3. Unit tests for exception behavior
 Run:
 
 ```bash
@@ -92,7 +106,7 @@ What this proves:
 
 ---
 
-## 4. Combined fast check
+### 4. Combined fast check
 Run:
 
 ```bash
@@ -112,7 +126,7 @@ The important part is that all 30 tests pass.
 
 ---
 
-## 5. Manual CLI smoke test
+### 5. Manual CLI smoke test
 Run:
 
 ```bash
@@ -135,7 +149,7 @@ That is still valid, but you should understand why the output differs.
 
 ---
 
-## 6. Verbose logging check
+### 6. Verbose logging check
 Run:
 
 ```bash
@@ -159,7 +173,7 @@ The important validation points are the `DEBUG` level, the `Found 0 PDF(s)` mess
 
 ---
 
-## 7. Failure-path smoke test
+### 7. Failure-path smoke test
 Run:
 
 ```bash
@@ -181,8 +195,51 @@ This confirms that invalid input is reported clearly instead of producing a raw 
 
 ---
 
-## 8. Knowledge checkpoint
-You are only done if you can answer **yes** to all of these.
+## Expected outputs
+Use these expected results to decide whether the commands passed.
+
+- `python -m pip install -e ".[dev]"` finishes without an error and makes `researchops`, `pytest`, and `ruff` available.
+- `python -m pytest tests/unit/test_paths.py -v` reports `9 passed`.
+- `python -m pytest tests/unit/test_exceptions.py -v` reports `21 passed`.
+- The combined fast check reports `30 passed in <time>`.
+- `researchops scan examples/sample_papers` prints `No PDF files found in examples/sample_papers` in the default repository state.
+- `researchops --verbose scan examples/sample_papers` includes a `DEBUG` line with `Found 0 PDF(s)`.
+- `researchops scan examples/does_not_exist` prints `Error: Directory does not exist: examples/does_not_exist` and exits with status code `1`.
+
+## Tests that must pass
+- [ ] `tests/unit/test_paths.py` passes because path discovery, recursion, sorting, and directory creation are Week 2 behavior.
+- [ ] `tests/unit/test_exceptions.py` passes because custom exception hierarchy, messages, and stored attributes are Week 2 behavior.
+- [ ] The combined 30-test run passes before you move on.
+
+## Manual checks
+- [ ] Run the scanner on a valid sample directory and confirm there is no traceback.
+- [ ] Run the scanner with `--verbose` and identify the debug log line.
+- [ ] Run the scanner on a missing path and confirm the command exits non-zero.
+
+## Architecture checks
+- [ ] `find_pdfs()` stays in `src/researchops/utils/paths.py`, not inside the CLI command.
+- [ ] Custom ResearchOps exceptions stay in `src/researchops/core/exceptions.py`.
+- [ ] The CLI catches the expected directory error and converts it into user-facing output.
+- [ ] Logging uses `logging.getLogger(__name__)` rather than scattered `print()` calls for diagnostics.
+
+## Documentation checks
+- [ ] You can point to the Week 2 notes section that explains `Path`.
+- [ ] You can point to the exercises that ask you to read `find_pdfs()` line by line.
+- [ ] Your own notes include the exact command output for valid, verbose, and invalid scans.
+
+## Do-not-proceed warnings
+Do not move to Week 3 if any of these are true.
+
+- You cannot explain why a missing directory should raise instead of returning `[]`.
+- You cannot explain the difference between user-facing output and debug logs.
+- You cannot explain why `sorted(...)` matters for deterministic tests.
+- You cannot run the 30 focused tests successfully.
+- You cannot explain why `except Exception` is too broad for the scanner path.
+
+---
+
+## Ruthless mentor checkpoint
+Answer these aloud without reading. If you hesitate, review the chapter before continuing.
 
 - [ ] I can explain why `Path` is preferred over manual path strings.
 - [ ] I can explain the difference between `glob("*.pdf")` and `glob("**/*.pdf")`.
@@ -199,7 +256,7 @@ You are only done if you can answer **yes** to all of these.
 
 ---
 
-## 9. Definition of pass
+## Definition of done
 You pass Chapter 2 when:
 - installation succeeds,
 - all 30 relevant unit tests pass,

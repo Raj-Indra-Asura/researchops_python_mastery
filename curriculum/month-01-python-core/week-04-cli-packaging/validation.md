@@ -41,7 +41,19 @@ Do not skip the scratch-data setup block, because the expected results depend on
 
 ---
 
-## Exact commands
+## Pre-validation checklist
+Before running commands, confirm these are true.
+
+- [ ] You are in the repository root.
+- [ ] Your virtual environment is activated.
+- [ ] You know that `[project.scripts]` maps `researchops` to `researchops.cli.main:app`.
+- [ ] You have read `src/researchops/cli/main.py`.
+- [ ] You have read `tests/e2e/test_cli.py`.
+- [ ] You understand that `scan` should list PDFs, not parse or store them.
+
+---
+
+## Commands to run
 
 ### 1. Activate your environment
 ```bash
@@ -163,7 +175,19 @@ Expected result:
 
 ---
 
-## Strict success criteria
+## Expected outputs
+The exact Rich table spacing may vary, but these observable results must hold.
+
+- Dataset setup prints `.scratch/week-04-cli/papers`.
+- `researchops --help` includes `scan`, `ingest`, `papers`, `search`, and `--verbose`.
+- `researchops scan --help` shows the required `DIRECTORY` argument and `--recursive` option.
+- Non-recursive scan contains `paper_a.pdf`, excludes `paper_b.pdf`, excludes `notes.txt`, and reports `1 PDF(s) found`.
+- Recursive scan contains both PDF names, excludes `notes.txt`, and reports `2 PDF(s) found`.
+- Missing-directory scan prints `Error:` and `Directory does not exist`, then exits with code `1`.
+- `pytest tests/e2e/test_cli.py -v` reports `7` tests passed.
+- `pytest -q` reports the full suite passing.
+
+## Tests that must pass
 You are only done if all of the following are true.
 
 - [ ] `python -m pip install -e ".[dev]"` succeeds.
@@ -181,6 +205,34 @@ You are only done if all of the following are true.
 
 ---
 
+## Manual checks
+- [ ] Run `researchops --help` yourself and confirm the command names are discoverable.
+- [ ] Run the non-recursive and recursive scans against the scratch dataset and compare the filenames.
+- [ ] Run the missing-directory command and confirm the final `echo $?` output is `1`.
+
+## Architecture checks
+- [ ] `scan()` delegates PDF discovery to `find_pdfs()` instead of walking the filesystem inline.
+- [ ] CLI code formats user output and exit codes; helper logic remains outside the command handler.
+- [ ] Grouped Typer apps are attached with `app.add_typer()` rather than duplicated at the root.
+- [ ] Tests import the actual `app` object from `researchops.cli.main`.
+
+## Documentation checks
+- [ ] Week 4 notes explain the entry point string and command flow.
+- [ ] Exercises include code-reading, implementation, testing, debugging, stretch, brutal, mini-project, and completion-checklist work.
+- [ ] Validation commands match the current `researchops` CLI behavior.
+
+## Do-not-proceed warnings
+Do not leave Month 1 if any of these are true.
+
+- The installed `researchops` command is missing.
+- `researchops --help` does not list `scan`.
+- `researchops scan --help` does not show a required directory argument.
+- A missing directory prints an error but exits `0`.
+- Recursive and non-recursive scan output are identical for nested PDFs.
+- You cannot explain how `[project.scripts]` creates the command.
+
+---
+
 ## If something fails, diagnose by category
 Use this table before randomly changing code.
 
@@ -195,7 +247,7 @@ Use this table before randomly changing code.
 
 ---
 
-## Final oral checkpoint
+## Ruthless mentor checkpoint
 Before leaving Week 4, say these answers out loud without looking:
 
 1. What turns `researchops` into an installed terminal command?
@@ -204,6 +256,16 @@ Before leaving Week 4, say these answers out loud without looking:
 4. Why does an invalid directory return exit code `1`?
 5. Why is the CLI handler supposed to stay thin?
 6. How does `CliRunner` help you test behavior without typing commands manually?
+---
+
+## Definition of done
+- [ ] Editable installation succeeds.
+- [ ] Root help and scan help are correct.
+- [ ] Non-recursive scan, recursive scan, and missing-directory scan match the expected outputs.
+- [ ] `tests/e2e/test_cli.py` passes.
+- [ ] The full test suite passes.
+- [ ] You can explain entry points, Typer arguments/options, exit codes, and thin CLI handlers aloud.
+
 <!-- NAV_BOTTOM_START -->
 ---
 ⬅️ [← Break It](break_it.md) · ➡️ [Reflection →](reflection.md)

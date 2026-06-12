@@ -15,6 +15,21 @@ These experiments teach you what goes wrong when testing discipline breaks down.
 
 ---
 
+## Purpose of failure practice
+
+Testing discipline is easier to respect after you have watched it fail. These labs show how fixture errors, weak coverage, wrong monkeypatch targets, and flaky timing tests damage confidence in ResearchOps. The goal is not to memorize pytest tricks; the goal is to recognize the failure shape quickly and restore a trustworthy quality gate.
+
+## Failure lab rules
+
+1. Break one test-system rule at a time: fixture discovery, coverage, CI command, monkeypatch target, or determinism.
+2. Before running anything, write the expected failure type: pytest error, assertion failure, coverage failure, Ruff failure, or flaky behavior.
+3. Prefer local commands over remote CI; CI should confirm what you already reproduced.
+4. For every experiment, record how to cause it, expected error, how to inspect it, how to fix it, the test that should catch it, what it teaches, and common wrong fixes.
+5. Restore the test or configuration immediately after observing the failure.
+6. Do not add plugins or dependencies just to complete the experiment; if a command mentions an optional plugin, treat it as a discussion prompt unless it is already installed.
+
+## Intentional break experiments
+
 ## Experiment 1: Delete a fixture and watch the cascade
 
 In `tests/unit/test_ingestion_service.py`, delete the `paper_repo` fixture (or rename it to `paper_repo_x`).
@@ -149,6 +164,19 @@ Run multiple times with different seeds. If a test sometimes fails depending on 
 
 ---
 
+## Debugging checklist
+
+Use this checklist before declaring a quality-gate failure solved:
+
+- [ ] Did you identify whether pytest reported `ERROR`, `FAILED`, or a coverage exit?
+- [ ] Did you run the single failing test with `-vv` before rerunning the full suite?
+- [ ] Did you inspect fixture names and scopes before changing shared fixtures?
+- [ ] Did you patch the name as imported by the module under test, not just the original definition?
+- [ ] Did you avoid hidden filesystem, database, clock, or environment dependencies in unit tests?
+- [ ] Did `ruff check src tests && pytest -q` pass again after restoration?
+
+---
+
 ## Edge cases to explore
 
 **EC1: Flaky behavior from shared state**
@@ -198,7 +226,7 @@ Run without the variable set. What error do you get? Fix it with `monkeypatch.se
 
 ---
 
-## What did you learn?
+## Reflection after breaking
 
 1. Which quality gate catches the most mistakes in the least time?
 2. What made one test brittle when you explored edge cases?

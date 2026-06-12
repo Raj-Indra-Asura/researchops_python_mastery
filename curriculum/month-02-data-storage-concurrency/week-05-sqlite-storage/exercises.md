@@ -15,9 +15,15 @@ These exercises build from easy to brutal.
 Complete them in order.
 The later exercises build on the earlier ones.
 
+## How to use this workbook
+
+Treat this workbook as hands-on practice for the Week 5 storage milestone. Read each prompt, write the smallest code or explanation that proves you understand it, then run the matching test or command before moving on. The warm-up tasks let you make SQLite mistakes in tiny scripts before those mistakes can damage the ResearchOps repository. The implementation and stretch tasks then move the same ideas into `src/researchops/storage/` and `tests/integration/`, where the real platform stores parsed research papers.
+
+Keep a short evidence log while you work: command run, result observed, and one sentence about what the result proves. If an exercise asks you to inspect existing code, open the named file and answer the questions in your own words before editing anything. Do not skip the debugging exercises; Week 5 is where silent data bugs become possible.
+
 ---
 
-## Easy exercises
+## Warm-up exercises
 
 ### E1 — First SQLite connection
 
@@ -69,7 +75,47 @@ Print a helpful message.
 
 ---
 
-## Medium exercises
+## Code-reading exercises
+
+### C1 — Read the SQLite schema before writing repository code
+
+Open `src/researchops/storage/schema.sql` and answer these questions:
+
+1. Which table stores successfully ingested papers?
+2. Which column prevents two rows from sharing the same paper ID?
+3. Which column prevents the same source file path from being stored twice?
+4. Why does `paper_tags` use both `paper_id` and `tag` as its primary key?
+5. What does `ON DELETE CASCADE` protect you from when a paper is deleted?
+
+Write your answers in beginner language. If you cannot point to the exact SQL line that supports an answer, reread the schema before continuing.
+
+### C2 — Trace one save through `SQLitePaperRepository`
+
+Open `src/researchops/storage/sqlite_repository.py` and follow `SQLitePaperRepository.save`. Answer:
+
+1. Why does `save` call `exists` before running the `INSERT`?
+2. Which Python values become SQL parameters?
+3. Where is `created_at` converted to text?
+4. Where are tags inserted, and why are they inserted after the paper row?
+5. If a tag insert failed, which part of `_connect` would prevent a half-saved paper?
+
+Your goal is to explain the path from a `Paper` object to durable database rows.
+
+### C3 — Read the storage integration tests as a specification
+
+Open `tests/integration/test_sqlite_repository.py`. Treat the tests as a plain-English contract and answer:
+
+1. What does the `repo(tmp_path)` fixture guarantee for every test?
+2. Which test proves duplicate paper IDs are not allowed?
+3. Which test proves missing papers raise a domain-specific exception?
+4. Which test proves failure records are persisted?
+5. What behavior is not tested yet but would matter for tags or optional fields?
+
+Do not edit the tests yet. First learn what behavior they already require.
+
+---
+
+## Implementation exercises
 
 ### M1 — Implement `save` and `get`
 
@@ -131,7 +177,7 @@ Write a test that:
 
 ---
 
-## Hard exercises
+## Stretch exercises
 
 ### H1 — Use `tmp_path` fixtures for all tests
 
@@ -349,6 +395,16 @@ Complete the storage layer for ResearchOps:
 6. Open the created database with the `sqlite3` CLI and inspect the tables directly.
 
 Deliverable: a working storage layer with a full integration test suite.
+## Completion checklist
+
+- [ ] I completed the warm-up SQLite scripts without using f-strings for SQL values.
+- [ ] I can explain `schema.sql` tables, keys, and constraints in my own words.
+- [ ] I traced `SQLitePaperRepository.save`, `get`, `list_all`, `exists`, and failure methods.
+- [ ] I wrote or reviewed integration tests that use `tmp_path` instead of shared database files.
+- [ ] I saw at least one failing SQLite constraint and understood why it failed.
+- [ ] I can explain why storage code belongs in `src/researchops/storage/`, not in services or CLI commands.
+- [ ] `pytest tests/integration/test_sqlite_repository.py -v` passes.
+- [ ] `pytest -q` and `ruff check src tests` pass before I mark Week 5 complete.
 <!-- NAV_BOTTOM_START -->
 ---
 ⬅️ [← Notes](notes.md) · ➡️ [Break It →](break_it.md)

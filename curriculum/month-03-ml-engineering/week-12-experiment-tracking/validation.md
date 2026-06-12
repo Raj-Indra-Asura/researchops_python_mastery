@@ -25,7 +25,18 @@
 
 # Validation - Week 12 Experiment Tracking
 
-## Exact shell commands to run
+## Pre-validation checklist
+
+Before validating experiment tracking:
+
+- [ ] Week 11 training works and saves a loadable classifier artifact.
+- [ ] Each new run gets a unique run ID.
+- [ ] Params are simple JSON-serializable values, preferably strings for configuration choices.
+- [ ] Metric names are consistent across runs you plan to compare.
+- [ ] Artifact filenames include the run ID or another unique run-specific identifier.
+
+
+## Commands to run
 
 ```bash
 # Activate your environment
@@ -68,6 +79,15 @@ ls -la artifacts/models/
 pytest -q
 ```
 
+## Tests that must pass
+
+Experiment tracking needs round-trip proof:
+
+- Unit tests for run creation, serialization, save/load, list, and compare must pass.
+- A test must prove missing run IDs produce a clear error or empty result according to the chosen contract.
+- An integration test must prove every recorded artifact path points to an existing model file.
+- `ruff check src tests` and `pytest -q` must pass after two separate tracked runs.
+
 ## Expected outputs
 
 After two training runs:
@@ -103,6 +123,15 @@ train_size           80                            80
 test_size            20                            20
 ```
 
+## Manual checks
+
+Use the CLI output as evidence:
+
+- Run `researchops experiment list` and confirm both runs are visible.
+- Run `researchops experiment show RUN_ID` and confirm params, metrics, timestamp, status, and artifact path are present.
+- Run `researchops experiment compare RUN_ID_1 RUN_ID_2` and confirm metric rows line up by exact metric key.
+- Open the experiment record file or SQLite row and verify it matches the CLI output.
+
 ## Integrity check
 
 Run this to verify every run record points to an existing artifact:
@@ -123,7 +152,40 @@ for f in sorted(experiments_dir.glob('*.json')):
 
 Expected: all runs report `OK`.
 
-## Completion checklist
+## Architecture checks
+
+- `src/researchops/core/interfaces.py` owns the `ExperimentRepository` protocol.
+- `src/researchops/services/experiment_service.py` should depend on that protocol, not on SQLite or file layout details.
+- `src/researchops/storage/experiment_repository.py` may implement concrete persistence details.
+- Training or CLI code may wire concrete repositories, artifact paths, and command arguments at the edge.
+
+## Documentation checks
+
+- [ ] Notes define run, parameter, metric, artifact, metadata, lineage, and reproducibility in beginner language.
+- [ ] Exercises include code reading for the experiment protocol, service seam, and storage seam.
+- [ ] Break-it labs show how missing artifacts, overwrites, bad params, metric-name drift, and crashes damage evidence.
+- [ ] Validation defines exactly what counts as a trustworthy tracked run.
+
+## Do-not-proceed warnings
+
+Do not finish Month 3 if any of these are true:
+
+- Two training runs overwrite the same model artifact.
+- A run record exists without an artifact path, or the artifact path points to a missing file.
+- Params cannot be serialized and loaded back.
+- Metric names differ accidentally between runs, making comparison misleading.
+- The learner cannot answer what changed between two runs using only the tracker output.
+
+## Ruthless mentor checkpoint
+
+Answer these aloud:
+
+1. What minimum fields make a run record useful six weeks later?
+2. Why is a model artifact without params and metrics not enough evidence?
+3. How does run-specific artifact naming prevent silent data loss?
+4. Why should experiment services depend on a repository protocol instead of a concrete SQLite implementation?
+
+## Definition of done
 
 - [ ] `ExperimentRun` dataclass implemented with all fields.
 - [ ] `save_run`, `load_run`, `list_runs`, `compare_runs` implemented.

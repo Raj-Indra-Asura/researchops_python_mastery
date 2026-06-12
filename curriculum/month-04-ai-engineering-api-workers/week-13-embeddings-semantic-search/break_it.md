@@ -11,11 +11,11 @@
 
 # Break It - Week 13 Embeddings and Semantic Search
 
-## 1. Purpose of failure practice
+## Purpose of failure practice
 
 Semantic search failures are often quiet. A command can return results that look formatted and professional while the ranking is wrong, the metadata is missing, or the scores are meaningless. This lab teaches you to create those failures on purpose so you can recognize them later.
 
-## 2. Failure lab rules
+## Failure lab rules
 
 - Break one thing at a time.
 - Write down the exact symptom before fixing it.
@@ -24,7 +24,7 @@ Semantic search failures are often quiet. A command can return results that look
 - Do not use real model files for unit-test failures.
 - Do not build future-week API, async, or deployment behavior in this lab.
 
-## 3. Intentional break experiments
+## Intentional break experiments
 
 ### Experiment 1 — Infinite loop from bad overlap
 
@@ -233,7 +233,7 @@ Embedding vectors are only comparable inside the vector space produced by the sa
 #### Common wrong fixes
 Clearing the whole cache on every run; ignoring model upgrades; storing only the first 20 characters as the key.
 
-## 4. Debugging checklist
+## Debugging checklist
 
 - [ ] Can I reproduce the failure with one small input?
 - [ ] Did I inspect chunk count before inspecting embeddings?
@@ -245,7 +245,7 @@ Clearing the whole cache on every run; ignoring model upgrades; storing only the
 - [ ] Did I fix the production cause instead of only changing the display?
 - [ ] Did I add or restore the test that would catch this next time?
 
-## 5. Reflection after breaking
+## Reflection after breaking
 
 - Which failure looked most harmless but caused the worst result?
 - Which failure produced a loud exception, and which produced quiet bad ranking?

@@ -15,6 +15,21 @@ These experiments reveal how ML pipelines fail in ways that are easy to miss. Ea
 
 ---
 
+## Purpose of failure practice
+
+Classical ML can fail while still producing numbers that look official. These experiments teach you to distrust impressive metrics until you have checked leakage, labels, class balance, artifact paths, and input validation. In ResearchOps, a topic classifier is only useful if the learner can explain why the evaluation is honest.
+
+## Failure lab rules
+
+1. Change only one part of the pipeline at a time: split order, labels, artifact path, input text, or class balance.
+2. Predict the metric or exception before running the experiment.
+3. Keep the correct Pipeline version nearby so you can compare against the broken version.
+4. For each experiment, record how to cause it, expected error or metric change, how to inspect it, how to fix it, the test that should catch it, what it teaches, and common wrong fixes.
+5. Restore the safe training flow before continuing: split raw texts first, fit TF-IDF inside the Pipeline, then evaluate on held-out data.
+6. Do not introduce later-week techniques to hide the problem; Week 11 uses classical scikit-learn tools only.
+
+## Intentional break experiments
+
 ## Experiment 1: Fit the vectorizer before splitting
 
 Implement this explicitly wrong version:
@@ -155,6 +170,20 @@ pytest -q
 
 ---
 
+## Debugging checklist
+
+Use this checklist when a Week 11 model result looks suspicious:
+
+- [ ] Did `train_test_split` happen before `TfidfVectorizer.fit`?
+- [ ] Are labels still aligned with texts after shuffling or loading?
+- [ ] Did you print class counts before training?
+- [ ] Does the classification report show per-class precision, recall, F1, and support?
+- [ ] Does the artifact parent directory exist before `joblib.dump`?
+- [ ] Did you test empty or near-empty prediction input with a clear guard?
+- [ ] Did `pytest -q` still pass after adding ML code?
+
+---
+
 ## Edge cases to explore
 
 **EC1: Duplicate documents with different labels**
@@ -171,7 +200,7 @@ Add a label `survey` with exactly one training example. What happens during `tra
 
 ---
 
-## What did you learn?
+## Reflection after breaking
 
 1. Which metric hid a real problem in your experiments? How would you detect it without the experiments?
 2. What did leakage look like in practice? How large was the metric inflation?

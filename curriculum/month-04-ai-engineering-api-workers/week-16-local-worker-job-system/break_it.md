@@ -15,7 +15,7 @@ This lab teaches reliability by making the local worker fail in controlled ways.
 Do not perform these experiments on important data.
 Use a disposable local database, then restore the correct implementation.
 
-## 1. Purpose of failure practice
+## Purpose of failure practice
 Background workers fail differently from foreground commands.
 A foreground command often either returns or crashes in front of the user.
 A worker may fail after the user has walked away.
@@ -24,7 +24,7 @@ Failure practice trains you to design those pieces deliberately.
 The goal is not to make the worker unbreakable.
 The goal is to make breaks visible, bounded, and recoverable.
 
-## 2. Failure lab rules
+## Failure lab rules
 - Use a throwaway SQLite database for every experiment.
 - Change one thing at a time so you know what caused the failure.
 - Write down the expected bad behavior before running the experiment.
@@ -34,7 +34,7 @@ The goal is to make breaks visible, bounded, and recoverable.
 - Do not introduce Docker, RAG, LLM calls, or future-week infrastructure.
 - Do not keep intentionally broken code after the lab is complete.
 
-## 3. Intentional break experiments
+## Intentional break experiments
 ### Experiment 1: Non-atomic claim lets two workers run one job
 
 #### How to cause it
@@ -219,7 +219,7 @@ Long-running workers must have a cooperative shutdown path.
 #### Common wrong fixes
 Using only Ctrl+C stack traces, setting poll_seconds to zero and spinning CPU, or relying on test timeouts.
 
-## 4. Debugging checklist
+## Debugging checklist
 - [ ] Inspect the job id, job_type, status, attempts, max_attempts, last_error, updated_at, and scheduled_at.
 - [ ] Confirm the job is eligible before wondering why the worker did not claim it.
 - [ ] Confirm the handler is registered before debugging handler internals.
@@ -233,7 +233,7 @@ Using only Ctrl+C stack traces, setting poll_seconds to zero and spinning CPU, o
 - [ ] Check logs for transition lines, not just stack traces.
 - [ ] After fixing, add a regression test that fails on the broken version.
 
-## 5. Reflection after breaking
+## Reflection after breaking
 - Which failure surprised me most?
 - Which job state made the failure visible?
 - Which error was hidden until I inspected the database?

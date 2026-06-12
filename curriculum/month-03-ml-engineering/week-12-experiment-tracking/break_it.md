@@ -15,6 +15,21 @@ These experiments expose what happens when experiment tracking is done incorrect
 
 ---
 
+## Purpose of failure practice
+
+Experiment tracking fails quietly: a model file can exist while the evidence explaining it is missing, overwritten, or impossible to compare. These labs make those quiet failures loud. ResearchOps learners should finish Week 12 able to prove where a run came from, what changed, which artifact belongs to it, and whether the record can be trusted.
+
+## Failure lab rules
+
+1. Break exactly one tracking guarantee at a time: artifact path, unique filename, serializable params, run record, metric name, or crash handling.
+2. Before running the command, write what evidence you expect to lose.
+3. Inspect both the run record and the artifact file; one without the other is not enough.
+4. For every experiment, record how to cause it, expected error or corrupted state, how to inspect it, how to fix it, the test that should catch it, what it teaches, and common wrong fixes.
+5. Restore the tracker so every run has params, metrics, timestamp, status, and artifact path before continuing.
+6. Stay with Week 12 storage choices; do not jump to external tracking tools to avoid learning the underlying failure modes.
+
+## Intentional break experiments
+
 ## Experiment 1: Train without recording the artifact path
 
 Modify the training function to save the model but NOT set `run.artifact_path`:
@@ -145,6 +160,20 @@ Does the full suite still pass? Did adding tracker imports or calls break any ex
 
 ---
 
+## Debugging checklist
+
+Use this checklist when experiment records and artifacts disagree:
+
+- [ ] Does every run record include a non-empty run ID, experiment name, timestamp, params, metrics, status, and artifact path?
+- [ ] Does the artifact path in each record point to a file that actually exists?
+- [ ] Do model artifact filenames include the run ID so one run cannot overwrite another?
+- [ ] Are params JSON-serializable strings or simple values before saving?
+- [ ] Are metric names consistent across runs being compared?
+- [ ] Can `researchops experiment list`, `show`, and `compare` answer what changed without reading code?
+- [ ] Did `pytest -q` pass after restoring the tracker?
+
+---
+
 ## Edge cases to explore
 
 **EC1: Multiple runs in the same second**
@@ -161,7 +190,7 @@ Create a run with 50 parameters. Save and load it. Does the comparison table for
 
 ---
 
-## What did you learn?
+## Reflection after breaking
 
 1. What minimum metadata makes a run genuinely valuable (not just a file that exists)?
 2. How did versioning mistakes (overwriting artifact names) actually erase evidence?

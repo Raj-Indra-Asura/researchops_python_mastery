@@ -11,7 +11,7 @@
 
 # Exercises - Week 10 Testing Discipline and Quality Gates
 
-## 1. How to use this workbook
+## How to use this workbook
 - This workbook is the hands-on path for Week 10 testing discipline and quality gates.
 - Work from warm-ups toward brutal exercises; later tiers assume earlier habits are comfortable.
 - Use behavior-focused test names, not ticket numbers or vague names like `test_case_1`.
@@ -24,7 +24,7 @@
 - Do not introduce classical ML model code, embeddings, FastAPI, async patterns, or new heavy dependencies.
 - Written answers belong in scratch notes unless your mentor explicitly asks for a committed file.
 
-## 2. Warm-up exercises
+## Warm-up exercises
 ### W10-W1: Classify the current tests
 - List five tests from `tests/unit/`, two tests from `tests/integration/`, and one test from `tests/e2e/` if present.
 - For each test, write whether it is unit, integration, or E2E smoke.
@@ -52,7 +52,7 @@
 - Assert the override is used.
 - Add a second case with `monkeypatch.delenv` if default behavior is part of the contract.
 
-## 3. Code-reading exercises
+## Code-reading exercises
 ### W10-R1: Map fakes to protocols
 - Open `tests/fakes/` and list each fake class.
 - For each fake, identify the protocol, service collaborator, or production concept it stands in for.
@@ -81,7 +81,7 @@
 - If the commands differ from Week 10 requirements, write the mismatch clearly.
 - Explain why a learner should be able to reproduce CI locally.
 
-## 4. Implementation exercises
+## Implementation exercises
 ### W10-I1: Create only useful shared fixtures
 - Find duplicated fake repository setup across at least two test files.
 - Move the duplicated setup to `tests/conftest.py` only if it improves readability.
@@ -116,7 +116,7 @@
 - Confirm coverage fails under 70 percent.
 - Do not change unrelated tooling or add future-week dependencies.
 
-## 5. Testing exercises
+## Testing exercises
 ### W10-T1: Run the narrowest possible feedback loop
 - Choose one test you added or edited.
 - Run that single test by path and test name during normal practice.
@@ -143,7 +143,7 @@
 - Confirm coverage is at least 70 percent.
 - If either command fails, write the first failing file and the first corrective action.
 
-## 6. Debugging exercises
+## Debugging exercises
 ### W10-D1: Break fixture discovery safely
 - Change one test parameter to a fixture name that does not exist.
 - Run that single test during normal practice.
@@ -173,7 +173,7 @@
 - Open missing lines and decide whether they represent meaningful behavior.
 - Add a meaningful test or justify why the line should not count if it is truly unreachable.
 
-## 7. Refactoring exercises
+## Refactoring exercises
 ### W10-F1: Extract a paper factory for tests
 - Find repeated `Paper` construction in tests.
 - Create a small test helper named like `make_paper` in the test module or shared fixture area.
@@ -200,7 +200,7 @@
 - Replace it with an exact count, exact ID, exact exception, exact status, or exact order.
 - Explain what regression the stronger assertion would catch.
 
-## 8. Written explanation exercises
+## Written explanation exercises
 1. Explain the difference between a fake, a mock, and a real infrastructure dependency in ResearchOps terms.
 2. Explain why service unit tests should usually use fakes instead of SQLite.
 3. Explain why SQLite still needs integration tests with `tmp_path`.
@@ -214,7 +214,7 @@
 11. Explain what a flaky test does to team trust.
 12. Explain why Week 10 must not add classical ML, embeddings, FastAPI, or async behavior.
 
-## 9. Stretch exercises
+## Stretch exercises
 ### W10-S1: Coverage improvement plan with judgment
 - Run the coverage command during normal practice.
 - Select five missing line ranges from different modules if possible.
@@ -247,7 +247,7 @@
 - Do not add services, model training, embedding generation, or web server startup.
 - Explain how named CI steps help a beginner fix the first failure faster.
 
-## 10. Brutal exercises
+## Brutal exercises
 ### W10-B1: Order independence audit
 - Audit ten tests and identify every piece of state each test depends on.
 - Mark any state that could come from another test, the working directory, environment variables, or an existing database.
@@ -280,7 +280,7 @@
 - Include the command you would run locally, the file you would open, and the kind of fix you would expect.
 - Do not include lowering thresholds, skipping tests, or adding future-week dependencies as first responses.
 
-## 11. Mini project task
+## Mini project task
 - Build a coherent Week 10 quality gate story for ResearchOps.
 - Ensure shared fixtures exist only where they reduce real duplication.
 - Ensure service tests use fakes for project protocols.
@@ -293,7 +293,7 @@
 - Ensure no classical ML model code, embeddings, FastAPI, async behavior, or new heavy dependency appears.
 - Write a final scratch-note explanation of what the gate proves and what it does not prove.
 
-## 12. Completion checklist
+## Completion checklist
 - [ ] I can classify ResearchOps tests by level and justify the classification.
 - [ ] I can write and request a pytest fixture by name.
 - [ ] I can explain function, module, and session fixture scope.

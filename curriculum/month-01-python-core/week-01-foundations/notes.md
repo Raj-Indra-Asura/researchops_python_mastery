@@ -384,7 +384,7 @@ Later chapters will introduce parsing, storage, services, search, and ML. All of
 
 ---
 
-## 8. Code examples with every line explained
+## 8. Code examples with line-by-line explanation
 
 This section is long on purpose. It moves from raw files to annotated understanding.
 
@@ -1366,7 +1366,7 @@ Architecture is easier to maintain when boundaries are respected early.
 
 ---
 
-## 14. How this connects to AI/ML engineering
+## 14. How this connects to AI engineering / ML research
 
 AI/ML engineering often looks glamorous from far away: models, embeddings, experiments, evaluation. But those systems still depend on unglamorous fundamentals.
 

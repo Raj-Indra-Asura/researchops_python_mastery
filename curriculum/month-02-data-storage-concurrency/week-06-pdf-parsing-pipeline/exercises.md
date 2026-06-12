@@ -11,9 +11,15 @@
 
 # Exercises — Week 06 PDF Parsing Pipeline
 
+## How to use this workbook
+
+Use this workbook to turn Week 6 from “I can open a PDF” into “ResearchOps can ingest a directory, store successes, and record failures.” Start with tiny parser experiments, then move into the real parsing and ingestion files. Whenever an exercise mentions a fake parser or fake repository, remember the reason: unit tests should prove orchestration logic without depending on a real PDF file or a real SQLite database.
+
+For every implementation task, write down the pipeline stage you are practicing: discover file, parse file, extract metadata, clean text, save paper, or record failure. That habit helps you debug real ingestion runs because you can name exactly which stage broke. Keep the work Week-6 sized: no parallel workers, no web API, no OCR system, and no future retrieval features.
+
 ---
 
-## Easy exercises
+## Warm-up exercises
 
 ### E1 — Open a real PDF
 
@@ -53,7 +59,47 @@ Test it with a file named `"not_a_pdf.txt"` that you create in `/tmp`.
 
 ---
 
-## Medium exercises
+## Code-reading exercises
+
+### C1 — Read the parser boundary
+
+Open `src/researchops/parsing/pdf_parser.py` and answer:
+
+1. Why does `parse_pdf` import `pypdf` inside the function instead of at the top of the file?
+2. Which checks happen before `PdfReader` is constructed?
+3. Why does the page loop use `page.extract_text() or ""`?
+4. How is PDF metadata converted into a plain `dict[str, str]`?
+5. Which exceptions should a caller expect for unreadable or empty documents?
+
+Explain why the parser returns `ParsedDocument` instead of directly saving a `Paper`.
+
+### C2 — Trace metadata extraction
+
+Open `src/researchops/parsing/metadata_extractor.py`. Read `extract_title`, `extract_author`, and `extract_abstract`, then answer:
+
+1. Which metadata key is trusted first for the title?
+2. What fallback is used when the PDF has no title metadata?
+3. Why does the fallback ignore very short lines?
+4. Why does `extract_author` return `None` instead of an empty string?
+5. What text range does `extract_abstract` search, and why might that be enough for Week 6?
+
+Write one example of a PDF where these heuristics would work well and one where they might fail.
+
+### C3 — Read the ingestion service as a pipeline map
+
+Open `src/researchops/services/ingestion_service.py` and follow `ingest_directory` into `_ingest_one`. Answer:
+
+1. Which function discovers PDF files?
+2. Where is a stable paper ID produced from the file path?
+3. Where does `skip_existing` prevent duplicate work?
+4. Which lines convert a `ParsedDocument` into a `Paper`?
+5. Which lines record a `FailedDocument` when parsing fails?
+
+Draw a short arrow diagram from directory path to stored paper. Include the failure path too.
+
+---
+
+## Implementation exercises
 
 ### M1 — Full parse_pdf function
 
@@ -118,7 +164,7 @@ Using `AlwaysFailingParser`:
 
 ---
 
-## Hard exercises
+## Stretch exercises
 
 ### H1 — PdfParserAdapter class
 
@@ -322,6 +368,16 @@ Complete the ingestion pipeline for ResearchOps:
 9. Run `ruff check src tests` and confirm no lint errors.
 
 Deliverable: a working ingest command that stores papers and records failures.
+## Completion checklist
+
+- [ ] I can run a small `pypdf` experiment and explain each observed failure.
+- [ ] I read `pdf_parser.py`, `metadata_extractor.py`, and `ingestion_service.py` before changing pipeline code.
+- [ ] I can explain the difference between `ParsedDocument`, `Paper`, `FailedDocument`, and `IngestionResult`.
+- [ ] I tested successful ingestion with fakes and did not require real PDFs for unit tests.
+- [ ] I tested at least one parse failure and verified it becomes a recorded failure.
+- [ ] I can explain why the service receives parser and repository objects instead of constructing them internally.
+- [ ] `pytest tests/unit/test_ingestion_service.py -v` passes.
+- [ ] `pytest -q` and `ruff check src tests` pass before I mark Week 6 complete.
 <!-- NAV_BOTTOM_START -->
 ---
 ⬅️ [← Notes](notes.md) · ➡️ [Break It →](break_it.md)

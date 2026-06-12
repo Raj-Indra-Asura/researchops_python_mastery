@@ -11,9 +11,15 @@
 
 # Exercises — Week 07 Keyword Search and Data Quality
 
+## How to use this workbook
+
+Use this workbook to practice the two Week 7 habits that make paper collections usable: normalize text before comparing it, and question data quality before trusting results. Begin with small strings so you can see exactly how case, punctuation, whitespace, and Unicode change a search result. Then read the real ResearchOps search service and write tests that prove blank queries, no-match queries, scoring, snippets, and stats behave predictably.
+
+Do not treat search as magic. For Week 7, search is still plain Python over stored `Paper` objects: normalize the query, normalize each paper, count matches, rank results, and show a snippet. If a result surprises you, trace the normalized query and normalized haystack before changing code.
+
 ---
 
-## Easy exercises
+## Warm-up exercises
 
 ### E1 — Normalize a string manually
 
@@ -70,7 +76,47 @@ Confirm that `"ﬁeld" != "field"` but `unicodedata.normalize("NFKC", "ﬁeld") 
 
 ---
 
-## Medium exercises
+## Code-reading exercises
+
+### C1 — Read normalization before search
+
+Open `src/researchops/parsing/text_cleaner.py` and answer:
+
+1. What does `clean_text` do before search-specific normalization starts?
+2. Why does `normalise_for_search` lowercase the text?
+3. Which regular expression removes punctuation and symbols?
+4. Why does the function finish with `" ".join(text.split())`?
+5. What input would prove Unicode normalization matters for extracted PDF text?
+
+Write three before-and-after examples using ResearchOps paper titles or abstracts.
+
+### C2 — Trace `KeywordSearchService.search`
+
+Open `src/researchops/services/search_service.py` and follow `search`. Answer:
+
+1. Which exception is raised for a blank query?
+2. How are query terms created?
+3. Why does the service combine `paper.title` and `paper.text` into one haystack?
+4. How is the score calculated?
+5. Why are results sorted before the `limit` is applied?
+
+Then manually compute the score for query `neural networks` against one short fake paper.
+
+### C3 — Read the search tests as user stories
+
+Open `tests/unit/test_search_service.py` and answer:
+
+1. Which test proves title matches work?
+2. Which test proves body-text matches work?
+3. Which test proves no-match returns an empty list instead of crashing?
+4. Which test proves result ordering matters?
+5. Which snippet test would fail if `_extract_snippet` ignored the matched term?
+
+For each answer, translate the test name into a sentence a ResearchOps user would care about.
+
+---
+
+## Implementation exercises
 
 ### M1 — Implement normalise_for_search
 
@@ -154,7 +200,7 @@ Write tests:
 
 ---
 
-## Hard exercises
+## Stretch exercises
 
 ### H1 — Title-boosted scoring
 
@@ -378,6 +424,16 @@ Complete the keyword search feature for ResearchOps:
 9. Write one improvement to normalization or scoring based on what you observed.
 
 Deliverable: a working search command with quality reporting.
+## Completion checklist
+
+- [ ] I can normalize a query by hand and predict the resulting tokens.
+- [ ] I read `text_cleaner.py`, `search_service.py`, and `test_search_service.py`.
+- [ ] I can distinguish a blank query from a valid query with no matches.
+- [ ] I can explain the Week 7 scoring rule without saying “the computer ranks it somehow.”
+- [ ] I tested case-insensitive search, punctuation handling, ordering, limits, and snippets.
+- [ ] I checked paper stats on an empty repository and a repository with stored papers.
+- [ ] `pytest tests/unit/test_search_service.py -v` passes.
+- [ ] `pytest -q` and `ruff check src tests` pass before I mark Week 7 complete.
 <!-- NAV_BOTTOM_START -->
 ---
 ⬅️ [← Notes](notes.md) · ➡️ [Break It →](break_it.md)

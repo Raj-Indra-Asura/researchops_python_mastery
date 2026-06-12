@@ -13,14 +13,14 @@
 
 Failure practice teaches you how async network code breaks before it breaks in a real research workflow.
 
-## 1. Purpose of failure practice
+## Purpose of failure practice
 
 Async I/O bugs are often invisible until timing, cancellation, or remote-service behavior changes.
 This lab makes those failures visible in small controlled experiments.
 Each experiment should be run with fake clients or toy coroutines, not the real internet.
 The goal is not to memorize errors; the goal is to recognize the shape of the bug quickly.
 
-## 2. Failure lab rules
+## Failure lab rules
 
 - Change one thing at a time.
 - Predict the failure before running it.
@@ -31,7 +31,7 @@ The goal is not to memorize errors; the goal is to recognize the shape of the bu
 - Do not use real public services for these failure experiments.
 - Do not move CPU-heavy parsing into async code as a fix.
 
-## 3. Intentional break experiments
+## Intentional break experiments
 
 ### Experiment 1: Forget to await the request
 
@@ -217,7 +217,7 @@ Network clients own resources; resource cleanup is part of correctness.
 #### Common wrong fixes
 Do not create a global client casually in beginner code; globals make lifecycle and tests harder.
 
-## 4. Debugging checklist
+## Debugging checklist
 
 - Is every async operation awaited?
 - Is any `time.sleep` or blocking library call inside `async def`?
@@ -231,7 +231,7 @@ Do not create a global client casually in beginner code; globals make lifecycle 
 - Does CPU-heavy parsing use the Week 8 ProcessPoolExecutor boundary?
 - Are cancellation errors re-raised after cleanup?
 
-## 5. Reflection after breaking
+## Reflection after breaking
 
 - Which failure was easiest to predict?
 - Which failure only became obvious after measuring time?

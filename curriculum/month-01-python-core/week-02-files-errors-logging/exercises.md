@@ -43,7 +43,7 @@ Answer in complete sentences:
 
 ---
 
-## Section 2 — `pathlib` warm-up
+## Warm-up exercises
 ### Exercise 2.1 — Read a path like data
 Open a Python shell.
 Create this object:
@@ -136,7 +136,7 @@ Why is this important when writing portable software?
 
 ---
 
-## Section 4 — Reading the real code
+## Code-reading exercises
 ### Exercise 4.1 — Trace `find_pdfs()`
 Read `src/researchops/utils/paths.py` line by line.
 For each line in `find_pdfs()`, fill in this table in your notebook:
@@ -302,7 +302,21 @@ Answer:
 
 ---
 
-## Section 8 — Tests as specifications
+## Implementation exercises
+These tasks ask you to practice writing small pieces of Week 2 code without changing the repository permanently. Work in a Python shell, a notebook, or `.scratch/` if you want to run them.
+
+### Implementation 1 — Write a tiny PDF filter
+Write a function named `only_pdf_names(paths: list[Path]) -> list[str]` that returns only filenames ending in `.pdf`. Use `Path.name`, not manual string splitting. Then explain why this is a smaller version of the job `find_pdfs()` performs.
+
+### Implementation 2 — Create a safe workspace path
+Write a three-line script that builds `.scratch/week-02/manual`, creates it with `mkdir(parents=True, exist_ok=True)`, and prints whether it is a directory. Explain why repeated runs should not fail when the directory already exists.
+
+### Implementation 3 — Raise a clear path error
+Write a function named `require_directory(path: Path) -> None`. It should raise `NotADirectoryError` if the path is missing or is not a directory. Use two separate checks so the message can tell the learner what went wrong.
+
+---
+
+## Testing exercises
 ### Exercise 8.1 — What does each path test prove?
 Read every test in `tests/unit/test_paths.py`.
 For each test, complete this sentence:
@@ -328,6 +342,20 @@ Why is checking only one of those not enough?
 If the `sorted(...)` call were removed from `find_pdfs()`, which test would fail first?
 If the `.exists()` check were removed, which behavior would become ambiguous?
 Write your predictions before changing anything.
+
+---
+
+## Debugging exercises
+Use these exercises to practice moving from symptom to cause. Do not change repository files permanently. If you experiment in code, undo your local changes before validation.
+
+### Debugging 1 — Missing directory symptom
+Run the scanner against a path that does not exist inside `.scratch/week-02`. Record the exact user-facing message and the exit code. Then trace which line in `find_pdfs()` creates the original exception.
+
+### Debugging 2 — File instead of directory
+Create a text file and pass that file path to `researchops scan`. Explain why the path exists but is still invalid input. Identify the difference between the `.exists()` check and the `.is_dir()` check.
+
+### Debugging 3 — Verbose log confirmation
+Run the same valid scan with and without `--verbose`. Write down which diagnostic line appears only in verbose mode. Explain why this is a logging configuration issue, not a scanner correctness issue.
 
 ---
 
@@ -366,7 +394,7 @@ Why is this a better user experience than a raw traceback?
 
 ---
 
-## Section 10 — Short written answers
+## Written explanation exercises
 Write 4 to 6 sentences for each prompt.
 
 1. Why is “return an empty list on every failure” a bad design for a scanner?
@@ -389,7 +417,7 @@ If you cannot explain one clearly, review that section.
 
 ---
 
-## Section 12 — Stretch work
+## Stretch exercises
 These are optional, but they deepen your understanding.
 
 ### Stretch 12.1 — Design review
@@ -418,7 +446,7 @@ Investigate each of these and write down what you observe on your OS:
 
 ---
 
-## Section 13 — Self-check rubric
+## Completion checklist
 Use this before moving on.
 
 ### Green
@@ -442,7 +470,17 @@ If you are in yellow or red on several points, return to `notes.md` before conti
 
 ---
 
-## Section 14 — Completion challenge
+## Mini project task
+Build a tiny local validation folder and write a short report about it.
+
+1. Create `.scratch/week-02/project/papers` with one top-level PDF, one nested PDF, and one `.txt` file.
+2. Run `researchops scan .scratch/week-02/project/papers` and then run the same command with `--recursive`.
+3. Write a 10-sentence explanation of why the two outputs differ, why the text file is ignored, and how the logs help when `--verbose` is enabled.
+
+
+---
+
+## Brutal exercises
 Without opening the code, write a one-page walkthrough of what happens when a user runs:
 
 ```bash

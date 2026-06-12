@@ -106,6 +106,18 @@ Mark the exact line where raw text is split.
 Mark the exact line where the vectorizer is fit.
 If vectorizer fitting happens before splitting, write a short bug report.
 
+**Exercise W11-C4: Read the ML module boundaries**
+
+Open `src/researchops/ml/topic_classifier.py`, `src/researchops/ml/preprocessing.py`, and `src/researchops/ml/evaluation.py`. For each file, write the Week 11 responsibility in one sentence: model training/prediction, text-to-feature preparation, or metric/reporting helpers. Then write one sentence explaining why none of these files should import `researchops.cli` or construct a database connection.
+
+**Exercise W11-C5: Read the optional ML dependency group**
+
+Open `pyproject.toml` and find the `[project.optional-dependencies]` section named `ml`. Copy the three package names into your notes and explain why Week 11 uses `scikit-learn` for the classifier instead of adding a new heavy dependency. Then answer: which command installs only the packages needed for this week?
+
+**Exercise W11-C6: Read fake repositories before designing ML tests**
+
+Open `tests/fakes/fake_repository.py` and find `FakePaperRepository.list_all`. Explain how a future topic-classification service could read paper text through the `PaperRepository` protocol without touching SQLite. Write a test idea that uses the fake repository to supply three `Paper` objects and proves the classifier receives their text in a predictable order.
+
 ## Implementation exercises
 
 **Exercise W11-I1: Create a labeled JSONL dataset**

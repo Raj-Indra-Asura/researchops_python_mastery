@@ -49,7 +49,7 @@ Before running the formal checks, confirm all of these are true.
 
 ---
 
-## Exact shell commands
+## Commands to run
 
 Run these commands from the repository root, in order.
 
@@ -171,20 +171,31 @@ Expected result:
 
 ---
 
-## What each test class protects
+## Expected outputs
+Use these outputs as the pass/fail contract.
+
+- The import check prints `models ok` and `value objects ok`.
+- The REPL smoke test prints a 16-character `PaperId`, `Type: PaperId`, `word_count: 5`, and `is_empty: False`.
+- `pytest tests/unit/test_models.py -v` collects and passes `14` tests.
+- `pytest tests/unit/test_value_objects.py -v` collects and passes `20` tests.
+- The combined model/value-object check passes `34` tests.
+- `pytest -q` completes with all currently available tests passing.
+- `ruff check src tests` reports no issues introduced by your work.
+
+## Tests that must pass
 
 ### TestPaper
 
 - `word_count()` correctly counts space-separated words.
 - `is_empty()` returns `True` only for blank or whitespace-only text.
-- `tags` does not leak shared mutable state between instances.
-- `Paper` stores `source_path` as a `str`, not a `Path` object.
+- `tags` defaults to an empty list.
+- `created_at` defaults to a `datetime` value.
 
 ### TestPaperId
 
 - `from_path()` produces a stable identifier for the same path.
 - `str(PaperId(...))` returns the raw hex string, not the dataclass representation.
-- `PaperId` is frozen and raises an error on mutation attempt.
+- `PaperId` produces different identifiers for different paths.
 
 ### TestParsedDocument
 
@@ -200,12 +211,11 @@ Expected result:
 
 - `total` is computed from current lists, not a stored integer.
 - `success_rate` returns `0.0` for an empty result.
-- `success_rate` returns `0.5` for one success and one failure.
-- `total` updates automatically when successes or failures are appended.
+- `total` counts successes, failures, and skipped paths in one number.
 
 ---
 
-## Reading checks
+## Manual checks
 
 Open these files and confirm you can answer what each one contributes.
 
@@ -242,7 +252,13 @@ If any architecture check fails, you have introduced a coupling that will make f
 
 ---
 
-## Manual concept checks
+## Documentation checks
+- [ ] Week 3 notes explain classes, dataclasses, value objects, and entities before using them in ResearchOps examples.
+- [ ] Week 3 exercises include code-reading, implementation, testing, debugging, written, stretch, brutal, mini-project, and completion-checklist work.
+- [ ] Break-it experiments are restored before validation starts.
+- [ ] Reflection answers are your own prompts and observations, not copied solutions.
+
+## Manual checks
 
 Do these even if all tests pass.
 
@@ -288,7 +304,16 @@ Do **not** move to Week 4 if any of these are true.
 
 ---
 
-## Final pass condition
+## Ruthless mentor checkpoint
+Answer these aloud without looking at the code.
+
+1. Why is `PaperId` a value object instead of a plain string everywhere?
+2. Why does `Paper.word_count()` compute from `text` instead of storing a separate number?
+3. What bug does `field(default_factory=list)` prevent?
+4. Why is `ParsedDocument` not the same thing as `Paper`?
+5. Why should core domain models stay independent from interface and storage code?
+
+## Definition of done
 
 You pass Week 3 validation when both statements are true:
 1. The commands succeed.
