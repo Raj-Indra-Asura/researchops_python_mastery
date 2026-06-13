@@ -59,7 +59,7 @@ This document tracks the project milestone for each week. Update the status colu
 | Week | Title | Milestone | Status |
 |------|-------|-----------|--------|
 | 17 | RAG Assistant | `researchops ask "question"` returns cited answer | 🔜 |
-| 18 | Docker | `docker-compose up` starts the full stack | 🔜 |
+| 18 | Docker | `docker compose up` starts the full stack | 🔜 |
 | 19 | Documentation and Portfolio Polish | README, diagrams, demo script complete | 🔜 |
 | 20 | Final Hardening and v1.0 Release | CI green, `v1.0.0` tag, changelog, demo ready | 🔜 |
 
@@ -67,7 +67,9 @@ This document tracks the project milestone for each week. Update the status colu
 
 ## Final Vision: What v1.0 Can Do
 
-```bash
+These commands are intended to work from Windows PowerShell, macOS Terminal, or Linux shells after the virtual environment is active. Docker on Windows requires Docker Desktop.
+
+```text
 researchops ingest ./papers --workers 4
 researchops search "transformer attention"
 researchops semantic-search "efficient transformers"
@@ -75,7 +77,7 @@ researchops train-topic-model
 researchops classify paper_id_here
 researchops ask "What are the main approaches to efficient attention?"
 uvicorn researchops.api.main:app --reload
-docker-compose up
+docker compose up
 ```
 <!-- NAV_BOTTOM_START -->
 ---

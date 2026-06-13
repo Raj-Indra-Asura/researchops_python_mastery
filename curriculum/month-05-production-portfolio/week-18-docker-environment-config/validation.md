@@ -34,8 +34,12 @@
 
 ## 2. Exact commands
 
-```bash
-source .venv/bin/activate
+Use Windows PowerShell as the primary local workflow. Docker on Windows requires Docker Desktop to be installed and running.
+
+### Windows PowerShell — primary
+
+```powershell
+.\.venv\Scripts\Activate.ps1
 python -m pip install -e ".[dev,api,storage]"
 ruff check src tests
 pytest tests/unit/test_settings.py -v
@@ -43,9 +47,21 @@ pytest tests/unit/test_settings.py -v
 researchops --help
 docker build -t researchops:local .
 docker compose up --build      # Ctrl-C to stop
-# Secret hygiene:
-git check-ignore .env && echo ".env is ignored (good)"
-git ls-files | grep -E "(^|/)\.env$" && echo "DANGER: .env tracked" || echo "no real .env tracked (good)"
+# Secret hygiene, written in Python so it is cross-platform:
+python -c "import subprocess; ignored = subprocess.run(['git', 'check-ignore', '.env'], capture_output=True, text=True); print('.env is ignored (good)' if ignored.returncode == 0 else 'WARNING: .env is not ignored'); tracked = subprocess.run(['git', 'ls-files', '.env'], capture_output=True, text=True); print('DANGER: .env tracked' if tracked.stdout.strip() else 'no real .env tracked (good)')"
+```
+
+### macOS / Linux alternative
+
+```bash
+source .venv/bin/activate
+python -m pip install -e ".[dev,api,storage]"
+ruff check src tests
+pytest tests/unit/test_settings.py -v
+researchops --help
+docker build -t researchops:local .
+docker compose up --build      # Ctrl-C to stop
+python -c "import subprocess; ignored = subprocess.run(['git', 'check-ignore', '.env'], capture_output=True, text=True); print('.env is ignored (good)' if ignored.returncode == 0 else 'WARNING: .env is not ignored'); tracked = subprocess.run(['git', 'ls-files', '.env'], capture_output=True, text=True); print('DANGER: .env tracked' if tracked.stdout.strip() else 'no real .env tracked (good)')"
 ```
 
 ## 3. Expected behavior

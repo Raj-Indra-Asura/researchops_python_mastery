@@ -11,6 +11,25 @@ This is a personal learning repository. "Contributing" means following your own 
 
 ---
 
+## Platform Workflow
+
+ResearchOps assumes a **Windows PowerShell primary workflow** for local learners, while keeping every command usable on macOS and Linux.
+
+Use these activation commands from the repository root:
+
+| Platform | Activation command |
+|----------|--------------------|
+| Windows PowerShell | `.\.venv\Scripts\Activate.ps1` |
+| Windows Command Prompt | `.venv\Scripts\activate.bat` |
+| Windows Git Bash | `source .venv/Scripts/activate` |
+| macOS / Linux | `source .venv/bin/activate` |
+
+After activation, project commands such as `python -m pip install -e ".[dev]"`, `pytest -q`, `ruff check src tests`, and `researchops --help` are the same on all platforms.
+
+Full setup and troubleshooting guidance lives in [docs/CROSS_PLATFORM_SETUP.md](docs/CROSS_PLATFORM_SETUP.md).
+
+---
+
 ## Weekly Workflow
 
 Every week, in this order:
@@ -240,12 +259,14 @@ AI coding assistants are a tool. Used well, they accelerate your learning. Used 
 
 ## Running the Project Locally
 
-```bash
+### Windows PowerShell — primary
+
+```powershell
 # Initial setup
 python -m venv .venv
-source .venv/bin/activate       # Windows: .venv\Scripts\activate
-pip install --upgrade pip
-pip install -e ".[dev]"
+.\.venv\Scripts\Activate.ps1
+python -m pip install --upgrade pip
+python -m pip install -e ".[dev]"
 
 # Verify
 researchops --help
@@ -253,10 +274,26 @@ pytest -q
 ruff check src tests
 
 # With optional dependencies
-pip install -e ".[parsing]"      # adds pypdf
-pip install -e ".[ml]"           # adds scikit-learn
-pip install -e ".[api]"          # adds fastapi + httpx
-pip install -e ".[all]"          # adds everything
+python -m pip install -e ".[parsing]"      # adds pypdf
+python -m pip install -e ".[ml]"           # adds scikit-learn
+python -m pip install -e ".[api]"          # adds fastapi + httpx
+python -m pip install -e ".[all]"          # adds everything
+```
+
+### macOS / Linux alternative
+
+```bash
+python -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+python -m pip install -e ".[dev]"
+researchops --help
+pytest -q
+ruff check src tests
+python -m pip install -e ".[parsing]"
+python -m pip install -e ".[ml]"
+python -m pip install -e ".[api]"
+python -m pip install -e ".[all]"
 ```
 <!-- NAV_BOTTOM_START -->
 ---

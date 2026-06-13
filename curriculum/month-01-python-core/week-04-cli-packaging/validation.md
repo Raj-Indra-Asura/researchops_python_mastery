@@ -36,7 +36,7 @@ This checkpoint verifies the full Week 4 contract:
 - CLI tests pass,
 - the repository test suite still passes.
 
-Run the commands exactly as written from the repository root.
+Run the commands exactly as written from the repository root, choosing the command block for your operating system.
 Do not skip the scratch-data setup block, because the expected results depend on it.
 
 ---
@@ -56,6 +56,15 @@ Before running commands, confirm these are true.
 ## Commands to run
 
 ### 1. Activate your environment
+
+Windows PowerShell:
+
+```powershell
+.\.venv\Scripts\Activate.ps1
+```
+
+macOS / Linux:
+
 ```bash
 source .venv/bin/activate
 ```
@@ -66,16 +75,11 @@ python -m pip install -e ".[dev]"
 ```
 
 ### 3. Build a tiny local validation dataset inside the repository
-```bash
-python - <<'PY'
-from pathlib import Path
-root = Path('.scratch/week-04-cli/papers')
-(root / 'nested').mkdir(parents=True, exist_ok=True)
-(root / 'paper_a.pdf').touch()
-(root / 'nested' / 'paper_b.pdf').touch()
-(root / 'notes.txt').write_text('not a pdf\n')
-print(root)
-PY
+
+This uses `python -c` instead of a Unix heredoc so it works in Windows PowerShell, Command Prompt, macOS, and Linux.
+
+```text
+python -c "from pathlib import Path; root = Path('.scratch/week-04-cli/papers'); (root / 'nested').mkdir(parents=True, exist_ok=True); (root / 'paper_a.pdf').touch(); (root / 'nested' / 'paper_b.pdf').touch(); (root / 'notes.txt').write_text('not a pdf\n'); print(root)"
 ```
 
 Expected final printed line:
@@ -143,6 +147,16 @@ You should observe:
 - command exits with code `1`.
 
 ### 9. Prove the failing command returned `1`
+
+Windows PowerShell:
+
+```powershell
+researchops scan .scratch/week-04-cli/missing
+$LASTEXITCODE
+```
+
+macOS / Linux:
+
 ```bash
 researchops scan .scratch/week-04-cli/missing ; echo $?
 ```

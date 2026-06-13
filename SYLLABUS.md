@@ -657,7 +657,7 @@ Can implement a retrieve-then-generate pipeline, write a grounding prompt, detec
 - Testing the full stack in containers
 
 **Project milestone:**
-`docker-compose up` starts the API and worker. `curl http://localhost:8000/health` responds.
+`docker compose up` starts the API and worker. On Windows, Docker Desktop must be running first. `curl http://localhost:8000/health` responds.
 
 **Main files:**
 - `Dockerfile`
@@ -669,11 +669,11 @@ Can implement a retrieve-then-generate pipeline, write a grounding prompt, detec
 - `tests/e2e/test_docker.py` (optional) — smoke test against running container
 
 **Validation command:**
-```bash
-docker-compose build
-docker-compose up -d
+```text
+docker compose build
+docker compose up -d
 curl http://localhost:8000/health
-docker-compose down
+docker compose down
 ```
 
 **Expected learner capability:**

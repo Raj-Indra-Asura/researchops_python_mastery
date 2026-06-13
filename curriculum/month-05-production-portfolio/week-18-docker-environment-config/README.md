@@ -55,7 +55,7 @@ Persist SQLite data outside disposable containers.
 
 ## 7. Project milestone
 
-`docker-compose up` or `docker compose up` starts the API and worker.
+`docker compose up` starts the API and worker. Older Docker Compose installations may use `docker-compose up`; Windows learners should start Docker Desktop first.
 `curl http://localhost:8000/health` returns a healthy response.
 The same image can run different commands for CLI, API, and worker paths.
 

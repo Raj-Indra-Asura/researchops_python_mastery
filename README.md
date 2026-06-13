@@ -15,7 +15,7 @@
 
 This is not a tutorial. It is a **20-week structured programme** that teaches professional Python engineering by having you build a real, working software system from scratch — one week at a time.
 
-Read this file first. Then open `curriculum/month-01-python-core/week-01-foundations/README.md` and begin Week 1.
+Read this file first. Then open `curriculum/month-01-python-core/week-01-foundations/README.md` and begin Week 1. If you are setting up a local machine, keep [Cross-Platform Setup Guide](docs/CROSS_PLATFORM_SETUP.md) nearby; it makes Windows PowerShell the primary path and shows macOS/Linux alternatives.
 
 ---
 
@@ -56,7 +56,7 @@ At v1.0 it can:
 - Expose all features over a REST API built with FastAPI
 - Download papers from arXiv asynchronously
 - Run expensive jobs in a background worker queue
-- Deploy the full stack with `docker-compose up`
+- Deploy the full stack with `docker compose up`
 
 **ResearchOps is also a curriculum.** Every week you add a real feature to this platform while learning a specific set of Python and software engineering concepts through textbook-style notes, graded exercises, intentional failure experiments, strict validation checklists, and weekly journal prompts.
 
@@ -78,37 +78,50 @@ By the end you have both: the skills and the project.
 
 ## Setup — Exact Commands
 
-Run these once. In order. Do not skip any.
+ResearchOps is **Windows-first for local learning**, with matching macOS and Linux commands. Use the block for your computer. For more detail, see [Cross-Platform Setup Guide](docs/CROSS_PLATFORM_SETUP.md).
 
-```bash
+### Windows PowerShell — primary workflow
+
+```powershell
 # 1. Clone the repository
 git clone https://github.com/Raj-Indra-Asura/researchops_python_mastery.git
 cd researchops_python_mastery
 
-# 2. Create a virtual environment (Python 3.11 or newer required)
+# 2. Create and activate a virtual environment (Python 3.11 or newer required)
 python -m venv .venv
-source .venv/bin/activate        # Windows: .venv\Scripts\activate
+.\.venv\Scripts\Activate.ps1
 
-# 3. Upgrade pip
-pip install --upgrade pip
+# 3. Upgrade pip and install the project in development mode
+python -m pip install --upgrade pip
+python -m pip install -e ".[dev]"
 
-# 4. Install the project in development mode with dev dependencies
-pip install -e ".[dev]"
-
-# 5. Confirm the CLI is installed and responds
+# 4. Confirm the CLI is installed and responds
 researchops --help
 
-# 6. Run the first command (your Week 1 deliverable)
+# 5. Run the first command (your Week 1 deliverable)
 researchops scan ./examples/sample_papers
 
-# 7. Confirm tests pass
+# 6. Confirm tests and linting are clean
 pytest -q
-
-# 8. Confirm linting is clean
 ruff check src tests
 ```
 
-If all of those work without errors, your environment is correct. If any step fails, read the error message carefully before searching for help.
+### macOS / Linux Terminal alternative
+
+```bash
+git clone https://github.com/Raj-Indra-Asura/researchops_python_mastery.git
+cd researchops_python_mastery
+python -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+python -m pip install -e ".[dev]"
+researchops --help
+researchops scan ./examples/sample_papers
+pytest -q
+ruff check src tests
+```
+
+After the virtual environment is active, the ResearchOps commands are the same on Windows, macOS, and Linux. If any step fails, read the error message carefully and compare your command with the guide for your shell.
 
 ---
 
@@ -210,7 +223,7 @@ Builds on all four prior months: the semantic search from Month 4, the experimen
 | Week | Title | Milestone | Builds on |
 |------|-------|-----------|-----------|
 | 17 | RAG Assistant | `researchops ask "question"` returns cited answer | Weeks 13 + 16 |
-| 18 | Docker and Environment Config | `docker-compose up` starts the full stack | Weeks 14–17 |
+| 18 | Docker and Environment Config | `docker compose up` starts the full stack | Weeks 14–17 |
 | 19 | Documentation and Portfolio Polish | README, diagrams, demo script complete | All prior weeks |
 | 20 | Final Hardening and v1.0 Release | CI green, `v1.0.0` tag, changelog, demo ready | Week 19 |
 
@@ -229,9 +242,9 @@ Every week has a `validation.md`. It contains:
 
 **Do not move to the next week until your `validation.md` is completely green.**
 
-Quick validation loop for any week:
+Quick validation loop for any week after your virtual environment is active. These commands are identical in Windows PowerShell, Command Prompt, macOS Terminal, and Linux shells:
 
-```bash
+```text
 pytest -q                          # all tests must pass
 ruff check src tests               # no lint errors
 researchops --help                 # CLI must respond
@@ -280,6 +293,8 @@ researchops_python_mastery/
 ├── ROADMAP.md                   ← 20-week milestone tracker (update as you go)
 ├── SYLLABUS.md                  ← Full table of contents: all 20 chapters
 ├── PROJECT_SPEC.md              ← Complete feature specification and CLI/API reference
+├── docs/CROSS_PLATFORM_SETUP.md  ← Windows-first setup with macOS/Linux alternatives
+├── docs/CODE_WALKTHROUGH.md      ← Beginner file-by-file code explanation
 ├── ARCHITECTURE.md              ← Module boundaries, dependency rules, design rationale
 ├── CONTRIBUTING.md              ← Learner workflow: branch names, commits, testing, Copilot rules
 ├── RELEASE_CHECKLIST.md         ← Per-release checklists v0.1 → v1.0

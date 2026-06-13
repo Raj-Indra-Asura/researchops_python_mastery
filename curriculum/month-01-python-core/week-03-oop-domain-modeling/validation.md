@@ -84,26 +84,10 @@ Any `ImportError` here means the environment is not set up correctly or a module
 
 ### 3. Quick REPL smoke test
 
-```bash
-python - <<'PY'
-from pathlib import Path
-from researchops.core.models import Paper, PaperId
+This command uses `python -c` so the same smoke test works in Windows PowerShell, Command Prompt, macOS, and Linux.
 
-pid = PaperId.from_path(Path("sample.pdf"))
-print("PaperId:", pid)
-print("Type:", type(pid).__name__)
-
-paper = Paper(
-    id=str(pid),
-    title="Test Paper",
-    source_path="sample.pdf",
-    text="hello world from a test",
-    num_pages=1,
-    file_size_bytes=512,
-)
-print("word_count:", paper.word_count())
-print("is_empty:", paper.is_empty())
-PY
+```text
+python -c "from pathlib import Path; from researchops.core.models import Paper, PaperId; pid = PaperId.from_path(Path('sample.pdf')); print('PaperId:', pid); print('Type:', type(pid).__name__); paper = Paper(id=str(pid), title='Test Paper', source_path='sample.pdf', text='hello world from a test', num_pages=1, file_size_bytes=512); print('word_count:', paper.word_count()); print('is_empty:', paper.is_empty())"
 ```
 
 Expected output (exact hash will differ):

@@ -178,6 +178,10 @@ It means the project has crossed from “folder of code” to “runnable softwa
 
 ## Commands introduced
 
+### Windows-first setup note
+
+This curriculum targets a primary Windows PC workflow. Use Windows PowerShell commands first when you are on Windows, and use the macOS/Linux alternatives when you are on those systems. The full reference is [Cross-Platform Setup Guide](../../../docs/CROSS_PLATFORM_SETUP.md).
+
 ```bash
 python -m venv .venv
 ```

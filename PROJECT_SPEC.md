@@ -24,7 +24,7 @@ Build ResearchOps: a Python-based research paper processing and experiment-track
 9. **Async Fetching** — download papers from URLs and arXiv asynchronously
 10. **Background Jobs** — offload expensive tasks to a persistent job queue
 11. **RAG Assistant** — answer questions over the paper library with citations
-12. **Docker** — run the complete stack with `docker-compose up`
+12. **Docker** — run the complete stack with `docker compose up`
 13. **CI/CD** — lint and test on every push
 
 ## CLI command reference (final state)
