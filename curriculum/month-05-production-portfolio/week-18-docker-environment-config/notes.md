@@ -17,7 +17,7 @@ That timing is deliberate: Docker is not a substitute for a working application.
 You already have a CLI, API, worker loop, job storage, search paths, and the RAG assistant from Week 17.
 This week packages that already-working system into a reproducible runtime.
 The chapter title from the syllabus is **Shipping the whole system**.
-The milestone is concrete: `docker-compose up` starts the API and worker, and `curl http://localhost:8000/health` responds.
+The milestone is concrete: `docker compose up` starts the API and worker, and `curl http://localhost:8000/health` responds. On Windows, Docker Desktop must be running before you start the stack.
 The main files are `Dockerfile`, `docker-compose.yml`, `.env.example`, and `src/researchops/config/settings.py`.
 The skill is not memorising Docker commands; the skill is knowing which settings belong in code, which belong in the image, and which belong at runtime.
 A ResearchOps container should run the same command on every machine without asking the learner to recreate hidden setup steps.

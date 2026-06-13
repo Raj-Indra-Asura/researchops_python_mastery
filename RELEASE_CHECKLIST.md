@@ -261,7 +261,7 @@ git push origin vX.Y.Z
 **What is included:** Docker deployment, complete documentation, portfolio-ready README, v1.0.0 tag.
 
 ### Code
-- [ ] `docker-compose up` starts API and worker containers
+- [ ] `docker compose up` starts API and worker containers on Windows, macOS, or Linux; Windows requires Docker Desktop running. Use `docker-compose up` only on older Compose installations.
 - [ ] `curl http://localhost:8000/health` responds with `{"status": "ok"}`
 - [ ] All configuration is managed via environment variables, not hard-coded paths
 - [ ] `.env.example` documents every required environment variable
@@ -279,7 +279,7 @@ git push origin vX.Y.Z
 - [ ] `researchops train-topic-model` — trains and saves model
 - [ ] `researchops classify PAPER_ID` — returns a topic
 - [ ] `researchops ask "What is attention?"` — returns a cited answer
-- [ ] `uvicorn researchops.api.main:app` — starts without error
+- [ ] `uvicorn researchops.api.main:app` — starts without error after `python -m pip install -e ".[api]"` in the active virtual environment
 
 ### Documentation
 - [ ] `README.md` is portfolio-quality — a hiring manager could understand the project in 5 minutes

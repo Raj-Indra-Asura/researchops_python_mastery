@@ -44,7 +44,26 @@ Before you run the formal checks, confirm all of these are true:
 
 ## Commands to run
 
-Run these commands exactly, in order, from the repository root.
+Run these commands exactly, in order, from the repository root. Use the block for your operating system.
+
+### Windows PowerShell — primary
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install --upgrade pip
+python -m pip install -e ".[dev]"
+python -c "import researchops; print('import ok')"
+python -c "from researchops.cli.main import app; print(type(app).__name__)"
+researchops --help
+researchops scan curriculum/month-01-python-core/week-01-foundations
+pytest tests/unit/test_paths.py -v
+pytest tests/e2e/test_cli.py -v
+pytest -q
+ruff check src tests
+```
+
+### macOS / Linux alternative
 
 ```bash
 python -m venv .venv
